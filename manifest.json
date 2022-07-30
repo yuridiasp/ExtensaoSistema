@@ -1,0 +1,33 @@
+{
+    "name": "Auto Complete FR",
+    "version": "1.0",
+    "icons": {
+        "180": "icon.png"
+    },
+    "background": {
+        "service_work": "background/background.html"
+    },
+    "description": "Preenchimento automático para tarefas do sistema Fábio Ribeiro Advogados.",
+    "action": {
+        "default_title": "Auto Complete FR",
+        "default_popup": "popup/index.html"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "http://fabioribeiro.eastus.cloudapp.azure.com/*",
+                "https://maps.googleapis.com/*"
+            ],
+            "js": [
+                "chromeUtils.js",
+                "content.js"
+            ]
+        }
+    ],
+    "permissions": [
+        "tabs",
+        "storage",
+        "webRequest"
+    ],
+    "manifest_version": 3
+}
