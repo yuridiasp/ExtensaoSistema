@@ -16,13 +16,13 @@ function getEndereço (local) {
         "9ª VARA FEDERAL": "AV JOÃO BARBOSA PORTO, Nº. 1600, BAIRRO BELA VISTA, PROPRIÁ/SE (MESMO RECINTO DA VARA DO TRABALHO)",
         "1ª VARA CÍVEL DE ARACAJU": "FÓRUM GUMERSINDO BESSA - AV. PRES. TANCREDO NEVES, S/N - CAPUCHO, ARACAJU - SE, 49081-901",
         "2ª VARA CÍVEL DE ARACAJU": "FÓRUM GUMERSINDO BESSA - AV. PRES. TANCREDO NEVES, S/N - CAPUCHO, ARACAJU - SE, 49081-901",
-        "3ª VARA CÍVEL DE ARACAJU": "FÓRUM GUMERSINDO BESSA - AV. PRES. TANCREDO NEVES, S/N - CAPUCHO, ARACAJU - SE, 49081-901",
+        "3ª VARA CÍVEL DE ARACAJU": "FÓRUNS INTEGRADOS III - AV. PAULO HENRIQUE MACHADO PIMENTEL, Nº 170 - (DIA), INÁCIO BARBOSA, ARACAJU/SE, 49040-740",
         "4ª VARA CÍVEL DE ARACAJU": "FÓRUM GUMERSINDO BESSA - AV. PRES. TANCREDO NEVES, S/N - CAPUCHO, ARACAJU - SE, 49081-901",
         "5ª VARA CÍVEL DE ARACAJU": "FÓRUM GUMERSINDO BESSA - AV. PRES. TANCREDO NEVES, S/N - CAPUCHO, ARACAJU - SE, 49081-901",
         "6ª VARA CÍVEL DE ARACAJU": "FÓRUM GUMERSINDO BESSA - AV. PRES. TANCREDO NEVES, S/N - CAPUCHO, ARACAJU - SE, 49081-901",
         "7ª VARA CÍVEL DE ARACAJU": "FÓRUM GUMERSINDO BESSA - AV. PRES. TANCREDO NEVES, S/N - CAPUCHO, ARACAJU - SE, 49081-901",
         "8ª VARA CÍVEL DE ARACAJU": "FÓRUM GUMERSINDO BESSA - AV. PRES. TANCREDO NEVES, S/N - CAPUCHO, ARACAJU - SE, 49081-901",
-        "9ª VARA CÍVEL DE ARACAJU": "FÓRUM GUMERSINDO BESSA - AV. PRES. TANCREDO NEVES, S/N - CAPUCHO, ARACAJU - SE, 49081-901",
+        "9ª VARA CÍVEL DE ARACAJU": "FÓRUNS INTEGRADOS III - AV. PAULO HENRIQUE MACHADO PIMENTEL, Nº 170 - (DIA), INÁCIO BARBOSA, ARACAJU/SE, 49040-740",
         "10ª VARA CÍVEL DE ARACAJU": "FÓRUM GUMERSINDO BESSA - AV. PRES. TANCREDO NEVES, S/N - CAPUCHO, ARACAJU - SE, 49081-901",
         "11ª VARA CÍVEL DE ARACAJU": "FÓRUM GUMERSINDO BESSA - AV. PRES. TANCREDO NEVES, S/N - CAPUCHO, ARACAJU - SE, 49081-901",
         "12ª VARA CÍVEL DE ARACAJU": "FÓRUM GUMERSINDO BESSA - AV. PRES. TANCREDO NEVES, S/N - CAPUCHO, ARACAJU - SE, 49081-901",
@@ -1914,6 +1914,46 @@ function setValidacaoFunctionOn() {
         })
 }
 
+function createButtonRolagem () {
+    let arrow = document.createElement('input')
+    arrow.setAttribute('type','button')
+    arrow.value = 'DOWN'
+    document.body.after(arrow)
+    arrow.style.position = 'fixed'
+    arrow.style.top = '0'
+    arrow.style.right = '0'
+    arrow.style.margin = '8em'
+    arrow.style.background = 'dimgray'
+    arrow.style.padding = '30px'
+    arrow.style.width = '10em'
+    arrow.style.height = '10em'
+    arrow.style.borderRadius = '1em'
+    arrow.style.MozBorderRadius = '1em'
+    arrow.style.WebkitBorderRadius = '1em'
+    arrow.style.color = 'white'
+    arrow.style.fontWeight = 'bold'
+    arrow.style.borderStyle = 'none'
+    arrow.style.boxShadow = '10px 5px 5px black'
+    arrow.addEventListener('click', () => {
+        if (arrow.value == 'DOWN') {
+            arrow.setAttribute('disabled','')
+            for (let index = 0; index < document.documentElement.scrollHeight; index++) {
+                setTimeout(() => {
+                    window.scroll(0,index)
+                }, 50 + index)
+            }
+            setTimeout(() => {
+                arrow.value = 'UP'
+                arrow.removeAttribute('disabled')
+            }, document.documentElement.scrollHeight);
+        }
+        else {
+            window.scroll(0,0)
+            arrow.value = 'DOWN'
+        }
+    })
+}
+
 async function idPage(url) {
     let auto_completar = await getAutoComplete()
     if (url.search(url_processos) > -1) {
@@ -1948,6 +1988,7 @@ async function idPage(url) {
                     formataNumProcesso()
                 else
                     if (url.search(url_compromisso_default) > -1) {
+                        createButtonRolagem()
                         setValidacaoFunctionOn()
                     }
                     else
