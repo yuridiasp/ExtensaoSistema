@@ -1937,15 +1937,9 @@ function createButtonRolagem () {
     arrow.addEventListener('click', () => {
         if (arrow.value == 'DOWN') {
             arrow.setAttribute('disabled','')
-            for (let index = 0; index < document.documentElement.scrollHeight; index++) {
-                setTimeout(() => {
-                    window.scroll(0,index)
-                }, 50 + index)
-            }
-            setTimeout(() => {
-                arrow.value = 'UP'
-                arrow.removeAttribute('disabled')
-            }, document.documentElement.scrollHeight);
+            window.scroll(0, document.documentElement.scrollHeight)
+            arrow.value = 'UP'
+            arrow.removeAttribute('disabled')
         }
         else {
             window.scroll(0,0)
