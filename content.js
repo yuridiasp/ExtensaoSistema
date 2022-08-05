@@ -220,7 +220,6 @@ let submit = true
 const url_processos_cadastro = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/formulario"
 const url_processos = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/default"
 const url_compromissos = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/compromissos/formulario"
-const url_compromissos_dois ="http://fabioribeiro.eastus.cloudapp.azure.com//adv/compromissos/formulario"
 const url_compromisso_ficha = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/compromissos/ficha"
 const url_compromisso_default = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/compromissos/default"
 const url_tarefas = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/formulario"
@@ -1277,6 +1276,10 @@ function proximaTarefa (descricao_tarefa) {
                 cliente.compromisso.tipo_tarefa = emendar
                 return cont-1
             }
+            if (sequencia == 2 && cont == 1 && !(financeiro.includes(cliente.compromisso.tipo_tarefa))) {
+                cliente.compromisso.tipo_tarefa = ''
+                return cont
+            }
             return cont
         }
     }
@@ -1608,7 +1611,7 @@ function extrairDadosRequisicaoCliente(response) {
     let cidade = str.slice(0,str.search("</span></div>")).toUpperCase()
     str = str.slice(str.search("Estado:")+14)
     let estado = str.slice(0,str.search("</span></div>")).toUpperCase()
-    console.log(`Local atendido: ${local_atendido}\nCidade do Cliente: ${cidade}\nEstado do Cliente: ${estado}`)
+    //console.log(`Local atendido: ${local_atendido}\nCidade do Cliente: ${cidade}\nEstado do Cliente: ${estado}`)
     cliente.cliente.local_atendido = local_atendido
     cliente.cliente.cidade = cidade
     cliente.cliente.estado = estado
@@ -1637,7 +1640,7 @@ function extrairDadosRequisicaoProcesso(response,gravarBtn) {
     let estado = aux.slice(0,aux.search("</span></div>")).toUpperCase()
     aux = aux.slice(aux.search("Cidade:")+14)
     let cidade = aux.slice(0,aux.search("</span></div>")).toUpperCase()
-    console.log(`Nome: ${nome}\nCPF: ${cpf}\nProcesso: ${processo}\nRÉU: ${reu}\nResponsável do Processo: ${responsavel_processo}\nNatureza da Ação: ${natureza_acao}\nMérito da Causa: ${merito_causa}\nCidade do Proceso: ${cidade}\nEstado do Processo: ${estado}\nID: ${id}`)
+    //console.log(`Nome: ${nome}\nCPF: ${cpf}\nProcesso: ${processo}\nRÉU: ${reu}\nResponsável do Processo: ${responsavel_processo}\nNatureza da Ação: ${natureza_acao}\nMérito da Causa: ${merito_causa}\nCidade do Proceso: ${cidade}\nEstado do Processo: ${estado}\nID: ${id}`)
     ajax(2,link_cliente_ajax,id,gravarBtn)
     cliente.cliente.nome = nome
     cliente.cliente.cpf = cpf
@@ -1744,7 +1747,6 @@ function calcularPrazo (prazo,parametro) {
 
         if (i > 0 && i < 6 && !isFeriado(date_final,parametro)) {
             cont = cont + 1
-            console.log(date_final.toDateString())
         }
     }
     let ano = date_final.getFullYear()
@@ -1962,11 +1964,18 @@ async function idPage(url) {
                     createInputDependente()
                 saveInfoTarefas()
                 loadInfo()
-                console.log(cliente)
             }
         }
         else
-            if (url.search(url_compromissos) > -1 || url.search(url_compromissos_dois) > -1) {
+            if (url.search(url_compromissos) > -1) {
+                const data_final =  document.querySelector("#dataPrazoFatal")
+                const data_inicial = document.querySelector("#dataPrazoInterno")
+
+                data_final.addEventListener('blur', () => {
+                    data_inicial.value = data_final.value
+                    console.log(data_inicial.value, data_final.value)
+                })
+
                 if (auto_completar) {
                     let gravarBtn = document.querySelector("#fdt-form > div.row.margemCima20 > div > input.btn.fdt-btn-verde")
                     gravarBtn.setAttribute('disabled','')
@@ -2002,7 +2011,6 @@ async function idPage(url) {
                                     })
                                 }
                             }
-
 }
 
 function getURL() {
