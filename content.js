@@ -1038,8 +1038,8 @@ async function validaResponsavelTj (num) {
     if (natureza == "CÍVEL" || natureza == "CONSUMIDOR" || natureza == "SERVIDOR PÚBLICO") {
         let daniel = [0,1,4,6,8]
             if (daniel.includes(digito) || tarefa == "SESSÃO DE JULGAMENTO" || tarefa.search("AUDIÊNCIA") == 0)
-                return {responsavel: "DANIEL DE ALBUQUERQUE FRANCO OLIVEIRA",executor: "DANIEL DE ALBUQUERQUE FRANCO OLIVEIRA"}
-            return {responsavel: "DANIEL DE ALBUQUERQUE FRANCO OLIVEIRA",executor: "RODRIGO AGUIAR SANTOS"}
+                return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "RODRIGO AGUIAR SANTOS"}
+            return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "RODRIGO AGUIAR SANTOS"}
     }
 }
 
@@ -1117,7 +1117,7 @@ async function validaResponsavelFederal (num) {
             }
     }
     if (natureza == "CÍVEL" || natureza == "CONSUMIDOR" || natureza == "SERVIDOR PÚBLICO") //Processos de natureza cível
-        return {responsavel: "DANIEL DE ALBUQUERQUE FRANCO OLIVEIRA",executor: "DANIEL DE ALBUQUERQUE FRANCO OLIVEIRA"}
+        return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "RODRIGO AGUIAR SANTOS"}
     if (natureza == "BANCÁRIO") //Processos de natureza bancária
         return {responsavel: "LAIS PEREIRA MORAES",executor: "LAIS PEREIRA MORAES"}
 }
