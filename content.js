@@ -226,6 +226,7 @@ const url_tarefas = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/f
 const url_tarefas_ficha = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/default"
 const link_processos_ajax = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/ficha.asp?idPK="
 const link_cliente_ajax = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/ficha.asp?idPK="
+const url_cliente_addtarefa = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/default"
 
 let cliente = {
         cliente: {
@@ -755,9 +756,23 @@ function calcularDataTarefa(parametro) {
 
     data_finalizacao_agendada.addEventListener('blur', e => {
         data_finalizacao.value = e.target.value
+        if (cliente.compromisso.tipo_tarefa == "CONTATAR CLIENTE" && (cliente.processo.estado != "DF" || cliente.processo.estado != "GO")) {
+            let contactdiv = document.querySelector("#contactdiv")
+            if (contactdiv != null) {
+                contactdiv.parentNode.removeChild(contactdiv)
+                validaExecutorContatar()
+            }
+        }
     })
     data_finalizacao.addEventListener('blur', e => {
         data_finalizacao_agendada.value = e.target.value
+        if (cliente.compromisso.tipo_tarefa == "CONTATAR CLIENTE" && (cliente.processo.estado != "DF" || cliente.processo.estado != "GO")) {
+            let contactdiv = document.querySelector("#contactdiv")
+            if (contactdiv != null) {
+                contactdiv.parentNode.removeChild(contactdiv)
+                validaExecutorContatar()
+            }
+        }
     })
 }
 
@@ -937,7 +952,6 @@ async function getTarefasAdm(element,data){
                 if (e.children[2] != null) {
                     if ((e.children[2].innerText.match("[0-9]*")[0].length >= 12) && !(e.children[3].innerText.search('Acompanhar') == 0)) {
                         contador++
-                        console.log(e.children[2].innerText.match("[0-9]*")[0])
                     }
                 }
             })
@@ -967,7 +981,7 @@ async function validaExecutorContatar () {
     createListaTarefas()
     setTimeout(async () => {
         let adm = await requererTarefasContatar(data_input.value.split('/'))
-        console.log(adm)
+
         adm.forEach(e => {
             if (e[2] != null)
                 if (e[2].length > 1) {
@@ -992,7 +1006,11 @@ async function validaExecutorContatar () {
     }, 100);
     
     async function requererTarefasContatar(data) {
-        let adm = [[131,"ASLEY RODRIGO DE MELO LIMA",["ALAGOINHAS"],0],[94,"CARLOS HENRIQUE ESPASIANI",["UMBAÚBA","LOTEAMENTO JEOVA (BOTAFOGO)"],0],[115,"GABRIEL FRANÇA VITAL",["CARMOPÓLIS","TOBIAS BARRETO","PEDRINHAS","SANTO AMARO"],0],[141,"MARCOS ROBERT DE MELO LIMA",["ESTANCIA","CAPELA","JAPARATUBA","CONDE/BA"],0],[178,"MATHEUS GONZAGA LEMOS",null,0]]
+        let adm = []
+        if (cliente.cliente.cidade == "ESTANCIA" && cliente.cliente.local_atendido == "ESTANCIA")
+            adm = [[87,"RUAN APARICIO DOS SANTOS",null,0],[169,"SAMARA ALBUQUERQUE CRUZ",null,0],[22,"SANDOVAL FILHO CORREIA LIMA FILHO",null,0]]
+        else
+            adm = [[131,"ASLEY RODRIGO DE MELO LIMA",["ALAGOINHAS"],0],[94,"CARLOS HENRIQUE ESPASIANI",["UMBAÚBA","LOTEAMENTO JEOVA (BOTAFOGO)"],0],[115,"GABRIEL FRANÇA VITAL",["CARMOPÓLIS","TOBIAS BARRETO","PEDRINHAS","SANTO AMARO"],0],[141,"MARCOS ROBERT DE MELO LIMA",["ESTANCIA","CAPELA","JAPARATUBA","CONDE/BA"],0],[178,"MATHEUS GONZAGA LEMOS",null,0],[120,"VICTOR MENDES DOS SANTOS",null,0]]
         adm.forEach(async e => {
             await getTarefasAdm(e,data)
         })
@@ -1018,9 +1036,9 @@ async function validaResponsavelTj (num) {
         return {responsavel: "LUCIANA DOS SANTOS ARAUJO",executor: eh_mateus_financeiro ? "MATEUS DOS SANTOS SILVA":"OVERLANDIA SANTOS MELO"}
     }
     if (adm.includes(tarefa)){
-        if (cliente.cliente.cidade == "ESTANCIA")
-            return {responsavel: "SANDOVAL FILHO CORREIA LIMA FILHO",executor: "SANDOVAL FILHO CORREIA LIMA FILHO"}
         validaExecutorContatar()
+        if (cliente.cliente.cidade == "ESTANCIA" && cliente.cliente.local_atendido == "ESTANCIA")
+            return {responsavel: "SANDOVAL FILHO CORREIA LIMA FILHO",executor: "SANDOVAL FILHO CORREIA LIMA FILHO"}
         return {responsavel: "JULIANO OLIVEIRA DE SOUZA",executor: "JULIANO OLIVEIRA DE SOUZA"}
     }
     if (sac == tarefa)
@@ -1038,8 +1056,8 @@ async function validaResponsavelTj (num) {
     if (natureza == "CÍVEL" || natureza == "CONSUMIDOR" || natureza == "SERVIDOR PÚBLICO") {
         let daniel = [0,1,4,6,8]
             if (daniel.includes(digito) || tarefa == "SESSÃO DE JULGAMENTO" || tarefa.search("AUDIÊNCIA") == 0)
-                return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "RODRIGO AGUIAR SANTOS"}
-            return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "RODRIGO AGUIAR SANTOS"}
+                return {responsavel: "ALÃ FEITOSA CARVALHO",executor: "ALÃ FEITOSA CARVALHO"}
+            return {responsavel: "ALÃ FEITOSA CARVALHO",executor: "ALÃ FEITOSA CARVALHO"}
     }
 }
 
@@ -1066,13 +1084,13 @@ async function validaResponsavelFederal (num) {
     }
 
     if (adm.includes(tarefa)) {
-        if(cliente.cliente.cidade == "ESTANCIA") { //Tarefa contatar para escritório de Estância
-            return {responsavel: "SANDOVAL FILHO CORREIA LIMA FILHO",executor: "SANDOVAL FILHO CORREIA LIMA FILHO"}
-        }
         if (cliente.processo.estado == "DF" || cliente.processo.estado == "GO") {
             return {responsavel: "HENYR GOIS DOS SANTOS",executor: "HENYR GOIS DOS SANTOS"}
         }
-        validaExecutorContatar()
+        validaExecutorContatar(cliente.cliente.cidade)
+        if(cliente.cliente.cidade == "ESTANCIA"  && cliente.cliente.local_atendido == "ESTANCIA") { //Tarefa contatar para escritório de Estância
+            return {responsavel: "SANDOVAL FILHO CORREIA LIMA FILHO",executor: "SANDOVAL FILHO CORREIA LIMA FILHO"}
+        }
         return {responsavel: "JULIANO OLIVEIRA DE SOUZA",executor: "JULIANO OLIVEIRA DE SOUZA"} //Tarefa contatar para demais localidades
     }
 
@@ -1889,6 +1907,7 @@ function setValidacaoFunctionOff () {
     let add_tarefa_btn = document.querySelector('body > section > section > div.fdt-espaco > div > div:nth-child(2) > a:nth-child(3)')
     let add_tarefa_avulsa_btn = document.querySelector('body > section > section > div.fdt-espaco > div > div.fdt-pg-header > a:nth-child(1)')
     let add_tarefa_cliente_btn = document.querySelector('body > section > section > div.fdt-espaco > div > div.fdt-pg-header > a:nth-child(2)')
+    let btn_tarefa_cliente_pesq = document.querySelector("body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr > td:nth-child(2) > a")
     
     if (edit_compromisso_btn != null)
         edit_compromisso_btn.addEventListener('click', () => {
@@ -1904,6 +1923,10 @@ function setValidacaoFunctionOff () {
         })
     if (add_tarefa_cliente_btn != null)
         add_tarefa_cliente_btn.addEventListener('click', () => {
+            setAutoComplete(false)
+        })
+    if (btn_tarefa_cliente_pesq != null)
+        btn_tarefa_cliente_pesq.addEventListener('click', () => {
             setAutoComplete(false)
         })
 }
@@ -1995,7 +2018,7 @@ async function idPage(url) {
                         setValidacaoFunctionOn()
                     }
                     else
-                        if (url.search(url_compromisso_ficha) > -1)
+                        if (url.search(url_compromisso_ficha) > -1 || url.search(url_cliente_addtarefa) > -1)
                             setValidacaoFunctionOff()
                         else
                             if (url.search(url_tarefas_ficha) > -1) {
