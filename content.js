@@ -692,25 +692,25 @@ function calculaIntervaloTarefas (dias) {
 
     if (((cont_cinco.includes(compromisso) && dias > 11) || (cont_quatro.includes(compromisso) && dias > 10) || (compromisso.search(cont_tres) == 0) && dias > 10) && cliente.compromisso.semanas >= 2 ) {
         if (tarefa == 'ANÁLISE')
-            return 11
+            return dias-1
         if ((tarefa == 'CONTATAR CLIENTE' || tarefa == 'SMS E WHATSAPP')) {
             if (cliente.processo.estado != 'GO' && cliente.processo.estado != 'DF')
-                return 10
+                return dias-2
             else {
                 if (compromisso.search(cont_tres) == -1) {
                     if (tarefa == 'CONTATAR CLIENTE')
-                        return 9
+                        return dias-2
                     if (tarefa == 'SMS E WHATSAPP')
-                        return 10
+                        return dias-2
                 }
                 if (tarefa == 'CONTATAR CLIENTE')
-                    return 5
+                    return dias-2
                 if (tarefa == 'SMS E WHATSAPP')
-                    return 10
+                    return dias-2
             }
         }
         if (tarefa == 'LEMBRAR CLIENTE')
-            return 2
+            return 3
         if (tarefa == 'ATO ORDINATÓRIO')
             return dias-1
     }
@@ -720,7 +720,7 @@ function calculaIntervaloTarefas (dias) {
                 return 0
             else
                 if (tarefa == 'LEMBRAR CLIENTE')
-                    return 2
+                    return 3
             if (cliente.processo.estado == 'GO' || cliente.processo.estado == 'DF') {
                 if (tarefa == 'CONTATAR CLIENTE')
                     return dias-2
@@ -1054,10 +1054,10 @@ async function validaResponsavelTj (num) {
         return {responsavel: "LAIS PEREIRA MORAES",executor: "ANTONIO RABELO NOLES DE ABREU"}
     }
     if (natureza == "CÍVEL" || natureza == "CONSUMIDOR" || natureza == "SERVIDOR PÚBLICO") {
-        let daniel = [0,1,4,6,8]
-            if (daniel.includes(digito) || tarefa == "SESSÃO DE JULGAMENTO" || tarefa.search("AUDIÊNCIA") == 0)
-                return {responsavel: "ALÃ FEITOSA CARVALHO",executor: "ALÃ FEITOSA CARVALHO"}
-            return {responsavel: "ALÃ FEITOSA CARVALHO",executor: "ALÃ FEITOSA CARVALHO"}
+        let ala = [0,1,4,6,8]
+            if (ala.includes(digito) || tarefa == "SESSÃO DE JULGAMENTO" || tarefa.search("AUDIÊNCIA") == 0)
+                return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "ALÃ FEITOSA CARVALHO"}
+            return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "RODRIGO AGUIAR SANTOS"}
     }
 }
 
@@ -1165,6 +1165,8 @@ function validaTipoIntimacao(txt) {
             return "RPV TRF1 BRASÌLIA"
         if (cliente.processo.estado == "GO")
             return "RPV TRF1 GOIÀS"
+        if (cliente.processo.cidade == "BA")
+            return "RPV TRF1 BAHIA"
         return "RPV TRF5 ARACAJU"
     }
     if (txt == "PAUTA" || txt == "RETIRADO DE PAUTA")
@@ -1993,10 +1995,12 @@ async function idPage(url) {
             if (url.search(url_compromissos) > -1) {
                 const data_final =  document.querySelector("#dataPrazoFatal")
                 const data_inicial = document.querySelector("#dataPrazoInterno")
+                const tipoIntimacao = document.querySelector("#descricao")
 
                 data_final.addEventListener('blur', () => {
-                    data_inicial.value = data_final.value
-                    console.log(data_inicial.value, data_final.value)
+                    if (tipoIntimacao.value.normalize('NFD').replace(/[\u0300-\u036f]/g, "").search('AUDIENCIA') == 0 || tipoIntimacao.value.normalize('NFD').replace(/[\u0300-\u036f]/g, "").search('PAUTA') == 0 || tipoIntimacao.value.normalize('NFD').replace(/[\u0300-\u036f]/g, "").search('PERICIA') == 0) {
+                        data_inicial.value = data_final.value
+                    }
                 })
 
                 if (auto_completar) {
