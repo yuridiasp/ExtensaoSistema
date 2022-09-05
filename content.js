@@ -234,7 +234,8 @@ let cliente = {
             cpf: null,
             cidade: null,
             estado: null,
-            local_atendido: null
+            local_atendido: null,
+            parceiro: null
         },
         processo: {
             origem: null,
@@ -244,7 +245,8 @@ let cliente = {
             natureza: null,
             merito: null,
             cidade: null,
-            estado: null
+            estado: null,
+            vara: null
         },
         compromisso: {
             atualizar: true,
@@ -1008,20 +1010,45 @@ async function validaExecutorContatar () {
     
     async function requererTarefasContatar(data) {
         let adm = []
-        if (cliente.cliente.cidade == "ESTANCIA" && cliente.cliente.local_atendido == "ESTANCIA")
-            adm = [[87,"RUAN APARICIO DOS SANTOS",null,0],[169,"SAMARA ALBUQUERQUE CRUZ",null,0],[22,"SANDOVAL FILHO CORREIA LIMA FILHO",null,0]]
-        else
-            adm = [
-                [131,"ASLEY RODRIGO DE MELO LIMA",["ALAGOINHAS"],0],
-                [94,"CARLOS HENRIQUE ESPASIANI",["UMBAÚBA","LOTEAMENTO JEOVA (BOTAFOGO)"],0],
-                //[115,"GABRIEL FRANÇA VITAL",["CARMOPÓLIS","TOBIAS BARRETO","PEDRINHAS","SANTO AMARO"],0],
-                [141,"MARCOS ROBERT DE MELO LIMA",["ESTANCIA","CAPELA","JAPARATUBA","CONDE/BA"],0],
-                [178,"MATHEUS GONZAGA LEMOS",["CARMOPÓLIS","TOBIAS BARRETO","PEDRINHAS","SANTO AMARO"],0],
-                //[120,"VICTOR MENDES DOS SANTOS",null,0]
-            ]
+
+        let parceiros = ['ELIZEU ( PARCEIRO)','MARIA DO POV. PREGUIÇA','AGENOR (PARCEIRO)','ELIZANGELA ( PARCEIRA)','ERMINIO','AUGUSTO ( PARCEIRO)']
+
+        let varaEstancia = ['7ª Vara Federal', '1ª Vara Civel de Estância', '2ª Vara Civel de Estância', 'Juizado Especial Cível e Criminal de Estância', 'Vara de Estância', 'Vara do Trabalho de Estância']
+
+        let estancia = [[87,"RUAN APARICIO DOS SANTOS",null,0],[169,"SAMARA ALBUQUERQUE CRUZ",null,0],[22,"SANDOVAL FILHO CORREIA LIMA FILHO",null,0]]
+
+        let aracaju = [
+            [131,"ASLEY RODRIGO DE MELO LIMA",["ALAGOINHAS"],0],
+            [94,"CARLOS HENRIQUE ESPASIANI",["UMBAÚBA","LOTEAMENTO JEOVA (BOTAFOGO)"],0],
+            //[115,"GABRIEL FRANÇA VITAL",["CARMOPÓLIS","TOBIAS BARRETO","PEDRINHAS","SANTO AMARO"],0],
+            [141,"MARCOS ROBERT DE MELO LIMA",["ESTANCIA","CAPELA","JAPARATUBA","CONDE/BA"],0],
+            [178,"MATHEUS GONZAGA LEMOS",["CARMOPÓLIS","TOBIAS BARRETO","PEDRINHAS","SANTO AMARO"],0],
+            //[120,"VICTOR MENDES DOS SANTOS",null,0]
+        ]
+
+        if ((cliente.cliente.cidade == "ESTANCIA" && cliente.cliente.local_atendido == "ESTANCIA") || (parceiros.includes(cliente.cliente.parceiro)) && varaEstancia.includes(cliente.processo.vara))
+            estancia.forEach(e => {
+                adm.push(e)
+            })
+        else {
+            if (varaEstancia.includes(cliente.processo.vara)) {
+                alert("Verificar executor manualmente!")
+                aracaju.forEach(e => {
+                    adm.push(e)
+                })
+                estancia.forEach(e => {
+                    adm.push(e)
+                })
+            }
+            aracaju.forEach(e => {
+                adm.push(e)
+            })
+        }
+
         adm.forEach(async e => {
             await getTarefasAdm(e,data)
         })
+        
         return adm
     }
 }
@@ -1638,13 +1665,16 @@ function focarInputProcesso() {
 }
 
 function extrairDadosRequisicaoCliente(response) {
-    let str = response.slice(response.search("Local atendido:")+22)
+    let str = response.slice(response.search("Parceiro:")+16)
+    let parceiro = str.slice(0,str.search("</span></div>")).toUpperCase()
+    str = str.slice(str.search("Local atendido:")+22)
     let local_atendido = str.slice(0,str.search("</span></div>")).toUpperCase()
     str = str.slice(str.search("Cidade:")+14)
     let cidade = str.slice(0,str.search("</span></div>")).toUpperCase()
     str = str.slice(str.search("Estado:")+14)
     let estado = str.slice(0,str.search("</span></div>")).toUpperCase()
-    //console.log(`Local atendido: ${local_atendido}\nCidade do Cliente: ${cidade}\nEstado do Cliente: ${estado}`)
+    console.log(`Parceiro: ${parceiro}\nLocal atendido: ${local_atendido}\nCidade do Cliente: ${cidade}\nEstado do Cliente: ${estado}`)
+    cliente.cliente.parceiro = parceiro
     cliente.cliente.local_atendido = local_atendido
     cliente.cliente.cidade = cidade
     cliente.cliente.estado = estado
@@ -1673,7 +1703,9 @@ function extrairDadosRequisicaoProcesso(response,gravarBtn) {
     let estado = aux.slice(0,aux.search("</span></div>")).toUpperCase()
     aux = aux.slice(aux.search("Cidade:")+14)
     let cidade = aux.slice(0,aux.search("</span></div>")).toUpperCase()
-    //console.log(`Nome: ${nome}\nCPF: ${cpf}\nProcesso: ${processo}\nRÉU: ${reu}\nResponsável do Processo: ${responsavel_processo}\nNatureza da Ação: ${natureza_acao}\nMérito da Causa: ${merito_causa}\nCidade do Proceso: ${cidade}\nEstado do Processo: ${estado}\nID: ${id}`)
+    aux = aux.slice(aux.search("Vara / Turma:")+20)
+    let vara = aux.slice(0,aux.search("</span></div>")).toUpperCase()
+    console.log(`Nome: ${nome}\nCPF: ${cpf}\nProcesso: ${processo}\nRÉU: ${reu}\nResponsável do Processo: ${responsavel_processo}\nNatureza da Ação: ${natureza_acao}\nMérito da Causa: ${merito_causa}\nCidade do Proceso: ${cidade}\nEstado do Processo: ${estado}\nVara/Turma: ${vara}\nID: ${id}`)
     ajax(2,link_cliente_ajax,id,gravarBtn)
     cliente.cliente.nome = nome
     cliente.cliente.cpf = cpf
@@ -1684,6 +1716,8 @@ function extrairDadosRequisicaoProcesso(response,gravarBtn) {
     cliente.processo.merito = merito_causa
     cliente.processo.cidade = cidade
     cliente.processo.estado = estado
+    cliente.processo.vara = vara
+    console.log(cliente)
 }
 
 async function ajax (opt,link,id,gravarBtn) {
