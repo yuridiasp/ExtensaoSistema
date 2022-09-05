@@ -792,18 +792,11 @@ async function saveInfoCompromissos() {
     }
     let tipos_array = Object.entries(tipos)
 
-    let erros = ["AUDIENCIA","PERICIA","ALVARA","PRECATORIO", "CONCILIACAO","INSTRUCAO","CONTRARRAZOES","ACORDAO", "MEDICA", "GRAFOTECNICA"]
-    let corretor = ["AUDIÊNCIA", "PERÍCIA", "ALVARÁ","PRECATÓRIO","CONCILIAÇÃO","INSTRUÇÃO","CONTRARRAZÕES","ACÓRDÃO", "MÉDICA", "GRAFOTÉCNICA"]
     if (descricao_tarefa !== null) {
         descricao_tarefa.focus()
         descricao_tarefa.addEventListener('change',async event => {
             let intimacao = "15"
             event.target.value = event.target.value.toUpperCase()
-            for (let index = 0; index < erros.length; index++) {
-                if (event.target.value.search(erros[index]) > -1) {
-                    event.target.value = event.target.value.replace(erros[index],corretor[index])
-                }
-            }
 
             if (option_ul !== null) {
                 for (const [key,value] in tipos_array) {
@@ -829,20 +822,28 @@ function submitPesquisaProcesso() {
 }
 
 function addEventoPasteProcesso (processo_input) {
-    processo_input.addEventListener('paste', event => {
-        setTimeout(() => {
-            removeCaracteresProcesso(event.target)
-        }, 50);
+    processo_input.addEventListener('input', () => {
+            processo_input.value = removeCaracteresProcesso(processo_input.value)
         setTimeout(() => {
             submitPesquisaProcesso()
-        }, 100);
+        }, 10);
     })
 }
 
-function removeCaracteresProcesso(input) {
-    input.value = input.value.replaceAll("-","")
-    input.value = input.value.replaceAll(".","")
-    input.value = input.value.replaceAll(" ","")
+function removeCaracteresProcesso(numeroProcesso) {
+    
+    let processoFormatado = ''
+
+    function isNumber(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
+    }
+
+    for (let index = 0; index < numeroProcesso.length; index++) {
+        if (isNumber(numeroProcesso[index]))
+            processoFormatado += numeroProcesso[index]
+    }
+
+    return processoFormatado
 }
 
 function formataNumProcesso () {
@@ -852,13 +853,13 @@ function formataNumProcesso () {
     
     if (processo_input !== null) {
         addEventoPasteProcesso(processo_input)
-        processo_input.addEventListener('change', event => {
-            removeCaracteresProcesso(event.target)
+        processo_input.addEventListener('paste', event => {
+                event.target.value = removeCaracteresProcesso(event.target.value)
         })
     }
     if (processo_input_cad !== null) {
         processo_input_cad.addEventListener('change', event => {
-            removeCaracteresProcesso(event.target)
+                event.target.value = removeCaracteresProcesso(event.target.value)
         })
     }
 }
@@ -1010,7 +1011,14 @@ async function validaExecutorContatar () {
         if (cliente.cliente.cidade == "ESTANCIA" && cliente.cliente.local_atendido == "ESTANCIA")
             adm = [[87,"RUAN APARICIO DOS SANTOS",null,0],[169,"SAMARA ALBUQUERQUE CRUZ",null,0],[22,"SANDOVAL FILHO CORREIA LIMA FILHO",null,0]]
         else
-            adm = [[131,"ASLEY RODRIGO DE MELO LIMA",["ALAGOINHAS"],0],[94,"CARLOS HENRIQUE ESPASIANI",["UMBAÚBA","LOTEAMENTO JEOVA (BOTAFOGO)"],0],[115,"GABRIEL FRANÇA VITAL",["CARMOPÓLIS","TOBIAS BARRETO","PEDRINHAS","SANTO AMARO"],0],[141,"MARCOS ROBERT DE MELO LIMA",["ESTANCIA","CAPELA","JAPARATUBA","CONDE/BA"],0],[178,"MATHEUS GONZAGA LEMOS",null,0],[120,"VICTOR MENDES DOS SANTOS",null,0]]
+            adm = [
+                [131,"ASLEY RODRIGO DE MELO LIMA",["ALAGOINHAS"],0],
+                [94,"CARLOS HENRIQUE ESPASIANI",["UMBAÚBA","LOTEAMENTO JEOVA (BOTAFOGO)"],0],
+                //[115,"GABRIEL FRANÇA VITAL",["CARMOPÓLIS","TOBIAS BARRETO","PEDRINHAS","SANTO AMARO"],0],
+                [141,"MARCOS ROBERT DE MELO LIMA",["ESTANCIA","CAPELA","JAPARATUBA","CONDE/BA"],0],
+                [178,"MATHEUS GONZAGA LEMOS",["CARMOPÓLIS","TOBIAS BARRETO","PEDRINHAS","SANTO AMARO"],0],
+                //[120,"VICTOR MENDES DOS SANTOS",null,0]
+            ]
         adm.forEach(async e => {
             await getTarefasAdm(e,data)
         })
@@ -1055,7 +1063,7 @@ async function validaResponsavelTj (num) {
     }
     if (natureza == "CÍVEL" || natureza == "CONSUMIDOR" || natureza == "SERVIDOR PÚBLICO") {
         let ala = [0,1,4,6,8]
-            if (ala.includes(digito) || tarefa == "SESSÃO DE JULGAMENTO" || tarefa.search("AUDIÊNCIA") == 0)
+            if (ala.includes(digito) && tarefa != "SESSÃO DE JULGAMENTO" && tarefa.search("AUDIÊNCIA") != 0)
                 return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "ALÃ FEITOSA CARVALHO"}
             return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "RODRIGO AGUIAR SANTOS"}
     }
@@ -1186,6 +1194,10 @@ function validaTipoIntimacao(txt) {
     
     if (txt == "DADOS PERÍCIA SOCIAL" || txt == "DADOS COMPLEMENTARES" || txt == "EMENDA A INICIAL")
         return "EMENDAR"
+    
+    if (txt == "PEDIDO DE VISTAS" || txt == "PEDIDO DE VISTA")
+        return "MANIFESTAÇÃO"
+
     if (p1 == 0)
         return "CONTATAR CLIENTE"
     return txt
@@ -1216,7 +1228,7 @@ function proximaTarefa (descricao_tarefa) {
         cliente.compromisso.descricao = descricao_tarefa.value
     }
 
-    if (compromisso.search('AUDIÊNCIA') == 0 && cont > -1) {
+    if (compromisso.search('AUDIÊNCIA') == 0 || compromisso.search('AUDIENCIA') == 0 && cont > -1) {
         if (compromisso.search(tipo_audiencia[0]) < 0 && compromisso.search(tipo_audiencia[1]) < 0) {
             if (cliente.compromisso.tarefa_sequencia < 4) {
                 i = audiencia_short.indexOf(cliente.compromisso.tipo_tarefa)
@@ -1354,10 +1366,11 @@ function atualizaDescricao (descricao_tarefa,horario_inicial,horario_final,local
     horario_final.value = atualizaHora(horario_inicial)
 
     let processo = existeOrigem()
+    console.log((cliente.compromisso.tipo_compromisso == "EMENDAR") && (cliente.compromisso.tarefa_restante == 1))
 
     let validacao_tarefa = cliente.compromisso.tipo_tarefa.slice(0,loc)
 
-    if (cliente.compromisso.descricao !== null && validacao_tarefa != "ANÁLISE" && cliente.compromisso.tipo_tarefa != "ATO ORDINATÓRIO") {
+    if (cliente.compromisso.descricao !== null && validacao_tarefa != "ANÁLISE" && cliente.compromisso.tipo_tarefa != "ATO ORDINATÓRIO" && cliente.compromisso.tipo_compromisso != "EMENDAR") {
         descricao_tarefa.value = cliente.compromisso.descricao
     }
     else {
@@ -1374,14 +1387,17 @@ function atualizaDescricao (descricao_tarefa,horario_inicial,horario_final,local
                     descricao_tarefa.value = `${processo} - ATO ORDINATÓRIO (PERÍCIA DESIGNADA)`
                 }
                 else
-                    if ((validacao_tarefa == "CONTATAR") && cliente.compromisso.tarefa_sequencia == 2) {
-                        descricao_tarefa.value = `${processo} - `
+                    if ((validacao_tarefa == "ANÁLISE") && cliente.compromisso.tipo_compromisso.search('AUDIÊNCIA') == 0) {
+                        descricao_tarefa.value = `${processo} - VERIFICAR NECESSIDADE DE TESTEMUNHAS`
                     }
                     else
-                        if ((validacao_tarefa == "ANÁLISE") && cliente.compromisso.tipo_compromisso.search('AUDIÊNCIA') == 0)
-                            descricao_tarefa.value = `${processo} - VERIFICAR NECESSIDADE DE TESTEMUNHAS`
-                        else
+                        if ((cliente.compromisso.tipo_compromisso == "EMENDAR") && (cliente.compromisso.tarefa_restante == 1)) {
+                            descricao_tarefa.value = `${processo} - `
+                        }
+                        else {
                             descricao_tarefa.value = `${processo} - ${cliente.compromisso.tipo_compromisso}`
+                            console.log("chegou")
+                        }
     }
 }
 
@@ -1434,10 +1450,7 @@ function createInputDependente() {
     div_conteudo.appendChild(txt_dependente)
     div_conteudo.appendChild(input)
     input.addEventListener('input', event => {
-        event.target.value = event.target.value.replaceAll("-","")
-        event.target.value = event.target.value.replaceAll(".","")
-        event.target.value = event.target.value.replaceAll(" ","")
-        cliente.processo.dependente = event.target.value
+        cliente.processo.dependente = removeCaracteresProcesso(event.target.value)
     })
 }
 
@@ -1557,7 +1570,7 @@ function contarTarefas() {
     let compromisso = cliente.compromisso.tipo_compromisso
     let cont_dois = ["EMENDAR","DADOS PERÍCIA SOCIAL","DADOS COMPLEMENTARES","ALVARÁ","RPV","PRECATÓRIO"]
     let cont_tres = "PERÍCIA"
-    let cont_quatro = ["AUDIÊNCIA DE CONCILIAÇÃO","AUDIÊNCIA INAUGURAL", "AUDIÊNCIA CONCILIATÓRIA", "AUDIÊNCIA INICIAL"]
+    let cont_quatro = ["AUDIÊNCIA DE CONCILIAÇÃO","AUDIÊNCIA INAUGURAL", "AUDIÊNCIA CONCILIATÓRIA", "AUDIÊNCIA INICIAL", "AUDIÊNCIA DE INTERROGATÓRIO"]
     let cont_cinco = ["AUDIÊNCIA DE INSTRUÇÃO", "AUDIÊNCIA DE INSTRUÇÃO E JULGAMENTO", "AUDIÊNCIA UNA"]
 
     if (cont_dois.includes(compromisso) || cont_dois.includes(cliente.compromisso.tipo_compromisso)){
