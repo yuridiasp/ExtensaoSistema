@@ -824,9 +824,9 @@ function submitPesquisaProcesso() {
 }
 
 function addEventoPasteProcesso (processo_input) {
-    processo_input.addEventListener('input', () => {
-            processo_input.value = removeCaracteresProcesso(processo_input.value)
+    processo_input.addEventListener('paste', () => {
         setTimeout(() => {
+            processo_input.value = removeCaracteresProcesso(processo_input.value)
             submitPesquisaProcesso()
         }, 10);
     })
@@ -855,9 +855,6 @@ function formataNumProcesso () {
     
     if (processo_input !== null) {
         addEventoPasteProcesso(processo_input)
-        processo_input.addEventListener('paste', event => {
-                event.target.value = removeCaracteresProcesso(event.target.value)
-        })
     }
     if (processo_input_cad !== null) {
         processo_input_cad.addEventListener('change', event => {
@@ -926,11 +923,22 @@ function createListaTarefas () {
     })
 }
 
-function addListaTarefas(adm) {
+function addListaTarefas(adm,data) {
+    let ano = 2022
+    let date = `${data[0]}/${data[1]}/${data[2]}`
     let div = document.querySelector('#contactdiv')
     let p1 = document.createElement('p')
-    p1.innerHTML = `${adm[1].slice(0,adm[1].search(' '))}: ${adm[3]}`
+
+    p1.innerHTML = `${adm[1].slice(0,adm[1].search(' '))}: ${adm[4]}`
     p1.style.color = 'white'
+
+    if (adm[3] != null) {
+        for (let index = 0; index < adm[3].length; index++) {
+            if (date == `${adm[3][index]}/${ano}`) 
+                p1.style.color = 'yellow'
+        }
+    }
+
     div.appendChild(p1)
 }
 
@@ -958,13 +966,13 @@ async function getTarefasAdm(element,data){
                     }
                 }
             })
-            element[3] = contador
-            addListaTarefas(element)
+            element[4] = contador
+            addListaTarefas(element,data)
         }
 
         // Responsável por tratar o retorno que não for bem sucedido
         if (this.readyState == 4 && this.status !== 200){
-            console.log('Data not found!')  
+            console.log('Data not found!') 
         }
     };
     // URL
@@ -1011,22 +1019,26 @@ async function validaExecutorContatar () {
     async function requererTarefasContatar(data) {
         let adm = []
 
+        let viagemAsley = ["20/09","27/09","04/10","11/10","18/10","25/10","01/11","10/11","22/11","24/11","06/12","13/12","20/12"]
+        let viagemRobert = ["20/09","27/09","04/10","13/10","18/10","25/10","01/11","08/11","22/11","06/12","13/12","20/12"]
+        let viagemGonzaga = ["28/09","19/10","09/11","16/11","23/11","29/11","07/12","14/12","21/12"]
+
         let parceiros = ['ELIZEU ( PARCEIRO)','MARIA DO POV. PREGUIÇA','AGENOR (PARCEIRO)','ELIZANGELA ( PARCEIRA)','ERMINIO','AUGUSTO ( PARCEIRO)']
 
-        let varaEstancia = ['7ª Vara Federal', '1ª Vara Civel de Estância', '2ª Vara Civel de Estância', 'Juizado Especial Cível e Criminal de Estância', 'Vara de Estância', 'Vara do Trabalho de Estância']
+        let varaEstancia = ['7ª VARA FEDERAL', '1ª VARA CIVEL DE ESTÂNCIA', '2ª VARA CIVEL DE ESTÂNCIA', 'JUIZADO ESPECIAL CÍVEL E CRIMINAL DE ESTÂNCIA', 'VARA DE ESTÂNCIA', 'VARA DO TRABALHO DE ESTÂNCIA']
 
-        let estancia = [[87,"RUAN APARICIO DOS SANTOS",null,0],[169,"SAMARA ALBUQUERQUE CRUZ",null,0],[22,"SANDOVAL FILHO CORREIA LIMA FILHO",null,0]]
+        let estancia = [[87,"RUAN APARICIO DOS SANTOS",null,null,0],[169,"SAMARA ALBUQUERQUE CRUZ",null,null,0],[22,"SANDOVAL FILHO CORREIA LIMA FILHO",null,null,0]]
 
         let aracaju = [
-            [131,"ASLEY RODRIGO DE MELO LIMA",["ALAGOINHAS"],0],
-            [94,"CARLOS HENRIQUE ESPASIANI",["UMBAÚBA","LOTEAMENTO JEOVA (BOTAFOGO)"],0],
-            //[115,"GABRIEL FRANÇA VITAL",["CARMOPÓLIS","TOBIAS BARRETO","PEDRINHAS","SANTO AMARO"],0],
-            [141,"MARCOS ROBERT DE MELO LIMA",["ESTANCIA","CAPELA","JAPARATUBA","CONDE/BA"],0],
-            [178,"MATHEUS GONZAGA LEMOS",["CARMOPÓLIS","TOBIAS BARRETO","PEDRINHAS","SANTO AMARO"],0],
-            //[120,"VICTOR MENDES DOS SANTOS",null,0]
+            [131,"ASLEY RODRIGO DE MELO LIMA",["ALAGOINHAS"],viagemAsley,0],
+            [94,"CARLOS HENRIQUE ESPASIANI",["UMBAÚBA","LOTEAMENTO JEOVA (BOTAFOGO)"],null,0],
+            //[115,"GABRIEL FRANÇA VITAL",["CARMOPÓLIS","TOBIAS BARRETO","PEDRINHAS","SANTO AMARO"],null,null,0],
+            [141,"MARCOS ROBERT DE MELO LIMA",["ESTANCIA","CAPELA","JAPARATUBA","CONDE/BA"],viagemRobert,0],
+            [178,"MATHEUS GONZAGA LEMOS",["CARMOPÓLIS","TOBIAS BARRETO","PEDRINHAS","SANTO AMARO"],viagemGonzaga,0],
+            //[120,"VICTOR MENDES DOS SANTOS",null,null,0]
         ]
 
-        if ((cliente.cliente.cidade == "ESTANCIA" && cliente.cliente.local_atendido == "ESTANCIA") || (parceiros.includes(cliente.cliente.parceiro)) && varaEstancia.includes(cliente.processo.vara))
+        if (((cliente.cliente.cidade == "ESTANCIA" && cliente.cliente.local_atendido == "ESTANCIA")) || ((parceiros.includes(cliente.cliente.parceiro)) && varaEstancia.includes(cliente.processo.vara)))
             estancia.forEach(e => {
                 adm.push(e)
             })
@@ -1040,9 +1052,10 @@ async function validaExecutorContatar () {
                     adm.push(e)
                 })
             }
-            aracaju.forEach(e => {
-                adm.push(e)
-            })
+            else
+                aracaju.forEach(e => {
+                    adm.push(e)
+                })
         }
 
         adm.forEach(async e => {
@@ -1393,7 +1406,6 @@ function atualizaDescricao (descricao_tarefa,horario_inicial,horario_final,local
     horario_final.value = atualizaHora(horario_inicial)
 
     let processo = existeOrigem()
-    console.log((cliente.compromisso.tipo_compromisso == "EMENDAR") && (cliente.compromisso.tarefa_restante == 1))
 
     let validacao_tarefa = cliente.compromisso.tipo_tarefa.slice(0,loc)
 
@@ -2106,6 +2118,7 @@ function updateEvent() {
 async function run () {
     activate()
     updateEvent()
+    console.log(cliente)
 }
 
 window.onload = run
