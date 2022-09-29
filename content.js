@@ -999,10 +999,18 @@ function createListaTarefas () {
     p4.innerHTML = `${cliente.cliente.cidade}`
     p2.style.color = 'white'
     p4.style.color = 'white'
+    let p5 = document.createElement('p')
+    let p6 = document.createElement('p')
+    p5.innerHTML = `Parceiro:`
+    p6.innerHTML = `${cliente.cliente.parceiro}`
+    p5.style.color = 'white'
+    p6.style.color = 'white'
     div.appendChild(p1)
     div.appendChild(p3)
     div.appendChild(p2)
     div.appendChild(p4)
+    div.appendChild(p5)
+    div.appendChild(p6)
     div.appendChild(h2)
     let h = document.querySelectorAll('.title')
     h1.innerHTML = 'INFO CLIENTE'
