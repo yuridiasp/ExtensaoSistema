@@ -223,5 +223,5 @@ async function getInitialState() {
     state = await getInitialState()
     initialState = { ...state }
     stateBtn()
-    await distanceMatrix()
+    //await distanceMatrix()
 })()
