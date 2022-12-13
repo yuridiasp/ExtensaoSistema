@@ -243,7 +243,7 @@ function getEndereço (local) {
     else {
         let locais = Object.entries(locais_audiencias)
         for (const [key,value] of locais) {
-            if (key.normalize('NFD').replace(/[\u0300-\u036f]/g, "") == local.value.normalize('NFD').replace(/[\u0300-\u036f]/g, "")){
+            if (removeAcentuacaoString(key) == removeAcentuacaoString(local.value)){
                 return `${key}: ${value}`
             }
         }
@@ -329,7 +329,6 @@ async function criarTarefaColetivo () {
     const url = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/formularioScript.asp"
 
     cliente.processo.id_demais_envolvidos.forEach(id => {
-        console.log(id)
         //makeRequest(url,id)
     })
 
@@ -408,6 +407,8 @@ function FeriadosFixos (ano, parametro) {
     const indexMes = 0
     const indexJaneiro = 0
 
+    //console.log(tarefaContatar, tarefaAdvogado, parametro)
+
     function setIntervaloFeriadosJudiciario(diaInicio, mesInicio, diaFinal, mesFinal) {
         let feriados = []
         let condicao = true
@@ -446,9 +447,6 @@ function FeriadosFixos (ano, parametro) {
     const mesFimFeriasAdvogados = 0
 
     const advogados = setIntervaloFeriadosJudiciario(diaInicioFeriasAdvogados, mesInicioFeriasAdvogados, diaFimFeriasAdvogados, mesFimFeriasAdvogados)
-
-    console.log('Intervalo forense: ' + forense)
-    console.log('Intervalo advogados: ' + advogados)
 
     let datas = { // [mes, dia] (indice do mes de 0 a 11)
         nacional: [
@@ -710,8 +708,15 @@ function FeriadosFixos (ano, parametro) {
             resultados.push(new Date(ano, feriado[indexMes], feriado[indexDia]))
         })
 
+        datas.ferias_advogados.forEach(feriado => {
+            if (feriado[indexMes] == indexJaneiro)
+                resultados.push(new Date(ano+1, feriado[indexMes], feriado[indexDia]))
+            else
+                resultados.push(new Date(ano, feriado[indexMes], feriado[indexDia]))
+        })
+
         if (cliente.processo.estado == 'SE') {
-            datas.SE.forEach(e => {
+            datas.SE.forEach(feriado => {
                 resultados.push(new Date(ano, feriado[indexMes], feriado[indexDia]))
             })
         }
@@ -724,12 +729,13 @@ function FeriadosFixos (ano, parametro) {
         
         let date = Object.entries(datas)
         for (const [key,value] of date) {
-            if (key.normalize('NFD').replace(/[\u0300-\u036f]/g, "") == cliente.processo.cidade.normalize('NFD').replace(/[\u0300-\u036f]/g, "")){
+            if (key == cliente.processo.cidade){
                 value.forEach(feriado => {
                     resultados.push(new Date(ano, feriado[indexMes], feriado[indexDia]))
                 })
             }
         }
+        //console.log('entrou aqui')
     }
 
     datas.recesso_forense.forEach(feriado => {
@@ -738,6 +744,8 @@ function FeriadosFixos (ano, parametro) {
         else
             resultados.push(new Date(ano, feriado[indexMes], feriado[indexDia]))
     })
+
+    //console.log(resultados)
 
     return resultados
 }
@@ -772,62 +780,71 @@ function calculaFeriados(parametro) {
     return feriados
 }
 
-function contarDiasUteis(inicial,final) {
+function contarDias(inicial,final, parametro) {
+    const diasSemana = ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado']
+    let contaTodos = 0
+    let contaUteis = 0
     let domingos = 0
     let i
-    let cont = 0
     let date = new Date(inicial[2],inicial[1],inicial[0])
-    let parametro = (cliente.compromisso.tipo_tarefa == "CONTATAR CLIENTE" || cliente.compromisso.tipo_tarefa == "LEMBRAR CLIENTE" || cliente.compromisso.tipo_tarefa == "SMS E WHATASPP") ? 1 : 2
-    let feriados = calculaFeriados(parametro)
+    let condiction
+
     if (date.toDateString() == final.toDateString())
         return 0
+
     while (date < final) {
         date.setDate(date.getDate() + 1)
+        //console.log(date)
+        condiction = isFeriado(date, parametro)
         i = date.getDay()
 
-        if (i == 0)
+        if (i == 0) {
             domingos++
+        }
 
-        if (i > 0 && i < 6 && !feriados.includes(date)) {
-            cont = cont + 1
+        if ((i > 0 && i < 6) && (!condiction)) {
+            contaUteis++
         } 
+        contaTodos++
+        //console.log(date, contaUteis, diasSemana[date.getDay()], 'feriado: ' + condiction)
     }
+
     cliente.compromisso.semanas = domingos
-    return cont
+
+    return { uteis: contaUteis, todosDias: contaTodos}
 }
 
-function setObjectDate(fim_intervalo,cont,date) {
-    let date_aux = new Date(date)
-    while (fim_intervalo > cont) {
-        date_aux.setDate(date_aux.getDate() -1)
-        i = date_aux.getDay()
-        if (i > 0 && i < 6) {
-            ++cont
-        }
-    }
-    return date_aux
-}
-
-function dataContato(intervalo,data_interno,parametro) {
-    let cont = 0
+function dataContato(intervalo,data_interno,parametro, todosDias) {
+    const diasSemana = ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado']
+    let hoje = new Date()
+    hoje.setHours(0,0,0,0)
     let date
-    let fim_intervalo = intervalo
-    if (intervalo > 0)
-        do {
-            date = new Date(data_interno)
-            date = setObjectDate(fim_intervalo,cont,date)
-            if (isFeriado(date,parametro)) {
-                --fim_intervalo
-                cont = 0
-            }
-        }
-        while (isFeriado(date,parametro))
-    else
+    let fim_intervalo = Number(intervalo)
+    let condiction
+    
+    if (intervalo > 0) {
+        let c = 0
         date = new Date(data_interno)
+        while (c < fim_intervalo) {
+            date.setDate(date.getDate() -1)
+            condiction = isFeriado(date, parametro)
+            i = date.getDay()
+            if ((i > 0) && (i < 6) && !condiction) {
+                ++c
+            }
+            //console.log(date, c, diasSemana[date.getDay()], 'feriado: ' + condiction)
+        }
+    } else {
+        date = new Date(data_interno)
+    }
 
     let ano_contato = date.getFullYear()
     let mes_contato = date.getMonth()+1
     let dia_contato = date.getDate()
+
+    hoje.setDate(hoje.getDate() + todosDias)
+    //console.log(hoje, todosDias)
+
     return `${dia_contato < 10 ? '0'.concat(dia_contato) : dia_contato}/${mes_contato < 10 ? '0'.concat(mes_contato) : mes_contato}/${ano_contato}`
 }
 
@@ -837,8 +854,8 @@ function extrairDataPrazoFatalInput (prazo_fatal) {
 }
 
 function calculaIntervaloTarefas (dias) {
-    let compromisso = cliente.compromisso.tipo_compromisso
-    let tarefa = cliente.compromisso.tipo_tarefa
+    const { tipo_compromisso, tipo_tarefa, tarefa_sequencia, semanas, tarefa_restante } = cliente.compromisso
+    const { estado } = cliente.processo
     let cont_dois = {
         outros: ["EMENDAR","DADOS PERÍCIA SOCIAL","DADOS COMPLEMENTARES"],
         financeiro: ["ALVARÁ","RPV","PRECATÓRIO"]
@@ -847,58 +864,62 @@ function calculaIntervaloTarefas (dias) {
     let cont_quatro = ["AUDIÊNCIA DE CONCILIAÇÃO","AUDIÊNCIA INAUGURAL", "AUDIÊNCIA CONCILIATÓRIA", "AUDIÊNCIA INICIAL", "AUDIÊNCIA DE INTERROGATÓRIO"]
     let cont_cinco = ["AUDIÊNCIA DE INSTRUÇÃO", "AUDIÊNCIA DE INSTRUÇÃO E JULGAMENTO", "AUDIÊNCIA UNA"]
 
-    if (((cont_cinco.includes(compromisso) && dias > 11) || (cont_quatro.includes(compromisso) && dias > 10) || (compromisso.search(cont_tres) == 0) && dias > 10)) {
-        if (cliente.compromisso.semanas >= 2) {
-            if (tarefa == 'ANÁLISE')
+    if (((cont_cinco.includes(tipo_compromisso) && dias > 11) || (cont_quatro.includes(tipo_compromisso) && dias > 10) || (tipo_compromisso.search(cont_tres) == 0) && dias > 10)) {
+        if (semanas >= 2) {
+            if (tipo_tarefa == 'ANÁLISE')
                 return dias-1
-            if ((tarefa == 'CONTATAR CLIENTE' || tarefa == 'SMS E WHATSAPP')) {
-                if (cliente.processo.estado != 'GO' && cliente.processo.estado != 'DF')
+            if ((tipo_tarefa == 'CONTATAR CLIENTE' || tipo_tarefa == 'SMS E WHATSAPP')) {
+                if (estado != 'GO' && estado != 'DF')
                     return dias-2
                 else {
-                    if (compromisso.search(cont_tres) == -1) {
-                        if (tarefa == 'CONTATAR CLIENTE')
-                            return dias-2
-                        if (tarefa == 'SMS E WHATSAPP')
+                    if (tipo_compromisso.search(cont_tres) == -1) {
+                        if (tipo_tarefa == 'CONTATAR CLIENTE')
+                            return dias-3
+                        if (tipo_tarefa == 'SMS E WHATSAPP')
                             return dias-2
                     }
-                    if (tarefa == 'CONTATAR CLIENTE')
-                        return dias-2
-                    if (tarefa == 'SMS E WHATSAPP')
+                    if (tipo_tarefa == 'CONTATAR CLIENTE')
+                        return dias-3
+                    if (tipo_tarefa == 'SMS E WHATSAPP')
                         return dias-2
                 }
             }
-            if (tarefa == 'LEMBRAR CLIENTE')
-                return 3
-            if (tarefa == 'ATO ORDINATÓRIO')
+            if (tipo_tarefa == 'LEMBRAR CLIENTE')
+                return 2
+            if (tipo_tarefa == 'ATO ORDINATÓRIO')
                 return dias-1
         }
     }
     else {
-        let ehAudienciaOuPericia = cont_cinco.includes(compromisso) || cont_quatro.includes(compromisso) || compromisso.search(cont_tres) == 0
+        const ehAudienciaOuPericia = (cont_cinco.includes(tipo_compromisso) || cont_quatro.includes(tipo_compromisso) || tipo_compromisso.search(cont_tres) == 0)
         if (ehAudienciaOuPericia) {
-            if ((cliente.compromisso.tarefa_restante == cliente.compromisso.tarefa_sequencia) && compromisso.search(cont_tres) == -1)
+            if ((tarefa_restante == tarefa_sequencia) && tipo_compromisso.search(cont_tres) == -1)
                 return 0
             else
-                if (tarefa == 'LEMBRAR CLIENTE')
-                    return 3
-            if (cliente.processo.estado == 'GO' || cliente.processo.estado == 'DF') {
-                if (tarefa == 'CONTATAR CLIENTE')
-                    return dias-2
+                if (tipo_tarefa == 'LEMBRAR CLIENTE')
+                    return 2
+            if (estado == 'GO' || estado == 'DF') {
+                if (tipo_tarefa == 'CONTATAR CLIENTE')
+                    return dias-1
             }
             return dias-1
         }
     }
-    console.log('aqui?')
     
-    if (cont_dois.outros.includes(compromisso)) {
-        if (tarefa == 'CONTATAR CLIENTE') {
+    if (cont_dois.outros.includes(tipo_compromisso)) {
+        if (tipo_tarefa == 'CONTATAR CLIENTE') {
             return dias-1
         }
     }
 
-    if (cont_dois.financeiro.includes(compromisso)) {
-        if (compromisso == 'RPV' && cliente.compromisso.tarefa_restante == 1) {
-            console.log(compromisso, 'chegou!')
+    const indiceTarefa = ((cliente.processo.estado == 'DF') || (cliente.processo.estado == 'GO') ? 1 : 2)
+
+    if (cont_dois.financeiro.includes(tipo_compromisso)) {
+        if (tipo_compromisso == 'RPV' && tarefa_restante == indiceTarefa) {
+            return 0
+        }
+
+        if (tipo_compromisso == 'RPV' && tarefa_restante != indiceTarefa) {
             return dias-5
         }
     }
@@ -916,18 +937,24 @@ function calcularDataTarefa(parametro) {
     let data = extrairDataPrazoFatalInput(cliente.compromisso.prazo_interno)
     let data_interno = new Date(data[2],data[1],data[0])
 
-    let dias = contarDiasUteis([dia, mes, ano], data_interno)
+    let dias = contarDias([dia, mes, ano], data_interno, parametro)
+    const { uteis, todosDias} = dias
+    //console.log('dias úteis: ' + uteis + ', dias totais: ' + todosDias)
     
-    let intervalo = calculaIntervaloTarefas (dias)
+    let intervalo = calculaIntervaloTarefas (uteis)
+
+    console.log('intervalo: ' + intervalo)
     
-    let data_tarefa = dataContato(intervalo,data_interno,parametro)
+    let data_tarefa = dataContato(intervalo, data_interno, parametro, todosDias)
+
+    //console.log(data_tarefa)
     
     data_finalizacao.value = data_tarefa
     data_finalizacao_agendada.value = data_tarefa
 
     data_finalizacao_agendada.addEventListener('blur', e => {
         data_finalizacao.value = e.target.value
-        if ((cliente.compromisso.tipo_tarefa == "CONTATAR CLIENTE" || cliente.compromisso.tipo_tarefa == "CONTATAR CLIENTE") && (cliente.processo.estado != "DF" || cliente.processo.estado != "GO")) {
+        if ((cliente.compromisso.tipo_tarefa == "CONTATAR CLIENTE" || cliente.compromisso.tipo_tarefa == "LEMBRAR CLIENTE") && (cliente.processo.estado != "DF" || cliente.processo.estado != "GO")) {
             let contactdiv = document.querySelector("#contactdiv")
             if (contactdiv != null) {
                 contactdiv.parentNode.removeChild(contactdiv)
@@ -937,7 +964,7 @@ function calcularDataTarefa(parametro) {
     })
     data_finalizacao.addEventListener('blur', e => {
         data_finalizacao_agendada.value = e.target.value
-        if (cliente.compromisso.tipo_tarefa == "CONTATAR CLIENTE" && (cliente.processo.estado != "DF" || cliente.processo.estado != "GO")) {
+        if ((cliente.compromisso.tipo_tarefa == "CONTATAR CLIENTE" || cliente.compromisso.tipo_tarefa == "LEMBRAR CLIENTE") && (cliente.processo.estado != "DF" || cliente.processo.estado != "GO")) {
             let contactdiv = document.querySelector("#contactdiv")
             if (contactdiv != null) {
                 contactdiv.parentNode.removeChild(contactdiv)
@@ -968,10 +995,14 @@ async function saveInfoCompromissos() {
         descricao_tarefa.addEventListener('change',async event => {
             let intimacao = "15"
             event.target.value = event.target.value.toUpperCase()
-
+            let tarefaIdentificada
+            let indexTipoTarefa
+            
             if (option_ul !== null) {
                 for (const [key,value] in tipos_array) {
-                    if (event.target.value.normalize('NFD').replace(/[\u0300-\u036f]/g, "").search(tipos_array[key][0].normalize('NFD').replace(/[\u0300-\u036f]/g, "")) == 0) {
+                    indexTipoTarefa = removeAcentuacaoString(event.target.value).search(removeAcentuacaoString(tipos_array[key][0]))
+                    tarefaIdentificada = (indexTipoTarefa == 0)
+                    if (tarefaIdentificada) {
                         intimacao = tipos_array[key][1]
                     }
                 }
@@ -1249,7 +1280,7 @@ async function validaExecutorContatar () {
 async function validaResponsavelTj (num) {
     let tarefa = cliente.compromisso.tipo_tarefa
     let digito = Number(cliente.processo.origem[num-1])
-    let financeiro = ["RPV TRF1 BRASÌLIA", "RPV TRF1 GOIÀS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTÂNCIA", "RPV TRF1 BAHIA", "PRECATÓRIO"]
+    let financeiro = ["RPV TRF1 BRASÌLIA", "RPV TRF1 GOIÁS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTÂNCIA", "RPV TRF1 BAHIA", "PRECATÓRIO"]
     let adm = ["CONTATAR CLIENTE","LEMBRAR CLIENTE"]
     let sac = "SMS E WHATSAPP"
     let natureza = cliente.processo.natureza
@@ -1275,13 +1306,16 @@ async function validaResponsavelTj (num) {
     if (natureza == "PREVIDENCIÁRIA")
         return {responsavel: "KEVEN FARO DE CARVALHO",executor: "KEVEN FARO DE CARVALHO"}
     if (natureza == "BANCÁRIO") {
-        let lais = [1,4,5,8,9]
-        if (lais.includes(digito) || tarefa == "SESSÃO DE JULGAMENTO" || tarefa.search("AUDIÊNCIA") == 0)
-            return {responsavel: "LAIS PEREIRA MORAES",executor: "LAIS PEREIRA MORAES"}
-        return {responsavel: "LAIS PEREIRA MORAES",executor: "ANTONIO RABELO NOLES DE ABREU"}
+        const rodrigo = [5]
+        const gabriel = [1,4,9]
+        if (rodrigo.includes(digito) || tarefa == "SESSÃO DE JULGAMENTO" || tarefa.search("AUDIÊNCIA") == 0)
+            return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "RODRIGO AGUIAR SANTOS"}
+        if (gabriel.includes(digito))
+            return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "GABRIEL DAVILA FILGUEIRAS MELLONE"}
+        return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "ANTONIO RABELO NOLES DE ABREU"}
     }
     if (natureza == "CÍVEL" || natureza == "CONSUMIDOR" || natureza == "SERVIDOR PÚBLICO") {
-        let ala = [0,1,4,6,8]
+        const ala = [0,1,4,6,8]
             if (ala.includes(digito) && tarefa != "SESSÃO DE JULGAMENTO" && tarefa.search("AUDIÊNCIA") != 0)
                 return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "ALÃ FEITOSA CARVALHO"}
             return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "RODRIGO AGUIAR SANTOS"}
@@ -1291,7 +1325,7 @@ async function validaResponsavelTj (num) {
 async function validaResponsavelFederal (num) {
     let tarefa = cliente.compromisso.tipo_tarefa
     let numero_processo = cliente.processo.origem
-    let financeiro = ["RPV","RPV TRF5 ARACAJU", "RPV TRF5 ESTÂNCIA", "PRECATÓRIO"]
+    let financeiro = ["RPV TRF1 BRASÌLIA", "RPV TRF1 GOIÁS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTÂNCIA", "RPV TRF1 BAHIA", "PRECATÓRIO"]
     let adm = ["CONTATAR CLIENTE","LEMBRAR CLIENTE"]
     let sac = "SMS E WHATSAPP"
     let secao = numero_processo.slice(num-4,num)
@@ -1299,12 +1333,14 @@ async function validaResponsavelFederal (num) {
     let setimo_digito = Number(numero_processo[6])
     let digito_verificador = numero_processo.slice(13,16)
     let natureza = cliente.processo.natureza
+    const indiceTarefa = ((cliente.processo.estado == 'DF') || (cliente.processo.estado == 'GO') ? 1 : 2)
+    console.log(indiceTarefa)
 
-    if (tarefa == "RECEBIMENTO DE ALVARÁ" && cliente.compromisso.tarefa_restante == 2) {
+    if ((tarefa == "RECEBIMENTO DE ALVARÁ") && (cliente.compromisso.tarefa_restante == indiceTarefa)) {
         return {responsavel: "LUCIANA DOS SANTOS ARAUJO",executor: "LUCIANA LIMA REZENDE"}
     }
 
-    if (financeiro.includes(tarefa) && cliente.compromisso.tarefa_restante == 2) {
+    if (financeiro.includes(tarefa) && cliente.compromisso.tarefa_restante == indiceTarefa) {
         let eh_mateus_financeiro = await getFinanceiro()
         setFinanceiro(!eh_mateus_financeiro)
         return {responsavel: "LUCIANA DOS SANTOS ARAUJO",executor: eh_mateus_financeiro ? "MATEUS DOS SANTOS SILVA":"OVERLANDIA SANTOS MELO"}
@@ -1363,7 +1399,7 @@ async function validaResponsavelFederal (num) {
     if (natureza == "CÍVEL" || natureza == "CONSUMIDOR" || natureza == "SERVIDOR PÚBLICO") //Processos de natureza cível
         return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "RODRIGO AGUIAR SANTOS"}
     if (natureza == "BANCÁRIO") //Processos de natureza bancária
-        return {responsavel: "LAIS PEREIRA MORAES",executor: "LAIS PEREIRA MORAES"}
+        return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "RODRIGO AGUIAR SANTOS"}
 }
 
 async function validaEsferaProcesso() {
@@ -1375,7 +1411,6 @@ async function validaEsferaProcesso() {
             selectRespExec(adv)
     } else if (caracteres_processo == 15 || caracteres_processo == 17 || caracteres_processo == 20) {
         adv = await validaResponsavelFederal(caracteres_processo)
-        console.log('ok')
         if (adv != null)
             selectRespExec(adv)
     } else
@@ -1384,18 +1419,20 @@ async function validaEsferaProcesso() {
 
 function validaTipoIntimacao(txt) {
     let p1 = txt.search("PERÍCIA")
+    const ehPericia = (p1 == 0)
 
     if (txt == "RPV") {
         if (cliente.processo.cidade == "ESTANCIA")
-            return "RPV TRF5 ESTANCIA"
+            return "RPV TRF5 ESTÂNCIA"
         if (cliente.processo.estado == "DF")
-            return "RPV TRF1 BRASILIA"
+            return "RPV TRF1 BRASÌLIA"
         if (cliente.processo.estado == "GO")
-            return "RPV TRF1 GOIAS"
+            return "RPV TRF1 GOIÁS"
         if (cliente.processo.cidade == "BA")
             return "RPV TRF1 BAHIA"
         return "RPV TRF5 ARACAJU"
     }
+    
     if (txt == "PAUTA" || txt == "RETIRADO DE PAUTA")
         return "SESSÃO DE JULGAMENTO"
 
@@ -1417,8 +1454,9 @@ function validaTipoIntimacao(txt) {
     if (txt == "PEDIDO DE VISTAS" || txt == "PEDIDO DE VISTA")
         return "MANIFESTAÇÃO"
 
-    if (p1 == 0)
+    if (ehPericia)
         return "CONTATAR CLIENTE"
+
     return txt
 }
 
@@ -1437,7 +1475,7 @@ function proximaTarefa (descricao_tarefa) {
     let pericia_short = ["SMS E WHATSAPP"]
     let pericia_df = ["SMS E WHATSAPP","LEMBRAR CLIENTE","ATO ORDINATÓRIO"]
     let pericia_df_short = ["SMS E WHATSAPP","ATO ORDINATÓRIO"]
-    let financeiro = ["RECEBIMENTO DE ALVARÁ","RPV TRF1 BAHIA", "RPV TRF1 BRASÌLIA", "RPV TRF1 GOIÀS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTÂNCIA","PRECATÓRIO"]
+    let financeiro = ["RECEBIMENTO DE ALVARÁ","RPV TRF1 BAHIA", "RPV TRF1 BRASÌLIA", "RPV TRF1 GOIÁS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTÂNCIA","PRECATÓRIO"]
     let emendar = "CONTATAR CLIENTE"
     let sequencia = cliente.compromisso.tarefa_sequencia
     let compromisso = cliente.compromisso.tipo_compromisso
@@ -1607,9 +1645,9 @@ function atualizaDescricao (descricao_tarefa,horario_inicial,horario_final,local
 
     let processo = existeOrigem()
 
-    let validacao_tarefa = cliente.compromisso.tipo_tarefa.slice(0,loc).normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+    let validacao_tarefa = removeAcentuacaoString(cliente.compromisso.tipo_tarefa.slice(0,loc))
 
-    if (cliente.compromisso.descricao !== null && validacao_tarefa.normalize('NFD').replace(/[\u0300-\u036f]/g, "") != "ANALISE" && cliente.compromisso.tipo_tarefa.normalize('NFD').replace(/[\u0300-\u036f]/g, "") != "ATO ORDINATORIO" && cliente.compromisso.tipo_compromisso != "EMENDAR") {
+    if (cliente.compromisso.descricao !== null && removeAcentuacaoString(validacao_tarefa) != "ANALISE" && removeAcentuacaoString(cliente.compromisso.tipo_tarefa) != "ATO ORDINATORIO" && cliente.compromisso.tipo_compromisso != "EMENDAR") {
         descricao_tarefa.value = cliente.compromisso.descricao
     }
     else {
@@ -1617,16 +1655,16 @@ function atualizaDescricao (descricao_tarefa,horario_inicial,horario_final,local
             descricao_tarefa.value = `${processo} - ${cliente.compromisso.tipo_compromisso} DE ${cliente.cliente.nome} ${cliente.cliente.cpf} X ${cliente.processo.reu.length > 0 ? cliente.processo.reu : '_______'}, NO DIA ${cliente.compromisso.prazo_interno} ÀS ${horario_inicial.value}, LOCAL: ${endereço}`
         }
         else
-            if (cliente.compromisso.tipo_compromisso.normalize('NFD').replace(/[\u0300-\u036f]/g, "").search('PERICIA') == 0 && cliente.compromisso.tarefa_restante > 1) {
+            if (removeAcentuacaoString(cliente.compromisso.tipo_compromisso).search('PERICIA') == 0 && cliente.compromisso.tarefa_restante > 1) {
                     let perito = document.querySelector('#input_perito')
                     descricao_tarefa.value = `${processo} - ${cliente.compromisso.tipo_compromisso} DE ${cliente.cliente.nome} ${cliente.cliente.cpf}, NO DIA ${cliente.compromisso.prazo_interno} ÀS ${horario_inicial.value}, PERITO: ${perito != null ? perito.value : ''}, LOCAL: ${endereço}`
             }
             else
-                if (cliente.compromisso.tipo_tarefa.normalize('NFD').replace(/[\u0300-\u036f]/g, "") == "ATO ORDINATORIO" && cliente.compromisso.tipo_compromisso.normalize('NFD').replace(/[\u0300-\u036f]/g, "").search('PERICIA') == 0) {
+                if (removeAcentuacaoString(cliente.compromisso.tipo_tarefa) == "ATO ORDINATORIO" && removeAcentuacaoString(cliente.compromisso.tipo_compromisso).search('PERICIA') == 0) {
                     descricao_tarefa.value = `${processo} - ATO ORDINATÓRIO (PERÍCIA DESIGNADA)`
                 }
                 else
-                    if ((validacao_tarefa == "ANALISE") && cliente.compromisso.tipo_compromisso.normalize('NFD').replace(/[\u0300-\u036f]/g, "").search('AUDIENCIA') == 0) {
+                    if ((validacao_tarefa == "ANALISE") && removeAcentuacaoString(cliente.compromisso.tipo_compromisso).search('AUDIENCIA') == 0) {
                         descricao_tarefa.value = `${processo} - VERIFICAR NECESSIDADE DE TESTEMUNHAS`
                     }
                     else
@@ -1634,7 +1672,6 @@ function atualizaDescricao (descricao_tarefa,horario_inicial,horario_final,local
                             descricao_tarefa.value = `${processo} - `
                         }
                         else {
-                            console.log('fim')
                             descricao_tarefa.value = `${processo} - ${cliente.compromisso.tipo_compromisso}`
                         }
     }
@@ -1645,8 +1682,8 @@ function selectTipoIntimacao(select_tipo_intimacao, option_li) {
     let indice_manifestação
     let tipo_intimacao = cliente.compromisso.tipo_tarefa
     for (let i = 0; i < select_tipo_intimacao.options.length; i++) {
-        let n = select_tipo_intimacao.options[i].innerText.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase().search(tipo_intimacao.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase())
-        let n_intimacao = select_tipo_intimacao.options[i].innerText.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase().search("MANIFESTAÇÃO".normalize('NFD').replace(/[\u0300-\u036f]/g, ""))
+        let n = removeAcentuacaoString(select_tipo_intimacao.options[i].innerText).toUpperCase().search(removeAcentuacaoString(tipo_intimacao).toUpperCase())
+        let n_intimacao = removeAcentuacaoString(select_tipo_intimacao.options[i].innerText).toUpperCase().search(("MANIFESTACAO"))
         if (n_intimacao == 0)
             indice_manifestação = i
         if (n == 0) {
@@ -1657,7 +1694,7 @@ function selectTipoIntimacao(select_tipo_intimacao, option_li) {
     }
     let space = (tipo_intimacao.search(" "))
     for (let i = 0; i < select_tipo_intimacao.options.length; i++) {
-        let n = select_tipo_intimacao.options[i].innerText.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase().search(tipo_intimacao.slice(0,space).normalize('NFD').replace(/[\u0300-\u036f]/g, ""))
+        let n = removeAcentuacaoString(select_tipo_intimacao.options[i].innerText).toUpperCase().search(removeAcentuacaoString(tipo_intimacao.slice(0,space)))
         if (n == 0) {
             option_li.children[i].children[0].click()
             achou = true
@@ -1776,7 +1813,7 @@ function loadInfo () {
             setTimeout(() => {
                 if (cliente.compromisso.tipo_compromisso.search('PERÍCIA') == 0 && cliente.compromisso.tarefa_sequencia == cliente.compromisso.tarefa_restante)
                     mostrarCamposPericia()
-                calcularDataTarefa(1)
+                calcularDataTarefa(((cliente.compromisso.tipo_tarefa == "CONTATAR CLIENTE") || (cliente.compromisso.tipo_tarefa == "LEMBRAR CLIENTE")) ? 1 : 2)
                 if (cliente.compromisso.atualizar) {
                     let contagem = contarTarefas()
                     cliente.compromisso.tarefa_sequencia = contagem
@@ -1918,7 +1955,6 @@ function extrairDadosRequisicaoClienteHtml(response,gravarBtn) {
         if (e.search("Estado:") > -1)
             cliente.cliente.estado = e.slice(e.search("Estado:")+8).toUpperCase()
     })
-    console.log(cliente)
     cliente.processo.cpf_demais_envolvidos.forEach(e => {
         ajax(3,link_cliente_ajax,e,gravarBtn)
     })
@@ -2073,93 +2109,135 @@ function formataData (dia,mes,ano) {
 function isFeriado (date,parametro) {
     let feriado = false
     let feriados = calculaFeriados(parametro)
+    let ehFeriado
 
-    feriados.forEach(e => {
-        if (e.toDateString() == date.toDateString())
+    for (let index = 0; index < feriados.length; index++) {
+        ehFeriado = feriados[index].toDateString() == date.toDateString()
+        if (ehFeriado) {
             feriado = true
-    })
+            break
+        }
+    }
+
     return feriado
 }
 
 function calcularPrazo (prazo,parametro) {
-    let date_final = new Date()
-    let date_inicial = new Date()
+    let dateFinal = new Date()
+    let dateInicial = new Date()
     let cont = 1
     let i
     let dataPub = document.querySelector("#dataPublicacao")
     let tipoIntimacao = document.querySelector("#descricao")
     let processo = document.querySelector('#numeroProcesso')
 
-    let dias_int
-    let dias_fat = Number(prazo)
+    let diasInterno
+    const diasFatal = Number(prazo)
 
     if (processo.value.length == 12) {
         if (dataPub.value.length > 0) {
             let data = dataPub.value.split('/')
-            date_final = new Date(data[2],Number(data[1])-1,Number(data[0]))
-            date_inicial = new Date(data[2],Number(data[1])-1,Number(data[0]))
+            dateFinal = new Date(data[2],Number(data[1])-1,Number(data[0]))
+            dateInicial = new Date(data[2],Number(data[1])-1,Number(data[0]))
         }
-        if (date_inicial.getDay() == 6) {
-            date_final.setDate(date_final.getDate()+2)
-            date_inicial.setDate(date_inicial.getDate()+2)
+        if (dateInicial.getDay() == 6) {
+            dateFinal.setDate(dateFinal.getDate()+2)
+            dateInicial.setDate(dateInicial.getDate()+2)
         }
     }
 
-    while (dias_fat >= cont) {
-        date_final.setDate(date_final.getDate() + 1)
-        i = date_final.getDay()
+    while (diasFatal >= cont) {
+        dateFinal.setDate(dateFinal.getDate() + 1)
+        i = dateFinal.getDay()
 
-        if (i > 0 && i < 6 && !isFeriado(date_final,parametro)) {
+        if (i > 0 && i < 6 && !isFeriado(dateFinal,parametro)) {
             cont = cont + 1
         }
     }
-    let ano = date_final.getFullYear()
-    let mes = date_final.getMonth()+1
-    let dia =  date_final.getDate()
+    let ano = dateFinal.getFullYear()
+    let mes = dateFinal.getMonth()+1
+    let dia =  dateFinal.getDate()
     let final = formataData(dia, mes, ano)
+    const StringTipoIntimacao = removeAcentuacaoString(tipoIntimacao.value).toUpperCase()
+    const ehSentencaAcordaoDecisao = (StringTipoIntimacao.search("SENTENCA") == 0 || StringTipoIntimacao.search("DECISAO") == 0 || StringTipoIntimacao.search("ACORDAO") == 0)
+
     
-    if (tipoIntimacao.value.search("SENTENÇA") == 0 || tipoIntimacao.value.toUpperCase().search("DECISÃO") == 0 || tipoIntimacao.value.toUpperCase().search("ACÓRDÃO") == 0) {
-        if (processo.value.length == 12)
-            dias_int = 3
-        else
-            if (dias_fat == 5)
-                dias_int = 2
+    if (ehSentencaAcordaoDecisao) {
+        if (processo.value.length == 12) {
+            diasInterno = 3
+        }
+        else {
+            if (diasFatal == 5)
+                diasInterno = 2
             else
-                dias_int = 5
+                diasInterno = 5
+        }
     }
     else {
-        if (dias_fat == 5 && processo.value.length == 12)
-            dias_int = 3
+        if ((diasFatal == 5) && (processo.value.length == 12)) {
+            diasInterno = 3
+        }
         else {
-            dias_int = dias_fat-3
+            diasInterno = diasFatal-3
         }
     }
     
     cont = 1
+    let condiction
+    const ehBarril = ((cliente.processo.estado == 'GO') || (cliente.processo.estado == 'DF'))
 
-    while (dias_int >= cont) {
-        date_inicial.setDate(date_inicial.getDate() + 1)
-        i = date_inicial.getDay()
-        
-        if (dias_int >= cont) {
-            if (i > 0 && i < 6 && !isFeriado(date_inicial,parametro)) {
-                cont = cont + 1
+    if (ehBarril && !ehSentencaAcordaoDecisao) {
+        dateInicial = new Date (dateFinal.getFullYear(), dateFinal.getMonth(), dateFinal.getDate()-1)
+        while (cont <= 3) {
+            console.log(dateInicial)
+            i = dateInicial.getDay()
+            condiction = isFeriado(dateInicial,parametro)
+            
+            if (condiction) {
+                dateInicial.setDate(dateInicial.getDate() - 1)
+            } else {
+                if (cont == 3) {
+                    if ((i == 6) || (i == 0)) {
+                        if (i == 0) {
+                            dateInicial.setDate(dateInicial.getDate() - 2)
+                        }
+                        if (i == 6) {
+                            dateInicial.setDate(dateInicial.getDate() - 1)
+                        }
+                    }
+                    break
+                } else {
+                    dateInicial.setDate(dateInicial.getDate() - 1)
+                    cont++
+                }
             }
         }
-        else {
-            if (isFeriado(date_inicial,parametro) && i > 0 && i < 6) {
-                    date_inicial.setDate(date_inicial.getDate() - 1)
+    } else {
+        while (diasInterno >= cont) {
+            dateInicial.setDate(dateInicial.getDate() + 1)
+            i = dateInicial.getDay()
+            condiction = isFeriado(dateInicial,parametro)
+            
+            if (diasInterno >= cont) {
+                if (i > 0 && i < 6 && !condiction) {
                     cont = cont + 1
+                }
             }
-            else
-                if (i > 0 && i < 6)
+            else {
+                if (condiction && i > 0 && i < 6) {
+                    dateInicial.setDate(dateInicial.getDate() - 1)
                     cont = cont + 1
+                }
+                else
+                    if (i > 0 && i < 6)
+                        cont = cont + 1
+            }
         }
     }
 
-    ano = date_inicial.getFullYear()
-    mes = date_inicial.getMonth()+1
-    dia = date_inicial.getDate()
+    ano = dateInicial.getFullYear()
+    mes = dateInicial.getMonth()+1
+    dia = dateInicial.getDate()
     let inicial = formataData(dia, mes, ano)
 
     return [inicial,final]
@@ -2181,6 +2259,12 @@ function createButtonPrazo() {
     let p_dez = document.createElement('p')
     let p_quinze = document.createElement('p')
     
+    button_cinco.setAttribute('id','button5')
+    button_dez.setAttribute('id','button10')
+    button_quinze.setAttribute('id','button15')
+    p_cinco.setAttribute('id','prazo5')
+    p_dez.setAttribute('id','prazo10')
+    p_quinze.setAttribute('id','prazo15')
     button_cinco.setAttribute('class','btnPrazo')
     button_cinco.setAttribute('value','05')
     button_cinco.setAttribute('type','button')
@@ -2223,9 +2307,9 @@ function createButtonPrazo() {
     div_quinze.style.alignItems = 'center'
 
     data_pub.addEventListener('blur', () => {
-        let prazo_cinco = calcularPrazo(button_cinco.value,2)
-        let prazo_dez = calcularPrazo(button_dez.value,2)
-        let prazo_quinze = calcularPrazo(button_quinze.value,2)
+        const prazo_cinco = calcularPrazo(button_cinco.value,2)
+        const prazo_dez = calcularPrazo(button_dez.value,2)
+        const prazo_quinze = calcularPrazo(button_quinze.value,2)
         p_cinco.innerHTML = `${prazo_cinco[0].slice(0,5)} - ${prazo_cinco[1].slice(0,5)}`
         p_dez.innerHTML = `${prazo_dez[0].slice(0,5)} - ${prazo_dez[1].slice(0,5)}`
         p_quinze.innerHTML = `${prazo_quinze[0].slice(0,5)} - ${prazo_quinze[1].slice(0,5)}`
@@ -2319,15 +2403,28 @@ function createButtonRolagem () {
     })
 }
 
+function removeAcentuacaoString (string) {
+    return string.normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+}
+
 async function idPage(url) {
-    let auto_completar = await getAutoComplete()
-    if (url.search(url_processos) > -1) {
+    const autoCompletar = await getAutoComplete()
+    const pageBuscaProcessos = (url.search(url_processos) > -1)
+    const pageTarefas = (url.search(url_tarefas) > -1)
+    const pageCompromissos = (url.search(url_compromissos) > -1)
+    const pageCadastroProcesso = (url.search(url_processos_cadastro) > -1)
+    const pageVisualizacaoAbaCompromissos = (url.search(url_compromisso_default) > -1)
+    const pageVisualizacaoCompromisso = (url.search(url_compromisso_ficha) > -1)
+    const pageFormularioAddTarefaSemCompromisso = (url.search(url_cliente_addtarefa) > -1)
+    const pageVisualizacaoTarefa = (url.search(url_tarefas_ficha) > -1)
+
+    if (pageBuscaProcessos) {
         formataNumProcesso()
         focarInputProcesso()
     }
     else
-        if (url.search(url_tarefas) > -1) {
-            if (auto_completar) {
+        if (pageTarefas) {
+            if (autoCompletar) {
                 cliente = await getCliente()
                 if (cliente.compromisso.atualizar)
                     createInputDependente()
@@ -2337,18 +2434,25 @@ async function idPage(url) {
             }
         }
         else
-            if (url.search(url_compromissos) > -1) {
+            if (pageCompromissos) {
                 const data_final =  document.querySelector("#dataPrazoFatal")
                 const data_inicial = document.querySelector("#dataPrazoInterno")
                 const tipoIntimacao = document.querySelector("#descricao")
-
+                
                 data_final.addEventListener('blur', () => {
-                    if (tipoIntimacao.value.normalize('NFD').replace(/[\u0300-\u036f]/g, "").search('AUDIÊNCIA'.normalize('NFD').replace(/[\u0300-\u036f]/g, "")) == 0 || tipoIntimacao.value.search('PAUTA') == 0 || tipoIntimacao.value.normalize('NFD').replace(/[\u0300-\u036f]/g, "").search('PERÍCIA'.normalize('NFD').replace(/[\u0300-\u036f]/g, "")) == 0) {
+                    const indiceAudiencia = removeAcentuacaoString(tipoIntimacao.value).search('AUDIENCIA')
+                    const indicePericia = removeAcentuacaoString(tipoIntimacao.value).search('PERICIA')
+                    const indicePauta = tipoIntimacao.value.search('PAUTA')
+                    const ehAudiencia = (indiceAudiencia == 0)
+                    const ehPericia = (indicePericia == 0)
+                    const ehPauta = (indicePauta == 0)
+
+                    if (ehAudiencia || ehPauta || ehPericia) {
                         data_inicial.value = data_final.value
                     }
                 })
 
-                if (auto_completar) {
+                if (autoCompletar) {
                     let gravarBtn = document.querySelector("#fdt-form > div.row.margemCima20 > div > input.btn.fdt-btn-verde")
                     gravarBtn.setAttribute('disabled','')
                     let id = getIdCliente(url)
@@ -2359,18 +2463,18 @@ async function idPage(url) {
                 }
             }
             else 
-                if (url.search(url_processos_cadastro) > -1)
+                if (pageCadastroProcesso)
                     formataNumProcesso()
                 else
-                    if (url.search(url_compromisso_default) > -1) {
+                    if (pageVisualizacaoAbaCompromissos) {
                         createButtonRolagem()
                         setValidacaoFunctionOn()
                     }
                     else
-                        if (url.search(url_compromisso_ficha) > -1 || url.search(url_cliente_addtarefa) > -1)
+                        if (pageVisualizacaoCompromisso || pageFormularioAddTarefaSemCompromisso)
                             setValidacaoFunctionOff()
                         else
-                            if (url.search(url_tarefas_ficha) > -1) {
+                            if (pageVisualizacaoTarefa) {
                                 let edit_tarefa_btn = document.querySelectorAll('body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr')
                                 if (edit_tarefa_btn != null) {
                                     edit_tarefa_btn.forEach(element => {
