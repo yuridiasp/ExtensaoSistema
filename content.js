@@ -709,10 +709,14 @@ function FeriadosFixos (ano, parametro) {
         })
 
         datas.ferias_advogados.forEach(feriado => {
-            if (feriado[indexMes] == indexJaneiro)
+            if (feriado[indexMes] == indexJaneiro) {
                 resultados.push(new Date(ano+1, feriado[indexMes], feriado[indexDia]))
-            else
                 resultados.push(new Date(ano, feriado[indexMes], feriado[indexDia]))
+            }
+            else {
+                resultados.push(new Date(ano, feriado[indexMes], feriado[indexDia]))
+                resultados.push(new Date(ano-1, feriado[indexMes], feriado[indexDia]))
+            }
         })
 
         if (cliente.processo.estado == 'SE') {
@@ -735,17 +739,20 @@ function FeriadosFixos (ano, parametro) {
                 })
             }
         }
-        //console.log('entrou aqui')
     }
 
     datas.recesso_forense.forEach(feriado => {
-        if (feriado[indexMes] == indexJaneiro)
+        if (feriado[indexMes] == indexJaneiro) {
             resultados.push(new Date(ano+1, feriado[indexMes], feriado[indexDia]))
-        else
             resultados.push(new Date(ano, feriado[indexMes], feriado[indexDia]))
+        }
+        else {
+            resultados.push(new Date(ano, feriado[indexMes], feriado[indexDia]))
+            resultados.push(new Date(ano-1, feriado[indexMes], feriado[indexDia]))
+        }
     })
 
-    //console.log(resultados)
+    console.log(resultados)
 
     return resultados
 }
@@ -1227,11 +1234,10 @@ async function validaExecutorContatar () {
     async function requererTarefasContatar(data) {
         let adm = []
 
-        let viagemAsley = ["20/09","27/09","04/10","11/10","18/10","25/10","01/11","10/11","24/11", "06/12","13/12","20/12"]
-        let viagemRobert = ["20/09","27/09","04/10","13/10","18/10","25/10","01/11","08/11","22/11","06/12","13/12","20/12"]
-        let viagemGonzaga = ["28/09","05/10","19/10","09/11","16/11","23/11"]
-        let viagemHenrique = ["07/12","14/12","21/12"]
-        const idSamara = 169, idRuan = 87, idSandoval = 22, idAsley = 131, idCarlosH = 94, idMarcoR = 141, idVictorM = 120, idYuriD = 161
+        let viagemAsley = ["20/12"]
+        let viagemRobert = []
+        let viagemHenrique = []
+        const idSamara = 169, idRuan = 87, idSandoval = 22, idAsley = 131, idCarlosH = 94, idMarcoR = 141, idVictorM = 120, idYuriD = 161, idBryan = 194
 
         let parceiros = ['ELIZEU ( PARCEIRO)','MARIA DO POV. PREGUIÇA','AGENOR (PARCEIRO)','ELIZANGELA ( PARCEIRA)','ERMINIO','AUGUSTO ( PARCEIRO)']
 
@@ -1240,11 +1246,10 @@ async function validaExecutorContatar () {
         let estancia = [[idRuan,"RUAN APARICIO DOS SANTOS",null,null,0],[idSamara,"SAMARA ALBUQUERQUE CRUZ",null,null,0],[idSandoval,"SANDOVAL FILHO CORREIA LIMA FILHO",null,null,0]]
 
         let aracaju = [
-            [idAsley,"ASLEY RODRIGO DE MELO LIMA",["ALAGOINHAS"],viagemAsley,0],
-            [idCarlosH,"CARLOS HENRIQUE ESPASIANI",["UMBAÚBA","LOTEAMENTO JEOVA (BOTAFOGO)"],viagemHenrique,0],
-            //[115,"GABRIEL FRANÇA VITAL",["CARMOPÓLIS","TOBIAS BARRETO","PEDRINHAS","SANTO AMARO"],null,null,0],
-            [idMarcoR,"MARCOS ROBERT DE MELO LIMA",["ESTANCIA","CAPELA","JAPARATUBA","CONDE/BA"],viagemRobert,0],
-            //[178,"MATHEUS GONZAGA LEMOS",["CARMOPÓLIS","TOBIAS BARRETO","PEDRINHAS","SANTO AMARO"],viagemGonzaga,0],
+            [idAsley,"ASLEY RODRIGO DE MELO LIMA",["ALAGOINHAS", "ESTANCIA", "CONDE/BA"],viagemAsley,0],
+            [idCarlosH,"CARLOS HENRIQUE ESPASIANI",null,viagemHenrique,0],
+            [idBryan,"BRYAN CAMPOS DE ANDRADE",["CARMOPÓLIS", "LOTEAMENTO JEOVA (BOTAFOGO)", "UMBAÚBA", "PEDRINHAS", "TOBIAS BARRETO"],null,0],
+            [idMarcoR,"MARCOS ROBERT DE MELO LIMA",["CAPELA","JAPARATUBA"],viagemRobert,0],
             [idVictorM,"VICTOR MENDES DOS SANTOS",null,null,0],
             [idYuriD,"YURI DIAS PEREIRA",null,null,0]
         ]
