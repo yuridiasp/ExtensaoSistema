@@ -3,19 +3,49 @@
 onExtensionInstalled(setInitial)
 
 function setInitial() {
-    setInitialActive()
+    setInitialState()
 }
 
-async function setInitialActive() {
-    let active = await getActive()
+async function setInitialState() {
+    let state = await getState()
     let autocomplete = await getAutoComplete()
     let financeiro = await getFinanceiro()
+    const initialState = {
+        active: true,
+        functions: {
+            abaCadastrodeProcesso: {
+                autoFormatNumProcesso: undefined
+            },
+            abaPesquisaProcesso: {
+                autoFormatacaoNumProcessoPesquisa: undefined
+            },
+            abaCompromissosProcesso: {
+                mostrarBotadeRolagem: undefined
+            },
+            cadastroCompromisso:{
+                selecaodoTipodeCompromisso: undefined,
+                mostrarBotoesAuxiliaresdeDias: undefined,
+                AutoPreenchimentoPrazoInterno: undefined,
+            },
+            cadastroTarefa:{
+                AutoPreenchimentoTarefasIntimacoes: undefined,
+            },
+            carregamentoArquivo:{
+                seleçãoTipoArquivo: undefined,
+                preenchimentoCamposArquivos: undefined,
+            },
+            supervisor: {
+                paineldevisualizacaoTarefasTime: undefined,
+            }
+        }
+    }
 
-    if (active == null || active == undefined)
-        await setActive(true)
+    if (state == null || state == undefined)
+        await setState(initialState)
     if (autocomplete == null || autocomplete == undefined)
         await setAutoComplete(true)
     if (financeiro == null || financeiro == undefined)
         await setFinanceiro(true)
+    
 }
 

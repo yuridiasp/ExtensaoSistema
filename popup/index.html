@@ -6,13 +6,79 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Auto Complete FR</title>
+    <title>System FR Extension</title>
 </head>
 
 <body>
-    <img class="icon" src="../icon.png" alt="logo" srcset="">
-    <h4>Auto Complete FR</h4>
-    <input id="botaoAtiva" class="btn-ok" type="button">
+    <header>
+        <img class="icon" src="../icon.png" alt="logo" srcset="">
+        <h4>System FR Extension</h4>
+        <input id="botaoAtiva" class="btn-ok" type="button">
+    </header>
+    <h4>Configurações</h4>
+    <section>
+        <div class="section-config">
+            <h5>Aba Cadastro de Processo</h5>
+            <div>
+                <input data-nome="autoFormatNumProcesso" data-aba="abaCadastrodeProcesso" type="checkbox">
+                <p>Autoformatação do número do processo</p>
+            </div>
+        </div>
+        <div class="section-config">
+            <h5>Aba Pesquisa de Processo</h5>
+            <div>
+                <input data-nome="autoFormatacaoNumProcessoPesquisa" data-aba="abaPesquisaProcesso" type="checkbox">
+                <p>Autoformatação do número do processo na barra de pesquisa</p>
+            </div>
+        </div>
+        <div class="section-config">
+            <h5>Aba Compromissos do Processo</h5>
+            <div>
+                <input data-nome="mostrarBotadeRolagem" data-aba="abaCompromissosProcesso" type="checkbox" name="btnRolagem" id="btnRolagem">
+                <p>Mostrar Botão de Rolagem</p>
+            </div>
+        </div>
+        <div class="section-config">
+            <h5>Cadastro de Compromisso</h5>
+            <div>
+                <input data-nome="selecaodoTipodeCompromisso" data-aba="cadastroCompromisso" type="checkbox" name="btnDias" id="btnDias">
+                <p>Seleção do Tipo de Compromisso</p>
+            </div>
+            <div>
+                <input data-nome="mostrarBotoesAuxiliaresdeDias" data-aba="cadastroCompromisso" type="checkbox" name="btnDias" id="btnDias">
+                <p>Mostrar Botões Auxiliares de Dias</p>
+            </div>
+            <div>
+                <input data-nome="AutoPreenchimentoPrazoInterno" data-aba="cadastroCompromisso" type="checkbox" name="btnDias" id="btnDias">
+                <p>Autopreenchimento do prazo interno (Pauta, Perícia, Audiência)</p>
+            </div>
+        </div>
+        <div class="section-config">
+            <h5>Cadastro de Tarefa</h5>
+            <div>
+                <input data-nome="AutoPreenchimentoTarefasIntimacoes" data-aba="cadastroTarefa" type="checkbox" name="" id="">
+                <p>Autopreenchimento de Tarefas Intimações</p>
+            </div>
+        </div>
+        <div class="section-config">
+            <h5>Carregamento de arquivo</h5>
+            <div>
+                <input data-nome="selecaoTipoArquivo" data-aba="carregamentoArquivo" type="checkbox" name="" id="">
+                <p>Seleção do Tipo de Arquivo</p>
+            </div>
+            <div>
+                <input data-nome="preenchimentoCamposArquivos" data-aba="carregamentoArquivo" type="checkbox" name="" id="">
+                <p>Autopreenchimento dos Campos de Arquivos</p>
+            </div>
+        </div>
+        <div class="section-config">
+            <h5>Supervisor</h5>
+            <div>
+                <input data-nome="paineldevisualizacaoTarefasTime" data-aba="supervisor" type="checkbox" name="" id="">
+                <p>Painel de visualização de tarefas do time</p>
+            </div>
+        </div>
+    </section>
     <script src="../chromeUtils.js" defer></script>
     <script src="../background/background.js"defer></script>
     <script src="main.js" defer></script>

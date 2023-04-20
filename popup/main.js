@@ -1,8 +1,35 @@
 const btnActive = window.document.querySelector("#botaoAtiva")
+const inputsCheck = document.querySelectorAll('input[type=checkbox]')
 const googlemaps_APIKey = ""
 
 let initialState, state = {
-    active: null
+    active: undefined,
+    functions: {
+        abaCadastrodeProcesso: {
+            autoFormatNumProcesso: null
+        },
+        abaPesquisaProcesso: {
+            autoFormatacaoNumProcessoPesquisa: null
+        },
+        abaCompromissosProcesso: {
+            mostrarBotadeRolagem: null
+        },
+        cadastroCompromisso:{
+            selecaodoTipodeCompromisso: null,
+            mostrarBotoesAuxiliaresdeDias: null,
+            AutoPreenchimentoPrazoInterno: null,
+        },
+        cadastroTarefa:{
+            AutoPreenchimentoTarefasIntimacoes: null,
+        },
+        carregamentoArquivo:{
+            seleçãoTipoArquivo: null,
+            preenchimentoCamposArquivos: null,
+        },
+        supervisor: {
+            paineldevisualizacaoTarefasTime: null,
+        }
+    }
 }
 
 function sendMessage(status) {
@@ -171,16 +198,35 @@ function updateCorBtn() {
     }
 }
 
+function loadSelectionFunction(functions) {
+    inputsCheck.forEach(input => {
+        let estado = functions[input.dataset.aba][input.dataset.nome]
+
+        if (estado == null)
+            input.checked = false
+        else
+            input.checked = estado
+
+        input.addEventListener('change', async event => {
+            let { checked } = event.target
+            //state.functions[event.target.dataset.aba][event.target.dataset.nome] = checked
+            state.functions[event.target.dataset.aba][event.target.dataset.nome] = checked
+            console.log(state)
+            await saveState(state)
+        })
+    })
+}
+
 function onBtnActive() {
     if (!state.active) {
-        btnActive.value = "ATIVADO"
+        btnActive.value = "ON"
         state.active = true
     }
     else {
-        btnActive.value = "DESATIVADO"
+        btnActive.value = "OFF"
         state.active = false
     }
-    saveState(state.active)
+    saveState(state)
     setInitial()
     updateCorBtn()
 }
@@ -194,15 +240,16 @@ function addListenerBtnActive() {
 
 function stateBtn() {
     if (state.active)
-        btnActive.value = "ATIVADO"
+        btnActive.value = "ON"
     else
-        btnActive.value = "DESATIVADO"
+        btnActive.value = "OFF"
+    loadSelectionFunction(state.functions)
     updateCorBtn()
     addListenerBtnActive()
 }
 
 async function saveState(state) {
-    setActive(state)
+    setState(state)
 }
 
 function update(status) {
@@ -211,12 +258,16 @@ function update(status) {
 }
 
 async function getInitialState() {
-    let value = await getActive()
-    if (value == undefined)
-        value = true
-    return {
-        active: value
+    let result = await getState()
+
+    if (!result) {
+        result = state
     }
+
+    if (result.active == undefined)
+        result.active = true
+
+    return result
 }
 
 (async function () {

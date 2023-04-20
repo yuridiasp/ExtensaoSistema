@@ -8,15 +8,32 @@
 }
 
 body {
-    width: 200px;
-    height: 100px;
+    width: 20rem;
     text-align: center;
     align-items: center;
     padding: 20px;
 }
 
-p {
-    padding-top: 10px;
+section {
+    grid-template-rows: repeat(2, 1fr);
+}
+
+.section-config {
+    margin: 1rem;
+}
+
+.section-config div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-config h5 {
+    text-align: left;
+}
+
+.section-config p {
+    text-align: left;
 }
 
 #mensagem {
@@ -27,11 +44,11 @@ p {
 .btn-ok {
     border-radius: 5px;
     margin: 10px 0;
-    width: 150px;
-    height: 50px;
+    width: 50px;
+    height: 30px;
     padding: 5px 15px;
     color: white;
-    font-size: 1.1em;
+    font-size: 0.8em;
 }
 
 .btn-ok:hover {

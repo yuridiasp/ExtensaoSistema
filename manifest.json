@@ -1,6 +1,6 @@
 {
-    "name": "Auto Complete FR",
-    "version": "1.0",
+    "name": "System FR Extension",
+    "version": "2.0",
     "icons": {
         "180": "icon.png"
     },
@@ -9,7 +9,7 @@
     },
     "description": "Preenchimento automático para tarefas do sistema Fábio Ribeiro Advogados.",
     "action": {
-        "default_title": "Auto Complete FR",
+        "default_title": "System FR Extension",
         "default_popup": "popup/index.html"
     },
     "content_scripts": [

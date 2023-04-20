@@ -25,12 +25,12 @@ function onExtensionInstalled(listener) {
     chromeRuntimeOnInstalledAddListener(listener)
 }
 
-function getActive() {
+function getState() {
     return chromeStorageLocalGet('activeACFR')
 }
 
-function setActive(activeValue) {
-    return chromeStorageLocalSet({ activeACFR: activeValue })
+function setState(stateValue) {
+    return chromeStorageLocalSet({ activeACFR: stateValue })
 }
 
 function getCliente() {
