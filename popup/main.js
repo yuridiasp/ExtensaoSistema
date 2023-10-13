@@ -5,8 +5,12 @@ const googlemaps_APIKey = ""
 let initialState, state = {
     active: undefined,
     functions: {
+        digitacaoVoz: {
+            digitarUsandoVoz: null
+        },
         abaCadastrodeProcesso: {
-            autoFormatNumProcesso: null
+            autoFormatNumProcesso: null,
+            alteracaoNumeroProcesso: null
         },
         abaPesquisaProcesso: {
             autoFormatacaoNumProcessoPesquisa: null

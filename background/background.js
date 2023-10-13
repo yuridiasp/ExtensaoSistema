@@ -13,8 +13,12 @@ async function setInitialState() {
     const initialState = {
         active: true,
         functions: {
+            digitacaoVoz: {
+                digitarUsandoVoz: undefined
+            },
             abaCadastrodeProcesso: {
-                autoFormatNumProcesso: undefined
+                autoFormatNumProcesso: undefined,
+                alteracaoNumeroProcesso: undefined
             },
             abaPesquisaProcesso: {
                 autoFormatacaoNumProcessoPesquisa: undefined
@@ -48,4 +52,3 @@ async function setInitialState() {
         await setFinanceiro(true)
     
 }
-

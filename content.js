@@ -2,8 +2,12 @@
 const state = {
     active: null,
     functions: {
+        digitacaoVoz: {
+            digitarUsandoVoz: null
+        },
         abaCadastrodeProcesso: {
-            autoFormatNumProcesso: null
+            autoFormatNumProcesso: null,
+            alteracaoNumeroProcesso: null
         },
         abaPesquisaProcesso: {
             autoFormatacaoNumProcessoPesquisa: null
@@ -30,7 +34,7 @@ const state = {
 }
 
 function getEndereço (local) {
-    let locais_audiencias = {
+    let locaisAudiencias = {
         "1ª VARA FEDERAL": "AV. DR. CARLOS RODRIGUES DA CRUZ, 1500 - CAPUCHO, ARACAJU - SE, 49081-083",
         "2ª VARA FEDERAL": "AV. DR. CARLOS RODRIGUES DA CRUZ, 1500 - CAPUCHO, ARACAJU - SE, 49081-083",
         "3ª VARA FEDERAL": "AV. DR. CARLOS RODRIGUES DA CRUZ, 1500 - CAPUCHO, ARACAJU - SE, 49081-083",
@@ -109,9 +113,10 @@ function getEndereço (local) {
         "CEJUSC TRABALHISTA": "PRÉDIO ESPELHADO - AV. CARLOS RODRIGUES DA CRUZ, S/N, CAPUCHO, ARACAJU/SE, CEP 49080-190",
         "GABINETE DA PRESIDÊNCIA": "EDIFÍCIO SEDE (PRÉDIO AMARELO - CENTRO ADMINISTRATIVO AUGUSTO FRANCO), 4º ANDAR - AV. CARLOS RODRIGUES DA CRUZ, S/N, CAPUCHO, ARACAJU/SE, 49080-190",
         "JAE": "EDIFÍCIO SEDE (PRÉDIO AMARELO - CENTRO ADMINISTRATIVO AUGUSTO FRANCO), 4º ANDAR - AV. CARLOS RODRIGUES DA CRUZ, S/N, CAPUCHO, ARACAJU/SE, 49080-190",
+	"VARA DO TRABALHO DE ESTÂNCIA": "VARA DO TRABALHO DE ESTÂNCIA - PRAÇA CORONEL GONÇALO PRADO, S/N CEP 49200-000, SANTA CRUZ ESTÂNCIA/SE",
         "1ª VARA CÍVEL DE SOCORRO": "FÓRUM DES. ARTUR OSCAR DE O. DÉDA - RUA MANOEL PASSOS, FÓRUM ARTHUR OCAR DE O. DEDA, CENTRO, N. SRA. DO SOCORRO/SE, 49160-000",
         "2ª VARA CÍVEL DE SOCORRO": "FÓRUM DES. ARTUR OSCAR DE O. DÉDA - RUA MANOEL PASSOS, FÓRUM ARTHUR OCAR DE O. DEDA, CENTRO, N. SRA. DO SOCORRO/SE, 49160-000",
-        "3ª VARA CÍVE DE SOCORRO": "FÓRUM DES. PEDRO B. DE ANDRADE - AV. COLETORA C, S/N, FÓRUM DES. PEDRO BARRETO, MARCOS FREIRE II, N. SRA. DO SOCORRO/SE, 49160-000",
+        "3ª VARA CÍVEL DE SOCORRO": "FÓRUM DES. PEDRO B. DE ANDRADE - AV. COLETORA C, S/N, FÓRUM DES. PEDRO BARRETO, MARCOS FREIRE II, N. SRA. DO SOCORRO/SE, 49160-000",
         "4ª VARA CÍVEL DE SOCORRO": "FÓRUM BEL. LUIZ AUGUSTO BARRETO - RODOVIA BR 101, S/N, KM 92.5,PARQUE DOS FARÓIS, N. SRA. DO SOCORRO/SE, 49160-000",
         "1ª VARA CRIMINAL DE SOCORRO": "FÓRUM BEL. LUIZ AUGUSTO BARRETO - RODOVIA BR 101, S/N, KM 92.5,PARQUE DOS FARÓIS, N. SRA. DO SOCORRO/SE, 49160-000",
         "2ª VARA CRIMINAL DE SOCORRO": "FÓRUM BEL. LUIZ AUGUSTO BARRETO - RODOVIA BR 101, S/N, KM 92.5,PARQUE DOS FARÓIS, N. SRA. DO SOCORRO/SE, 49160-000",
@@ -217,8 +222,8 @@ function getEndereço (local) {
         "RIBEIRÓPOLIS": "FÓRUM DE RIBEIRÓPOLIS - PRAÇA MANOEL DO CARMO DE JESUS, S/N, CENTRO, RIBEIRÓPOLIS/SE, 49530-000",
         "SÃO MIGUEL DO ALEIXO": "FÓRUM DE RIBEIRÓPOLIS - PRAÇA MANOEL DO CARMO DE JESUS, S/N, CENTRO, RIBEIRÓPOLIS/SE, 49530-000",
         "NOSSA SENHORA APARECIDA": "FÓRUM DE RIBEIRÓPOLIS - PRAÇA MANOEL DO CARMO DE JESUS, S/N, CENTRO, RIBEIRÓPOLIS/SE, 49530-000",
-        "1ª VARA CÍVEL SÃO CRISTÓVÃO": "LARGO JOEL FONTES COSTA, S/N, CENTRO. SÃO CRISTÓVÃO/SE, 49100-000",
-        "2ª VARA CÍVEL SÃO CRISTÓVÃO": "FÓRUM PROF. GONÇALO ROLLEMBERG LEITE - AV. MARECHAL RONDON, S/N, CAMPUS UNIVERSITÁRIO, ROSA ELZE, SÃO CRISTÓVÃO/SE, 49100-000",
+        "1ª VARA CÍVEL DE SÃO CRISTÓVÃO": "LARGO JOEL FONTES COSTA, S/N, CENTRO. SÃO CRISTÓVÃO/SE, 49100-000",
+        "2ª VARA CÍVEL DE SÃO CRISTÓVÃO": "FÓRUM PROF. GONÇALO ROLLEMBERG LEITE - AV. MARECHAL RONDON, S/N, CAMPUS UNIVERSITÁRIO, ROSA ELZE, SÃO CRISTÓVÃO/SE, 49100-000",
         "VARA CRIMINAL DE SÃO CRISTÓVÃO": "LARGO JOEL FONTES COSTA, S/N, CENTRO, SÃO CRISTÓVÃO/SE, 49100-000",
         "JUIZADO ESPECIAL CÍVEL E CRIMINAL DE SÃO CRISTÓVÃO": "FÓRUM PROF. GONÇALO ROLLEMBERG LEITE - AV. MARECHAL RONDON, S/N, CAMPUS UNIVERSITÁRIO, ROSA ELZE, SÃO CRISTÓVÃO/SE, 49100-000",
         "1ª VARA CÍVEL E CRIMINAL DE SIMÃO DIAS": "FÓRUM DE SIMÃO DIAS - RODOVIA LOURIVAL BAPTISTA - SE 240, Nº 2398, CENTRO, SIMÃO DIAS/SE, 49480-000",
@@ -261,13 +266,14 @@ function getEndereço (local) {
         "SUBSEÇÃO JUDICIÁRIA DE JATAÍ": "EDIFÍCIO-SEDE - RUA NICOLAU ZAIDEM, Nº 1135, QD. 45, VILA FÁTIMA - CENTRO, JATAÍ/GO - CEP: 75803-055 (ANTIGO FÓRUM DA CIDADE)",
         "SUBSEÇÃO JUDICIÁRIA DE LUZIÂNIA": "EDIFÍCIO-SEDE - RUA DR. JOÃO TEIXEIRA, Nº 596, QD. 73, LT. 21-A, ED. IACI AMARAL, CENTRO, LUZIÂNIA/GO - CEP: 72800-440",
         "SUBSEÇÃO JUDICIÁRIA DE RIO VERDE": "EDIFÍCIO-SEDE - AVENIDA JOSÉ WALTER, Nº 500, QUADRA 49, LOTES 10/11, SETOR MORADA DO SOL, RIO VERDE/GO - CEP: 75908-740",
-        "SUBSEÇÃO JUDICIÁRIA DE URUAÇU": "EDIFÍCIO-SEDE - AV. TOCANTINS, Nº 17, QD. 7, LT. 16, CENTRO, URUAÇU/GO - CEP: 76400-000"
+        "SUBSEÇÃO JUDICIÁRIA DE URUAÇU": "EDIFÍCIO-SEDE - AV. TOCANTINS, Nº 17, QD. 7, LT. 16, CENTRO, URUAÇU/GO - CEP: 76400-000",
+	"MOGI DAS CRUZES": "MOGI DAS CRUZES - AVENIDA FERNANDO COSTA, 820 - VILA RUBENS - MOGI DAS CRUZES - SP - CEP: 08735-000",
     }
 
     if (local.value.length == 0)
         return ""
     else {
-        let locais = Object.entries(locais_audiencias)
+        let locais = Object.entries(locaisAudiencias)
         for (const [key,value] of locais) {
             if (removeAcentuacaoString(key) == removeAcentuacaoString(local.value)){
                 return `${key}: ${value}`
@@ -279,16 +285,17 @@ function getEndereço (local) {
 
 
 let submit = true
-const url_processos_cadastro = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/formulario"
-const url_processos = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/default"
-const url_compromissos = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/compromissos/formulario"
-const url_compromisso_ficha = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/compromissos/ficha"
-const url_compromisso_default = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/compromissos/default"
-const url_tarefas = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/formulario"
-const url_tarefas_ficha = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/default"
-const link_processos_ajax = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/ficha.asp?idPK="
-const link_cliente_ajax = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/ficha.asp?idPK="
-const url_cliente_addtarefa = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/default"
+const urlProcessosCadastro = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/formulario"
+const urlProcessos = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/default"
+const urlCompromissos = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/compromissos/formulario"
+const urlCompromissoFicha = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/compromissos/ficha"
+const urlCompromissoDefault = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/compromissos/default"
+const urlTarefas = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/formulario"
+const urlTarefasFicha = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/default"
+const linkProcessosAjax = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/ficha.asp?idPK="
+const linkClienteAjax = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/ficha.asp?idPK="
+const urlClienteAddtarefa = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/default"
+const urlUpFile = "http://fabioribeiro.eastus.cloudapp.azure.com//adv/clientesArquivos/formulario.asp"
 
 let cliente = {
         cliente: {
@@ -296,7 +303,7 @@ let cliente = {
             cpf: null,
             cidade: null,
             estado: null,
-            local_atendido: null,
+            localAtendido: null,
             parceiro: null,
             id: null
         },
@@ -311,17 +318,17 @@ let cliente = {
             cidade: null,
             estado: null,
             vara: null,
-            cpf_demais_envolvidos: [],
-            id_demais_envolvidos: []
+            cpfDemaisEnvolvidos: [],
+            idDemaisEnvolvidos: []
         },
         compromisso: {
             atualizar: true,
-            prazo_interno: null,
-            prazo_fatal: null,
-            tarefa_restante: null,
-            tarefa_sequencia: null,
-            tipo_compromisso: null,
-            tipo_tarefa: null,
+            prazoInterno: null,
+            prazoFatal: null,
+            tarefaRestante: null,
+            tarefaSequencia: null,
+            tipoCompromisso: null,
+            tipoTarefa: null,
             descricao: null,
             semanas: null
         }
@@ -346,7 +353,7 @@ function ouvirEventos (target) {
 
 async function criarTarefaColetivo () {
 
-    const data_finalizacao = document.querySelector("#dataParaFinalizacao").value
+    const dataFinalizacao = document.querySelector("#dataParaFinalizacao").value
     const descricao = document.querySelector("#descricao").value
     const idResponsavel = document.querySelector("#idResponsavel").value
     const idExecutor = document.querySelector("#idExecutor").value
@@ -354,13 +361,13 @@ async function criarTarefaColetivo () {
 
     const url = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/formularioScript.asp"
 
-    cliente.processo.id_demais_envolvidos.forEach(id => {
+    cliente.processo.idDemaisEnvolvidos.forEach(id => {
         //makeRequest(url,id)
     })
 
     function makeRequest(url,id) {
 
-        const textoEnviado = `idPK=&idCO=&idPR=&idCL=${id}&org=&superior=&idResponsavelAvisado=&agendada=n&idTipoTarefa=${idTipoTarefa}&dataParaFinalizacaoAgendada=&onde=&horarioInicial=&horarioFinal=&dataParaFinalizacao=${data_finalizacao}&descricao=${descricao}&idResponsavel=${idResponsavel}&idExecutor=${idExecutor}&lembreteQuandoFinalizarPara=&btnGravar=Gravar+informa%C3%A7%C3%B5es`
+        const textoEnviado = `idPK=&idCO=&idPR=&idCL=${id}&org=&superior=&idResponsavelAvisado=&agendada=n&idTipoTarefa=${idTipoTarefa}&dataParaFinalizacaoAgendada=&onde=&horarioInicial=&horarioFinal=&dataParaFinalizacao=${dataFinalizacao}&descricao=${descricao}&idResponsavel=${idResponsavel}&idExecutor=${idExecutor}&lembreteQuandoFinalizarPara=&btnGravar=Gravar+informa%C3%A7%C3%B5es`
 
         const method = 'POST'
 
@@ -485,23 +492,18 @@ function FeriadosFixos (ano, parametro) {
             [10,15], //PROCLAMAÇÃO DA REPÚBLICA
             [11,25], //NATAL
         ],
-        recesso_forense : forense, //Recesso Forense 20/12 a 06/01
-        ferias_advogados: advogados, //Recesso dos advogados 20/12 a 20/01 Art. 220 NCPC
-        justica_nacional: [
+        recessoForense : forense, //Recesso Forense 20/12 a 06/01
+        feriasAdvogados: advogados, //Recesso dos advogados 20/12 a 20/01 Art. 220 NCPC
+        justicaNacional: [
             [7,11], //DIA DO MAGISTRADO
-            [9,31], //DIA DO FUNCIONÁRIO PÚBLICO
+            [9,28], //DIA DO FUNCIONÁRIO PÚBLICO
             [10,1], //LEI FEDERAL Nº 5.010/66
-            [11,8] //DIA DA JUSTIÇA
+            [11,8], //DIA DA JUSTIÇA
         ],
-        TRF1: [
-            [10,24], //Copa do mundo - Jogo do Brasil
-            [10,28], //Copa do mundo - Jogo do Brasil
-            [11,2] //Copa do mundo - Jogo do Brasil
-        ],
+        TRF1: [],
         'SE': [
             [5,24], //SÃO JOÃO
             [6,8], //EMANCIPAÇÃO POLÍTICA DE SERGIPE
-            [10,28] //JOGO DA COPA - PORTARIA GP1 72/2022 TJSE
         ],
         'AQUIDABA': [
             [3,4], //EMANCIPAÇÃO POLÍTICA
@@ -730,11 +732,11 @@ function FeriadosFixos (ano, parametro) {
     }
 
     if (tarefaAdvogado) {
-        datas.justica_nacional.forEach(feriado => {
+        datas.justicaNacional.forEach(feriado => {
             resultados.push(new Date(ano, feriado[indexMes], feriado[indexDia]))
         })
 
-        datas.ferias_advogados.forEach(feriado => {
+        datas.feriasAdvogados.forEach(feriado => {
             if (feriado[indexMes] == indexJaneiro) {
                 resultados.push(new Date(ano+1, feriado[indexMes], feriado[indexDia]))
                 resultados.push(new Date(ano, feriado[indexMes], feriado[indexDia]))
@@ -767,7 +769,7 @@ function FeriadosFixos (ano, parametro) {
         }
     }
 
-    datas.recesso_forense.forEach(feriado => {
+    datas.recessoForense.forEach(feriado => {
         if (feriado[indexMes] == indexJaneiro) {
             resultados.push(new Date(ano+1, feriado[indexMes], feriado[indexDia]))
             resultados.push(new Date(ano, feriado[indexMes], feriado[indexDia]))
@@ -786,21 +788,21 @@ function calculaFeriados(parametro) {
     let ano = date.getFullYear()
     let fixos = FeriadosFixos(ano,parametro)
     let pascoa = calculaPascoa(ano)
-    let date_1 = new Date(pascoa.valueOf())
-    let date_2 = new Date(pascoa.valueOf())
-    let date_3 = new Date(pascoa.valueOf())
-    let date_4 = new Date(pascoa.valueOf())
-    let date_5 = new Date(pascoa.valueOf())
-    let date_6 = new Date(pascoa.valueOf())
-    let date_7 = new Date(pascoa.valueOf())
-    let quarta_santa = new Date (date_1.setDate(pascoa.getDate()-4))
-    let quinta_santa = new Date (date_2.setDate(pascoa.getDate()-3))
-    let paixao = new Date (date_3.setDate(pascoa.getDate()-2))
-    let segunda_carnaval = new Date (date_4.setDate(pascoa.getDate()-48))
-    let terca_carnaval = new Date (date_5.setDate(pascoa.getDate()-47))
-    let quarta_cinzas = new Date (date_6.setDate(pascoa.getDate()-46))
-    let corpus = new Date (date_7.setDate(pascoa.getDate()+60))
-    let variaveis = [segunda_carnaval,terca_carnaval,quarta_cinzas,quarta_santa,quinta_santa,paixao,pascoa,corpus]
+    let date1 = new Date(pascoa.valueOf())
+    let date2 = new Date(pascoa.valueOf())
+    let date3 = new Date(pascoa.valueOf())
+    let date4 = new Date(pascoa.valueOf())
+    let date5 = new Date(pascoa.valueOf())
+    let date6 = new Date(pascoa.valueOf())
+    let date7 = new Date(pascoa.valueOf())
+    let quartaSanta = new Date (date1.setDate(pascoa.getDate()-4))
+    let quintaSanta = new Date (date2.setDate(pascoa.getDate()-3))
+    let paixao = new Date (date3.setDate(pascoa.getDate()-2))
+    let segundaCarnaval = new Date (date4.setDate(pascoa.getDate()-48))
+    let tercaCarnaval = new Date (date5.setDate(pascoa.getDate()-47))
+    let quartaCinzas = new Date (date6.setDate(pascoa.getDate()-46))
+    let corpus = new Date (date7.setDate(pascoa.getDate()+60))
+    let variaveis = [segundaCarnaval,tercaCarnaval,quartaCinzas,quartaSanta,quintaSanta,paixao,pascoa,corpus]
     let feriados = []
 
     fixos.forEach(e => {
@@ -814,7 +816,6 @@ function calculaFeriados(parametro) {
 }
 
 function contarDias(inicial,final, parametro) {
-    const diasSemana = ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado']
     let contaTodos = 0
     let contaUteis = 0
     let domingos = 0
@@ -827,7 +828,6 @@ function contarDias(inicial,final, parametro) {
 
     while (date < final) {
         date.setDate(date.getDate() + 1)
-        //console.log(date)
         condiction = isFeriado(date, parametro)
         i = date.getDay()
 
@@ -839,7 +839,6 @@ function contarDias(inicial,final, parametro) {
             contaUteis++
         } 
         contaTodos++
-        //console.log(date, contaUteis, diasSemana[date.getDay()], 'feriado: ' + condiction)
     }
 
     cliente.compromisso.semanas = domingos
@@ -847,112 +846,108 @@ function contarDias(inicial,final, parametro) {
     return { uteis: contaUteis, todosDias: contaTodos}
 }
 
-function dataContato(intervalo,data_interno,parametro, todosDias) {
-    const diasSemana = ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado']
+function dataContato(intervalo,dataInterno,parametro, todosDias) {
     let hoje = new Date()
     hoje.setHours(0,0,0,0)
     let date
-    let fim_intervalo = Number(intervalo)
+    let fimIntervalo = Number(intervalo)
     let condiction
     
     if (intervalo > 0) {
         let c = 0
-        date = new Date(data_interno)
-        while (c < fim_intervalo) {
+        date = new Date(dataInterno)
+        while (c < fimIntervalo) {
             date.setDate(date.getDate() -1)
             condiction = isFeriado(date, parametro)
             i = date.getDay()
             if ((i > 0) && (i < 6) && !condiction) {
                 ++c
             }
-            //console.log(date, c, diasSemana[date.getDay()], 'feriado: ' + condiction)
         }
     } else {
-        date = new Date(data_interno)
+        date = new Date(dataInterno)
     }
 
-    let ano_contato = date.getFullYear()
-    let mes_contato = date.getMonth()+1
-    let dia_contato = date.getDate()
+    let anoContato = date.getFullYear()
+    let mesContato = date.getMonth()+1
+    let diaContato = date.getDate()
 
     hoje.setDate(hoje.getDate() + todosDias)
-    //console.log(hoje, todosDias)
 
-    return `${dia_contato < 10 ? '0'.concat(dia_contato) : dia_contato}/${mes_contato < 10 ? '0'.concat(mes_contato) : mes_contato}/${ano_contato}`
+    return `${diaContato < 10 ? '0'.concat(diaContato) : diaContato}/${mesContato < 10 ? '0'.concat(mesContato) : mesContato}/${anoContato}`
 }
 
-function extrairDataPrazoFatalInput (prazo_fatal) {
-    let data = prazo_fatal.split('/')
+function extrairDataPrazoFatalInput (prazoFatal) {
+    let data = prazoFatal.split('/')
     return [data[0],Number(data[1])-1,data[2]]
 }
 
 function calculaIntervaloTarefas (dias) {
-    const { tipo_compromisso, tipo_tarefa, tarefa_sequencia, semanas, tarefa_restante } = cliente.compromisso
+    const { tipoCompromisso, tipoTarefa, tarefaSequencia, semanas, tarefaRestante } = cliente.compromisso
     const { estado } = cliente.processo
-    let cont_dois = {
+    let contDois = {
         outros: ["EMENDAR","DADOS PERÍCIA SOCIAL","DADOS COMPLEMENTARES"],
         financeiro: ["ALVARÁ","RPV","PRECATÓRIO"]
     }
-    let cont_tres = "PERÍCIA"
-    let cont_quatro = ["AUDIÊNCIA DE CONCILIAÇÃO","AUDIÊNCIA INAUGURAL", "AUDIÊNCIA CONCILIATÓRIA", "AUDIÊNCIA INICIAL", "AUDIÊNCIA DE INTERROGATÓRIO"]
-    let cont_cinco = ["AUDIÊNCIA DE INSTRUÇÃO", "AUDIÊNCIA DE INSTRUÇÃO E JULGAMENTO", "AUDIÊNCIA UNA"]
+    let contTres = "PERÍCIA"
+    let contQuatro = ["AUDIÊNCIA DE CONCILIAÇÃO", "AUDIÊNCIA CONCILIATÓRIA", "AUDIÊNCIA DE INTERROGATÓRIO"]
+    let contCinco = ["AUDIÊNCIA DE INSTRUÇÃO", "AUDIÊNCIA INAUGURAL", "AUDIÊNCIA INICIAL", "AUDIÊNCIA DE INSTRUÇÃO E JULGAMENTO", "AUDIÊNCIA UNA"]
 
-    if (((cont_cinco.includes(tipo_compromisso) && dias > 11) || (cont_quatro.includes(tipo_compromisso) && dias > 10) || (tipo_compromisso.search(cont_tres) == 0) && dias > 10)) {
+    if (((contCinco.includes(tipoCompromisso) && dias > 11) || (contQuatro.includes(tipoCompromisso) && dias > 10) || (tipoCompromisso.search(contTres) == 0) && dias > 10)) {
         if (semanas >= 2) {
-            if (tipo_tarefa == 'ANÁLISE')
+            if (tipoTarefa == 'ANÁLISE')
                 return dias-1
-            if ((tipo_tarefa == 'CONTATAR CLIENTE' || tipo_tarefa == 'SMS E WHATSAPP')) {
-                if (estado != 'GO' && estado != 'DF')
+            if ((tipoTarefa == 'CONTATAR CLIENTE' || tipoTarefa == 'SMS E WHATSAPP')) {
+                if (estado != 'GO' && estado != 'DF') {
                     return dias-2
+                }
                 else {
-                    if (tipo_compromisso.search(cont_tres) == -1) {
-                        if (tipo_tarefa == 'CONTATAR CLIENTE')
-                            return dias-3
-                        if (tipo_tarefa == 'SMS E WHATSAPP')
-                            return dias-2
-                    }
-                    if (tipo_tarefa == 'CONTATAR CLIENTE')
+                    if (tipoTarefa == 'CONTATAR CLIENTE') {
                         return dias-3
-                    if (tipo_tarefa == 'SMS E WHATSAPP')
+                    }
+                    if (tipoTarefa == 'SMS E WHATSAPP') {
+                        if (contQuatro.includes(tipoCompromisso))
+                            return dias-7
                         return dias-2
+                    }
                 }
             }
-            if (tipo_tarefa == 'LEMBRAR CLIENTE')
+            if (tipoTarefa == 'LEMBRAR CLIENTE')
                 return 2
-            if (tipo_tarefa == 'ATO ORDINATÓRIO')
+            if (tipoTarefa == 'ATO ORDINATÓRIO')
                 return dias-1
         }
     }
     else {
-        const ehAudienciaOuPericia = (cont_cinco.includes(tipo_compromisso) || cont_quatro.includes(tipo_compromisso) || tipo_compromisso.search(cont_tres) == 0)
+        const ehAudienciaOuPericia = (contCinco.includes(tipoCompromisso) || contQuatro.includes(tipoCompromisso) || tipoCompromisso.search(contTres) == 0)
         if (ehAudienciaOuPericia) {
-            if ((tarefa_restante == tarefa_sequencia) && tipo_compromisso.search(cont_tres) == -1)
+            if ((tarefaRestante == tarefaSequencia) && tipoCompromisso.search(contTres) == -1)
                 return 0
             else
-                if (tipo_tarefa == 'LEMBRAR CLIENTE')
+                if (tipoTarefa == 'LEMBRAR CLIENTE')
                     return 2
             if (estado == 'GO' || estado == 'DF') {
-                if (tipo_tarefa == 'CONTATAR CLIENTE')
+                if (tipoTarefa == 'CONTATAR CLIENTE')
                     return dias-1
             }
             return dias-1
         }
     }
     
-    if (cont_dois.outros.includes(tipo_compromisso)) {
-        if (tipo_tarefa == 'CONTATAR CLIENTE') {
+    if (contDois.outros.includes(tipoCompromisso)) {
+        if (tipoTarefa == 'CONTATAR CLIENTE') {
             return dias-1
         }
     }
 
     const indiceTarefa = ((cliente.processo.estado == 'DF') || (cliente.processo.estado == 'GO') ? 1 : 2)
 
-    if (cont_dois.financeiro.includes(tipo_compromisso)) {
-        if (tipo_compromisso == 'RPV' && tarefa_restante == indiceTarefa) {
+    if (contDois.financeiro.includes(tipoCompromisso)) {
+        if (tipoCompromisso == 'RPV' && tarefaRestante == indiceTarefa) {
             return 0
         }
 
-        if (tipo_compromisso == 'RPV' && tarefa_restante != indiceTarefa) {
+        if (tipoCompromisso == 'RPV' && tarefaRestante != indiceTarefa) {
             return dias-5
         }
     }
@@ -961,31 +956,28 @@ function calculaIntervaloTarefas (dias) {
 }
 
 function calcularDataTarefa(parametro) {
-    let data_finalizacao = document.querySelector("#dataParaFinalizacao")
-    let data_finalizacao_agendada = document.querySelector("#dataParaFinalizacaoAgendada")
+    let dataFinalizacao = document.querySelector("#dataParaFinalizacao")
+    let dataFinalizacaoAgendada = document.querySelector("#dataParaFinalizacaoAgendada")
     let hoje = new Date()
     let ano = hoje.getFullYear()
     let mes = hoje.getMonth()
     let dia = hoje.getDate()
-    let data = extrairDataPrazoFatalInput(cliente.compromisso.prazo_interno)
-    let data_interno = new Date(data[2],data[1],data[0])
+    let data = extrairDataPrazoFatalInput(cliente.compromisso.prazoInterno)
+    let dataInterno = new Date(data[2],data[1],data[0])
 
-    let dias = contarDias([dia, mes, ano], data_interno, parametro)
+    let dias = contarDias([dia, mes, ano], dataInterno, parametro)
     const { uteis, todosDias} = dias
-    //console.log('dias úteis: ' + uteis + ', dias totais: ' + todosDias)
     
     let intervalo = calculaIntervaloTarefas (uteis)
     
-    let data_tarefa = dataContato(intervalo, data_interno, parametro, todosDias)
-
-    //console.log(data_tarefa)
+    let dataTarefa = dataContato(intervalo, dataInterno, parametro, todosDias)
     
-    data_finalizacao.value = data_tarefa
-    data_finalizacao_agendada.value = data_tarefa
+    dataFinalizacao.value = dataTarefa
+    dataFinalizacaoAgendada.value = dataTarefa
 
-    data_finalizacao_agendada.addEventListener('blur', e => {
-        data_finalizacao.value = e.target.value
-        if ((cliente.compromisso.tipo_tarefa == "CONTATAR CLIENTE" || cliente.compromisso.tipo_tarefa == "LEMBRAR CLIENTE") && (cliente.processo.estado != "DF" || cliente.processo.estado != "GO")) {
+    dataFinalizacaoAgendada.addEventListener('blur', e => {
+        dataFinalizacao.value = e.target.value
+        if ((cliente.compromisso.tipoTarefa == "CONTATAR CLIENTE" || cliente.compromisso.tipoTarefa == "LEMBRAR CLIENTE") && (cliente.processo.estado != "DF" || cliente.processo.estado != "GO")) {
             let contactdiv = document.querySelector("#contactdiv")
             if (contactdiv != null) {
                 contactdiv.parentNode.removeChild(contactdiv)
@@ -993,9 +985,9 @@ function calcularDataTarefa(parametro) {
             }
         }
     })
-    data_finalizacao.addEventListener('blur', e => {
-        data_finalizacao_agendada.value = e.target.value
-        if ((cliente.compromisso.tipo_tarefa == "CONTATAR CLIENTE" || cliente.compromisso.tipo_tarefa == "LEMBRAR CLIENTE") && (cliente.processo.estado != "DF" || cliente.processo.estado != "GO")) {
+    dataFinalizacao.addEventListener('blur', e => {
+        dataFinalizacaoAgendada.value = e.target.value
+        if ((cliente.compromisso.tipoTarefa == "CONTATAR CLIENTE" || cliente.compromisso.tipoTarefa == "LEMBRAR CLIENTE") && (cliente.processo.estado != "DF" || cliente.processo.estado != "GO")) {
             let contactdiv = document.querySelector("#contactdiv")
             if (contactdiv != null) {
                 contactdiv.parentNode.removeChild(contactdiv)
@@ -1013,8 +1005,8 @@ async function saveInfoCompromissos() {
     if (!state.functions.cadastroCompromisso.selecaodoTipodeCompromisso) {
         return
     }
-    let descricao_tarefa = document.querySelector("#descricao")
-    let option_ul = document.querySelector("#fdt-form > div:nth-child(6) > div:nth-child(1) > div > div > ul")
+    let descricaoTarefa = document.querySelector("#descricao")
+    let optionUl = document.querySelector("#fdt-form > div:nth-child(6) > div:nth-child(1) > div > div > ul")
 
     let tipos = {
         "AUDIÊNCIA": "7",
@@ -1024,35 +1016,27 @@ async function saveInfoCompromissos() {
         "PRECATÓRIO": "21"
     }
 
-    let tipos_array = Object.entries(tipos)
+    let tiposArray = Object.entries(tipos)
 
-    if (descricao_tarefa !== null) {
-        descricao_tarefa.focus()
-        descricao_tarefa.addEventListener('change',async event => {
+    if (descricaoTarefa !== null) {
+        descricaoTarefa.focus()
+        descricaoTarefa.addEventListener('change',async event => {
             let intimacao = "16"
             event.target.value = event.target.value.toUpperCase()
             let tarefaIdentificada
             let indexTipoTarefa
             
-            if (option_ul !== null) {
-                /*
-                for (let index = 0; index < array.length; index++) {
-                    indexTipoTarefa = removeAcentuacaoString(event.target.value).search(removeAcentuacaoString(tipos_array[key][0]))
-                    tarefaIdentificada = (indexTipoTarefa == 0)
-                    if (tarefaIdentificada) {
-                        intimacao = tipos_array[key][1]
-                    }
-                }*/
+            if (optionUl !== null) {
 
-                for (const [key,value] in tipos_array) {
-                    indexTipoTarefa = removeAcentuacaoString(event.target.value).search(removeAcentuacaoString(tipos_array[key][0]))
+                for (const [key,value] in tiposArray) {
+                    indexTipoTarefa = removeAcentuacaoString(event.target.value).search(removeAcentuacaoString(tiposArray[key][0]))
                     tarefaIdentificada = (indexTipoTarefa == 0)
                     if (tarefaIdentificada) {
-                        intimacao = tipos_array[key][1]
+                        intimacao = tiposArray[key][1]
                     }
                 }
 
-                option_ul.children[intimacao].children[0].click()
+                optionUl.children[intimacao].children[0].click()
             }
         })
     }
@@ -1060,8 +1044,8 @@ async function saveInfoCompromissos() {
 }
 
 function getIdCliente(url) {
-    let indice_cliente = url.search("idPR=")
-    return url.slice(indice_cliente+5)
+    let indiceCliente = url.search("idPR=")
+    return url.slice(indiceCliente+5)
 }
 
 function submitPesquisaProcesso() {
@@ -1069,10 +1053,10 @@ function submitPesquisaProcesso() {
     subBtn.click()
 }
 
-function addEventoPasteProcesso (processo_input) {
-    processo_input.addEventListener('paste', () => {
+function addEventoPasteProcesso (processoInput) {
+    processoInput.addEventListener('paste', () => {
         setTimeout(() => {
-            processo_input.value = removeCaracteresProcesso(processo_input.value)
+            processoInput.value = removeCaracteresProcesso(processoInput.value)
             submitPesquisaProcesso()
         }, 10);
     })
@@ -1095,40 +1079,52 @@ function removeCaracteresProcesso(numeroProcesso) {
 }
 
 function formataNumProcesso () {
-    let processo_input = document.querySelector("#bsAdvProcessosTexto")
-    let processo_input_cad = document.querySelector("#numero")
-    
-    
-    if (processo_input !== null) {
-        addEventoPasteProcesso(processo_input)
+    if (!state.functions.abaCadastrodeProcesso.autoFormatNumProcesso) {
+        return
     }
-    if (processo_input_cad !== null) {
-        processo_input_cad.addEventListener('change', event => {
+    let processoInput = document.querySelector("#bsAdvProcessosTexto")
+    let processoInputCad = document.querySelector("#numero")
+    
+    
+    if (processoInput !== null) {
+        addEventoPasteProcesso(processoInput)
+    }
+    if (processoInputCad !== null) {
+        processoInputCad.addEventListener('change', event => {
                 event.target.value = removeCaracteresProcesso(event.target.value)
         })
     }
 }
 
+function habilitarEdicaoNumeroProcesso() {
+    if (!state.functions.abaCadastrodeProcesso.alteracaoNumeroProcesso) {
+        return
+    }
+    let processoInputCad = document.querySelector("#numero")
+
+    processoInputCad.readOnly = false
+    processoInputCad.style = ""
+}
+
 function selectRespExec (adv) {
-    let responsavel_select = document.querySelector("#fdt-form > div:nth-child(13) > div:nth-child(1) > div > div > ul")
-    let executor_select = document.querySelector("#fdt-form > div:nth-child(13) > div:nth-child(2) > div > div > ul")
-    for (let index = 0; index < responsavel_select.children.length; index++) {
-        if (responsavel_select.children[index].innerText == adv.responsavel) 
-            responsavel_select.children[index].children[0].click()
-        if (responsavel_select.children[index].innerText == adv.executor)
-            executor_select.children[index].children[0].click()
+    let responsavelSelect = document.querySelector("#fdt-form > div:nth-child(15) > div:nth-child(1) > div > div > ul")
+    let executorSelect = document.querySelector("#fdt-form > div:nth-child(15) > div:nth-child(2) > div > div > ul")
+    for (let index = 0; index < responsavelSelect.children.length; index++) {
+        if (responsavelSelect.children[index].innerText.trim() == adv.responsavel.trim()) 
+            responsavelSelect.children[index].children[0].click()
+        if (responsavelSelect.children[index].innerText.trim() == adv.executor.trim())
+            executorSelect.children[index].children[0].click()
     }
 }
 
 function createListaTarefas () {
     let divtarefa = document.querySelector('#divTipoTarefaNormal')
-    divtarefa.style.position = 'relative'
     let div = document.createElement('div')
     let h1 = document.createElement('h3')
     let h2 = document.createElement('h3')
     h1.setAttribute('class','title')
     h2.setAttribute('class','title')
-    
+    divtarefa.style.zIndex = 10
     divtarefa.style.position = 'relative'
     div.setAttribute('id','contactdiv')
     div.style.position = 'absolute'
@@ -1142,7 +1138,7 @@ function createListaTarefas () {
     let p1 = document.createElement('p')
     let p3 = document.createElement('p')
     p1.innerHTML = `Local atendido:`
-    p3.innerHTML = `${cliente.cliente.local_atendido}`
+    p3.innerHTML = `${cliente.cliente.localAtendido}`
     p1.style.color = 'white'
     p3.style.color = 'white'
     let p2 = document.createElement('p')
@@ -1185,6 +1181,8 @@ function addListaTarefas(adm,data) {
 
     p1.innerHTML = `${adm[1].slice(0,adm[1].search(' '))}: ${adm[4]}`
     p1.style.color = 'white'
+    p1.dataset.colaborador = adm[1]
+    p1.style.cursor = 'pointer'
 
     if (adm[3] != null) {
         for (let index = 0; index < adm[3].length; index++) {
@@ -1193,7 +1191,30 @@ function addListaTarefas(adm,data) {
         }
     }
 
+    const defaultColor = p1.style.color
+
     div.appendChild(p1)
+
+    p1.addEventListener('mouseenter', event => {
+        event.target.style.color = 'gray'
+    })
+
+    p1.addEventListener('mouseleave', event => {
+        event.target.style.color = defaultColor
+    })
+
+    p1.addEventListener('click', event => {
+        let tarefaForEstancia = event.target.dataset.colaborador.search('SANDOVAL') == 0
+        let respExec = {}
+
+        if (tarefaForEstancia) {
+            respExec = {responsavel: event.target.dataset.colaborador, executor: event.target.dataset.colaborador}
+        } else {
+            respExec = {responsavel: 'JULIANO OLIVEIRA DE SOUZA', executor: event.target.dataset.colaborador}
+        }
+
+        selectRespExec(respExec)
+    })
 }
 
 async function getTarefasAdm(element,data){ 
@@ -1242,22 +1263,22 @@ async function getTarefasAdm(element,data){
 
 
 async function validaExecutorContatar () {
-    let data_input = document.querySelector('#dataParaFinalizacao')
+    let dataInput = document.querySelector('#dataParaFinalizacao')
     createListaTarefas()
     setTimeout(async () => {
-        let adm = await requererTarefasContatar(data_input.value.split('/'))
+        let adm = await requererTarefasContatar(dataInput.value.split('/'))
 
         adm.forEach(e => {
             if (e[2] != null)
                 if (e[2].length > 1) {
                     e[2].forEach(local => {
-                        if (local == cliente.cliente.local_atendido) {
+                        if (local == cliente.cliente.localAtendido) {
                             return e[1]
                         }
                     })
                 }
                 else
-                    if (e[2] == cliente.cliente.local_atendido) {
+                    if (e[2] == cliente.cliente.localAtendido) {
                         return e[1]
                     }
         })
@@ -1270,16 +1291,17 @@ async function validaExecutorContatar () {
         return adm
     }, 100);
     
-    function requererTarefasContatar(data) {
+    async function requererTarefasContatar(data) {
         let adm = []
         
 
-        //Última atualização: 12/01/2023
-        const viagemAsley = ['07/02','14/02','24/02','28/02','07/03','10/03','14/03','21/03','28/03','06/04','18/04','03/05','16/05','30/05']
-        const viagemRobert = ['19/01','24/01','31/01','07/02','09/02','23/02','28/02','09/03','14/03','21/03','28/03','05/04','11/04','19/04','09/05','23/05']
-        const viagemHenrique = ['25/01','08/02','22/02','08/03','22/03','11/04','09/05','31/05']
-        const viagemBryan = ['04/04','18/04','02/05','11/05','17/05','23/05','30/05']
-        const idSandoval = 22, idAsley = 131, idCarlosH = 94, idMarcoR = 141, idVictorM = 120, idYuriD = 161, idBryan = 194
+        //Última atualização: 07/08/2023
+        const viagemAsley = ['09/08', '22/08', '29/08', '05/09', '12/09', '21/09', '26/09', '05/10', '10/10', '17/10', '24/10', '31/10', '07/11', '14/11', '21/11', '28/11', '05/12', '14/12', '19/12']
+        const viagemRobert = ['10/08', '15/08', '29/08', '12/09', '26/09', '10/10', '24/10', '07/11', '21/11', '19/12']
+        const viagemHenrique = ['08/08', '15/08', '23/08', '05/09', '19/09', '03/10', '18/10', '01/11', '05/12']
+        const viagemBryan = ['22/08', '06/09', '20/09', '04/10', '17/10', '09/11', '22/11', '28/11', '12/12']
+        const viagemLucas = ['06/12', '20/12']
+        const idSandoval = 22, idAsley = 131, idCarlosH = 94, idMarcoR = 141, idVictorM = 120, idYuriD = 161, idBryan = 194, idLucas = 199
 
         let parceiros = ['ELIZEU ( PARCEIRO)','MARIA DO POV. PREGUIÇA','AGENOR (PARCEIRO)','ELIZANGELA ( PARCEIRA)','ERMINIO','AUGUSTO ( PARCEIRO)']
 
@@ -1290,13 +1312,14 @@ async function validaExecutorContatar () {
         let aracaju = [
             [idAsley,"ASLEY RODRIGO DE MELO LIMA",["ALAGOINHAS", "ESTANCIA", "CONDE/BA"],viagemAsley,0],
             [idCarlosH,"CARLOS HENRIQUE ESPASIANI",null,viagemHenrique,0],
-            [idBryan,"BRYAN CAMPOS DE ANDRADE",["CARMOPÓLIS", "LOTEAMENTO JEOVA (BOTAFOGO)", "UMBAÚBA", "PEDRINHAS", "TOBIAS BARRETO"],viagemBryan,0],
+            [idBryan,"BRYAN CAMPOS DE ANDRADE",["CARMOPÓLIS", "LOTEAMENTO JEOVA (BOTAFOGO)"],viagemBryan,0],
+            [idLucas,"LUCAS NATHAN NOGUEIRA DA SILVA ",["PEDRINHAS", "TOBIAS BARRETO"],viagemLucas,0],
             [idMarcoR,"MARCOS ROBERT DE MELO LIMA",["CAPELA","JAPARATUBA"],viagemRobert,0],
             [idVictorM,"VICTOR MENDES DOS SANTOS",null,null,0],
             [idYuriD,"YURI DIAS PEREIRA",null,null,0]
         ]
 
-        if (((cliente.cliente.cidade == "ESTANCIA" && cliente.cliente.local_atendido == "ESTANCIA")) || ((parceiros.includes(cliente.cliente.parceiro)) && varaEstancia.includes(cliente.processo.vara)))
+        if (((cliente.cliente.cidade == "ESTANCIA" && cliente.cliente.localAtendido == "ESTANCIA")) || ((parceiros.includes(cliente.cliente.parceiro)) && varaEstancia.includes(cliente.processo.vara)))
             estancia.forEach(e => {
                 adm.push(e)
             })
@@ -1325,24 +1348,24 @@ async function validaExecutorContatar () {
 }
 
 async function validaResponsavelTj (num) {
-    let tarefa = cliente.compromisso.tipo_tarefa
+    let tarefa = cliente.compromisso.tipoTarefa
     let digito = Number(cliente.processo.origem[num-1])
     let financeiro = ["RPV TRF1 BRASÌLIA", "RPV TRF1 GOIÁS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTÂNCIA", "RPV TRF1 BAHIA", "PRECATÓRIO"]
     let adm = ["CONTATAR CLIENTE","LEMBRAR CLIENTE"]
     let sac = "SMS E WHATSAPP"
     let natureza = cliente.processo.natureza
 
-    if (tarefa == "RECEBIMENTO DE ALVARÁ" && cliente.compromisso.tarefa_restante == 2) {
+    if (tarefa == "RECEBIMENTO DE ALVARÁ" && cliente.compromisso.tarefaRestante == 2) {
         return {responsavel: "LUCIANA DOS SANTOS ARAUJO",executor: "LUCIANA LIMA REZENDE"}
     }
 
-    if (financeiro.includes(tarefa) && cliente.compromisso.tarefa_restante == 2) {
-        let eh_mateus_financeiro = await getFinanceiro()
-        setFinanceiro(!eh_mateus_financeiro)
-        return {responsavel: "LUCIANA DOS SANTOS ARAUJO",executor: eh_mateus_financeiro ? "MATEUS DOS SANTOS SILVA":"OVERLANDIA SANTOS MELO"}
+    if (financeiro.includes(tarefa) && cliente.compromisso.tarefaRestante == 2) {
+        //let ehMateusFinanceiro = await getFinanceiro()
+        //setFinanceiro(!ehMateusFinanceiro)
+        return {responsavel: "LUCIANA DOS SANTOS ARAUJO",executor: "OVERLANDIA SANTOS MELO"} //ehMateusFinanceiro ? "MATEUS DOS SANTOS SILVA":"OVERLANDIA SANTOS MELO"
     }
     if (adm.includes(tarefa)){
-        if (cliente.cliente.cidade == "ESTANCIA" && cliente.cliente.local_atendido == "ESTANCIA")
+        if (cliente.cliente.cidade == "ESTANCIA" && cliente.cliente.localAtendido == "ESTANCIA")
             return {responsavel: "SANDOVAL FILHO CORREIA LIMA FILHO",executor: "SANDOVAL FILHO CORREIA LIMA FILHO"}
         return {responsavel: "JULIANO OLIVEIRA DE SOUZA",executor: "JULIANO OLIVEIRA DE SOUZA"}
     }
@@ -1352,78 +1375,88 @@ async function validaResponsavelTj (num) {
         return {responsavel: "FELIPE PANTA CARDOSO",executor: "FELIPE PANTA CARDOSO"}
     if (natureza == "PREVIDENCIÁRIA")
         return {responsavel: "KEVEN FARO DE CARVALHO",executor: "KEVEN FARO DE CARVALHO"}
-    if (natureza == "BANCÁRIO") {
-        const rodrigo = [5]
-        const gabriel = [1,4,9]
-        if (rodrigo.includes(digito) || tarefa == "SESSÃO DE JULGAMENTO" || tarefa.search("AUDIÊNCIA") == 0)
-            return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "RODRIGO AGUIAR SANTOS"}
-        if (gabriel.includes(digito))
-            return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "GABRIEL DAVILA FILGUEIRAS MELLONE"}
-        return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "LAIS PEREIRA MORAES"}
+    if (natureza == "BANCÁRIO" || natureza == "CÍVEL" || natureza == "CONSUMIDOR" || natureza == "SERVIDOR PÚBLICO") {
+        const ala = [0,1]
+        const gabriel = [2,3]
+        const lais = [4,6,8]
+        //const rodrigo = [5,7,9]
+        if (tarefa != "SESSÃO DE JULGAMENTO" && tarefa.search("AUDIÊNCIA") != 0) {
+            if (lais.includes(digito))
+                return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "LAIS PEREIRA MORAES"}
+            if (gabriel.includes(digito))
+                return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "GABRIEL DAVILA FILGUEIRAS MELLONE"}
+            if (ala.includes(digito))
+                return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "ALÃ FEITOSA CARVALHO"}
+        }
+        return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "RODRIGO AGUIAR SANTOS"}
     }
-    if (natureza == "CÍVEL" || natureza == "CONSUMIDOR" || natureza == "SERVIDOR PÚBLICO") {
-        const ala = [0,1,4,6,8]
+    /* if (natureza == "CÍVEL" || natureza == "CONSUMIDOR" || natureza == "SERVIDOR PÚBLICO") {
             if (ala.includes(digito) && tarefa != "SESSÃO DE JULGAMENTO" && tarefa.search("AUDIÊNCIA") != 0)
                 return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "ALÃ FEITOSA CARVALHO"}
             return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "RODRIGO AGUIAR SANTOS"}
-    }
+    } */
 }
 
 async function validaResponsavelFederal (num) {
-    let tarefa = cliente.compromisso.tipo_tarefa
-    let numero_processo = cliente.processo.origem
-    let financeiro = ["RPV TRF1 BRASÌLIA", "RPV TRF1 GOIÁS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTÂNCIA", "RPV TRF1 BAHIA", "PRECATÓRIO"]
-    let adm = ["CONTATAR CLIENTE","LEMBRAR CLIENTE"]
-    let sac = "SMS E WHATSAPP"
-    let secao = numero_processo.slice(num-4,num)
-    let secao_df_go = ["3400","3501","3502","3506","3306", "0015"]
-    let setimo_digito = Number(numero_processo[6])
-    let digito_verificador = numero_processo.slice(13,16)
+    let tarefa = cliente.compromisso.tipoTarefa
+    let numeroProcesso = cliente.processo.origem
+    let tarefasFinanceiro = ["RPV TRF1 BRASÌLIA", "RPV TRF1 GOIÁS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTÂNCIA", "RPV TRF1 BAHIA", "PRECATÓRIO"]
+    let tarefasAdm = ["CONTATAR CLIENTE","LEMBRAR CLIENTE"]
+    let tarefaSac = "SMS E WHATSAPP"
+    let secao = numeroProcesso.slice(num-4,num)
+    let secaoDFGO = ["3400","3501","3502","3506", "0015"]
+    let setimoDigito = Number(numeroProcesso[6])
+    let digitoVerificador = numeroProcesso.slice(13,16)
     let natureza = cliente.processo.natureza
     const indiceTarefa = ((cliente.processo.estado == 'DF') || (cliente.processo.estado == 'GO') ? 1 : 2)
 
-    if ((tarefa == "RECEBIMENTO DE ALVARÁ") && (cliente.compromisso.tarefa_restante == indiceTarefa)) {
+    if ((tarefa == "RECEBIMENTO DE ALVARÁ") && (cliente.compromisso.tarefaRestante == indiceTarefa)) {
         return {responsavel: "LUCIANA DOS SANTOS ARAUJO",executor: "LUCIANA LIMA REZENDE"}
     }
 
-    if (financeiro.includes(tarefa) && cliente.compromisso.tarefa_restante == indiceTarefa) {
-        let eh_mateus_financeiro = await getFinanceiro()
-        setFinanceiro(!eh_mateus_financeiro)
-        return {responsavel: "LUCIANA DOS SANTOS ARAUJO",executor: eh_mateus_financeiro ? "MATEUS DOS SANTOS SILVA":"OVERLANDIA SANTOS MELO"}
+    if (tarefasFinanceiro.includes(tarefa) && cliente.compromisso.tarefaRestante == indiceTarefa) {
+        //let ehMateusFinanceiro = await getFinanceiro()
+        //setFinanceiro(!ehMateusFinanceiro)
+        return {responsavel: "LUCIANA DOS SANTOS ARAUJO",executor: "OVERLANDIA SANTOS MELO"} //ehMateusFinanceiro ? "MATEUS DOS SANTOS SILVA":"OVERLANDIA SANTOS MELO"
     }
 
-    if (adm.includes(tarefa)) {
+    if (tarefasAdm.includes(tarefa)) {
         if (cliente.processo.estado == "DF" || cliente.processo.estado == "GO") {
             return {responsavel: "HENYR GOIS DOS SANTOS",executor: "HENYR GOIS DOS SANTOS"}
         }
-        if(cliente.cliente.cidade == "ESTANCIA"  && cliente.cliente.local_atendido == "ESTANCIA") { //Tarefa contatar para escritório de Estância
+        if(cliente.cliente.cidade == "ESTANCIA"  && cliente.cliente.localAtendido == "ESTANCIA") { //Tarefa contatar para escritório de Estância
             return {responsavel: "SANDOVAL FILHO CORREIA LIMA FILHO",executor: "SANDOVAL FILHO CORREIA LIMA FILHO"}
         }
         return {responsavel: "JULIANO OLIVEIRA DE SOUZA",executor: "JULIANO OLIVEIRA DE SOUZA"} //Tarefa contatar para demais localidades
     }
 
-    if (sac == tarefa) { //Tarefas para o SAC
+    if (tarefaSac == tarefa) { //Tarefas para o SAC
         return {responsavel: "HENYR GOIS DOS SANTOS",executor: "HENYR GOIS DOS SANTOS"}
     }
-    if ((digito_verificador == "520" || natureza == "TRABALHISTA") || (natureza == "SERVIDOR PÚBLICO" && cliente.processo.responsavel == "VICTOR HUGO SOUSA ANDRADE")) {  //Processos Trabalhistas TRT20
+    if ((digitoVerificador == "520" || natureza == "TRABALHISTA") || (natureza == "SERVIDOR PÚBLICO" && cliente.processo.responsavel == "VICTOR HUGO SOUSA ANDRADE")) {  //Processos Trabalhistas TRT20
         return {responsavel: "FELIPE PANTA CARDOSO",executor: "FELIPE PANTA CARDOSO"}
     }
-    if (digito_verificador == "401" || secao_df_go.includes(secao)) { // Processos do TRF1
-        if (cliente.processo.estado == "DF" || cliente.processo.estado == "GO") {
-            let bruno = [0,2,4,6,8]
-            if (bruno.includes(setimo_digito) || tarefa.search("AUDIÊNCIA") == 0)
+    if (digitoVerificador == "401" || secaoDFGO.includes(secao)) { // Processos do TRF1
+        let varasDF = ["23ª VARA FEDERAL BRASÍLIA", "24ª VARA FEDERAL DE BRASÍLIA", "25ª VARA FEDERAL DE BRASÍLIA", "26ª VARA FEDERAL DE BRASÍLIA", "27ª VARA FEDERAL DE BRASÍLIA", "23ª VARA FEDERAL", "24ª VARA FEDERAL", "25ª VARA FEDERAL", "26ª VARA FEDERAL", "27ª VARA FEDERAL", "BRASILIA", "1ª VARA FEDERAL CÍVEL SJGO", "TJ GOIÁS", "VARA FEDERAL DA SSJ LUZIÂNIA-GO", "VARA DE ÁGUAS LINDAS DE GOIÁS", "VARA FEDERAL DE RIO VERDE-GO", "VARA FEDERAL SJDF"]
+        
+        if ((cliente.processo.estado == "DF" || cliente.processo.estado == "GO")) {
+            if (!varasDF.includes(cliente.processo.vara)) {
+                alert('Atenção: Confirme o responsável e executor da tarefa!')
+            }
+            let bruno = [0,1,2]
+            if (bruno.includes(setimoDigito) || tarefa.search("AUDIÊNCIA") == 0)
                 return {responsavel: "BRUNO PRADO GUIMARAES",executor: "BRUNO PRADO GUIMARAES"}
             return {responsavel: "BRUNO PRADO GUIMARAES",executor: "PAULO VICTOR SANTANA TEIXEIRA"}
         }
         return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
     }
     if (natureza == "PREVIDENCIÁRIA") {
-        if (digito_verificador == "403") { //Processos do TRF3
+        if (digitoVerificador == "403") { //Processos do TRF3
             return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
         }
-        if (digito_verificador == "405" && numero_processo.search('080') == 0) { //Processos do TRF5
+        if (digitoVerificador == "405" && numeroProcesso.search('080') == 0) { //Processos do TRF5
             if (cliente.processo.merito == "MANDADO DE SEGURANÇA") {
-                if (setimo_digito <= 4) {
+                if (setimoDigito <= 4) {
                     return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"} //"FERNANDO HENRIQUE BARBOZA NASCIMENTO"
                 }
                 return {responsavel: "DIEGO MELO SOBRINHO",executor: "ITALO DE ANDRADE BEZERRA"}
@@ -1432,18 +1465,50 @@ async function validaResponsavelFederal (num) {
         }
         else {
             if (secao == "8500") { //Processos da seção de Aracaju
-                if (setimo_digito < 3)
+                if (setimoDigito < 3) {
                     return {responsavel: "KEVEN FARO DE CARVALHO",executor: "KEVEN FARO DE CARVALHO"}
+                }
+
+                const responsavel = () => {
+                    // Verifica se há um valor armazenado no localStorage para o índice atual
+                    if (!localStorage.getItem('currentIndex')) {
+                        localStorage.setItem('currentIndex', '0')
+                    }
+    
+                    // Array com os elementos que serão alternados
+                    const elementos = ["KEVEN FARO DE CARVALHO", "FERNANDO HENRIQUE BARBOZA NASCIMENTO", "ITALO DE ANDRADE BEZERRA"]
+    
+                    // Obtém o índice atual do localStorage e converte para número
+                    let currentIndex = parseInt(localStorage.getItem('currentIndex'))
+    
+                    // Obtém o elemento atual do array com base no índice atual
+                    const elementoAtual = elementos[currentIndex]
+    
+                    // Incrementa o índice atual para apontar para o próximo elemento
+                    currentIndex = (currentIndex + 1) % elementos.length
+    
+                    // Armazena o novo índice atual no localStorage
+                    localStorage.setItem('currentIndex', currentIndex.toString());
+    
+                    return elementoAtual
+    
+                }
+
+                //const advogado = responsavel()
+                
+                // Retorna o elemento atual
+                //return {responsavel: advogado,executor: advogado}
+
                 return {responsavel: "MARCUS VINICIUS DE SOUZA MORAIS",executor: "MARCUS VINICIUS DE SOUZA MORAIS"}
             }
-            if (secao == "8501") //Processos da seção de
+            if (secao == "8501") //Processos da seção de Itabaiana
                 return {responsavel: "KEVEN FARO DE CARVALHO",executor: "KEVEN FARO DE CARVALHO"}
             if (secao == "8502") { //Processos da seção de Estância
-                if (setimo_digito < 3)
+                if (setimoDigito < 3)
                     return {responsavel: "KEVEN FARO DE CARVALHO",executor: "KEVEN FARO DE CARVALHO"}
                 return {responsavel: "SARA GONÇALVES PINHEIRO",executor: "SARA GONÇALVES PINHEIRO"}
             }
-            if (secao == "8503" || secao == "8504") //Processos da seção de 
+            if (secao == "8503" || secao == "8504") //Processos da seção de Lagarto e Propriá
                 return {responsavel: "SARA GONÇALVES PINHEIRO",executor: "SARA GONÇALVES PINHEIRO"}
             return null
             }
@@ -1455,14 +1520,14 @@ async function validaResponsavelFederal (num) {
 }
 
 async function validaEsferaProcesso() {
-    let caracteres_processo = cliente.processo.origem.length
+    let caracteresProcesso = cliente.processo.origem.length
     let adv
-    if (caracteres_processo == 12) {
-        adv = await validaResponsavelTj(caracteres_processo)
+    if (caracteresProcesso == 12) {
+        adv = await validaResponsavelTj(caracteresProcesso)
         if (adv != null)
             selectRespExec(adv)
-    } else if (caracteres_processo == 15 || caracteres_processo == 17 || caracteres_processo == 20) {
-        adv = await validaResponsavelFederal(caracteres_processo)
+    } else if (caracteresProcesso == 15 || caracteresProcesso == 17 || caracteresProcesso == 20) {
+        adv = await validaResponsavelFederal(caracteresProcesso)
         if (adv != null)
             selectRespExec(adv)
     } else
@@ -1513,60 +1578,66 @@ function validaTipoIntimacao(txt) {
 }
 
 function desmarcarCaixaTarefaSequencia() {
-    let box = document.querySelector("#fdt-form > div:nth-child(15) > div.col-sm-12 > div > label > input")
+    let box = document.querySelector("#incluirOutra")
     box.checked = false
 }
 
-function proximaTarefa (descricao_tarefa) {
-    let tipo_audiencia = ["INSTRUÇÃO", "UNA"]
+function proximaTarefa (descricaoTarefa) {
+    let tipoAudiencia = ["INSTRUÇÃO", "UNA", "INICIAL", "INAUGURAL"]
     let audiencia = ["CONTATAR CLIENTE","SMS E WHATSAPP","LEMBRAR CLIENTE"]
-    let audiencia_short = ["CONTATAR CLIENTE","SMS E WHATSAPP"]
+    let audienciaShort = ["CONTATAR CLIENTE","SMS E WHATSAPP"]
     let instrucao = ["CONTATAR CLIENTE","SMS E WHATSAPP","LEMBRAR CLIENTE", "ANÁLISE"]
-    let instrucao_short = ["CONTATAR CLIENTE","SMS E WHATSAPP","ANÁLISE"]
+    let instrucaoShort = ["CONTATAR CLIENTE","SMS E WHATSAPP","ANÁLISE"]
     let pericia = ["SMS E WHATSAPP","LEMBRAR CLIENTE"]
-    let pericia_short = ["SMS E WHATSAPP"]
-    let pericia_df = ["SMS E WHATSAPP","LEMBRAR CLIENTE","ATO ORDINATÓRIO"]
-    let pericia_df_short = ["SMS E WHATSAPP","ATO ORDINATÓRIO"]
+    let periciaShort = ["SMS E WHATSAPP"]
+    let periciaDF = ["SMS E WHATSAPP","LEMBRAR CLIENTE","ATO ORDINATÓRIO"]
+    let periciaDFShort = ["SMS E WHATSAPP","ATO ORDINATÓRIO"]
     let financeiro = ["RECEBIMENTO DE ALVARÁ","RPV TRF1 BAHIA", "RPV TRF1 BRASÌLIA", "RPV TRF1 GOIÁS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTÂNCIA","PRECATÓRIO"]
     let emendar = "CONTATAR CLIENTE"
-    let sequencia = cliente.compromisso.tarefa_sequencia
-    let compromisso = cliente.compromisso.tipo_compromisso
-    let cont = cliente.compromisso.tarefa_restante
-    let i
+    let sequencia = cliente.compromisso.tarefaSequencia
+    let compromisso = cliente.compromisso.tipoCompromisso
+    let cont = cliente.compromisso.tarefaRestante
+    let i, achou = false
 
-    if (cliente.compromisso.tarefa_sequencia == cliente.compromisso.tarefa_restante) {
-        cliente.compromisso.descricao = descricao_tarefa.value
+    if (cliente.compromisso.tarefaSequencia == cliente.compromisso.tarefaRestante) {
+        cliente.compromisso.descricao = descricaoTarefa.value
     }
 
+    tipoAudiencia.forEach(e => {
+        if (compromisso.search(e) > -1) {
+            achou = true
+        }
+    })
+
     if (compromisso.search('AUDIÊNCIA') == 0 && cont > -1) {
-        if (compromisso.search(tipo_audiencia[0]) < 0 && compromisso.search(tipo_audiencia[1]) < 0) {
-            if (cliente.compromisso.tarefa_sequencia < 4) {
-                i = audiencia_short.indexOf(cliente.compromisso.tipo_tarefa)
-                if (i <= audiencia_short.length) {
-                    cliente.compromisso.tipo_tarefa = audiencia_short[i+1]
+        if (!achou) {
+            if (cliente.compromisso.tarefaSequencia < 4) {
+                i = audienciaShort.indexOf(cliente.compromisso.tipoTarefa)
+                if (i <= audienciaShort.length) {
+                    cliente.compromisso.tipoTarefa = audienciaShort[i+1]
                     return cont-1
                 }
             }
             else {
-                i = audiencia.indexOf(cliente.compromisso.tipo_tarefa)
+                i = audiencia.indexOf(cliente.compromisso.tipoTarefa)
                 if (i <= audiencia.length) {
-                    cliente.compromisso.tipo_tarefa = audiencia[i+1]
+                    cliente.compromisso.tipoTarefa = audiencia[i+1]
                     return cont-1
                 }
             }
         }
         else {
-            if (cliente.compromisso.tarefa_sequencia < 5) {
-                i = instrucao_short.indexOf(cliente.compromisso.tipo_tarefa)
-                if (i <= instrucao_short.length) {
-                    cliente.compromisso.tipo_tarefa = instrucao_short[i+1]
+            if (cliente.compromisso.tarefaSequencia < 5) {
+                i = instrucaoShort.indexOf(cliente.compromisso.tipoTarefa)
+                if (i <= instrucaoShort.length) {
+                    cliente.compromisso.tipoTarefa = instrucaoShort[i+1]
                     return cont-1
                 }
             }
             else {
-                i = instrucao.indexOf(cliente.compromisso.tipo_tarefa)
+                i = instrucao.indexOf(cliente.compromisso.tipoTarefa)
                 if (i <= instrucao.length) {
-                    cliente.compromisso.tipo_tarefa = instrucao[i+1]
+                    cliente.compromisso.tipoTarefa = instrucao[i+1]
                     return cont-1
                 }
             }
@@ -1575,49 +1646,49 @@ function proximaTarefa (descricao_tarefa) {
     else {
         if (compromisso.search('PERÍCIA') == 0 && cont > -1) {
             if (cliente.processo.estado == "DF" || cliente.processo.estado == "GO") {
-                if (cliente.compromisso.tarefa_sequencia < 4) {
-                    i = pericia_df_short.indexOf(cliente.compromisso.tipo_tarefa)
-                    if (i <= pericia_df_short.length) {
-                        cliente.compromisso.tipo_tarefa = pericia_df_short[i+1]
+                if (cliente.compromisso.tarefaSequencia < 4) {
+                    i = periciaDFShort.indexOf(cliente.compromisso.tipoTarefa)
+                    if (i <= periciaDFShort.length) {
+                        cliente.compromisso.tipoTarefa = periciaDFShort[i+1]
                         return cont-1
                     }
                 }
                 else {
-                    i = pericia_df.indexOf(cliente.compromisso.tipo_tarefa)
-                    if (i <= pericia_df.length) {
-                        cliente.compromisso.tipo_tarefa = pericia_df[i+1]
+                    i = periciaDF.indexOf(cliente.compromisso.tipoTarefa)
+                    if (i <= periciaDF.length) {
+                        cliente.compromisso.tipoTarefa = periciaDF[i+1]
                         return cont-1
                     }
                 }
             }
             else {
-                if (cliente.compromisso.tarefa_sequencia < 3) {
-                    i = pericia_short.indexOf(cliente.compromisso.tipo_tarefa)
-                    if (i <= pericia_short.length) {
-                        cliente.compromisso.tipo_tarefa = pericia_short[i+1]
+                if (cliente.compromisso.tarefaSequencia < 3) {
+                    i = periciaShort.indexOf(cliente.compromisso.tipoTarefa)
+                    if (i <= periciaShort.length) {
+                        cliente.compromisso.tipoTarefa = periciaShort[i+1]
                         return cont-1
                     }
                 }
                 else {
-                    i = pericia.indexOf(cliente.compromisso.tipo_tarefa)
+                    i = pericia.indexOf(cliente.compromisso.tipoTarefa)
                     if (i <= pericia.length) {
-                        cliente.compromisso.tipo_tarefa = pericia[i+1]
+                        cliente.compromisso.tipoTarefa = pericia[i+1]
                         return cont-1
                     }
                 }
             }
         }
         else {
-            if (sequencia == 2 && cont > 1 && financeiro.includes(cliente.compromisso.tipo_tarefa)) {
+            if (sequencia == 2 && cont > 1 && financeiro.includes(cliente.compromisso.tipoTarefa)) {
                 return cont-1
             }
 
-            if (sequencia == 2 && cont > 1 && !(financeiro.includes(cliente.compromisso.tipo_tarefa))) {
-                cliente.compromisso.tipo_tarefa = emendar
+            if (sequencia == 2 && cont > 1 && !(financeiro.includes(cliente.compromisso.tipoTarefa))) {
+                cliente.compromisso.tipoTarefa = emendar
                 return cont-1
             }
-            if (sequencia == 2 && cont == 1 && !(financeiro.includes(cliente.compromisso.tipo_tarefa))) {
-                cliente.compromisso.tipo_tarefa = ''
+            if (sequencia == 2 && cont == 1 && !(financeiro.includes(cliente.compromisso.tipoTarefa))) {
+                cliente.compromisso.tipoTarefa = ''
             }
             return cont
         }
@@ -1643,16 +1714,16 @@ function removeEventGravar () {
     mostrarFormTarefaColetivo()
 }
 
-async function submitAtualizarTarefa (descricao_tarefa) {
+async function submitAtualizarTarefa (descricaoTarefa) {
     let gravarBtn = document.querySelector("#btnGravar")
     //removeEventGravar()
     gravarBtn.addEventListener('click', async () => {
-        if (cliente.processo.coletivo && (cliente.compromisso.tipo_compromisso.search("AUDIÊNCIA") == 0 || cliente.compromisso.tipo_compromisso.search("PERÍCIA") == 0) && (cliente.compromisso.tipo_tarefa == "CONTATAR CLIENTE" || cliente.compromisso.tipo_tarefa == "LEMBRAR CLIENTE") || "SMS E WHATSAPP") {
+        if (cliente.processo.coletivo && (cliente.compromisso.tipoCompromisso.search("AUDIÊNCIA") == 0 || cliente.compromisso.tipoCompromisso.search("PERÍCIA") == 0) && (cliente.compromisso.tipoTarefa == "CONTATAR CLIENTE" || cliente.compromisso.tipoTarefa == "LEMBRAR CLIENTE") || "SMS E WHATSAPP") {
             //criarTarefaColetivo()
         }
         if (submit) {
             submit = false
-            cliente.compromisso.tarefa_restante = await proximaTarefa(descricao_tarefa)
+            cliente.compromisso.tarefaRestante = await proximaTarefa(descricaoTarefa)
             desativarAtualizacao()
             setCliente(cliente)
         }
@@ -1666,11 +1737,11 @@ function existeOrigem() {
     return cliente.processo.origem
 }
 
-function atualizaHora (horario_inicial) {
-    let hora = Number(horario_inicial.value.slice(0,2))+2
+function atualizaHora (horarioInicial) {
+    let hora = Number(horarioInicial.value.slice(0,2))+2
 
-    if (horario_inicial.value.length == 0)
-        horario_inicial.value = "00:00"
+    if (horarioInicial.value.length == 0)
+        horarioInicial.value = "00:00"
 
     if (hora == 24)
         hora = '00'
@@ -1682,80 +1753,80 @@ function atualizaHora (horario_inicial) {
         let num = hora
         hora = `0${num}`
     }
-    return `${hora}:${horario_inicial.value.slice(3)}`
+    return `${hora}:${horarioInicial.value.slice(3)}`
 }
 
-function atualizaDescricao (descricao_tarefa,horario_inicial,horario_final,local) {
-    let loc = cliente.compromisso.tipo_tarefa.search(" ")
+function atualizaDescricao (descricaoTarefa,horarioInicial,horarioFinal,local) {
+    let loc = cliente.compromisso.tipoTarefa.search(" ")
     
     let endereço = getEndereço(local)
 
     if (loc < 0)
-        loc = cliente.compromisso.tipo_tarefa.length   
+        loc = cliente.compromisso.tipoTarefa.length   
 
-    horario_final.value = atualizaHora(horario_inicial)
+    horarioFinal.value = atualizaHora(horarioInicial)
 
     let processo = existeOrigem()
 
-    let validacao_tarefa = removeAcentuacaoString(cliente.compromisso.tipo_tarefa.slice(0,loc))
+    let validacaoTarefa = removeAcentuacaoString(cliente.compromisso.tipoTarefa.slice(0,loc))
 
-    if (cliente.compromisso.descricao !== null && removeAcentuacaoString(validacao_tarefa) != "ANALISE" && removeAcentuacaoString(cliente.compromisso.tipo_tarefa) != "ATO ORDINATORIO" && cliente.compromisso.tipo_compromisso != "EMENDAR") {
-        descricao_tarefa.value = cliente.compromisso.descricao
+    if (cliente.compromisso.descricao !== null && removeAcentuacaoString(validacaoTarefa) != "ANALISE" && removeAcentuacaoString(cliente.compromisso.tipoTarefa) != "ATO ORDINATORIO" && cliente.compromisso.tipoCompromisso != "EMENDAR") {
+        descricaoTarefa.value = cliente.compromisso.descricao
     }
     else {
-        if (validacao_tarefa == "AUDIENCIA" && cliente.compromisso.tarefa_sequencia == cliente.compromisso.tarefa_restante) {
-            descricao_tarefa.value = `${processo} - ${cliente.compromisso.tipo_compromisso} DE ${cliente.cliente.nome} ${cliente.cliente.cpf} X ${cliente.processo.reu.length > 0 ? cliente.processo.reu : '_______'}, NO DIA ${cliente.compromisso.prazo_interno} ÀS ${horario_inicial.value}, LOCAL: ${endereço}`
+        if (validacaoTarefa == "AUDIENCIA" && cliente.compromisso.tarefaSequencia == cliente.compromisso.tarefaRestante) {
+            descricaoTarefa.value = `${processo} - ${cliente.compromisso.tipoCompromisso} DE ${cliente.cliente.nome} ${cliente.cliente.cpf} X ${cliente.processo.reu.length > 0 ? cliente.processo.reu : '_______'}, NO DIA ${cliente.compromisso.prazoInterno} ÀS ${horarioInicial.value}, LOCAL: ${endereço}`
         }
         else
-            if (removeAcentuacaoString(cliente.compromisso.tipo_compromisso).search('PERICIA') == 0 && cliente.compromisso.tarefa_restante > 1) {
-                    let perito = document.querySelector('#input_perito')
-                    descricao_tarefa.value = `${processo} - ${cliente.compromisso.tipo_compromisso} DE ${cliente.cliente.nome} ${cliente.cliente.cpf}, NO DIA ${cliente.compromisso.prazo_interno} ÀS ${horario_inicial.value}, PERITO: ${perito != null ? perito.value : ''}, LOCAL: ${endereço}`
+            if (removeAcentuacaoString(cliente.compromisso.tipoCompromisso).search('PERICIA') == 0 && cliente.compromisso.tarefaRestante > 1) {
+                    let perito = document.querySelector('#inputPerito')
+                    descricaoTarefa.value = `${processo} - ${cliente.compromisso.tipoCompromisso} DE ${cliente.cliente.nome} ${cliente.cliente.cpf}, NO DIA ${cliente.compromisso.prazoInterno} ÀS ${horarioInicial.value}, PERITO: ${perito != null ? perito.value : ''}, LOCAL: ${endereço}`
             }
             else
-                if (removeAcentuacaoString(cliente.compromisso.tipo_tarefa) == "ATO ORDINATORIO" && removeAcentuacaoString(cliente.compromisso.tipo_compromisso).search('PERICIA') == 0) {
-                    descricao_tarefa.value = `${processo} - ATO ORDINATÓRIO (PERÍCIA DESIGNADA)`
+                if (removeAcentuacaoString(cliente.compromisso.tipoTarefa) == "ATO ORDINATORIO" && removeAcentuacaoString(cliente.compromisso.tipoCompromisso).search('PERICIA') == 0) {
+                    descricaoTarefa.value = `${processo} - ATO ORDINATÓRIO (PERÍCIA DESIGNADA)`
                 }
                 else
-                    if ((validacao_tarefa == "ANALISE") && removeAcentuacaoString(cliente.compromisso.tipo_compromisso).search('AUDIENCIA') == 0) {
-                        descricao_tarefa.value = `${processo} - VERIFICAR NECESSIDADE DE TESTEMUNHAS`
+                    if ((validacaoTarefa == "ANALISE") && removeAcentuacaoString(cliente.compromisso.tipoCompromisso).search('AUDIENCIA') == 0) {
+                        descricaoTarefa.value = `${processo} - VERIFICAR NECESSIDADE DE TESTEMUNHAS`
                     }
                     else
-                        if ((cliente.compromisso.tipo_compromisso == "EMENDAR") && (cliente.compromisso.tarefa_restante == 1)) {
-                            descricao_tarefa.value = `${processo} - `
+                        if ((cliente.compromisso.tipoCompromisso == "EMENDAR") && (cliente.compromisso.tarefaRestante == 1)) {
+                            descricaoTarefa.value = `${processo} - `
                         }
                         else {
-                            descricao_tarefa.value = `${processo} - ${cliente.compromisso.tipo_compromisso}`
+                            descricaoTarefa.value = `${processo} - ${cliente.compromisso.tipoCompromisso}`
                         }
     }
 }
 
-function selectTipoIntimacao(select_tipo_intimacao, option_li) {
+function selectTipoIntimacao(selectTipoIntimacaoInput, optionLi) {
     let achou = false
-    let indice_manifestação
-    let tipo_intimacao = cliente.compromisso.tipo_tarefa
-    for (let i = 0; i < select_tipo_intimacao.options.length; i++) {
-        let n = removeAcentuacaoString(select_tipo_intimacao.options[i].innerText).toUpperCase().search(removeAcentuacaoString(tipo_intimacao).toUpperCase())
-        let n_intimacao = removeAcentuacaoString(select_tipo_intimacao.options[i].innerText).toUpperCase().search(("MANIFESTACAO"))
-        if (n_intimacao == 0)
-            indice_manifestação = i
+    let indiceManifestação
+    let tipoIntimacao = cliente.compromisso.tipoTarefa
+    for (let i = 0; i < selectTipoIntimacaoInput.options.length; i++) {
+        let n = removeAcentuacaoString(selectTipoIntimacaoInput.options[i].innerText).toUpperCase().search(removeAcentuacaoString(tipoIntimacao).toUpperCase())
+        let nIntimacao = removeAcentuacaoString(selectTipoIntimacaoInput.options[i].innerText).toUpperCase().search(("MANIFESTACAO"))
+        if (nIntimacao == 0)
+            indiceManifestação = i
         if (n == 0) {
-            option_li.children[i].children[0].click()
+            optionLi.children[i].children[0].click()
             achou = true
             return 0
         }
     }
-    let space = (tipo_intimacao.search(" "))
-    for (let i = 0; i < select_tipo_intimacao.options.length; i++) {
-        let n = removeAcentuacaoString(select_tipo_intimacao.options[i].innerText).toUpperCase().search(removeAcentuacaoString(tipo_intimacao.slice(0,space)))
+    let space = (tipoIntimacao.search(" "))
+    for (let i = 0; i < selectTipoIntimacaoInput.options.length; i++) {
+        let n = removeAcentuacaoString(selectTipoIntimacaoInput.options[i].innerText).toUpperCase().search(removeAcentuacaoString(tipoIntimacao.slice(0,space)))
         if (n == 0) {
-            option_li.children[i].children[0].click()
+            optionLi.children[i].children[0].click()
             achou = true
             return 0
         }
     }
     
     if (!achou) {
-        option_li.children[indice_manifestação].children[0].click()
+        optionLi.children[indiceManifestação].children[0].click()
     }
 }
 
@@ -1764,82 +1835,82 @@ function removeInputDependente (element) {
 }
 
 function createInputDependente() {
-    let txt_dependente = document.createElement('b')
+    let txtDependente = document.createElement('b')
     let input = document.createElement('input')
-    txt_dependente.setAttribute('id','txt_dependente')
-    txt_dependente.innerHTML = 'Processo dependente: '
+    txtDependente.setAttribute('id','txtDependente')
+    txtDependente.innerHTML = 'Processo dependente: '
     input.setAttribute('id','input_dependente')
     input.setAttribute('type','text')
     input.classList.add("form-control")
     input.style.display = 'inline'
     input.style.width = '40%'
-    let div_conteudo = document.querySelector(".alert-info")
-    div_conteudo.innerHTML += '<br>'
-    div_conteudo.appendChild(txt_dependente)
-    div_conteudo.appendChild(input)
+    let divConteudo = document.querySelector(".alert-info")
+    divConteudo.innerHTML += '<br>'
+    divConteudo.appendChild(txtDependente)
+    divConteudo.appendChild(input)
     input.addEventListener('input', event => {
         cliente.processo.dependente = removeCaracteresProcesso(event.target.value)
     })
 }
 
 function mostrarCamposPericia () {
-    let tarefa_normal = document.querySelector('#divTipoTarefaNormal')
-    let data_input = document.querySelector('#divTipoTarefaNormal > div:nth-child(1) > div.col-sm-8')
-    data_input.setAttribute('class','form-group col-sm-4')
-    let horario_final = document.querySelector("#horarioFinal")
-    let descricao_tarefa = document.querySelector("#descricao")
+    let tarefaNormal = document.querySelector('#divTipoTarefaNormal')
+    let dataInput = document.querySelector('#divTipoTarefaNormal > div:nth-child(1) > div.col-sm-8')
+    dataInput.setAttribute('class','form-group col-sm-4')
+    let horarioFinal = document.querySelector("#horarioFinal")
+    let descricaoTarefa = document.querySelector("#descricao")
     
-    let div_row_2 = document.createElement('div')
-    div_row_2.setAttribute('class','row')
-    tarefa_normal.appendChild(div_row_2)
+    let divRow2 = document.createElement('div')
+    divRow2.setAttribute('class','row')
+    tarefaNormal.appendChild(divRow2)
 
-    let div_perito = document.createElement('div')
-    let label_perito = document.createElement('label')
-    let input_perito = document.createElement('input')
-    label_perito.innerHTML = 'Perito(a): '
-    div_perito.setAttribute('class','form-group col-sm-4')
-    input_perito.setAttribute('class','form-control')
-    input_perito.setAttribute('id','input_perito')
+    let divPerito = document.createElement('div')
+    let labelPerito = document.createElement('label')
+    let inputPerito = document.createElement('input')
+    labelPerito.innerHTML = 'Perito(a): '
+    divPerito.setAttribute('class','form-group col-sm-4')
+    inputPerito.setAttribute('class','form-control')
+    inputPerito.setAttribute('id','inputPerito')
 
-    let div_local = document.createElement('div')
-    let label_local = document.createElement('label')
-    let input_local = document.createElement('input')
-    label_local.innerHTML = 'Local: '
-    div_local.setAttribute('class','form-group col-sm-4')
-    input_local.setAttribute('class','form-control')
+    let divLocal = document.createElement('div')
+    let labelLocal = document.createElement('label')
+    let inputLocal = document.createElement('input')
+    labelLocal.innerHTML = 'Local: '
+    divLocal.setAttribute('class','form-group col-sm-4')
+    inputLocal.setAttribute('class','form-control')
 
-    let div_horario_inicial = document.createElement('div')
-    let label_horario_inicial = document.createElement('label')
-    let input_horario_inicial = document.createElement('input')
-    label_horario_inicial.innerHTML = 'Horário: '
-    div_horario_inicial.setAttribute('class','form-group datepicker-hora col-sm-4')
-    input_horario_inicial.setAttribute('class','form-control')
-    input_horario_inicial.setAttribute('type','time')
-    input_horario_inicial.setAttribute('id','horarioInicial')
+    let divHorarioInicial = document.createElement('div')
+    let labelHorarioInicial = document.createElement('label')
+    let inputHorarioInicial = document.createElement('input')
+    labelHorarioInicial.innerHTML = 'Horário: '
+    divHorarioInicial.setAttribute('class','form-group datepicker-hora col-sm-4')
+    inputHorarioInicial.setAttribute('class','form-control')
+    inputHorarioInicial.setAttribute('type','time')
+    inputHorarioInicial.setAttribute('id','horarioInicial')
 
-    data_input.after(div_local)
-    div_local.appendChild(label_local)
-    div_local.appendChild(input_local)
-    input_local.addEventListener('input', () => {
-        input_local.value = input_local.value.toUpperCase()
-        atualizaDescricao(descricao_tarefa, input_horario_inicial,horario_final, input_local)
+    dataInput.after(divLocal)
+    divLocal.appendChild(labelLocal)
+    divLocal.appendChild(inputLocal)
+    inputLocal.addEventListener('input', () => {
+        inputLocal.value = inputLocal.value.toUpperCase()
+        atualizaDescricao(descricaoTarefa, inputHorarioInicial,horarioFinal, inputLocal)
     })
 
-    div_row_2.appendChild(div_horario_inicial)
-    div_horario_inicial.appendChild(label_horario_inicial)
-    div_horario_inicial.appendChild(input_horario_inicial)
-    input_horario_inicial.value = '00:00'
-    input_horario_inicial.addEventListener('input',() => {
-        input_horario_inicial.value = input_horario_inicial.value.toUpperCase()
-        atualizaDescricao(descricao_tarefa, input_horario_inicial,horario_final, input_local)
+    divRow2.appendChild(divHorarioInicial)
+    divHorarioInicial.appendChild(labelHorarioInicial)
+    divHorarioInicial.appendChild(inputHorarioInicial)
+    inputHorarioInicial.value = '00:00'
+    inputHorarioInicial.addEventListener('input',() => {
+        inputHorarioInicial.value = inputHorarioInicial.value.toUpperCase()
+        atualizaDescricao(descricaoTarefa, inputHorarioInicial,horarioFinal, inputLocal)
     })
 
-    div_row_2.appendChild(div_perito)
-    div_perito.appendChild(label_perito)
-    div_perito.appendChild(input_perito)
-    input_perito.addEventListener('input',() => {
-        input_perito.value = input_perito.value.toUpperCase()
-        atualizaDescricao(descricao_tarefa, input_horario_inicial,horario_final, input_local)
+    divRow2.appendChild(divPerito)
+    divPerito.appendChild(labelPerito)
+    divPerito.appendChild(inputPerito)
+    inputPerito.addEventListener('input',() => {
+        inputPerito.value = inputPerito.value.toUpperCase()
+        atualizaDescricao(descricaoTarefa, inputHorarioInicial,horarioFinal, inputLocal)
     })
 }
 
@@ -1847,44 +1918,44 @@ function loadInfo () {
     if (!state.functions.cadastroTarefa.AutoPreenchimentoTarefasIntimacoes) {
         return
     }
-    let select_tipo_intimacao = document.querySelector("#idTipoTarefa")
-    let descricao_tarefa = document.querySelector("#descricao")
-    let option_li = document.querySelector(`#fdt-form > div:nth-child(9) > div.form-group.col-sm-8 > div > div > ul`)
-    let horario_inicial = document.querySelector("#horarioInicial")
-    let horario_final = document.querySelector("#horarioFinal")
+    let selectTipoIntimacaoInput = document.querySelector("#idTipoTarefa")
+    let descricaoTarefa = document.querySelector("#descricao")
+    let optionLi = document.querySelector(`#fdt-form > div:nth-child(10) > div.form-group.col-sm-8 > div > div > ul`)
+    let horarioInicial = document.querySelector("#horarioInicial")
+    let horarioFinal = document.querySelector("#horarioFinal")
     let local = document.querySelector("#onde")
-    let processo_dependente = document.querySelector("#input_dependente")
+    let processoDependente = document.querySelector("#input_dependente")
 
-    descricao_tarefa.addEventListener('change', event => {
+    descricaoTarefa.addEventListener('change', event => {
         event.target.value = event.target.value.toUpperCase()
     })
     local.addEventListener('input', event => {
         event.target.value = event.target.value.toUpperCase()
     })
     
-    for (let index = 0; index < option_li.children.length; index++) {
-        option_li.children[index].children[0].addEventListener('click', () => {
+    for (let index = 0; index < optionLi.children.length; index++) {
+        optionLi.children[index].children[0].addEventListener('click', () => {
             validaEsferaProcesso()
             setTimeout(() => {
                 let arrayAudiencias = ["AUDIÊNCIA DE INSTRUÇÃO E JULGAMENTO", "AUDIÊNCIA UNA", "AUDIÊNCIA DE INSTRUÇÃO", "AUDIÊNCIA INICIAL", "AUDIÊNCIA INAUGURAL"]
-                if (cliente.compromisso.tipo_compromisso.search('PERÍCIA') == 0 && cliente.compromisso.tarefa_sequencia == cliente.compromisso.tarefa_restante)
+                if (cliente.compromisso.tipoCompromisso.search('PERÍCIA') == 0 && cliente.compromisso.tarefaSequencia == cliente.compromisso.tarefaRestante)
                     mostrarCamposPericia()
-                calcularDataTarefa(((cliente.compromisso.tipo_tarefa == "CONTATAR CLIENTE") || (cliente.compromisso.tipo_tarefa == "LEMBRAR CLIENTE") || (cliente.compromisso.tipo_tarefa == "SMS E WHATSAPP")) || (arrayAudiencias.includes(cliente.compromisso.tipo_compromisso)) ? 1 : 2)
+                calcularDataTarefa(((cliente.compromisso.tipoTarefa == "CONTATAR CLIENTE") || (cliente.compromisso.tipoTarefa == "LEMBRAR CLIENTE") || (cliente.compromisso.tipoTarefa == "SMS E WHATSAPP")) || (arrayAudiencias.includes(cliente.compromisso.tipoCompromisso)) ? 1 : 2)
                 if (cliente.compromisso.atualizar) {
                     let contagem = contarTarefas()
-                    cliente.compromisso.tarefa_sequencia = contagem
-                    cliente.compromisso.tarefa_restante = contagem
+                    cliente.compromisso.tarefaSequencia = contagem
+                    cliente.compromisso.tarefaRestante = contagem
                 }
             }, 50);
-            if ((horario_inicial.value.length == 0 || local.value.length == 0))
-                atualizaDescricao(descricao_tarefa, horario_inicial,horario_final, local)
+            if ((horarioInicial.value.length == 0 || local.value.length == 0))
+                atualizaDescricao(descricaoTarefa, horarioInicial,horarioFinal, local)
             
-            let event_targets = [horario_inicial,local,processo_dependente]
+            let eventTargets = [horarioInicial,local,processoDependente]
 
-            event_targets.forEach(element => {
+            eventTargets.forEach(element => {
                 if (element !== null)
-                    element.addEventListener(element == horario_inicial ? 'blur':'input', () => {
-                        atualizaDescricao(descricao_tarefa, horario_inicial, horario_final, local)
+                    element.addEventListener(element == horarioInicial ? 'blur':'input', () => {
+                        atualizaDescricao(descricaoTarefa, horarioInicial, horarioFinal, local)
                     })
             })
 
@@ -1892,32 +1963,32 @@ function loadInfo () {
             if (contactdiv != null) {
                 contactdiv.parentNode.removeChild(contactdiv)
             }
-            if ((option_li.children[index].children[0].children[0].innerText.toUpperCase() == "CONTATAR CLIENTE" || option_li.children[index].children[0].children[0].innerText.toUpperCase() == "LEMBRAR CLIENTE") && (cliente.processo.estado != "DF" || cliente.processo.estado != "GO")) {
+            if ((optionLi.children[index].children[0].children[0].innerText.toUpperCase() == "CONTATAR CLIENTE" || optionLi.children[index].children[0].children[0].innerText.toUpperCase() == "LEMBRAR CLIENTE") && (cliente.processo.estado != "DF" || cliente.processo.estado != "GO")) {
                 validaExecutorContatar()
             }
 
-            submitAtualizarTarefa(descricao_tarefa)
-            if (cliente.compromisso.tarefa_restante <= 1) {
+            submitAtualizarTarefa(descricaoTarefa)
+            if (cliente.compromisso.tarefaRestante <= 1) {
                 desmarcarCaixaTarefaSequencia()
             }
         })
     }
-    selectTipoIntimacao(select_tipo_intimacao,option_li)
+    selectTipoIntimacao(selectTipoIntimacaoInput,optionLi)
 }
 
 function contarTarefas() {
     let contagem
-    let compromisso = cliente.compromisso.tipo_compromisso
-    let cont_dois = ["EMENDAR","DADOS PERÍCIA SOCIAL","DADOS COMPLEMENTARES","ALVARÁ","RPV","PRECATÓRIO"]
-    let cont_tres = "PERÍCIA"
-    let cont_quatro = ["AUDIÊNCIA DE CONCILIAÇÃO", "AUDIÊNCIA CONCILIATÓRIA", "AUDIÊNCIA DE INTERROGATÓRIO"]
-    let cont_cinco = ["AUDIÊNCIA INAUGURAL", "AUDIÊNCIA INICIAL","AUDIÊNCIA DE INSTRUÇÃO", "AUDIÊNCIA DE INSTRUÇÃO E JULGAMENTO", "AUDIÊNCIA UNA"]
+    let compromisso = cliente.compromisso.tipoCompromisso
+    let contDois = ["EMENDAR","DADOS PERÍCIA SOCIAL","DADOS COMPLEMENTARES","ALVARÁ","RPV","PRECATÓRIO"]
+    let contTres = "PERÍCIA"
+    let contQuatro = ["AUDIÊNCIA DE CONCILIAÇÃO", "AUDIÊNCIA CONCILIATÓRIA", "AUDIÊNCIA DE INTERROGATÓRIO"]
+    let contCinco = ["AUDIÊNCIA INAUGURAL", "AUDIÊNCIA INICIAL","AUDIÊNCIA DE INSTRUÇÃO", "AUDIÊNCIA DE INSTRUÇÃO E JULGAMENTO", "AUDIÊNCIA UNA"]
 
-    if (cont_dois.includes(compromisso) || cont_dois.includes(cliente.compromisso.tipo_compromisso)){
+    if (contDois.includes(compromisso) || contDois.includes(cliente.compromisso.tipoCompromisso)){
         contagem = 2
     }
     else
-        if (compromisso.search(cont_tres) == 0){
+        if (compromisso.search(contTres) == 0){
             if (cliente.processo.estado == "DF" || cliente.processo.estado == "GO") {
                 if (cliente.compromisso.semanas > 1)
                     contagem = 4
@@ -1932,7 +2003,7 @@ function contarTarefas() {
             }
         }
         else {
-            if (cont_quatro.includes(compromisso)){
+            if (contQuatro.includes(compromisso)){
                 if (cliente.compromisso.semanas > 1)
                     contagem = 4
                 else
@@ -1940,7 +2011,7 @@ function contarTarefas() {
 
             }
             else {
-                if (cont_cinco.includes(compromisso)){
+                if (contCinco.includes(compromisso)){
                     if (cliente.compromisso.semanas > 1)
                         contagem = 5
                     else
@@ -1954,18 +2025,18 @@ function contarTarefas() {
 }
 
 function separaTitulo(titulo) {
-    let tipo_compromisso = titulo.slice(13,titulo.search("\n"))
+    let tipoCompromisso = titulo.slice(13,titulo.search("\n"))
     let aux = titulo.slice(titulo.search("\n")+1)
-    let linha_dois = aux.slice(0,aux.search("\n"))
+    let linhaDois = aux.slice(0,aux.search("\n"))
 
-    let tipo_intimacao = validaTipoIntimacao(tipo_compromisso)
-    cliente.compromisso.tipo_compromisso = tipo_compromisso
+    let tipoIntimacao = validaTipoIntimacao(tipoCompromisso)
+    cliente.compromisso.tipoCompromisso = tipoCompromisso
     let contagem = contarTarefas()
-    cliente.compromisso.tarefa_sequencia = contagem
-    cliente.compromisso.tarefa_restante = contagem
-    cliente.compromisso.prazo_interno = linha_dois.slice(15,25)
-    cliente.compromisso.prazo_fatal = linha_dois.slice(49)
-    cliente.compromisso.tipo_tarefa = tipo_intimacao
+    cliente.compromisso.tarefaSequencia = contagem
+    cliente.compromisso.tarefaRestante = contagem
+    cliente.compromisso.prazoInterno = linhaDois.slice(15,25)
+    cliente.compromisso.prazoFatal = linhaDois.slice(49)
+    cliente.compromisso.tipoTarefa = tipoIntimacao
     return cliente
 }
 
@@ -1978,17 +2049,17 @@ function saveInfoTarefas() {
 }
 
 function focarInputProcesso() {
-    let input_processo = document.querySelector("#bsAdvProcessosTexto")
-    if (input_processo !== null) {
-        input_processo.value = ""
-        input_processo.focus()
+    let inputProcesso = document.querySelector("#bsAdvProcessosTexto")
+    if (inputProcesso !== null) {
+        inputProcesso.value = ""
+        inputProcesso.focus()
     }
 }
 
 function extrairIDRequisicaoClienteHtml (response) {
     const btnVer = response.documentElement.querySelector("body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr > td.fdt-acao > div > div > a:nth-child(1)")
     let id = btnVer.href.slice(btnVer.href.search("idPK=")+5)
-    cliente.processo.id_demais_envolvidos.push(id)
+    cliente.processo.idDemaisEnvolvidos.push(id)
 }
 
 function extrairDadosRequisicaoClienteHtml(response,gravarBtn) {
@@ -2001,7 +2072,7 @@ function extrairDadosRequisicaoClienteHtml(response,gravarBtn) {
             cliente.cliente.parceiro = e.slice(e.search("Parceiro:")+10).toUpperCase()
         }
         if (e.search("Local atendido:") > -1)
-            cliente.cliente.local_atendido = e.slice(e.search("Local atendido:")+16).toUpperCase()
+            cliente.cliente.localAtendido = e.slice(e.search("Local atendido:")+16).toUpperCase()
     })
 
     localizacao.forEach(e => {
@@ -2011,8 +2082,8 @@ function extrairDadosRequisicaoClienteHtml(response,gravarBtn) {
         if (e.search("Estado:") > -1)
             cliente.cliente.estado = e.slice(e.search("Estado:")+8).toUpperCase()
     })
-    cliente.processo.cpf_demais_envolvidos.forEach(e => {
-        ajax(3,link_cliente_ajax,e,gravarBtn)
+    cliente.processo.cpfDemaisEnvolvidos.forEach(e => {
+        ajax(3,linkClienteAjax,e,gravarBtn)
     })
 }
 
@@ -2085,10 +2156,10 @@ function extrairDadosRequisicaoProcessoHtml(response,gravarBtn) {
                 for (let index = 0; index < clientes.length; index++) {
                     cpfs.push(clientes[index].children[0].children[0].innerText.replaceAll("(","").replace(")","").replaceAll(" ",""))
                 }
-                cliente.processo.cpf_demais_envolvidos = cpfs
+                cliente.processo.cpfDemaisEnvolvidos = cpfs
             }
         } */
-    ajax(2,link_cliente_ajax,cliente.cliente.id,gravarBtn)
+    ajax(2,linkClienteAjax,cliente.cliente.id,gravarBtn)
 }
 
 async function ajax (opt,link,id,gravarBtn) {
@@ -2245,7 +2316,6 @@ function calcularPrazo (prazo,parametro) {
     if (ehBarril && !ehSentencaAcordaoDecisao) {
         dateInicial = new Date (dateFinal.getFullYear(), dateFinal.getMonth(), dateFinal.getDate()-1)
         while (cont <= 3) {
-            console.log(dateInicial)
             i = dateInicial.getDay()
             condiction = isFeriado(dateInicial,parametro)
             
@@ -2303,93 +2373,93 @@ function createButtonPrazo() {
     if (!state.functions.cadastroCompromisso.mostrarBotoesAuxiliaresdeDias) {
         return
     }
-    let data_pub = document.querySelector('#dataPublicacao')
+    let dataPub = document.querySelector('#dataPublicacao')
     let prazoInicial = document.querySelector("#dataPrazoInterno")
     let prazoFinal = document.querySelector("#dataPrazoFatal")
-    let div_data_publicacao = document.querySelector('#fdt-form > div:nth-child(7) > div:nth-child(2)')
-    let div_auxiliar = document.createElement('div')
-    let div_cinco = document.createElement('div')
-    let div_oito = document.createElement('div')
-    let div_dez = document.createElement('div')
-    let div_quinze = document.createElement('div')
-    let button_cinco = document.createElement('input')
-    let button_oito = document.createElement('input')
-    let button_dez = document.createElement('input')
-    let button_quinze = document.createElement('input')
-    let p_cinco = document.createElement('p')
-    let p_oito = document.createElement('p')
-    let p_dez = document.createElement('p')
-    let p_quinze = document.createElement('p')
+    let divDataPublicacao = document.querySelector('#fdt-form > div:nth-child(7) > div:nth-child(2)')
+    let divAuxiliar = document.createElement('div')
+    let divCinco = document.createElement('div')
+    let divOito = document.createElement('div')
+    let divDez = document.createElement('div')
+    let divQuinze = document.createElement('div')
+    let buttonCinco = document.createElement('input')
+    let buttonOito = document.createElement('input')
+    let buttonDez = document.createElement('input')
+    let buttonQuinze = document.createElement('input')
+    let pCinco = document.createElement('p')
+    let pOito = document.createElement('p')
+    let pDez = document.createElement('p')
+    let pQuinze = document.createElement('p')
     
-    button_cinco.setAttribute('id','button5')
-    button_oito.setAttribute('id','button8')
-    button_dez.setAttribute('id','button10')
-    button_quinze.setAttribute('id','button15')
-    p_cinco.setAttribute('id','prazo5')
-    p_oito.setAttribute('id','prazo8')
-    p_dez.setAttribute('id','prazo10')
-    p_quinze.setAttribute('id','prazo15')
-    button_cinco.setAttribute('class','btnPrazo')
-    button_cinco.setAttribute('value','05')
-    button_cinco.setAttribute('type','button')
-    button_oito.setAttribute('class','btnPrazo')
-    button_oito.setAttribute('value','08')
-    button_oito.setAttribute('type','button')
-    button_dez.setAttribute('class','btnPrazo')
-    button_dez.setAttribute('value','10')
-    button_dez.setAttribute('type','button')
-    button_quinze.setAttribute('class','btnPrazo')
-    button_quinze.setAttribute('value','15')
-    button_quinze.setAttribute('type','button')
-    div_data_publicacao.appendChild(div_auxiliar)
-    div_auxiliar.appendChild(div_cinco)
-    div_auxiliar.appendChild(div_oito)
-    div_auxiliar.appendChild(div_dez)
-    div_auxiliar.appendChild(div_quinze)
-    div_cinco.appendChild(button_cinco)
-    div_cinco.appendChild(p_cinco)
-    div_oito.appendChild(button_oito)
-    div_oito.appendChild(p_oito)
-    div_dez.appendChild(button_dez)
-    div_dez.appendChild(p_dez)
-    div_quinze.appendChild(button_quinze)
-    div_quinze.appendChild(p_quinze)
-    div_data_publicacao.style.position = 'relative'
-    div_auxiliar.style.position = 'absolute'
-    div_auxiliar.style.display = 'flex'
-    div_auxiliar.style.flexDirection = 'column'
-    div_auxiliar.style.top = '-82px'
-    div_auxiliar.style.right = '-150px'
-    p_cinco.style.color = 'gray'
-    p_oito.style.color = 'gray'
-    p_dez.style.color = 'gray'
-    p_quinze.style.color = 'gray'
-    p_cinco.innerHTML = `5 DIAS`
-    p_oito.innerHTML = `8 DIAS`
-    p_dez.innerHTML = `10 DIAS`
-    p_quinze.innerHTML = `15 DIAS`
-    div_cinco.style.display = 'flex'
-    div_cinco.style.flexDirection = 'row'
-    div_cinco.style.alignItems = 'center'
-    div_oito.style.display = 'flex'
-    div_oito.style.flexDirection = 'row'
-    div_oito.style.alignItems = 'center'
-    div_dez.style.display = 'flex'
-    div_dez.style.flexDirection = 'row'
-    div_dez.style.alignItems = 'center'
-    div_quinze.style.display = 'flex'
-    div_quinze.style.flexDirection = 'row'
-    div_quinze.style.alignItems = 'center'
+    buttonCinco.setAttribute('id','button5')
+    buttonOito.setAttribute('id','button8')
+    buttonDez.setAttribute('id','button10')
+    buttonQuinze.setAttribute('id','button15')
+    pCinco.setAttribute('id','prazo5')
+    pOito.setAttribute('id','prazo8')
+    pDez.setAttribute('id','prazo10')
+    pQuinze.setAttribute('id','prazo15')
+    buttonCinco.setAttribute('class','btnPrazo')
+    buttonCinco.setAttribute('value','05')
+    buttonCinco.setAttribute('type','button')
+    buttonOito.setAttribute('class','btnPrazo')
+    buttonOito.setAttribute('value','08')
+    buttonOito.setAttribute('type','button')
+    buttonDez.setAttribute('class','btnPrazo')
+    buttonDez.setAttribute('value','10')
+    buttonDez.setAttribute('type','button')
+    buttonQuinze.setAttribute('class','btnPrazo')
+    buttonQuinze.setAttribute('value','15')
+    buttonQuinze.setAttribute('type','button')
+    divDataPublicacao.appendChild(divAuxiliar)
+    divAuxiliar.appendChild(divCinco)
+    divAuxiliar.appendChild(divOito)
+    divAuxiliar.appendChild(divDez)
+    divAuxiliar.appendChild(divQuinze)
+    divCinco.appendChild(buttonCinco)
+    divCinco.appendChild(pCinco)
+    divOito.appendChild(buttonOito)
+    divOito.appendChild(pOito)
+    divDez.appendChild(buttonDez)
+    divDez.appendChild(pDez)
+    divQuinze.appendChild(buttonQuinze)
+    divQuinze.appendChild(pQuinze)
+    divDataPublicacao.style.position = 'relative'
+    divAuxiliar.style.position = 'absolute'
+    divAuxiliar.style.display = 'flex'
+    divAuxiliar.style.flexDirection = 'column'
+    divAuxiliar.style.top = '-82px'
+    divAuxiliar.style.right = '-150px'
+    pCinco.style.color = 'gray'
+    pOito.style.color = 'gray'
+    pDez.style.color = 'gray'
+    pQuinze.style.color = 'gray'
+    pCinco.innerHTML = `5 DIAS`
+    pOito.innerHTML = `8 DIAS`
+    pDez.innerHTML = `10 DIAS`
+    pQuinze.innerHTML = `15 DIAS`
+    divCinco.style.display = 'flex'
+    divCinco.style.flexDirection = 'row'
+    divCinco.style.alignItems = 'center'
+    divOito.style.display = 'flex'
+    divOito.style.flexDirection = 'row'
+    divOito.style.alignItems = 'center'
+    divDez.style.display = 'flex'
+    divDez.style.flexDirection = 'row'
+    divDez.style.alignItems = 'center'
+    divQuinze.style.display = 'flex'
+    divQuinze.style.flexDirection = 'row'
+    divQuinze.style.alignItems = 'center'
 
-    data_pub.addEventListener('blur', () => {
-        const prazo_cinco = calcularPrazo(button_cinco.value,2)
-        const prazo_oito = calcularPrazo(button_oito.value,2)
-        const prazo_dez = calcularPrazo(button_dez.value,2)
-        const prazo_quinze = calcularPrazo(button_quinze.value,2)
-        p_cinco.innerHTML = `${prazo_cinco[0].slice(0,5)} - ${prazo_cinco[1].slice(0,5)}`
-        p_oito.innerHTML = `${prazo_oito[0].slice(0,5)} - ${prazo_oito[1].slice(0,5)}`
-        p_dez.innerHTML = `${prazo_dez[0].slice(0,5)} - ${prazo_dez[1].slice(0,5)}`
-        p_quinze.innerHTML = `${prazo_quinze[0].slice(0,5)} - ${prazo_quinze[1].slice(0,5)}`
+    dataPub.addEventListener('blur', () => {
+        const prazoCinco = calcularPrazo(buttonCinco.value,2)
+        const prazoOito = calcularPrazo(buttonOito.value,2)
+        const prazoDez = calcularPrazo(buttonDez.value,2)
+        const prazoQuinze = calcularPrazo(buttonQuinze.value,2)
+        pCinco.innerHTML = `${prazoCinco[0].slice(0,5)} - ${prazoCinco[1].slice(0,5)}`
+        pOito.innerHTML = `${prazoOito[0].slice(0,5)} - ${prazoOito[1].slice(0,5)}`
+        pDez.innerHTML = `${prazoDez[0].slice(0,5)} - ${prazoDez[1].slice(0,5)}`
+        pQuinze.innerHTML = `${prazoQuinze[0].slice(0,5)} - ${prazoQuinze[1].slice(0,5)}`
     })
     
     let btn = document.querySelectorAll('.btnPrazo')
@@ -2410,38 +2480,38 @@ function createButtonPrazo() {
 }
 
 function setValidacaoFunctionOff () {
-    let edit_compromisso_btn = document.querySelector('body > section > section > div.fdt-espaco > div > div:nth-child(2) > a:nth-child(2)')
-    let add_tarefa_btn = document.querySelector('body > section > section > div.fdt-espaco > div > div:nth-child(2) > a:nth-child(3)')
-    let add_tarefa_avulsa_btn = document.querySelector('body > section > section > div.fdt-espaco > div > div.fdt-pg-header > a:nth-child(1)')
-    let add_tarefa_cliente_btn = document.querySelector('body > section > section > div.fdt-espaco > div > div.fdt-pg-header > a:nth-child(2)')
-    let btn_tarefa_cliente_pesq = document.querySelector("body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr > td:nth-child(2) > a")
+    let editCompromissoBtn = document.querySelector('body > section > section > div.fdt-espaco > div > div:nth-child(2) > a:nth-child(2)')
+    let addTarefaBtn = document.querySelector('body > section > section > div.fdt-espaco > div > div:nth-child(2) > a:nth-child(3)')
+    let addTarefaAvulsaBtn = document.querySelector('body > section > section > div.fdt-espaco > div > div.fdt-pg-header > a:nth-child(1)')
+    let addTarefaClienteBtn = document.querySelector('body > section > section > div.fdt-espaco > div > div.fdt-pg-header > a:nth-child(2)')
+    let btnTarefaClientePesq = document.querySelector("body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr > td:nth-child(2) > a")
     
-    if (edit_compromisso_btn != null)
-        edit_compromisso_btn.addEventListener('click', () => {
+    if (editCompromissoBtn != null)
+        editCompromissoBtn.addEventListener('click', () => {
             setAutoComplete(false)
         })
-    if (add_tarefa_btn != null)
-        add_tarefa_btn.addEventListener('click', () => {
+    if (addTarefaBtn != null)
+        addTarefaBtn.addEventListener('click', () => {
             setAutoComplete(false)
         })
-    if (add_tarefa_avulsa_btn != null)
-        add_tarefa_avulsa_btn.addEventListener('click', () => {
+    if (addTarefaAvulsaBtn != null)
+        addTarefaAvulsaBtn.addEventListener('click', () => {
             setAutoComplete(false)
         })
-    if (add_tarefa_cliente_btn != null)
-        add_tarefa_cliente_btn.addEventListener('click', () => {
+    if (addTarefaClienteBtn != null)
+        addTarefaClienteBtn.addEventListener('click', () => {
             setAutoComplete(false)
         })
-    if (btn_tarefa_cliente_pesq != null)
-        btn_tarefa_cliente_pesq.addEventListener('click', () => {
+    if (btnTarefaClientePesq != null)
+        btnTarefaClientePesq.addEventListener('click', () => {
             setAutoComplete(false)
         })
 }
 
 function setValidacaoFunctionOn() {
-    let add_compromisso_btn = document.querySelector('body > section > section > div.fdt-espaco > div > div.fdt-pg-header > a:nth-child(3) > i')
-    if (add_compromisso_btn != null)
-        add_compromisso_btn.addEventListener('click', async () => {
+    let addCompromissoBtn = document.querySelector('body > section > section > div.fdt-espaco > div > div.fdt-pg-header > a:nth-child(3) > i')
+    if (addCompromissoBtn != null)
+        addCompromissoBtn.addEventListener('click', async () => {
             await setAutoComplete(true)
         })
 }
@@ -2487,16 +2557,145 @@ function removeAcentuacaoString (string) {
     return string.normalize('NFD').replace(/[\u0300-\u036f]/g, "")
 }
 
+function padronizaStrings (string) {
+    return string.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replaceAll(' ','').replaceAll('-','').toUpperCase()
+}
+
+function completarInputs () {
+    const titleFile = document.querySelectorAll("#fdt-form > div.alert.alert-success.fs20.margemCima20")
+    let filesName = [], buttonsList = []
+    let divs = document.querySelectorAll("#fdt-form > div")
+    
+    for (let index = 0; index < divs.length; index++) {
+        let ehTitleFile = divs[index].classList.contains("alert-success")
+
+        if (ehTitleFile) {
+            buttonsList.push(divs[index+1])
+        }
+    }
+
+    titleFile.forEach(e => {
+        const textArray = e.textContent.split('.')
+        filesName.push(textArray[0].trim())
+    })
+
+    for (let index = 0; index < titleFile.length; index++) {
+        document.querySelector(`#descricao_${index+1}`).value = filesName[index]
+        let ul = buttonsList[index].children[0].children[1].children[1].children[1].children
+        let spanSelect = buttonsList[index].children[0].children[1].children[0].children[0]
+
+        let spanOutros
+
+        for (let i = 0; i < ul.length; i++) {
+            let sOutros = padronizaStrings("Outros"), sFileName = padronizaStrings(filesName[index])
+            
+            let span = ul[i].children[0].children[0], sSpan = padronizaStrings(span.textContent)
+
+            if (sSpan == sOutros) {
+                spanOutros = ul[i].children[0].children[0]
+            }
+
+            if (sSpan == sFileName) {
+                span.click()
+            }
+        }
+
+        if (spanSelect.textContent == '') {
+            spanOutros.click()
+        }
+    }
+}
+
+let target = null
+let ouvindo = false
+const keyAtivaction = 119
+const recognition = createRecognition()
+
+function createRecognition() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+    const recognition = SpeechRecognition !== undefined ? new SpeechRecognition : null
+
+    if (!recognition) {
+        console.log("Não foi encontrado Speech Recognition")
+        return null
+    }
+
+    recognition.lang = "pt_BR"
+
+    recognition.onstart = () => {
+        ouvindo = true
+    }
+
+    recognition.onend = () => {
+        ouvindo = false
+    }
+
+    recognition.onerror = e => {
+        console.log('Erro: ', e)
+    }
+
+    recognition.onresult = e => {
+        target.innerHTML = e.results[0][0].transcript
+    }
+
+    return recognition
+}
+
+function keyEvent(event) {
+    let key = event.keyCode || event.which;
+    target = event.target
+    
+    if (key === keyAtivaction && !ouvindo) {
+        ouvindo = true
+        recognition.start()
+    }
+
+}
+  
+function metaKeyUp (event) {
+    let key = event.keyCode || event.which;
+    
+    target = event.target
+    
+    if (key === keyAtivaction && ouvindo) {
+        ouvindo = false
+        recognition.stop()
+    }
+}
+
+function digitacaoPorVoz() {    
+    if (!state.functions.digitacaoVoz.digitarUsandoVoz) {
+        return
+    }
+
+    addEventListener('keydown', event => {
+        if (!recognition) {
+            return
+        }
+        keyEvent(event)
+    })
+
+    addEventListener('keyup', event => {
+        if (!recognition) {
+            return
+        }
+        metaKeyUp(event)
+    })
+}
+
 async function idPage(url) {
     const autoCompletar = await getAutoComplete()
-    const pageBuscaProcessos = (url.search(url_processos) > -1)
-    const pageTarefas = (url.search(url_tarefas) > -1)
-    const pageCompromissos = (url.search(url_compromissos) > -1)
-    const pageCadastroProcesso = (url.search(url_processos_cadastro) > -1)
-    const pageVisualizacaoAbaCompromissos = (url.search(url_compromisso_default) > -1)
-    const pageVisualizacaoCompromisso = (url.search(url_compromisso_ficha) > -1)
-    const pageFormularioAddTarefaSemCompromisso = (url.search(url_cliente_addtarefa) > -1)
-    const pageVisualizacaoTarefa = (url.search(url_tarefas_ficha) > -1)
+    const pageBuscaProcessos = (url.search(urlProcessos) > -1)
+    const pageTarefas = (url.search(urlTarefas) > -1)
+    const pageCompromissos = (url.search(urlCompromissos) > -1)
+    const pageCadastroProcesso = (url.search(urlProcessosCadastro) > -1)
+    const pageVisualizacaoAbaCompromissos = (url.search(urlCompromissoDefault) > -1)
+    const pageVisualizacaoCompromisso = (url.search(urlCompromissoFicha) > -1)
+    const pageFormularioAddTarefaSemCompromisso = (url.search(urlClienteAddtarefa) > -1)
+    const pageVisualizacaoTarefa = (url.search(urlTarefasFicha) > -1)
+    const pageUploadArquivo = (url.search(urlUpFile) > -1)
+
+    digitacaoPorVoz()
 
     if (pageBuscaProcessos) {
         if (!state.functions.abaPesquisaProcesso.autoFormatacaoNumProcessoPesquisa) {
@@ -2516,11 +2715,11 @@ async function idPage(url) {
         }
     }
     else if (pageCompromissos) {
-        const data_final =  document.querySelector("#dataPrazoFatal")
-        const data_inicial = document.querySelector("#dataPrazoInterno")
+        const dataFinal =  document.querySelector("#dataPrazoFatal")
+        const dataInicial = document.querySelector("#dataPrazoInterno")
         const tipoIntimacao = document.querySelector("#descricao")
         
-        data_final.addEventListener('blur', () => {
+        dataFinal.addEventListener('blur', () => {
             const indiceAudiencia = removeAcentuacaoString(tipoIntimacao.value).search('AUDIENCIA')
             const indicePericia = removeAcentuacaoString(tipoIntimacao.value).search('PERICIA')
             const indicePauta = tipoIntimacao.value.search('PAUTA')
@@ -2529,7 +2728,7 @@ async function idPage(url) {
             const ehPauta = (indicePauta == 0)
 
             if (ehAudiencia || ehPauta || ehPericia) {
-                data_inicial.value = data_final.value
+                dataInicial.value = dataFinal.value
             }
         })
 
@@ -2537,17 +2736,16 @@ async function idPage(url) {
             let gravarBtn = document.querySelector("#fdt-form > div.row.margemCima20 > div > input.btn.fdt-btn-verde")
             gravarBtn.setAttribute('disabled','')
             let id = getIdCliente(url)
-            ajax(1,link_processos_ajax,id,gravarBtn)
+            ajax(1,linkProcessosAjax,id,gravarBtn)
             saveInfoCompromissos()
             setCliente(cliente)
             createButtonPrazo()
         }
+        console.log(cliente)
     }
     else if (pageCadastroProcesso) {
-        if (!state.functions.abaCadastrodeProcesso.autoFormatNumProcesso) {
-            return
-        }
         formataNumProcesso()
+        habilitarEdicaoNumeroProcesso()
     }
     else if (pageVisualizacaoAbaCompromissos) {
         createButtonRolagem()
@@ -2556,9 +2754,9 @@ async function idPage(url) {
     else if (pageVisualizacaoCompromisso || pageFormularioAddTarefaSemCompromisso)
         setValidacaoFunctionOff()
     else if (pageVisualizacaoTarefa) {
-        let edit_tarefa_btn = document.querySelectorAll('body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr')
-        if (edit_tarefa_btn != null) {
-            edit_tarefa_btn.forEach(element => {
+        let editTarefaBtn = document.querySelectorAll('body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr')
+        if (editTarefaBtn != null) {
+            editTarefaBtn.forEach(element => {
                 let e = element.children[1].children[0].children[1].children[1]
                 if (e != null) {
                     e.addEventListener('click',() => {
@@ -2567,11 +2765,84 @@ async function idPage(url) {
                 }
             })
         }
+    } else if (pageUploadArquivo) {
+        completarInputs()
     }
 }
 
 function getURL() {
     return document.URL
+}
+
+async function getTarefasAtrasadas (adm) {
+
+    const array = {}
+
+    const ontem = new Date()
+    const passado = new Date(ontem.getFullYear()-10,ontem.getMonth(), ontem.getDate())
+    ontem.setDate(ontem.getDate()-1)
+    
+    const url = 'http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/default.asp'
+
+    let headers = new Headers({
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Accept': 'application/json, text/javascript, */*; q=0.01',
+        'Content-Length': '64',
+        'Accept-Encoding': 'gzip, deflate',
+        'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
+        'Connection': 'keep-alive'
+    })
+
+    const data = {
+        bsAdvTarefas: "s",
+        bsAdvTarefasTecnica: "",
+        bsAdvTarefasDe: `${passado.getDate() < 10 ? "0" + passado.getDate() : passado.getDate()}/${passado.getMonth() < 10 ? "0" + (passado.getMonth() + 1) : passado.getMonth() + 1}/${passado.getFullYear()}`,
+        bsAdvTarefasAte: `${ontem.getDate() < 10 ? "0" + ontem.getDate() : ontem.getDate()}/${ontem.getMonth() < 10 ? "0" + (ontem.getMonth() + 1) : ontem.getMonth() + 1}/${ontem.getFullYear()}`,
+        bsAdvTarefasTitulo: "",
+        bsAdvTarefasTipo: "",
+        bsAdvTarefasStatus: "p",
+        bsAdvTarefasAgendada: "",
+        bsAdvTarefasResponsavel: "",
+        bsAdvTarefasCompromisso: "",
+        bsAdvTarefasCliente: "",
+        bsAdvTarefasCpf: "",
+        bsAdvTarefasPauta: "", 
+        filtrar: "Filtrar",
+    }
+
+    let str = ""
+
+    adm.forEach(e => {
+        str += `&bsAdvTarefasExecutor=${e.id}`
+        array[e.nome] = { atrasadas: 0 }
+    })
+
+    let init = {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(data).replaceAll('"','').replaceAll(':','=').replaceAll('{','').replaceAll('}','').replaceAll(',','&') + str
+    }
+
+    const request = new Request(url, init)
+
+    const result = fetch(request)
+    .then(response => response.text())
+    .then(response => {
+        let parser = new DOMParser()
+        let doc = parser.parseFromString(response,'text/html')
+        let tarefas = doc.documentElement.querySelectorAll('body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr')
+        console.log(tarefas)
+        console.log(adm)
+        console.log(array)
+        tarefas.forEach(e => {
+            if (e.children[5].children[3]) {
+                array[e.children[5].children[3].innerText.trim()].atrasadas++
+            }
+        })
+        return array
+    })
+    
+    return result
 }
 
 function getTarefasSemanal (id, datas) {
@@ -2593,7 +2864,7 @@ function getTarefasSemanal (id, datas) {
         idRE: '',
         idEX: id,
         idAG: '',
-        start: datas[0].toISOString().split('T')[0],
+        start: datas[1].toISOString().split('T')[0],
         end: datas[datas.length-2].toISOString().split('T')[0],
     }
 
@@ -2626,7 +2897,8 @@ function getTarefasSemanal (id, datas) {
 
         const contagem = {}
         for (c = 0; c < datas.length; c++) {
-            contagem[datas[c].toISOString().replace('Z','').replace('T03:00:00.000','T00:00:00')] = 0
+            if (c > 0)
+                contagem[datas[c].toISOString().replace('Z','').replace('T03:00:00.000','T00:00:00')] = 0
         }
         
         resp.forEach(e => {
@@ -2639,7 +2911,7 @@ function getTarefasSemanal (id, datas) {
 }
 
 function getArrayDate () {
-    let datas = [], dias = []
+    let datas = ['atrasadas'], dias = ['atrasadas']
     let date = new Date()
     cont = 0
 
@@ -2671,11 +2943,17 @@ function generateTable(adm, datas, dias) {
             if ((j == 0) && (c == 0)) {
                 table += `<th style="background: rgb(0 86 137);">&nbsp;</th>`
             } else if ((j != 0) && (c == 0)) {
-                table += `<th data-date="${datas[j-1].toISOString().replace('Z','').replace('T03:00:00.000','T00:00:00')}" class="dRow">${datas[j-1].toLocaleDateString()} - ${semana[dias[j-1]]}</th>`
+                if (j > 1)
+                    table += `<th data-date="${datas[j-1].toISOString().replace('Z','').replace('T03:00:00.000','T00:00:00')}" class="dRow">${datas[j-1].toLocaleDateString()} - ${semana[dias[j-1]]}</th>`
+                else
+                    table += `<th data-date="${datas[j-1]}" class="dRow">Tarefas ${datas[j-1]}</th>`
             } else if ((j == 0) && (c > 0)) {
                 table += `<th data-nome="${nome.toLowerCase()}" class="nCollumn">${nome}</th>`
             } else if (c > 0) {
-                table += `<td data-nome="${nome.toLowerCase()}" data-date="${datas[j-1].toISOString().replace('Z','').replace('T03:00:00.000','T00:00:00')}">${0}</td>`
+                if (j > 1)
+                    table += `<td data-nome="${nome.toLowerCase()}" data-date="${datas[j-1].toISOString().replace('Z','').replace('T03:00:00.000','T00:00:00')}">-</td>`
+                else
+                    table += `<td data-nome="${nome.toLowerCase()}" data-date="${datas[j-1]}">-</td>`
             }
         }
         table += `</tr>`
@@ -2724,9 +3002,16 @@ function createPainel () {
         { nome: "BRYAN CAMPOS DE ANDRADE" },
         { nome: "CARLOS HENRIQUE ESPASIANI" },
         { nome: "CHARLES DEMETRIUS BARRETO SILVA" },
+        { nome: "JULIANO OLIVEIRA DE SOUZA" },
+        { nome: "JULIO KAUÃ DE SOUSA PINTO" },
+        { nome: "KAUÃ DE CARVALHO NASCIMENTO" },
+        { nome: "LEANDRO SANTOS" },
         { nome: "LUCAS NATHAN NOGUEIRA DA SILVA" },
-        { nome: "MARCOS ROBERT DE MELO LIMA" },
+        { nome: "MARCO AURELIO LEITE GOMES" },
+	    { nome: "MARCOS ROBERT DE MELO LIMA" },
+        { nome: "RENATA DE JESUS SANTOS" },
         { nome: "VICTOR MENDES DOS SANTOS" },
+        { nome: "VINICIUS SOUSA BOMFIM" },
         { nome: "YURI DIAS PEREIRA" }
     ]
     const { datas, dias } = getArrayDate()
@@ -2779,60 +3064,125 @@ function createPainel () {
             id: 131,
             nome: "ASLEY RODRIGO DE MELO LIMA",
             diasViagem: [],
-            contagem: 0
+            contagem: 0,
+            atrasadas: 0
         },
         {
             id: 94,
             nome: "CARLOS HENRIQUE ESPASIANI",
             diasViagem: [],
-            contagem: 0
+            contagem: 0,
+            atrasadas: 0
         },
         {
             id: 181,
             nome: "CHARLES DEMETRIUS BARRETO SILVA",
-            diasViagem: [],
-            contagem: 0
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
         },
         {
             id: 194,
             nome: "BRYAN CAMPOS DE ANDRADE",
             diasViagem: [],
-            contagem: 0
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 51,
+            nome: "JULIANO OLIVEIRA DE SOUZA",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 200,
+            nome: "JULIO KAUÃ DE SOUSA PINTO",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 196,
+            nome: "KAUÃ DE CARVALHO NASCIMENTO",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 64,
+            nome: "LEANDRO SANTOS",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
         },
         {
             id: 199,
             nome: "LUCAS NATHAN NOGUEIRA DA SILVA",
-            diasViagem: [],
-            contagem: 0
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
         },
         {
+            id: 201,
+            nome: "MARCO AURELIO LEITE GOMES",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+	{
             id: 141,
             nome: "MARCOS ROBERT DE MELO LIMA",
             diasViagem: [],
-            contagem: 0
+            contagem: 0,
+            atrasadas: 0
+        },
+	{
+            id: 203,
+            nome: "RENATA DE JESUS SANTOS",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
         },
         {
             id: 120,
             nome: "VICTOR MENDES DOS SANTOS",
             diasViagem: null,
-            contagem: 0
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 188,
+            nome: "VINICIUS SOUSA BOMFIM",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
         },
         {
             id: 161,
             nome: "YURI DIAS PEREIRA",
             diasViagem: null,
-            contagem: 0
+            contagem: 0,
+            atrasadas: 0
         },
     ]
 
+    aracaju.forEach(e => {
+        e['nomeTLC'] = e.nome.toLocaleLowerCase().split(' ')[0]
+    })
+
     document.querySelector('#painelBTNSup').addEventListener('click', () => {
         for(let c = 0; c < aracaju.length; c++) {
-            let nome = aracaju[c].nome.toLocaleLowerCase().split(' ')[0]
             aracaju[c].contagem = getTarefasSemanal(aracaju[c].id, datas).then(result => {
-                inputDados(nome,result)
+                inputDados(aracaju[c].nomeTLC,result)
                 return result
             })
         }
+        getTarefasAtrasadas(aracaju).then(result => {
+            aracaju.forEach(e => {
+                inputDados(e.nomeTLC, result[e.nome])
+            })
+        })
     })
 }
 
