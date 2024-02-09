@@ -730,7 +730,6 @@ function saveInfoCompromissos() {
     }
     const descricaoTarefa = document.querySelector("#descricao"),
         optionUl = document.querySelector("#fdt-form > div:nth-child(6) > div:nth-child(1) > div > div > ul"),
-        intimacaoId = "16",
         tipos = {
             "AUDIÊNCIA": "7",
             "PERÍCIA": "17",
@@ -739,6 +738,7 @@ function saveInfoCompromissos() {
             "PRECATÓRIO": "21"
         },
         tiposArray = Object.entries(tipos)
+    let intimacaoId = "16"
 
     if (descricaoTarefa !== null) {
         descricaoTarefa.focus()
@@ -869,13 +869,13 @@ function createListaTarefas () {
     p5.innerHTML = `Parceiro:`
     p6.innerHTML = `${cliente.cliente.parceiro}`
     
+    div.appendChild(h1)
     div.appendChild(p1)
     div.appendChild(p3)
     div.appendChild(p2)
     div.appendChild(p4)
     div.appendChild(p5)
     div.appendChild(p6)
-    div.appendChild(h1)
     div.appendChild(h2)
     divtarefa.appendChild(div)
     
@@ -891,6 +891,7 @@ function createListaTarefas () {
         e.style.fontStyle = 'bold'
         e.style.borderRadius = '5px'
         e.style.top = '0px'
+        e.style.color = 'dimgray'
     })
 }
 
@@ -1721,7 +1722,7 @@ function loadInfo () {
     selectTipoIntimacao(selectTipoIntimacaoInput,optionLi)
 }
 
-function contarTarefas(tipoCompromisso) {
+function contarTarefas(tipoCompromisso = cliente.compromisso.tipoCompromisso) {
     let contagem
     const contDois = ["EMENDAR","DADOS PERÍCIA SOCIAL","DADOS COMPLEMENTARES","ALVARÁ","RPV","PRECATÓRIO"],
         contTres = "PERÍCIA",
