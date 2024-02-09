@@ -730,7 +730,6 @@ function saveInfoCompromissos() {
     }
     const descricaoTarefa = document.querySelector("#descricao"),
         optionUl = document.querySelector("#fdt-form > div:nth-child(6) > div:nth-child(1) > div > div > ul"),
-        tiposArray = Object.entries(tipos),
         intimacaoId = "16",
         tipos = {
             "AUDIÊNCIA": "7",
@@ -738,7 +737,8 @@ function saveInfoCompromissos() {
             "RPV": "23",
             "ALVARÁ": "4",
             "PRECATÓRIO": "21"
-        }
+        },
+        tiposArray = Object.entries(tipos)
 
     if (descricaoTarefa !== null) {
         descricaoTarefa.focus()
@@ -1721,17 +1721,16 @@ function loadInfo () {
     selectTipoIntimacao(selectTipoIntimacaoInput,optionLi)
 }
 
-function contarTarefas() {
+function contarTarefas(tipoCompromisso) {
     let contagem
-    const compromisso = cliente.compromisso.tipoCompromisso,
-        contDois = ["EMENDAR","DADOS PERÍCIA SOCIAL","DADOS COMPLEMENTARES","ALVARÁ","RPV","PRECATÓRIO"],
+    const contDois = ["EMENDAR","DADOS PERÍCIA SOCIAL","DADOS COMPLEMENTARES","ALVARÁ","RPV","PRECATÓRIO"],
         contTres = "PERÍCIA",
         contQuatro = ["AUDIÊNCIA DE CONCILIAÇÃO", "AUDIÊNCIA CONCILIATÓRIA", "AUDIÊNCIA DE INTERROGATÓRIO"],
         contCinco = ["AUDIÊNCIA INAUGURAL", "AUDIÊNCIA INICIAL","AUDIÊNCIA DE INSTRUÇÃO", "AUDIÊNCIA DE INSTRUÇÃO E JULGAMENTO", "AUDIÊNCIA UNA"]
-
-    if (contDois.includes(compromisso) || contDois.includes(cliente.compromisso.tipoCompromisso)){
+    
+    if (contDois.includes(tipoCompromisso)){
         contagem = 2
-    } else if (compromisso.search(contTres) == 0) {
+    } else if (tipoCompromisso.search(contTres) == 0) {
         if (cliente.processo.estado == "DF" || cliente.processo.estado == "GO") {
             if (cliente.compromisso.semanas > 1)
                 contagem = 4
@@ -1746,7 +1745,7 @@ function contarTarefas() {
         }
     }
     else {
-        if (contQuatro.includes(compromisso)){
+        if (contQuatro.includes(tipoCompromisso)){
             if (cliente.compromisso.semanas > 1)
                 contagem = 4
             else
@@ -1754,7 +1753,7 @@ function contarTarefas() {
 
         }
         else {
-            if (contCinco.includes(compromisso)){
+            if (contCinco.includes(tipoCompromisso)){
                 if (cliente.compromisso.semanas > 1)
                     contagem = 5
                 else
@@ -1768,11 +1767,12 @@ function contarTarefas() {
 }
 
 function separaTitulo(titulo) {
-    const tipoCompromisso = titulo.slice(13,titulo.search("\n")),
+    
+    const tipoCompromisso = titulo.slice(13, titulo.search("\n")),
         aux = titulo.slice(titulo.search("\n")+1),
         linhaDois = aux.slice(0,aux.search("\n")),
         tipoIntimacao = validaTipoIntimacao(tipoCompromisso),
-        contagem = contarTarefas()
+        contagem = contarTarefas(tipoCompromisso)
 
     cliente.compromisso.tipoCompromisso = tipoCompromisso
     cliente.compromisso.tarefaSequencia = contagem
@@ -1784,12 +1784,12 @@ function separaTitulo(titulo) {
     return cliente
 }
 
-function saveInfoTarefas() {
+async function saveInfoTarefas() {
     const titulo = document.querySelector(".alert-info")
-
+    
     if (cliente.compromisso.atualizar) {
         cliente = separaTitulo(titulo.innerText)
-        setCliente(cliente)
+        await setCliente(cliente)
     }
 }
 
@@ -1833,7 +1833,7 @@ function extrairDadosRequisicaoClienteHtml(response) {
 
 }
 
-function extrairDadosRequisicaoProcessoHtml(response,gravarBtn) {
+function extrairDadosRequisicaoProcessoHtml(response, gravarBtn) {
     const buttonsPainel = response.documentElement.querySelectorAll("a.fdt-icon"),
         linkClienteAjax = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/ficha.asp?idPK=",
         fichas = response.documentElement.querySelectorAll("body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.fdt-ficha"),
@@ -1889,10 +1889,10 @@ function extrairDadosRequisicaoProcessoHtml(response,gravarBtn) {
         }
     })
 
-    ajax(2,linkClienteAjax,cliente.cliente.id,gravarBtn)
+    ajax(2,linkClienteAjax, cliente.cliente.id, gravarBtn)
 }
 
-async function ajax (opt,link,id,gravarBtn) {
+async function ajax (opt, link, id, gravarBtn) {
 
     let httpRequest
     const parser = new DOMParser()
@@ -1939,13 +1939,13 @@ async function ajax (opt,link,id,gravarBtn) {
                 let doc = parser.parseFromString(httpRequest.responseText,'text/html')
                 
                 if (opt == 1) {
-                    extrairDadosRequisicaoProcessoHtml(doc)
+                    extrairDadosRequisicaoProcessoHtml(doc, gravarBtn)
                 }
                 else {
                     if (opt == 2)
-                        extrairDadosRequisicaoClienteHtml(doc)
+                        extrairDadosRequisicaoClienteHtml(doc, gravarBtn)
                     else
-                        extrairIDRequisicaoClienteHtml(doc)
+                        extrairIDRequisicaoClienteHtml(doc, gravarBtn)
                 }
                 setCliente(cliente)
                 gravarBtn.removeAttribute('disabled')
@@ -1984,11 +1984,11 @@ function calcularPrazo (prazo,parametro) {
     const dataPub = document.querySelector("#dataPublicacao"),
         tipoIntimacao = document.querySelector("#descricao"),
         processo = document.querySelector('#numeroProcesso'),
-        dateFinal = new Date(),
-        dateInicial = new Date(),
         diasFatal = Number(prazo)
 
-    let cont = 1,
+    let dateFinal = new Date(),
+        dateInicial = new Date(),
+        cont = 1,
         diasInterno,
         i
 
@@ -2406,7 +2406,7 @@ async function idPage(url) {
                 linkProcessosAjax = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/ficha.asp?idPK="
 
             gravarBtn.setAttribute('disabled','')
-            ajax(1,linkProcessosAjax,id,gravarBtn)
+            ajax(1,linkProcessosAjax,id, gravarBtn)
             saveInfoCompromissos()
             setCliente(cliente)
             createButtonPrazo()
@@ -2444,11 +2444,8 @@ function getURL() {
 }
 
 async function activate() {
-    const estado = getState(),
-        clienteSaved = getCliente(),
+    const [ estado, clienteSaved ] = await Promise.all([getState(), getCliente()]),
         url = getURL()
-
-    await Promise.all([estado, clienteSaved])
 
     const { active, functions } = estado
 
