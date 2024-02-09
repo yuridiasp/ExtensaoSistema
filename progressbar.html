@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+        }
+        .progress {
+            position: relative;
+            flex: 1;
+            background: black;
+            margin: 45vh 10vw;
+        }
+
+        .bar {
+            position: absolute;
+            background: crimson;
+            width: 0;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress">
+        <div class="bar"></div>
+    </div>
+    <script>
+        let percent = 0
+
+        function finishLoad(bar, interval) {
+            interval.clearInterval()
+            bar.style.width = percent + '%'
+        }
+
+        function runLoad(bar) {
+            setInterval(() => {
+                if (percent == 100) {
+                    finishLoad(bar, this)
+                } else {
+                    percent += 0.5
+                    bar.style.width = percent + '%'
+                }
+            }, 1)
+        }
+
+        (()=> {
+            const bar = document.querySelector('.bar')
+            const interval  = runLoad(bar)
+            console.log(interval)
+        })();
+    </script>
+</body>
+</html>

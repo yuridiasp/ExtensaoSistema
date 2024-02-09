@@ -1,98 +1,106 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="style.css">
+        <title>System FR Extension</title>
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>System FR Extension</title>
-</head>
-
-<body>
-    <header>
-        <img class="icon" src="../icon.png" alt="logo" srcset="">
-        <h4>System FR Extension</h4>
-        <input id="botaoAtiva" class="btn-ok" type="button">
-    </header>
-    <h4>Configurações</h4>
-    <section>
-        <div class="section-config">
-            <h5>Todas as Páginas</h5>
-            <div>
-                <input data-nome="digitarUsandoVoz" data-aba="digitacaoVoz" type="checkbox" disabled>
-                <p class="desabilitado">Digitação por Voz [Indisponível]</p>
+    <body>
+        <header>
+            <img class="icon" src="../icon.png" alt="logo" srcset="">
+            <h4>System FR Extension</h4>
+            <input id="botaoAtiva" class="btn-ok" type="button">
+        </header>
+        <h4>Configurações</h4>
+        <section>
+            <div class="section-config">
+                <h5>Todas as Páginas</h5>
+                <div>
+                    <input id="digitarUsandoVoz" data-nome="digitarUsandoVoz" data-aba="todasPaginas" type="checkbox" disabled>
+                    <label for="digitarUsandoVoz" class="desabilitado">Digitação por Voz [Indisponível]</label>
+                </div>
+                <div>
+                    <input id="contadorTarefas" data-nome="contadorTarefas" data-aba="todasPaginas" type="checkbox">
+                    <label for="contadorTarefas">Controle de tarefas lançadas para o mesmo dia</label>
+                </div>
             </div>
-        </div>
-        <div class="section-config">
-            <h5>Aba Cadastro/Edição de Processo</h5>
-            <div>
-                <input data-nome="autoFormatNumProcesso" data-aba="abaCadastrodeProcesso" type="checkbox">
-                <p>Autoformatação do número do processo</p>
+            <div class="section-config">
+                <h5>Aba Cadastro/Edição de Processo</h5>
+                <div>
+                    <input id="abaCadastrodeProcesso" data-nome="autoFormatNumProcesso" data-aba="abaCadastrodeProcesso" type="checkbox">
+                    <label for="abaCadastrodeProcesso" >Autoformatação do número do processo</label>
+                </div>
+                <div>
+                    <input id="alteracaoNumeroProcesso" data-nome="alteracaoNumeroProcesso" data-aba="abaCadastrodeProcesso" type="checkbox">
+                    <label for="alteracaoNumeroProcesso">Habilita a edição do campo Número do processo</label>
+                </div>
             </div>
-            <div>
-                <input data-nome="alteracaoNumeroProcesso" data-aba="abaCadastrodeProcesso" type="checkbox">
-                <p>Habilita a edição do campo Número do processo</p>
+            <div class="section-config">
+                <h5>Aba Pesquisa de Processo</h5>
+                <div>
+                    <input id="autoFormatacaoNumProcessoPesquisa" data-nome="autoFormatacaoNumProcessoPesquisa" data-aba="abaPesquisaProcesso" type="checkbox">
+                    <label for="autoFormatacaoNumProcessoPesquisa">Autoformatação do número do processo na barra de pesquisa</label>
+                </div>
             </div>
-        </div>
-        <div class="section-config">
-            <h5>Aba Pesquisa de Processo</h5>
-            <div>
-                <input data-nome="autoFormatacaoNumProcessoPesquisa" data-aba="abaPesquisaProcesso" type="checkbox">
-                <p>Autoformatação do número do processo na barra de pesquisa</p>
+            <div class="section-config">
+                <h5>Aba Compromissos do Processo</h5>
+                <div>
+                    <input itemid="mostrarBotadeRolagem" data-nome="mostrarBotadeRolagem" data-aba="abaCompromissosProcesso" type="checkbox" name="btnRolagem" id="btnRolagem">
+                    <label for="btnRolagem">Mostrar Botão de Rolagem</label>
+                </div>
             </div>
-        </div>
-        <div class="section-config">
-            <h5>Aba Compromissos do Processo</h5>
-            <div>
-                <input data-nome="mostrarBotadeRolagem" data-aba="abaCompromissosProcesso" type="checkbox" name="btnRolagem" id="btnRolagem">
-                <p>Mostrar Botão de Rolagem</p>
+            <div class="section-config">
+                <h5>Cadastro de Compromisso</h5>
+                <div>
+                    <input id="selecaodoTipodeCompromisso" data-nome="selecaodoTipodeCompromisso" data-aba="cadastroCompromisso" type="checkbox" name="selecaodoTipodeCompromisso" id="selecaodoTipodeCompromisso">
+                    <label for="selecaodoTipodeCompromisso">Seleção do Tipo de Compromisso</label>
+                </div>
+                <div>
+                    <input data-nome="mostrarBotoesAuxiliaresdeDias" data-aba="cadastroCompromisso" type="checkbox" name="mostrarBotoesAuxiliaresdeDias" id="mostrarBotoesAuxiliaresdeDias">
+                    <label for="mostrarBotoesAuxiliaresdeDias">Mostrar Botões Auxiliares de Dias</label>
+                </div>
+                <div>
+                    <input id="AutoPreenchimentoPrazoInterno" data-nome="AutoPreenchimentoPrazoInterno" data-aba="cadastroCompromisso" type="checkbox" name="AutoPreenchimentoPrazoInterno" id="AutoPreenchimentoPrazoInterno">
+                    <label for="AutoPreenchimentoPrazoInterno">Autopreenchimento do prazo interno (Pauta, Perícia, Audiência)</lab>
+                </div>
             </div>
-        </div>
-        <div class="section-config">
-            <h5>Cadastro de Compromisso</h5>
-            <div>
-                <input data-nome="selecaodoTipodeCompromisso" data-aba="cadastroCompromisso" type="checkbox" name="btnDias" id="btnDias">
-                <p>Seleção do Tipo de Compromisso</p>
+            <div class="section-config">
+                <h5>Cadastro de Tarefa</h5>
+                <div>
+                    <input id="AutoPreenchimentoTarefasIntimacoes" data-nome="AutoPreenchimentoTarefasIntimacoes" data-aba="cadastroTarefa" type="checkbox">
+                    <label for="AutoPreenchimentoTarefasIntimacoes">Autopreenchimento de Tarefas Intimações</label>
+                </div>
             </div>
-            <div>
-                <input data-nome="mostrarBotoesAuxiliaresdeDias" data-aba="cadastroCompromisso" type="checkbox" name="btnDias" id="btnDias">
-                <p>Mostrar Botões Auxiliares de Dias</p>
+            <div class="section-config">
+                <h5>Carregamento de arquivo</h5>
+                <div>
+                    <input id="selecaoTipoArquivo" data-nome="selecaoTipoArquivo" data-aba="carregamentoArquivo" type="checkbox">
+                    <label for="selecaoTipoArquivo">Seleção do Tipo de Arquivo</label>
+                </div>
+                <div>
+                    <input id="preenchimentoCamposArquivos" data-nome="preenchimentoCamposArquivos" data-aba="carregamentoArquivo" type="checkbox">
+                    <label for="preenchimentoCamposArquivos">Autopreenchimento dos Campos de Arquivos</label>
+                </div>
             </div>
-            <div>
-                <input data-nome="AutoPreenchimentoPrazoInterno" data-aba="cadastroCompromisso" type="checkbox" name="btnDias" id="btnDias">
-                <p>Autopreenchimento do prazo interno (Pauta, Perícia, Audiência)</p>
+            <div class="section-config">
+                <h5>Supervisor</h5>
+                <div>
+                    <input id="paineldevisualizacaoTarefasTime" data-nome="paineldevisualizacaoTarefasTime" data-aba="supervisor" type="checkbox">
+                    <label for="paineldevisualizacaoTarefasTime">Painel de visualização de tarefas do time</label>
+                </div>
             </div>
-        </div>
-        <div class="section-config">
-            <h5>Cadastro de Tarefa</h5>
-            <div>
-                <input data-nome="AutoPreenchimentoTarefasIntimacoes" data-aba="cadastroTarefa" type="checkbox" name="" id="">
-                <p>Autopreenchimento de Tarefas Intimações</p>
-            </div>
-        </div>
-        <div class="section-config">
-            <h5>Carregamento de arquivo</h5>
-            <div>
-                <input data-nome="selecaoTipoArquivo" data-aba="carregamentoArquivo" type="checkbox" name="" id="">
-                <p>Seleção do Tipo de Arquivo</p>
-            </div>
-            <div>
-                <input data-nome="preenchimentoCamposArquivos" data-aba="carregamentoArquivo" type="checkbox" name="" id="">
-                <p>Autopreenchimento dos Campos de Arquivos</p>
-            </div>
-        </div>
-        <div class="section-config">
-            <h5>Supervisor</h5>
-            <div>
-                <input data-nome="paineldevisualizacaoTarefasTime" data-aba="supervisor" type="checkbox" name="" id="">
-                <p>Painel de visualização de tarefas do time</p>
-            </div>
-        </div>
-    </section>
-    <script src="../chromeUtils.js" defer></script>
-    <script src="../background/background.js"defer></script>
-    <script src="main.js" defer></script>
-</body>
-
+        </section>
+        <hr />
+        <button id="genReport">Gerar Relatório PJE</button>
+        <div id="mensagem"></div>
+        <script src="../chromeUtils.js" defer></script>
+        <script src="../background/background.js"defer></script>
+        <script src="main.js" defer></script>
+        <script src="pdfReport.js" defer></script>
+        <script src="../pdfmake.min.js"></script>
+        <script src="../vfs_fonts.js"></script>
+    </body>
 </html>

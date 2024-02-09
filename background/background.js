@@ -1,5 +1,3 @@
-
-
 onExtensionInstalled(setInitial)
 
 function setInitial() {
@@ -10,11 +8,14 @@ async function setInitialState() {
     let state = await getState()
     let autocomplete = await getAutoComplete()
     let financeiro = await getFinanceiro()
+    let contagemTarefas = await getContagemTarefas()
+    const promises = []
     const initialState = {
         active: true,
         functions: {
-            digitacaoVoz: {
-                digitarUsandoVoz: undefined
+            todasPaginas: {
+                digitarUsandoVoz: undefined,
+                contadorTarefas: undefined
             },
             abaCadastrodeProcesso: {
                 autoFormatNumProcesso: undefined,
@@ -45,10 +46,14 @@ async function setInitialState() {
     }
 
     if (state == null || state == undefined)
-        await setState(initialState)
+        promises.push(setState(initialState))
     if (autocomplete == null || autocomplete == undefined)
-        await setAutoComplete(true)
+        promises.push(setAutoComplete(true))
     if (financeiro == null || financeiro == undefined)
-        await setFinanceiro(true)
-    
+        promises.push(setFinanceiro(true))
+    if (contagemTarefas == null || contagemTarefas == undefined) {
+        promises.push(setContagemTarefas(null, null, null))
+    }
+
+    await Promise.all(promises)
 }

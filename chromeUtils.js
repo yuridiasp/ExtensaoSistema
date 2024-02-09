@@ -57,8 +57,20 @@ function setAutoComplete(autoComplete) {
     return chromeStorageLocalSet({autoComplete: autoComplete})
 }
 
-function getDataIsDia() {
-    return chromeStorageLocalGet('datePub')
+function setContagemTarefas(data, contagem, tarefas) {
+    return chromeStorageLocalSet({contador: { data, contagem, tarefas }})
+}
+
+function getContagemTarefas() {
+    return chromeStorageLocalGet('contador')
+}
+
+function getReport() {
+    return chromeStorageLocalGet('report')
+}
+
+function setReport(reportValue) {
+    return chromeStorageLocalSet({report: reportValue})
 }
 
 function chromeStorageLocalGet(key) {

@@ -7,7 +7,7 @@
     "background": {
         "service_work": "background/background.html"
     },
-    "description": "Preenchimento automático para tarefas do sistema Fábio Ribeiro Advogados.",
+    "description": "Utilitários para o sistema Fábio Ribeiro Advogados.",
     "action": {
         "default_title": "System FR Extension",
         "default_popup": "popup/index.html"
@@ -16,11 +16,17 @@
         {
             "matches": [
                 "http://fabioribeiro.eastus.cloudapp.azure.com/*",
-                "https://maps.googleapis.com/*"
+                "https://maps.googleapis.com/*",
+                "https://*/pje/*"
             ],
             "js": [
                 "chromeUtils.js",
-                "content.js"
+                "content.js",
+                "locaisAudiencias.js",
+                "painelSupervisor.js",
+                "recognition.js",
+                "notificacaoTarefasAdicionais.js",
+                "pje.js"
             ]
         }
     ],

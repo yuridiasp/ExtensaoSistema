@@ -18,6 +18,12 @@ section {
     grid-template-rows: repeat(2, 1fr);
 }
 
+hr {
+    height: 0.1em;
+    margin: 30px 0;
+    background: lightgray;
+}
+
 .section-config {
     margin: 1rem;
 }
@@ -32,7 +38,7 @@ section {
     text-align: left;
 }
 
-.section-config p {
+.section-config label {
     text-align: left;
 }
 
@@ -71,4 +77,21 @@ section {
 
 .desabilitado {
     color: darkgray;
+}
+
+#genReport {
+    padding: 1em;
+    border-radius: 0.3rem;
+    background: forestgreen;
+    color: white;
+    font-size: 0.7rem;
+    margin-bottom: 1rem;
+}
+
+#genReport:hover {
+    filter: brightness(0.8);
+}
+
+#genReport:active {
+    filter: contrast(1.2);
 }
