@@ -1338,9 +1338,9 @@ function proximaTarefa (descricaoTarefa) {
         emendar = "CONTATAR CLIENTE",
         sequencia = cliente.compromisso.tarefaSequencia,
         compromisso = cliente.compromisso.tipoCompromisso,
-        cont = cliente.compromisso.tarefaRestante,
-        achou = false
-    let i
+        cont = cliente.compromisso.tarefaRestante
+    let achou = false,
+        i
 
     if (cliente.compromisso.tarefaSequencia === cliente.compromisso.tarefaRestante) {
         cliente.compromisso.descricao = descricaoTarefa.value
