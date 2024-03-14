@@ -1023,7 +1023,6 @@ async function validaExecutorContatar () {
         const viagemAsley = null,
             viagemRobert = null,
             viagemHenrique = null,
-            viagemBryan = null,
             viagemLucas = null,
             parceiros = ['ELIZEU ( PARCEIRO)','MARIA DO POV. PREGUIÇA','AGENOR (PARCEIRO)','ELIZANGELA ( PARCEIRA)','ERMINIO','AUGUSTO ( PARCEIRO)'],
             varaEstancia = ['7ª VARA FEDERAL', '1ª VARA CIVEL DE ESTÂNCIA', '2ª VARA CIVEL DE ESTÂNCIA', 'JUIZADO ESPECIAL CÍVEL E CRIMINAL DE ESTÂNCIA', 'VARA DE ESTÂNCIA', 'VARA DO TRABALHO DE ESTÂNCIA'],
@@ -1033,7 +1032,6 @@ async function validaExecutorContatar () {
             idMarcoR = 141,
             //idVictorM = 120,
             idYuriD = 161,
-            idBryan = 194,
             idLucas = 199,
             idKaua = 196,
             estancia = [
@@ -1042,8 +1040,7 @@ async function validaExecutorContatar () {
             aracaju = [
                 [idAsley,"ASLEY RODRIGO DE MELO LIMA",["ALAGOINHAS", "ESTANCIA", "CONDE/BA"],viagemAsley,0],
                 [idCarlosH,"CARLOS HENRIQUE ESPASIANI",null,viagemHenrique,0],
-                [idBryan,"BRYAN CAMPOS DE ANDRADE",["CARMOPÓLIS", "LOTEAMENTO JEOVA (BOTAFOGO)"],viagemBryan,0],
-                [idKaua,"KAUÃ DE CARVALHO NASCIMENTO",null,null,0],
+                [idKaua,"KAUÃ DE CARVALHO NASCIMENTO",["CARMOPÓLIS", "LOTEAMENTO JEOVA (BOTAFOGO)"],null,0],
                 [idLucas,"LUCAS NATHAN NOGUEIRA DA SILVA ",["PEDRINHAS", "TOBIAS BARRETO"],viagemLucas,0],
                 [idMarcoR,"MARCOS ROBERT DE MELO LIMA",["CAPELA","JAPARATUBA"],viagemRobert,0],
                 //[idVictorM,"VICTOR MENDES DOS SANTOS",null,null,0],
@@ -1179,7 +1176,7 @@ async function validaResponsavelFederal (num) {
             return {responsavel: "BRUNO PRADO GUIMARAES",executor: "PAULO VICTOR SANTANA TEIXEIRA"}
         }
         
-        if (cliente.processo.cidade === "ALAGOINHAS") {
+        if (cliente.processo.estado === "BA") {
             return {responsavel: "LAIS PEREIRA MORAES",executor: "LAIS PEREIRA MORAES"}
         }
 
@@ -1985,13 +1982,19 @@ function calcularPrazo (prazo,parametro) {
     const dataPub = document.querySelector("#dataPublicacao"),
         tipoIntimacao = document.querySelector("#descricao"),
         processo = document.querySelector('#numeroProcesso'),
-        diasFatal = Number(prazo)
+        diasFatal = Number(prazo),
+        StringTipoIntimacao = removeAcentuacaoString(tipoIntimacao.value).toUpperCase(),
+        isSentenca = (StringTipoIntimacao.search("SENTENCA") === 0),
+        isDecisao = (StringTipoIntimacao.search("DECISAO") === 0),
+        isAcordao = (StringTipoIntimacao.search("ACORDAO") == 0),
+        isSentencaOrAcordaoOrDecisao = (isSentenca || isDecisao || isAcordao)
 
     let dateFinal = new Date(),
         dateInicial = new Date(),
         cont = 1,
         diasInterno,
-        i
+        i,
+        condiction
 
 
     if (processo.value.length === 12) {
@@ -2015,18 +2018,13 @@ function calcularPrazo (prazo,parametro) {
             cont = cont + 1
         }
     }
+
     let ano = dateFinal.getFullYear(),
         mes = dateFinal.getMonth()+1,
         dia =  dateFinal.getDate(),
         final = formataData(dia, mes, ano)
     
-    const StringTipoIntimacao = removeAcentuacaoString(tipoIntimacao.value).toUpperCase(),
-        isSentenca = (StringTipoIntimacao.search("SENTENCA") === 0),
-        isDecisao = (StringTipoIntimacao.search("DECISAO") === 0),
-        isAcordao = (StringTipoIntimacao.search("ACORDAO") == 0),
-        isSentencaAcordaoDecisao = (isSentenca || isDecisao || isAcordao)
-    
-    if (isSentencaAcordaoDecisao) {
+    if (isSentencaOrAcordaoOrDecisao) {
         if (processo.value.length === 12) {
             diasInterno = 3
         }
@@ -2047,12 +2045,12 @@ function calcularPrazo (prazo,parametro) {
     }
     
     cont = 1
-    let condiction
+
     const isGoias = (cliente.processo.estado === 'GO'),
         isDF = (cliente.processo.estado === 'DF'),
         ehBarril = (isGoias || isDF)
 
-    if (ehBarril && !isSentencaAcordaoDecisao) {
+    if (ehBarril && !isSentencaOrAcordaoOrDecisao) {
         dateInicial = new Date (dateFinal.getFullYear(), dateFinal.getMonth(), dateFinal.getDate()-1)
         while (cont <= 3) {
             i = dateInicial.getDay()
