@@ -2032,13 +2032,19 @@ function calcularPrazo (prazo,parametro) {
     const dataPub = document.querySelector("#dataPublicacao"),
         tipoIntimacao = document.querySelector("#descricao"),
         processo = document.querySelector('#numeroProcesso'),
-        diasFatal = Number(prazo)
+        diasFatal = Number(prazo),
+        StringTipoIntimacao = removeAcentuacaoString(tipoIntimacao.value).toUpperCase(),
+        isSentenca = (StringTipoIntimacao.search("SENTENCA") === 0),
+        isDecisao = (StringTipoIntimacao.search("DECISAO") === 0),
+        isAcordao = (StringTipoIntimacao.search("ACORDAO") == 0),
+        isSentencaOrAcordaoOrDecisao = (isSentenca || isDecisao || isAcordao)
 
     let dateFinal = new Date(),
         dateInicial = new Date(),
         cont = 1,
         diasInterno,
-        i
+        i,
+        condiction
 
 
     if (processo.value.length === 12) {
@@ -2062,18 +2068,13 @@ function calcularPrazo (prazo,parametro) {
             cont = cont + 1
         }
     }
+
     let ano = dateFinal.getFullYear(),
         mes = dateFinal.getMonth()+1,
         dia =  dateFinal.getDate(),
         final = formataData(dia, mes, ano)
     
-    const StringTipoIntimacao = removeAcentuacaoString(tipoIntimacao.value).toUpperCase(),
-        isSentenca = (StringTipoIntimacao.search("SENTENCA") === 0),
-        isDecisao = (StringTipoIntimacao.search("DECISAO") === 0),
-        isAcordao = (StringTipoIntimacao.search("ACORDAO") == 0),
-        isSentencaAcordaoDecisao = (isSentenca || isDecisao || isAcordao)
-    
-    if (isSentencaAcordaoDecisao) {
+    if (isSentencaOrAcordaoOrDecisao) {
         if (processo.value.length === 12) {
             diasInterno = 3
         }
@@ -2094,12 +2095,12 @@ function calcularPrazo (prazo,parametro) {
     }
     
     cont = 1
-    let condiction
+
     const isGoias = (cliente.processo.estado === 'GO'),
         isDF = (cliente.processo.estado === 'DF'),
         ehBarril = (isGoias || isDF)
 
-    if (ehBarril && !isSentencaAcordaoDecisao) {
+    if (ehBarril && !isSentencaOrAcordaoOrDecisao) {
         dateInicial = new Date (dateFinal.getFullYear(), dateFinal.getMonth(), dateFinal.getDate()-1)
         while (cont <= 3) {
             i = dateInicial.getDay()
