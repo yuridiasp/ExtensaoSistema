@@ -21,13 +21,6 @@ const adm = [
         atrasadas: 0
     },
     {
-        id: 194,
-        nome: "BRYAN CAMPOS DE ANDRADE",
-        diasViagem: [],
-        contagem: 0,
-        atrasadas: 0
-    },
-    {
         id: 51,
         nome: "JULIANO OLIVEIRA DE SOUZA",
         diasViagem: null,
@@ -72,6 +65,13 @@ const adm = [
     {
         id: 141,
         nome: "MARCOS ROBERT DE MELO LIMA",
+        diasViagem: [],
+        contagem: 0,
+        atrasadas: 0
+    },
+    {
+        id: 214,
+        nome: "PAULO VICTOR BARBOSA DE SOUZA",
         diasViagem: [],
         contagem: 0,
         atrasadas: 0

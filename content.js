@@ -53,15 +53,16 @@ let submit = true
 
 let cliente = {
         cliente: {
+            id: null,
             nome: null,
             cpf: null,
             cidade: null,
             estado: null,
             localAtendido: null,
-            parceiro: null,
-            id: null
+            parceiro: null
         },
         processo: {
+            id: null,
             origem: null,
             dependente: null,
             coletivo: false,
@@ -76,6 +77,7 @@ let cliente = {
             idDemaisEnvolvidos: []
         },
         compromisso: {
+            id: null,
             atualizar: true,
             prazoInterno: null,
             prazoFatal: null,
@@ -1023,7 +1025,6 @@ async function validaExecutorContatar () {
         const viagemAsley = null,
             viagemRobert = null,
             viagemHenrique = null,
-            viagemBryan = null,
             viagemLucas = null,
             parceiros = ['ELIZEU ( PARCEIRO)','MARIA DO POV. PREGUIÇA','AGENOR (PARCEIRO)','ELIZANGELA ( PARCEIRA)','ERMINIO','AUGUSTO ( PARCEIRO)'],
             varaEstancia = ['7ª VARA FEDERAL', '1ª VARA CIVEL DE ESTÂNCIA', '2ª VARA CIVEL DE ESTÂNCIA', 'JUIZADO ESPECIAL CÍVEL E CRIMINAL DE ESTÂNCIA', 'VARA DE ESTÂNCIA', 'VARA DO TRABALHO DE ESTÂNCIA'],
@@ -1033,7 +1034,6 @@ async function validaExecutorContatar () {
             idMarcoR = 141,
             //idVictorM = 120,
             idYuriD = 161,
-            idBryan = 194,
             idLucas = 199,
             idKaua = 196,
             estancia = [
@@ -1042,8 +1042,7 @@ async function validaExecutorContatar () {
             aracaju = [
                 [idAsley,"ASLEY RODRIGO DE MELO LIMA",["ALAGOINHAS", "ESTANCIA", "CONDE/BA"],viagemAsley,0],
                 [idCarlosH,"CARLOS HENRIQUE ESPASIANI",null,viagemHenrique,0],
-                [idBryan,"BRYAN CAMPOS DE ANDRADE",["CARMOPÓLIS", "LOTEAMENTO JEOVA (BOTAFOGO)"],viagemBryan,0],
-                [idKaua,"KAUÃ DE CARVALHO NASCIMENTO",null,null,0],
+                [idKaua,"KAUÃ DE CARVALHO NASCIMENTO",["CARMOPÓLIS", "LOTEAMENTO JEOVA (BOTAFOGO)"],null,0],
                 [idLucas,"LUCAS NATHAN NOGUEIRA DA SILVA ",["PEDRINHAS", "TOBIAS BARRETO"],viagemLucas,0],
                 [idMarcoR,"MARCOS ROBERT DE MELO LIMA",["CAPELA","JAPARATUBA"],viagemRobert,0],
                 //[idVictorM,"VICTOR MENDES DOS SANTOS",null,null,0],
@@ -1078,6 +1077,17 @@ async function validaExecutorContatar () {
     }
 }
 
+function converterParaTarefaAvulsa() {
+    console.log(cliente);
+    const idCompromisso = document.querySelector("#fdt-form > input[type=hidden]:nth-child(2)"),
+        idProcesso = document.querySelector("#fdt-form > input[type=hidden]:nth-child(3)"),
+        idCliente = document.querySelector("#fdt-form > input[type=hidden]:nth-child(4)")
+
+    idCompromisso.value = ""
+    idProcesso.value = ""
+    idCliente.value = cliente.cliente.id
+}
+
 async function validaResponsavelTj (num) {
     const tarefa = cliente.compromisso.tipoTarefa,
         digito = Number(cliente.processo.origem[num-1]),
@@ -1086,7 +1096,8 @@ async function validaResponsavelTj (num) {
         sac = "SMS E WHATSAPP",
         natureza = cliente.processo.natureza
 
-    if (tarefa === "RECEBIMENTO DE ALVARÁ" && cliente.compromisso.tarefaRestante === 2) {
+    if (tarefa === "RECEBIMENTO DE ALVARÁ" && cliente.compromisso.tarefaRestante === 1) {
+        converterParaTarefaAvulsa()
         return {responsavel: "LUCIANA DOS SANTOS ARAUJO",executor: "LUCIANA LIMA REZENDE"}
     }
 
@@ -1138,7 +1149,8 @@ async function validaResponsavelFederal (num) {
         natureza = cliente.processo.natureza,
         indiceTarefa = ((cliente.processo.estado === 'DF') || (cliente.processo.estado === 'GO') ? 1 : 2)
 
-    if ((tarefa === "RECEBIMENTO DE ALVARÁ") && (cliente.compromisso.tarefaRestante === indiceTarefa)) {
+    if ((tarefa === "RECEBIMENTO DE ALVARÁ") && (cliente.compromisso.tarefaRestante === 1)) {
+        converterParaTarefaAvulsa()
         return {responsavel: "LUCIANA DOS SANTOS ARAUJO",executor: "LUCIANA LIMA REZENDE"}
     }
 
@@ -1179,7 +1191,7 @@ async function validaResponsavelFederal (num) {
             return {responsavel: "BRUNO PRADO GUIMARAES",executor: "PAULO VICTOR SANTANA TEIXEIRA"}
         }
         
-        if (cliente.processo.cidade === "ALAGOINHAS") {
+        if (cliente.processo.estado === "BA") {
             return {responsavel: "LAIS PEREIRA MORAES",executor: "LAIS PEREIRA MORAES"}
         }
 
@@ -1664,6 +1676,7 @@ function loadInfo () {
     if (!state.functions.cadastroTarefa.AutoPreenchimentoTarefasIntimacoes) {
         return
     }
+
     const selectTipoIntimacaoInput = document.querySelector("#idTipoTarefa"),
         descricaoTarefa = document.querySelector("#descricao"),
         optionLi = document.querySelector(`#fdt-form > div:nth-child(10) > div.form-group.col-sm-8 > div > div > ul`),
@@ -1675,18 +1688,35 @@ function loadInfo () {
     descricaoTarefa.addEventListener('change', event => {
         event.target.value = event.target.value.toUpperCase()
     })
+
     local.addEventListener('input', event => {
         event.target.value = event.target.value.toUpperCase()
     })
     
     for (let index = 0; index < optionLi.children.length; index++) {
         optionLi.children[index].children[0].addEventListener('click', () => {
+
+            const eventTargets = [horarioInicial,local,processoDependente],
+                contactdiv = document.querySelector("#contactdiv")
+
             validaEsferaProcesso()
+
             setTimeout(() => {
-                let arrayAudiencias = ["AUDIÊNCIA DE INSTRUÇÃO E JULGAMENTO", "AUDIÊNCIA UNA", "AUDIÊNCIA DE INSTRUÇÃO", "AUDIÊNCIA INICIAL", "AUDIÊNCIA INAUGURAL"]
+
+                const arrayAudiencias = ["AUDIÊNCIA DE INSTRUÇÃO E JULGAMENTO", "AUDIÊNCIA UNA", "AUDIÊNCIA DE INSTRUÇÃO", "AUDIÊNCIA INICIAL", "AUDIÊNCIA INAUGURAL"],
+                    parametros = {
+                        tarefaContatar: 1,
+                        tarefaAdvogado: 2
+                    }
+
+                const ehTarefaParaAdmOuSac = ((cliente.compromisso.tipoTarefa == "CONTATAR CLIENTE") || (cliente.compromisso.tipoTarefa == "LEMBRAR CLIENTE") || (cliente.compromisso.tipoTarefa == "SMS E WHATSAPP")),
+                    ehAudiencia = (arrayAudiencias.includes(cliente.compromisso.tipoCompromisso))
+
                 if (cliente.compromisso.tipoCompromisso.search('PERÍCIA') == 0 && cliente.compromisso.tarefaSequencia == cliente.compromisso.tarefaRestante)
                     mostrarCamposPericia()
-                calcularDataTarefa(((cliente.compromisso.tipoTarefa == "CONTATAR CLIENTE") || (cliente.compromisso.tipoTarefa == "LEMBRAR CLIENTE") || (cliente.compromisso.tipoTarefa == "SMS E WHATSAPP")) || (arrayAudiencias.includes(cliente.compromisso.tipoCompromisso)) ? 1 : 2)
+
+                calcularDataTarefa( (ehTarefaParaAdmOuSac || ehAudiencia) ? parametros.tarefaContatar : parametros.tarefaAdvogado)
+
                 if (cliente.compromisso.atualizar) {
                     const contagem = contarTarefas()
                     cliente.compromisso.tarefaSequencia = contagem
@@ -1695,8 +1725,6 @@ function loadInfo () {
             }, 50);
             if ((horarioInicial.value.length == 0 || local.value.length == 0))
                 atualizaDescricao(descricaoTarefa, horarioInicial,horarioFinal, local)
-            
-            let eventTargets = [horarioInicial,local,processoDependente]
 
             eventTargets.forEach(element => {
                 if (element !== null)
@@ -1705,20 +1733,22 @@ function loadInfo () {
                     })
             })
 
-            let contactdiv = document.querySelector("#contactdiv")
             if (contactdiv != null) {
                 contactdiv.parentNode.removeChild(contactdiv)
             }
+
             if ((optionLi.children[index].children[0].children[0].innerText.toUpperCase() == "CONTATAR CLIENTE" || optionLi.children[index].children[0].children[0].innerText.toUpperCase() == "LEMBRAR CLIENTE") && (cliente.processo.estado != "DF" || cliente.processo.estado != "GO")) {
                 validaExecutorContatar()
             }
 
             submitAtualizarTarefa(descricaoTarefa)
+
             if (cliente.compromisso.tarefaRestante <= 1) {
                 desmarcarCaixaTarefaSequencia()
             }
         })
     }
+
     selectTipoIntimacao(selectTipoIntimacaoInput,optionLi)
 }
 
@@ -1785,10 +1815,23 @@ function separaTitulo(titulo) {
     return cliente
 }
 
+function getIdCo () {
+    const idCoInput = document.querySelector("#fdt-form > input[type=hidden]:nth-child(2)")
+
+    const idCo = idCoInput.value
+
+    if (idCo.length) {
+        return idCo
+    }
+
+    return null
+}
+
 async function saveInfoTarefas() {
-    const titulo = document.querySelector(".alert-info")
     
     if (cliente.compromisso.atualizar) {
+        const titulo = document.querySelector(".alert-info")
+        cliente.compromisso.id = getIdCo()
         cliente = separaTitulo(titulo.innerText)
         await setCliente(cliente)
     }
@@ -1839,7 +1882,6 @@ function extrairDadosRequisicaoProcessoHtml(response, gravarBtn) {
         linkClienteAjax = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/ficha.asp?idPK=",
         fichas = response.documentElement.querySelectorAll("body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.fdt-ficha"),
         dadosObrigatorios = fichas[0].innerText.split('\n')
-    let id
 
     let dadosPrincipais = () => {
         let achou = false
@@ -1885,8 +1927,13 @@ function extrairDadosRequisicaoProcessoHtml(response, gravarBtn) {
 
     buttonsPainel.forEach(e => {
         if (e.title === "Ficha do cliente") {
-            id = e.href.slice(e.href.search("idPK=")+5,e.href.search("&idPRorg="))
-            cliente.cliente.id = id
+            const str = e.href.slice(e.href.search("idPK=")+5)
+            const [idCliente, idProcesso] = str.split("&idPRorg=")
+
+            cliente.cliente.id = idCliente
+            cliente.processo.id = idProcesso
+
+            console.log(cliente);
         }
     })
 
