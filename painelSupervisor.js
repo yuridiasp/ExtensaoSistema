@@ -1,111 +1,218 @@
-const adm = [
-    {
-        id: 131,
-        nome: "ASLEY RODRIGO DE MELO LIMA",
-        diasViagem: [],
-        contagem: 0,
-        atrasadas: 0
-    },
-    {
-        id: 94,
-        nome: "CARLOS HENRIQUE ESPASIANI",
-        diasViagem: [],
-        contagem: 0,
-        atrasadas: 0
-    },
-    {
-        id: 181,
-        nome: "CHARLES DEMETRIUS BARRETO SILVA",
-        diasViagem: null,
-        contagem: 0,
-        atrasadas: 0
-    },
-    {
-        id: 51,
-        nome: "JULIANO OLIVEIRA DE SOUZA",
-        diasViagem: null,
-        contagem: 0,
-        atrasadas: 0
-    },
-    {
-        id: 200,
-        nome: "JULIO KAUÃ DE SOUSA PINTO",
-        diasViagem: null,
-        contagem: 0,
-        atrasadas: 0
-    },
-    {
-        id: 196,
-        nome: "KAUÃ DE CARVALHO NASCIMENTO",
-        diasViagem: null,
-        contagem: 0,
-        atrasadas: 0
-    },
-    {
-        id: 64,
-        nome: "LEANDRO SANTOS",
-        diasViagem: null,
-        contagem: 0,
-        atrasadas: 0
-    },
-    {
-        id: 199,
-        nome: "LUCAS NATHAN NOGUEIRA DA SILVA",
-        diasViagem: null,
-        contagem: 0,
-        atrasadas: 0
-    },
-    {
-        id: 201,
-        nome: "MARCO AURELIO LEITE GOMES",
-        diasViagem: null,
-        contagem: 0,
-        atrasadas: 0
-    },
-    {
-        id: 141,
-        nome: "MARCOS ROBERT DE MELO LIMA",
-        diasViagem: [],
-        contagem: 0,
-        atrasadas: 0
-    },
-    {
-        id: 214,
-        nome: "PAULO VICTOR BARBOSA DE SOUZA",
-        diasViagem: [],
-        contagem: 0,
-        atrasadas: 0
-    },
-    {
-        id: 203,
-        nome: "RENATA DE JESUS SANTOS",
-        diasViagem: null,
-        contagem: 0,
-        atrasadas: 0
-    },
-    /* {
-        id: 120,
-        nome: "VICTOR MENDES DOS SANTOS",
-        diasViagem: null,
-        contagem: 0,
-        atrasadas: 0
-    }, */
-    {
-        id: 188,
-        nome: "VINICIUS SOUSA BOMFIM",
-        diasViagem: null,
-        contagem: 0,
-        atrasadas: 0
-    },
-    {
-        id: 161,
-        nome: "YURI DIAS PEREIRA",
-        diasViagem: null,
-        contagem: 0,
-        atrasadas: 0
-    },
-]
-let updateCount = adm.length * 2, percent = 0, contIteration = 0
+const ADM = [
+        {
+            id: 131,
+            nome: "ASLEY RODRIGO DE MELO LIMA",
+            diasViagem: [],
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 94,
+            nome: "CARLOS HENRIQUE ESPASIANI",
+            diasViagem: [],
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 181,
+            nome: "CHARLES DEMETRIUS BARRETO SILVA",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 51,
+            nome: "JULIANO OLIVEIRA DE SOUZA",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 200,
+            nome: "JULIO KAUÃ DE SOUSA PINTO",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 196,
+            nome: "KAUÃ DE CARVALHO NASCIMENTO",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 64,
+            nome: "LEANDRO SANTOS",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 199,
+            nome: "LUCAS NATHAN NOGUEIRA DA SILVA",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 201,
+            nome: "MARCO AURELIO LEITE GOMES",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 141,
+            nome: "MARCOS ROBERT DE MELO LIMA",
+            diasViagem: [],
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 214,
+            nome: "PAULO VICTOR BARBOSA DE SOUZA",
+            diasViagem: [],
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 203,
+            nome: "RENATA DE JESUS SANTOS",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 188,
+            nome: "VINICIUS SOUSA BOMFIM",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 161,
+            nome: "YURI DIAS PEREIRA",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+    ],
+    SAC = [
+        {
+            id: 183,
+            nome: "ALEXSANDRO DE SOUZA JUNIOR",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 204,
+            nome: "DIEGO DOS SANTOS SILVA",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 213,
+            nome: "HELLEN VITORIA ROCHA SILVA SANTOS",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 205,
+            nome: "HELTON FRADES BRABEC SOUZA",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 62,
+            nome: "HENYR GOIS DOS SANTOS",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 140,
+            nome: "LAYNE DA SILVA GOIS",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 193,
+            nome: "LINIKER BERNARDO SOARES",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 153,
+            nome: "TRICYA MATEUS ROLEMBERG",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 145,
+            nome: "WENDEL CARLOS SANTOS",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+    ],
+    FINANCEIRO = [
+        {
+            id: 14,
+            nome: "ALINE RIBEIRO",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 11,
+            nome: "LUCIANA DOS SANTOS ARAUJO",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 127,
+            nome: "LUCIANA LIMA REZENDE",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 148,
+            nome: "OVERLANDIA SANTOS MELO",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 207,
+            nome: "SHEYLA SANTANA SANTOS",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 120,
+            nome: "VICTOR MENDES DOS SANTOS",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+    ]
+
+let updateCountADM = ADM.length * 2,
+    updateCountSAC = SAC.length * 2,
+    updateCountFINANCEIRO = FINANCEIRO.length * 2
+    percent = 0,
+    contIteration = 0,
 
 function createPainel () {
     if (!state.functions.supervisor.paineldevisualizacaoTarefasTime) {
@@ -122,7 +229,7 @@ function createPainel () {
                         <li class="fdt-widget-lembretes">
                             <ul>
                                 <li>
-                                    ${generateTable(adm, datas, dias)}
+                                    ${generateTable(ADM, datas, dias)}
                                 </li>
                             </ul>
                         </li>
@@ -189,37 +296,37 @@ function createPainel () {
         incrementBar()
     }
 
-    adm.forEach(e => {
+    ADM.forEach(e => {
         e['nomeTLC'] = e.nome.toLocaleLowerCase().split(' ')[0]
     })
 
     document.querySelector('#painelBTNSup').addEventListener('click', () => {
         showContentBar(contentBar)
-        getTarefasAtrasadas(adm).then(result => {
-            adm.forEach(e => {
+        getTarefasAtrasadas(ADM).then(result => {
+            ADM.forEach(e => {
                 inputDados(e.nomeTLC, result[e.nome])
             })
         })
         
-        for(let c = 0; c < adm.length; c++) {
-            adm[c].contagem = getTarefasSemanal(adm[c].id, datas).then(result => {
-                inputDados(adm[c].nomeTLC,result)
+        for(let c = 0; c < ADM.length; c++) {
+            ADM[c].contagem = getTarefasSemanal(ADM[c].id, datas).then(result => {
+                inputDados(ADM[c].nomeTLC,result)
                 return result
             })
         }
     })
 }
 
-function generateTable(adm, datas, dias) {
+function generateTable(ADM, datas, dias) {
     
     const semana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
     let table = `<table class="tabela">`
 
-    for (c = 0; c <= adm.length; c++) {
+    for (c = 0; c <= ADM.length; c++) {
         table += `<tr>`
         let nome
         if (c > 0) {
-            nome = adm[c-1].nome.split(' ')[0]
+            nome = ADM[c-1].nome.split(' ')[0]
         }
         for (let j = 0; j <= datas.length; j++) {
             if ((j == 0) && (c == 0)) {
@@ -375,7 +482,7 @@ function getTarefasSemanal (id, datas) {
     return result
 }
 
-async function getTarefasAtrasadas (adm) {
+async function getTarefasAtrasadas (ADM) {
 
     const array = {}
 
@@ -413,7 +520,7 @@ async function getTarefasAtrasadas (adm) {
 
     let str = ""
 
-    adm.forEach(e => {
+    ADM.forEach(e => {
         str += `&bsAdvTarefasExecutor=${e.id}`
         array[e.nome] = { atrasadas: 0 }
     })
@@ -459,11 +566,11 @@ function finishLoad(bar, interval) {
 
 function incrementBar() {
     const bar = document.querySelector("#bar")
-    const unidade = 100 / updateCount
+    const unidade = 100 / updateCountADM
     percent += unidade
     bar.style.width = `${percent}%`
     contIteration++
-    if (updateCount == contIteration) {
+    if (updateCountADM == contIteration) {
         const contentBar = document.querySelector("#contentBar")
         hiddeContentBar(contentBar)
     }
