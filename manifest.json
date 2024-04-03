@@ -21,12 +21,12 @@
             ],
             "js": [
                 "chromeUtils.js",
-                "content.js",
                 "locaisAudiencias.js",
                 "painelSupervisor.js",
                 "recognition.js",
                 "notificacaoTarefasAdicionais.js",
-                "pje.js"
+                "pje.js",
+                "content.js"
             ]
         }
     ],

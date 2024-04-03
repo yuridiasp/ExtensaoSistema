@@ -2,6 +2,7 @@ const ADM = [
         {
             id: 131,
             nome: "ASLEY RODRIGO DE MELO LIMA",
+            nomeTLC: "asley",
             diasViagem: [],
             contagem: 0,
             atrasadas: 0
@@ -9,6 +10,7 @@ const ADM = [
         {
             id: 94,
             nome: "CARLOS HENRIQUE ESPASIANI",
+            nomeTLC: "carlos henrique",
             diasViagem: [],
             contagem: 0,
             atrasadas: 0
@@ -16,6 +18,7 @@ const ADM = [
         {
             id: 181,
             nome: "CHARLES DEMETRIUS BARRETO SILVA",
+            nomeTLC: "charles",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -23,6 +26,7 @@ const ADM = [
         {
             id: 51,
             nome: "JULIANO OLIVEIRA DE SOUZA",
+            nomeTLC: "juliano",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -30,6 +34,7 @@ const ADM = [
         {
             id: 200,
             nome: "JULIO KAUÃ DE SOUSA PINTO",
+            nomeTLC: "julio",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -37,6 +42,7 @@ const ADM = [
         {
             id: 196,
             nome: "KAUÃ DE CARVALHO NASCIMENTO",
+            nomeTLC: "kauã",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -44,6 +50,7 @@ const ADM = [
         {
             id: 64,
             nome: "LEANDRO SANTOS",
+            nomeTLC: "leandro",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -51,6 +58,7 @@ const ADM = [
         {
             id: 199,
             nome: "LUCAS NATHAN NOGUEIRA DA SILVA",
+            nomeTLC: "lucas",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -58,6 +66,7 @@ const ADM = [
         {
             id: 201,
             nome: "MARCO AURELIO LEITE GOMES",
+            nomeTLC: "marco aurelio",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -65,6 +74,7 @@ const ADM = [
         {
             id: 141,
             nome: "MARCOS ROBERT DE MELO LIMA",
+            nomeTLC: "marcos robert",
             diasViagem: [],
             contagem: 0,
             atrasadas: 0
@@ -72,6 +82,7 @@ const ADM = [
         {
             id: 214,
             nome: "PAULO VICTOR BARBOSA DE SOUZA",
+            nomeTLC: "paulo barbosa",
             diasViagem: [],
             contagem: 0,
             atrasadas: 0
@@ -79,6 +90,7 @@ const ADM = [
         {
             id: 203,
             nome: "RENATA DE JESUS SANTOS",
+            nomeTLC: "renata",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -86,6 +98,7 @@ const ADM = [
         {
             id: 188,
             nome: "VINICIUS SOUSA BOMFIM",
+            nomeTLC: "vinicius",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -93,6 +106,7 @@ const ADM = [
         {
             id: 161,
             nome: "YURI DIAS PEREIRA",
+            nomeTLC: "yuri",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -102,6 +116,7 @@ const ADM = [
         {
             id: 183,
             nome: "ALEXSANDRO DE SOUZA JUNIOR",
+            nomeTLC: "alexsandro",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -109,6 +124,7 @@ const ADM = [
         {
             id: 204,
             nome: "DIEGO DOS SANTOS SILVA",
+            nomeTLC: "diego dos santos",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -116,6 +132,7 @@ const ADM = [
         {
             id: 213,
             nome: "HELLEN VITORIA ROCHA SILVA SANTOS",
+            nomeTLC: "hellen",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -123,6 +140,7 @@ const ADM = [
         {
             id: 205,
             nome: "HELTON FRADES BRABEC SOUZA",
+            nomeTLC: "helton",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -130,6 +148,7 @@ const ADM = [
         {
             id: 62,
             nome: "HENYR GOIS DOS SANTOS",
+            nomeTLC: "henyr",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -137,6 +156,7 @@ const ADM = [
         {
             id: 140,
             nome: "LAYNE DA SILVA GOIS",
+            nomeTLC: "layne",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -144,6 +164,7 @@ const ADM = [
         {
             id: 193,
             nome: "LINIKER BERNARDO SOARES",
+            nomeTLC: "liniker",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -151,6 +172,7 @@ const ADM = [
         {
             id: 153,
             nome: "TRICYA MATEUS ROLEMBERG",
+            nomeTLC: "tricya",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -158,6 +180,7 @@ const ADM = [
         {
             id: 145,
             nome: "WENDEL CARLOS SANTOS",
+            nomeTLC: "wendel",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -167,6 +190,7 @@ const ADM = [
         {
             id: 14,
             nome: "ALINE RIBEIRO",
+            nomeTLC: "aline",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -174,6 +198,7 @@ const ADM = [
         {
             id: 11,
             nome: "LUCIANA DOS SANTOS ARAUJO",
+            nomeTLC: "luciana araujo",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -181,6 +206,7 @@ const ADM = [
         {
             id: 127,
             nome: "LUCIANA LIMA REZENDE",
+            nomeTLC: "luciana lima",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -188,6 +214,7 @@ const ADM = [
         {
             id: 148,
             nome: "OVERLANDIA SANTOS MELO",
+            nomeTLC: "overlandia",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -195,6 +222,7 @@ const ADM = [
         {
             id: 207,
             nome: "SHEYLA SANTANA SANTOS",
+            nomeTLC: "sheyla",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -202,34 +230,50 @@ const ADM = [
         {
             id: 120,
             nome: "VICTOR MENDES DOS SANTOS",
+            nomeTLC: "victor",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
         },
     ]
 
-let updateCountADM = ADM.length * 2,
-    updateCountSAC = SAC.length * 2,
-    updateCountFINANCEIRO = FINANCEIRO.length * 2
-    percent = 0,
-    contIteration = 0,
+let updateCount = {
+        ADM: ADM.length * 2,
+        SAC: SAC.length * 2,
+        FINANCEIRO: FINANCEIRO.length * 2
+    },
+    percent = {
+        ADM: 0,
+        SAC: 0,
+        FINANCEIRO: 0
+    },
+    contIteration = {
+        ADM: 0,
+        SAC: 0,
+        FINANCEIRO: 0
+    }
 
-function createPainel () {
-    if (!state.functions.supervisor.paineldevisualizacaoTarefasTime) {
+function createPainel (setor, colaboradores, condiction) {
+    if (!condiction) {
         return
     }
 
     const painelBar = document.querySelector("#fdt-mt-header > ul:nth-child(1)")
     const qtdDias = 8
     const { datas, dias } = getArrayDate(qtdDias)
+    const cor = {
+        ADM: "azul",
+        SAC: "verde",
+        FINANCEIRO: "vermelho"
+    }
 
-    const html = `<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span data-toggle="tooltip" data-placement="bottom" title="Painel do Supervisor" data-original-title="Painel do Supervisor"><i class="fa fa-fw fa-table fdt-cor-azul"></i></span></a>
-                    <ul id="panelSup" class="dropdown-menu hidden-xs">
+    const html = `<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span data-toggle="tooltip" data-placement="bottom" title="Painel do Supervisor ${setor}" data-original-title="Painel do Supervisor ${setor}"><i class="fa fa-fw fa-table fdt-cor-${cor[setor]}"></i></span></a>
+                    <ul id="panelSup${setor}" class="dropdown-menu hidden-xs">
                         <li class="fdt-dropdown-cabecalho" style="color: #005689;">Painel do Supervisor</li>
                         <li class="fdt-widget-lembretes">
                             <ul>
                                 <li>
-                                    ${generateTable(ADM, datas, dias)}
+                                    ${generateTable(colaboradores, datas, dias)}
                                 </li>
                             </ul>
                         </li>
@@ -256,10 +300,10 @@ function createPainel () {
     const li = document.createElement("li")
     li.innerHTML = html
     li.setAttribute('class', 'dropdown mensagens hidden-xs')
-    li.setAttribute('id', 'painelBTNSup')
+    li.setAttribute('id', `painelBTNSup${setor}`)
     painelBar.appendChild(li)
-    const panelSup = document.querySelector("#panelSup")
-    const contentBar = createBar()
+    const panelSup = document.querySelector(`#panelSup${setor}`)
+    const contentBar = createBar(setor)
     panelSup.append(contentBar)
     estilizarTabela()
 
@@ -293,41 +337,40 @@ function createPainel () {
                 tdsSeparados[nome][chave]['Total'].innerHTML = result[chave]['Total']
             }
         })
-        incrementBar()
+        incrementBar(setor)
     }
-
-    ADM.forEach(e => {
-        e['nomeTLC'] = e.nome.toLocaleLowerCase().split(' ')[0]
-    })
-
-    document.querySelector('#painelBTNSup').addEventListener('click', () => {
-        showContentBar(contentBar)
-        getTarefasAtrasadas(ADM).then(result => {
-            ADM.forEach(e => {
+    
+    document.querySelector(`#painelBTNSup${setor}`).addEventListener('click', () => {
+        showContentBar(contentBar, setor)
+        getTarefasAtrasadas(colaboradores).then(result => {
+            colaboradores.forEach(e => {
                 inputDados(e.nomeTLC, result[e.nome])
             })
         })
         
-        for(let c = 0; c < ADM.length; c++) {
-            ADM[c].contagem = getTarefasSemanal(ADM[c].id, datas).then(result => {
-                inputDados(ADM[c].nomeTLC,result)
+        for(let c = 0; c < colaboradores.length; c++) {
+            colaboradores[c].contagem = getTarefasSemanal(colaboradores[c].id, datas).then(result => {
+                inputDados(colaboradores[c].nomeTLC,result)
                 return result
             })
         }
     })
 }
 
-function generateTable(ADM, datas, dias) {
+function generateTable(colaboradores, datas, dias) {
     
     const semana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
     let table = `<table class="tabela">`
 
-    for (c = 0; c <= ADM.length; c++) {
+    for (c = 0; c <= colaboradores.length; c++) {
         table += `<tr>`
+
         let nome
+
         if (c > 0) {
-            nome = ADM[c-1].nome.split(' ')[0]
+            nome = colaboradores[c-1].nomeTLC
         }
+
         for (let j = 0; j <= datas.length; j++) {
             if ((j == 0) && (c == 0)) {
                 table += `<th style="background: rgb(0 86 137);">&nbsp;</th>`
@@ -337,14 +380,14 @@ function generateTable(ADM, datas, dias) {
                 else
                     table += `<th data-date="${datas[j-1]}" class="dRow">Tarefas ${datas[j-1]}</th>`
             } else if ((j == 0) && (c > 0)) {
-                table += `<th data-nome="${nome.toLowerCase()}" class="nCollumn">${nome}</th>`
+                table += `<th data-nome="${nome}" class="nCollumn">${nome.toUpperCase()}</th>`
             } else if (c > 0) {
                 if (j > 1)
-                    table += `<td data-toggle="tooltip" data-original-title="Ativas" data-placement="Top" style="background: #A5D5EF;" data-categoria="Ativas" data-nome="${nome.toLowerCase()}" data-date="${(datas[j-1].toISOString().split('T'))[0]}">-</td>
-                    <td data-toggle="tooltip" data-original-title="Encerradas" data-placement="Top" style="background: #CCC;" data-categoria="Encerradas" data-nome="${nome.toLowerCase()}" data-date="${(datas[j-1].toISOString().split('T'))[0]}">-</td>
-                    <td data-toggle="tooltip" data-original-title="Total" data-placement="Top" style="background: #ADADAD;" data-categoria="Total" data-nome="${nome.toLowerCase()}" data-date="${(datas[j-1].toISOString().split('T'))[0]}">-</td>`
+                    table += `<td data-toggle="tooltip" data-original-title="Ativas" data-placement="Top" style="background: #A5D5EF;" data-categoria="Ativas" data-nome="${nome}" data-date="${(datas[j-1].toISOString().split('T'))[0]}">-</td>
+                    <td data-toggle="tooltip" data-original-title="Encerradas" data-placement="Top" style="background: #CCC;" data-categoria="Encerradas" data-nome="${nome}" data-date="${(datas[j-1].toISOString().split('T'))[0]}">-</td>
+                    <td data-toggle="tooltip" data-original-title="Total" data-placement="Top" style="background: #ADADAD;" data-categoria="Total" data-nome="${nome}" data-date="${(datas[j-1].toISOString().split('T'))[0]}">-</td>`
                 else
-                    table += `<td style="background: #34454E; color: #FFF;" data-categoria="atrasadas" data-nome="${nome.toLowerCase()}" data-date="${datas[j-1]}">-</td>`
+                    table += `<td style="background: #34454E; color: #FFF;" data-categoria="atrasadas" data-nome="${nome}" data-date="${datas[j-1]}">-</td>`
             }
         }
         table += `</tr>`
@@ -482,7 +525,7 @@ function getTarefasSemanal (id, datas) {
     return result
 }
 
-async function getTarefasAtrasadas (ADM) {
+async function getTarefasAtrasadas (colaboradores) {
 
     const array = {}
 
@@ -520,7 +563,7 @@ async function getTarefasAtrasadas (ADM) {
 
     let str = ""
 
-    ADM.forEach(e => {
+    colaboradores.forEach(e => {
         str += `&bsAdvTarefasExecutor=${e.id}`
         array[e.nome] = { atrasadas: 0 }
     })
@@ -552,26 +595,26 @@ async function getTarefasAtrasadas (ADM) {
 
 
 // Barra de Carregamento
-function resetBar() {
-    percent = 0
-    contIteration = 0
-    const bar = document.querySelector('#bar')
-    bar.style.width = `${percent}%`
+function resetBar(setor) {
+    percent[setor] = 0
+    contIteration[setor] = 0
+    const bar = document.querySelector('#bar' + setor)
+    bar.style.width = `${percent[setor]}%`
 }
 
-function finishLoad(bar, interval) {
+function finishLoad(bar, interval, setor) {
     interval.clearInterval()
-    bar.style.width = percent + '%'
+    bar.style.width = percent[setor] + '%'
 }
 
-function incrementBar() {
-    const bar = document.querySelector("#bar")
-    const unidade = 100 / updateCountADM
-    percent += unidade
-    bar.style.width = `${percent}%`
-    contIteration++
-    if (updateCountADM == contIteration) {
-        const contentBar = document.querySelector("#contentBar")
+function incrementBar(setor) {
+    const bar = document.querySelector("#bar" + setor)
+    const unidade = 100 / updateCount[setor]
+    percent[setor] += unidade
+    bar.style.width = `${percent[setor]}%`
+    contIteration[setor]++
+    if (updateCount[setor] == contIteration[setor]) {
+        const contentBar = document.querySelector("#contentBar" + setor)
         hiddeContentBar(contentBar)
     }
 }
@@ -580,12 +623,12 @@ function hiddeContentBar(contentBar) {
     contentBar.style.display = "none"
 }
 
-function showContentBar(contentBar) {
-    resetBar()
+function showContentBar(contentBar, setor) {
+    resetBar(setor)
     contentBar.style.display = "flex"
 }
 
-function createBar() {
+function createBar(setor) {
     const contentBar = document.createElement('div')
     const progress = document.createElement('div')
     const bar = document.createElement('div')
@@ -593,9 +636,9 @@ function createBar() {
     contentBar.append(p)
     contentBar.append(progress)
     progress.append(bar)
-    contentBar.id = "contentBar"
-    bar.id = "bar"
-    progress.id = "progress"
+    contentBar.id = "contentBar" + setor
+    bar.id = "bar" + setor
+    progress.id = "progress" + setor
     p.innerHTML="Carregando..."
 
     p.style.color = "#005689"
@@ -619,7 +662,7 @@ function createBar() {
 
     bar.style.position = "absolute"
     bar.style.background = "#005689"
-    bar.style.width = `${percent}%`
+    bar.style.width = `${percent[setor]}%`
     bar.style.height = "100%"
     bar.style.borderRadius = "10px"
     

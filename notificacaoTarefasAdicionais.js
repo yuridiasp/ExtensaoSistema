@@ -6,9 +6,16 @@ async function contarTarefasParaHoje() {
     const aUser = document.querySelector("#fdt-mt-header > ul.nav.navbar-nav.navbar-right.hidden-xs > li > a")
     let contagemTarefasHoje = await getContagemTarefas()
     const user = /\w+\s\w+/.exec(aUser.innerText)
-    let regex = new RegExp(user), novasTarefas = 0, id, date, novoTotalTarefas, novoArrayIdTarefas, novaDate
+
+    let regex = new RegExp(user),
+        novasTarefas = 0,
+        id,
+        date,
+        novoTotalTarefas,
+        novoArrayIdTarefas,
+        novaDate
     
-    for (const colaborador of adm) {
+    for (const colaborador of ADM) {
         if (regex.test(colaborador.nome)) {
             id = colaborador.id
             const qtdDias = 2

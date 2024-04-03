@@ -28,7 +28,9 @@ const state = {
             preenchimentoCamposArquivos: null,
         },
         supervisor: {
-            paineldevisualizacaoTarefasTime: null,
+            painelVisualizacaoTarefasTimeADM: null,
+            painelVisualizacaoTarefasTimeSAC: null,
+            painelVisualizacaoTarefasTimeFINANCEIRO: null,
         }
     }
 }
@@ -2503,12 +2505,14 @@ async function activate() {
 
     if (!clienteSaved) {
         await setCliente(cliente)
-    } 
+    }
 
     if (!active)
         return
 
-    createPainel()
+    createPainel('ADM', ADM, state.functions.supervisor.painelVisualizacaoTarefasTimeADM)
+    createPainel('SAC', SAC, state.functions.supervisor.painelVisualizacaoTarefasTimeSAC)
+    createPainel('FINANCEIRO', FINANCEIRO, state.functions.supervisor.painelVisualizacaoTarefasTimeFINANCEIRO)
     idPage(url)
 }
 

@@ -40,7 +40,9 @@ async function setInitialState() {
                 preenchimentoCamposArquivos: undefined,
             },
             supervisor: {
-                paineldevisualizacaoTarefasTime: undefined,
+                painelVisualizacaoTarefasTimeADM: undefined,
+                painelVisualizacaoTarefasTimeSAC: undefined,
+                painelVisualizacaoTarefasTimeFINANCEIRO: undefined,
             }
         }
     }

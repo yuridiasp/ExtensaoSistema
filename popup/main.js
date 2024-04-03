@@ -32,7 +32,9 @@ let initialState, state = {
             preenchimentoCamposArquivos: null,
         },
         supervisor: {
-            paineldevisualizacaoTarefasTime: null,
+            painelVisualizacaoTarefasTimeADM: null,
+            painelVisualizacaoTarefasTimeSAC: null,
+            painelVisualizacaoTarefasTimeFINANCEIRO: null,
         }
     }
 }
