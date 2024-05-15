@@ -17,16 +17,20 @@
             "matches": [
                 "http://fabioribeiro.eastus.cloudapp.azure.com/*",
                 "https://maps.googleapis.com/*",
-                "https://*/pje/*"
+                "https://*/pje/*",
+                "https://www.tjse.jus.br/tjnet/portaladv/*"
             ],
             "js": [
                 "chromeUtils.js",
+                "content.js",
                 "locaisAudiencias.js",
                 "painelSupervisor.js",
                 "recognition.js",
                 "notificacaoTarefasAdicionais.js",
                 "pje.js",
-                "content.js"
+                "filtroAlvaraTJSE.js",
+                "utils/pdfmake.min.js",
+                "utils/vfs_fonts.js"
             ]
         }
     ],

@@ -1,6 +1,28 @@
 const btnActive = window.document.querySelector("#botaoAtiva")
 const inputsCheck = document.querySelectorAll('input[type=checkbox]')
 const googlemaps_APIKey = ""
+const genReport = document.querySelector('#genReport')
+
+async function clearReportSaved() {
+    await setReport(null)
+}
+
+function setNamePDF() {
+    const date = new Date()
+    const dia = date.getDate(), mes = date.getMonth()+1, ano = date.getFullYear()
+    return `PJE ${dia}${mes < 10 ? '0' + mes : mes}${ano}.pdf`
+}
+
+genReport.addEventListener('click', async () => {
+    const report = await getReport()
+    console.log(report);
+    if (report) {
+        PDFGen(report)
+        //clearReportSaved()
+    } else {
+        alert('Não há registros de intimações.')
+    }
+})
 
 let initialState, state = {
     active: undefined,
@@ -31,10 +53,16 @@ let initialState, state = {
             seleçãoTipoArquivo: null,
             preenchimentoCamposArquivos: null,
         },
+        preProcesso:{
+            preenchimentoNomePasta: null,
+        },
         supervisor: {
             painelVisualizacaoTarefasTimeADM: null,
             painelVisualizacaoTarefasTimeSAC: null,
             painelVisualizacaoTarefasTimeFINANCEIRO: null,
+        },
+        tjse: {
+            botaoExportarAlvaras: null
         }
     }
 }
@@ -124,7 +152,7 @@ async function getInitialState() {
         result.active = true
 
     return result
-}
+};
 
 (async function () {
     state = await getInitialState()

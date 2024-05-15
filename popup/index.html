@@ -86,6 +86,13 @@
                 </div>
             </div>
             <div class="section-config">
+                <h5>Pré-processo</h5>
+                <div>
+                    <input id="preenchimentoNomePasta" data-nome="preenchimentoNomePasta" data-aba="preProcesso" type="checkbox">
+                    <label for="preenchimentoNomePasta">Autopreenchimento do nome da pasta</label>
+                </div>
+            </div>
+            <div class="section-config">
                 <h5>Supervisor</h5>
                 <div>
                     <input id="painelVisualizacaoTarefasTimeADM" data-nome="painelVisualizacaoTarefasTimeADM" data-aba="supervisor" type="checkbox">
@@ -100,15 +107,21 @@
                     <label for="painelVisualizacaoTarefasTimeFINANCEIRO">Painel de tarefas FINANCEIRO</label>
                 </div>
             </div>
+            <div class="section-config">
+                <h5>TJSE</h5>
+                <div>
+                    <input id="botaoExportarAlvaras" data-nome="botaoExportarAlvaras" data-aba="tjse" type="checkbox">
+                    <label for="botaoExportarAlvaras">Habilitar botão Exportar Intimações Alvarás</label>
+                </div>
+            </div>
         </section>
         <hr />
         <button id="genReport">Gerar Relatório PJE</button>
         <div id="mensagem"></div>
         <script src="../chromeUtils.js" defer></script>
         <script src="../background/background.js"defer></script>
-        <script src="main.js" defer></script>
-        <script src="pdfReport.js" defer></script>
         <script src="../utils/pdfmake.min.js"></script>
         <script src="../utils/vfs_fonts.js"></script>
+        <script src="main.js" defer></script>
     </body>
 </html>

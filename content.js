@@ -27,10 +27,16 @@ const state = {
             seleçãoTipoArquivo: null,
             preenchimentoCamposArquivos: null,
         },
+        preProcesso:{
+            preenchimentoNomePasta: null,
+        },
         supervisor: {
             painelVisualizacaoTarefasTimeADM: null,
             painelVisualizacaoTarefasTimeSAC: null,
             painelVisualizacaoTarefasTimeFINANCEIRO: null,
+        },
+        tjse: {
+            botaoExportarAlvaras: null
         }
     }
 }
@@ -1023,7 +1029,7 @@ async function validaExecutorContatar () {
         let adm = []
 
         //Última atualização: 07/08/2023
-        // ['DD/MM']
+        // Padrão para data das viagens: ['DD/MM']
         const viagemAsley = null,
             viagemRobert = null,
             viagemHenrique = null,
@@ -1034,21 +1040,21 @@ async function validaExecutorContatar () {
             idAsley = 131,
             idCarlosH = 94,
             idMarcoR = 141,
-            //idVictorM = 120,
             idYuriD = 161,
             idLucas = 199,
             idKaua = 196,
+            idVinicius = 188,
             estancia = [
                 [idSandoval,"SANDOVAL FILHO CORREIA LIMA FILHO",null,null,0]
             ],
             aracaju = [
-                [idAsley,"ASLEY RODRIGO DE MELO LIMA",["ALAGOINHAS", "ESTANCIA", "CONDE/BA"],viagemAsley,0],
-                [idCarlosH,"CARLOS HENRIQUE ESPASIANI",null,viagemHenrique,0],
+                [idAsley,"ASLEY RODRIGO DE MELO LIMA",["CONDE/BA"],viagemAsley,0],
+                [idCarlosH,"CARLOS HENRIQUE ESPASIANI",["CAPELA","JAPARATUBA"],viagemHenrique,0],
                 [idKaua,"KAUÃ DE CARVALHO NASCIMENTO",["CARMOPÓLIS", "LOTEAMENTO JEOVA (BOTAFOGO)"],null,0],
-                [idLucas,"LUCAS NATHAN NOGUEIRA DA SILVA ",["PEDRINHAS", "TOBIAS BARRETO"],viagemLucas,0],
-                [idMarcoR,"MARCOS ROBERT DE MELO LIMA",["CAPELA","JAPARATUBA"],viagemRobert,0],
-                //[idVictorM,"VICTOR MENDES DOS SANTOS",null,null,0],
-                [idYuriD,"YURI DIAS PEREIRA",null,null,0]
+                [idLucas,"LUCAS NATHAN NOGUEIRA DA SILVA ",["ESTANCIA", "TOBIAS BARRETO"],viagemLucas,0],
+                [idMarcoR,"MARCOS ROBERT DE MELO LIMA",null,viagemRobert,0],
+                [idVinicius,"VINICIUS SOUSA BOMFIM",["PEDRINHAS"],null,0],
+                [idYuriD,"YURI DIAS PEREIRA",null,null,0],
             ]
 
         if (((cliente.cliente.cidade == "ESTANCIA" && cliente.cliente.localAtendido == "ESTANCIA")) || ((parceiros.includes(cliente.cliente.parceiro)) && varaEstancia.includes(cliente.processo.vara)))
@@ -1131,11 +1137,6 @@ async function validaResponsavelTj (num) {
         }
         return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "RODRIGO AGUIAR SANTOS"}
     }
-    /* if (natureza === "CÍVEL" || natureza === "CONSUMIDOR" || natureza === "SERVIDOR PÚBLICO") {
-            if (ala.includes(digito) && tarefa != "SESSÃO DE JULGAMENTO" && tarefa.search("AUDIÊNCIA") != 0)
-                return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "ALÃ FEITOSA CARVALHO"}
-            return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "RODRIGO AGUIAR SANTOS"}
-    } */
 }
 
 async function validaResponsavelFederal (num) {
@@ -1163,13 +1164,18 @@ async function validaResponsavelFederal (num) {
     }
 
     if (tarefasAdm.includes(tarefa)) {
+        //Tarefa contatar para BSB
         if (cliente.processo.estado === "DF" || cliente.processo.estado === "GO") {
             return {responsavel: "HENYR GOIS DOS SANTOS",executor: "LAYNE DA SILVA GOIS"}
         }
-        if(cliente.cliente.cidade === "ESTANCIA"  && cliente.cliente.localAtendido === "ESTANCIA") { //Tarefa contatar para escritório de Estância
+
+        //Tarefa contatar para escritório de Estância
+        if(cliente.cliente.cidade === "ESTANCIA"  && cliente.cliente.localAtendido === "ESTANCIA") { 
             return {responsavel: "SANDOVAL FILHO CORREIA LIMA FILHO",executor: "SANDOVAL FILHO CORREIA LIMA FILHO"}
         }
-        return {responsavel: "JULIANO OLIVEIRA DE SOUZA",executor: "JULIANO OLIVEIRA DE SOUZA"} //Tarefa contatar para demais localidades
+
+        //Tarefa contatar para demais localidades
+        return {responsavel: "JULIANO OLIVEIRA DE SOUZA",executor: "JULIANO OLIVEIRA DE SOUZA"} 
     }
 
     if (tarefaSac === tarefa) { //Tarefas para o SAC
@@ -1311,6 +1317,9 @@ function validaTipoIntimacao(txt) {
 
     if (txt === "ALVARÁ")
         return "RECEBIMENTO DE ALVARÁ"
+
+    if (txt === "PRECATÓRIO")
+        return "RECEBIMENTO DE PRECATÓRIO"
     
     if (txt === "AUDIÊNCIA DE CONCILIAÇÃO")
         return "AUDIÊNCIA CONCILIATÓRIA"
@@ -2039,7 +2048,11 @@ function calcularPrazo (prazo,parametro) {
         isSentenca = (StringTipoIntimacao.search("SENTENCA") === 0),
         isDecisao = (StringTipoIntimacao.search("DECISAO") === 0),
         isAcordao = (StringTipoIntimacao.search("ACORDAO") == 0),
-        isSentencaOrAcordaoOrDecisao = (isSentenca || isDecisao || isAcordao)
+        isSentencaOrAcordaoOrDecisao = (isSentenca || isDecisao || isAcordao),
+        numCharProcessoTJSE = 12,
+        natureza = cliente.processo.natureza,
+        isProcessoCivel = (processo.value.length === numCharProcessoTJSE),
+        isProcessoTrabalhista = (natureza === "TRABALHISTA")
 
     let dateFinal = new Date(),
         dateInicial = new Date(),
@@ -2049,7 +2062,7 @@ function calcularPrazo (prazo,parametro) {
         condiction
 
 
-    if (processo.value.length === 12) {
+    if (isProcessoCivel || isProcessoTrabalhista) {
         if (dataPub.value.length > 0) {
             const data = dataPub.value.split('/')
             dateFinal = new Date(data[2],Number(data[1])-1,Number(data[0]))
@@ -2077,7 +2090,7 @@ function calcularPrazo (prazo,parametro) {
         final = formataData(dia, mes, ano)
     
     if (isSentencaOrAcordaoOrDecisao) {
-        if (processo.value.length === 12) {
+        if (isProcessoCivel || isProcessoTrabalhista) {
             diasInterno = 3
         }
         else {
@@ -2088,8 +2101,11 @@ function calcularPrazo (prazo,parametro) {
         }
     }
     else {
-        if ((diasFatal === 5) && (processo.value.length === 12)) {
+        if (diasFatal === 5 && isProcessoCivel) {
             diasInterno = 3
+        }
+        if (diasFatal === 5 && isProcessoTrabalhista) {
+            diasInterno = 2
         }
         else {
             diasInterno = diasFatal-3
@@ -2162,6 +2178,7 @@ function createButtonPrazo() {
     if (!state.functions.cadastroCompromisso.mostrarBotoesAuxiliaresdeDias) {
         return
     }
+    
     const dataPub = document.querySelector('#dataPublicacao'),
         prazoInicial = document.querySelector("#dataPrazoInterno"),
         prazoFinal = document.querySelector("#dataPrazoFatal"),
@@ -2405,6 +2422,8 @@ async function idPage(url) {
         urlTarefasFicha = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/default",
         urlClienteAddtarefa = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/default",
         urlUpFile = "http://fabioribeiro.eastus.cloudapp.azure.com//adv/clientesArquivos/formulario.asp",
+        urlPortalDoAdvogado = "https://www.tjse.jus.br/tjnet/portaladv/index.wsp",
+        urlCadastroPreProcesso = "http://fabioribeiro.eastus.cloudapp.azure.com/pre/preProcessos/formularioCria.asp",
         autoCompletar = await getAutoComplete(),
         pageBuscaProcessos = (url.search(urlProcessos) > -1),
         pageTarefas = (url.search(urlTarefas) > -1),
@@ -2414,79 +2433,102 @@ async function idPage(url) {
         pageVisualizacaoCompromisso = (url.search(urlCompromissoFicha) > -1),
         pageFormularioAddTarefaSemCompromisso = (url.search(urlClienteAddtarefa) > -1),
         pageVisualizacaoTarefa = (url.search(urlTarefasFicha) > -1),
-        pageUploadArquivo = (url.search(urlUpFile) > -1)
+        pageUploadArquivo = (url.search(urlUpFile) > -1),
+        pagePortalDoAdvogado = (url.search(urlPortalDoAdvogado) > -1),
+        isSistema = (url.search("http://fabioribeiro.eastus.cloudapp.azure.com") > -1),
+        isPJE = (url.search("/pje/") > 0)
     
     digitacaoPorVoz()
-    contarTarefasParaHoje()
 
-    if (pageBuscaProcessos) {
-        if (!state.functions.abaPesquisaProcesso.autoFormatacaoNumProcessoPesquisa) {
-            return
-        }
-        formataNumProcesso()
-        focarInputProcesso()
-    } else if (pageTarefas) {
-        if (autoCompletar) {
-            cliente = await getCliente()
-            if (cliente.compromisso.atualizar)
-                createInputDependente()
-            saveInfoTarefas()
-            loadInfo()
-        }
-    } else if (pageCompromissos) {
-        const dataFinal =  document.querySelector("#dataPrazoFatal"),
-            dataInicial = document.querySelector("#dataPrazoInterno"),
-            tipoIntimacao = document.querySelector("#descricao")
-        
-        dataFinal.addEventListener('blur', () => {
-            const indiceAudiencia = removeAcentuacaoString(tipoIntimacao.value).search('AUDIENCIA'),
-                indicePericia = removeAcentuacaoString(tipoIntimacao.value).search('PERICIA'),
-                indicePauta = tipoIntimacao.value.search('PAUTA'),
-                ehAudiencia = (indiceAudiencia == 0),
-                ehPericia = (indicePericia == 0),
-                ehPauta = (indicePauta == 0)
+    if (isSistema) {
+        createPainel('ADM', ADM, state.functions.supervisor.painelVisualizacaoTarefasTimeADM)
+        createPainel('SAC', SAC, state.functions.supervisor.painelVisualizacaoTarefasTimeSAC)
+        createPainel('FINANCEIRO', FINANCEIRO, state.functions.supervisor.painelVisualizacaoTarefasTimeFINANCEIRO)
+        contarTarefasParaHoje()
 
-            if (ehAudiencia || ehPauta || ehPericia) {
-                dataInicial.value = dataFinal.value
+        if (pageBuscaProcessos) {
+            if (!state.functions.abaPesquisaProcesso.autoFormatacaoNumProcessoPesquisa) {
+                return
             }
-        })
-
-        if (autoCompletar) {
-            const gravarBtn = document.querySelector("#fdt-form > div.row.margemCima20 > div > input.btn.fdt-btn-verde"),
-                id = getIdCliente(url),
-                linkProcessosAjax = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/ficha.asp?idPK="
-
-            gravarBtn.setAttribute('disabled','')
-            ajax(1,linkProcessosAjax,id, gravarBtn)
-            saveInfoCompromissos()
-            setCliente(cliente)
-            createButtonPrazo()
-        }
-        console.log(cliente)
-    } else if (pageCadastroProcesso) {
-        formataNumProcesso()
-        habilitarEdicaoNumeroProcesso()
-    } else if (pageVisualizacaoAbaCompromissos) {
-        createButtonRolagem()
-        setValidacaoFunctionOn()
-    } else if (pageVisualizacaoCompromisso || pageFormularioAddTarefaSemCompromisso) {
-        setValidacaoFunctionOff()
-
-    } else if (pageVisualizacaoTarefa) {
-        const editTarefaBtn = document.querySelectorAll('body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr')
-
-        if (editTarefaBtn != null) {
-            editTarefaBtn.forEach(element => {
-                let e = element.children[1].children[0].children[1].children[1]
-                if (e != null) {
-                    e.addEventListener('click',() => {
-                        setAutoComplete(false)
-                    })
+            formataNumProcesso()
+            focarInputProcesso()
+        } else if (pageTarefas) {
+            if (autoCompletar) {
+                cliente = await getCliente()
+                if (cliente.compromisso.atualizar)
+                    createInputDependente()
+                saveInfoTarefas()
+                loadInfo()
+            }
+        } else if (pageCompromissos) {
+            const dataFinal =  document.querySelector("#dataPrazoFatal"),
+                dataInicial = document.querySelector("#dataPrazoInterno"),
+                tipoIntimacao = document.querySelector("#descricao")
+            
+            dataFinal.addEventListener('blur', () => {
+                const indiceAudiencia = removeAcentuacaoString(tipoIntimacao.value).search('AUDIENCIA'),
+                    indicePericia = removeAcentuacaoString(tipoIntimacao.value).search('PERICIA'),
+                    indicePauta = tipoIntimacao.value.search('PAUTA'),
+                    ehAudiencia = (indiceAudiencia == 0),
+                    ehPericia = (indicePericia == 0),
+                    ehPauta = (indicePauta == 0)
+    
+                if (ehAudiencia || ehPauta || ehPericia) {
+                    dataInicial.value = dataFinal.value
                 }
             })
+    
+            if (autoCompletar) {
+                const gravarBtn = document.querySelector("#fdt-form > div.row.margemCima20 > div > input.btn.fdt-btn-verde"),
+                    id = getIdCliente(url),
+                    linkProcessosAjax = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/ficha.asp?idPK="
+    
+                gravarBtn.setAttribute('disabled','')
+                ajax(1,linkProcessosAjax,id, gravarBtn)
+                saveInfoCompromissos()
+                setCliente(cliente)
+                createButtonPrazo()
+            }
+            console.log(cliente)
+        } else if (pageCadastroProcesso) {
+            formataNumProcesso()
+            habilitarEdicaoNumeroProcesso()
+        } else if (pageVisualizacaoAbaCompromissos) {
+            createButtonRolagem()
+            setValidacaoFunctionOn()
+        } else if (pageVisualizacaoCompromisso || pageFormularioAddTarefaSemCompromisso) {
+            setValidacaoFunctionOff()
+    
+        } else if (pageVisualizacaoTarefa) {
+            const editTarefaBtn = document.querySelectorAll('body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr')
+    
+            if (editTarefaBtn != null) {
+                editTarefaBtn.forEach(element => {
+                    let e = element.children[1].children[0].children[1].children[1]
+                    if (e != null) {
+                        e.addEventListener('click',() => {
+                            setAutoComplete(false)
+                        })
+                    }
+                })
+            }
+        } else if (pageUploadArquivo) {
+            completarInputs()
+        } else if (urlCadastroPreProcesso) {
+            if (!state.functions.preProcesso.preenchimentoNomePasta) {
+                return
+            }
+
+            const nome = document.querySelector("#fdt-form > div.row.fdt-ficha > div:nth-child(1) > span"),
+                cpf = document.querySelector("#fdt-form > div.row.fdt-ficha > div:nth-child(2) > span"),
+                nomePastaInput = document.querySelector("#preProcessoPasta")
+
+            nomePastaInput.value = nome.innerText.toUpperCase().replaceAll(" ", "") + cpf.innerText.replaceAll(".", "").replaceAll("-", "")
         }
-    } else if (pageUploadArquivo) {
-        completarInputs()
+    } else if (pagePortalDoAdvogado) {
+            filtroAlvaraTJSE()
+    } else if (isPJE) {
+        activatePJEMarker()
     }
 }
 
@@ -2510,9 +2552,6 @@ async function activate() {
     if (!active)
         return
 
-    createPainel('ADM', ADM, state.functions.supervisor.painelVisualizacaoTarefasTimeADM)
-    createPainel('SAC', SAC, state.functions.supervisor.painelVisualizacaoTarefasTimeSAC)
-    createPainel('FINANCEIRO', FINANCEIRO, state.functions.supervisor.painelVisualizacaoTarefasTimeFINANCEIRO)
     idPage(url)
 }
 

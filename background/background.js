@@ -39,10 +39,16 @@ async function setInitialState() {
                 seleçãoTipoArquivo: undefined,
                 preenchimentoCamposArquivos: undefined,
             },
+            preProcesso:{
+                preenchimentoNomePasta: null,
+            },
             supervisor: {
                 painelVisualizacaoTarefasTimeADM: undefined,
                 painelVisualizacaoTarefasTimeSAC: undefined,
                 painelVisualizacaoTarefasTimeFINANCEIRO: undefined,
+            },
+            tjse: {
+                botaoExportarAlvaras: undefined
             }
         }
     }
