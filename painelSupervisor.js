@@ -10,15 +10,23 @@ const ADM = [
         {
             id: 94,
             nome: "CARLOS HENRIQUE ESPASIANI",
-            nomeTLC: "carlos henrique",
+            nomeTLC: "henrique",
             diasViagem: [],
             contagem: 0,
             atrasadas: 0
         },
         {
-            id: 181,
-            nome: "CHARLES DEMETRIUS BARRETO SILVA",
-            nomeTLC: "charles",
+            id: 204,
+            nome: "DIEGO DOS SANTOS SILVA",
+            nomeTLC: "diego",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 197,
+            nome: "JHONATHAN DA FONSECA ALMEIDA FLOR",
+            nomeTLC: "jhonathan",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -27,14 +35,6 @@ const ADM = [
             id: 51,
             nome: "JULIANO OLIVEIRA DE SOUZA",
             nomeTLC: "juliano",
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 200,
-            nome: "JULIO KAUÃ DE SOUSA PINTO",
-            nomeTLC: "julio",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -80,9 +80,25 @@ const ADM = [
             atrasadas: 0
         },
         {
+            id: 198,
+            nome: "MURILLO VICTOR SANTOS ROCHA",
+            nomeTLC: "murilo",
+            diasViagem: [],
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
             id: 203,
             nome: "RENATA DE JESUS SANTOS",
             nomeTLC: "renata",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 217,
+            nome: "THIAGO SANTOS SANTANA",
+            nomeTLC: "thiago",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -109,14 +125,6 @@ const ADM = [
             id: 183,
             nome: "ALEXSANDRO DE SOUZA JUNIOR",
             nomeTLC: "alexsandro",
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 204,
-            nome: "DIEGO DOS SANTOS SILVA",
-            nomeTLC: "diego dos santos",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -227,7 +235,11 @@ const ADM = [
             contagem: 0,
             atrasadas: 0
         },
-    ]
+    ],
+    INSS = [],
+    PREVIDENCIARIO = [],
+    TRABALHISTA = [],
+    CIVEL = []
 
 let updateCount = {
         ADM: ADM.length * 2,

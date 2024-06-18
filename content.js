@@ -163,8 +163,6 @@ function FeriadosFixos (ano, parametro) {
 
     const tarefaContatar = (parametro == 1),
         tarefaAdvogado = (parametro == 2),
-        indexDia = 1,
-        indexMes = 0,
         indexJaneiro = 0,
         diaInicioForense = 20,
         mesInicioForense = 11,
@@ -174,6 +172,9 @@ function FeriadosFixos (ano, parametro) {
         mesInicioFeriasAdvogados = 11,
         diaFimFeriasAdvogados = 20,
         mesFimFeriasAdvogados = 0,
+        isTJ = cliente.processo.origem.length === 12,
+        isTRT = cliente.processo.natureza === "TRABALHISTA",
+        isIS = isTJ || isTRT,
         forense = setIntervaloFeriadosJudiciario(diaInicioForense, mesInicioForense, diaFimForense, mesFimForense),
         advogados = setIntervaloFeriadosJudiciario(diaInicioFeriasAdvogados, mesInicioFeriasAdvogados, diaFimFeriasAdvogados, mesFimFeriasAdvogados)
         let resultados = [],
@@ -196,11 +197,13 @@ function FeriadosFixos (ano, parametro) {
                     [10,1], //LEI FEDERAL Nº 5.010/66
                     [11,8], //DIA DA JUSTIÇA
                 ],
+                justicaEstadual: [
+                    [4,31] //Ponto Facultativo 2024
+                ],
                 TRF1: [],
                 'SE': [
                     [5,24], //SÃO JOÃO
                     [6,8], //EMANCIPAÇÃO POLÍTICA DE SERGIPE
-                    [10,3] //Ponto Facultativo da Justiça
                 ],
                 'AQUIDABA': [
                     [3,4], //EMANCIPAÇÃO POLÍTICA
@@ -440,68 +443,74 @@ function FeriadosFixos (ano, parametro) {
         return feriados
     }
     
-    datas.nacional.forEach(feriado => {
-        resultados.push(new Date(ano, feriado[indexMes], feriado[indexDia]))
+    datas.nacional.forEach(([mes, dia]) => {
+        resultados.push(new Date(ano, mes, dia))
     })
 
-    if (tarefaContatar) {
-        datas.SE.forEach(feriado => {
-            resultados.push(new Date(ano, feriado[indexMes], feriado[indexDia]))
+    if (isIS) {
+        datas.justicaEstadual.forEach(([mes, dia]) => {
+            resultados.push(new Date(ano, mes, dia))
         })
-        datas.ARACAJU.forEach(feriado => {
-            resultados.push(new Date(ano, feriado[indexMes], feriado[indexDia]))
+    }
+
+    if (tarefaContatar) {
+        datas.SE.forEach(([mes, dia]) => {
+            resultados.push(new Date(ano, mes, dia))
+        })
+        datas.ARACAJU.forEach(([mes, dia]) => {
+            resultados.push(new Date(ano, mes, dia))
         })
     }
 
     if (tarefaAdvogado) {
-        datas.justicaNacional.forEach(feriado => {
-            resultados.push(new Date(ano, feriado[indexMes], feriado[indexDia]))
+        datas.justicaNacional.forEach(([mes, dia]) => {
+            resultados.push(new Date(ano, mes, dia))
         })
 
-        datas.feriasAdvogados.forEach(feriado => {
-            if (feriado[indexMes] == indexJaneiro) {
-                resultados.push(new Date(ano+1, feriado[indexMes], feriado[indexDia]))
-                resultados.push(new Date(ano, feriado[indexMes], feriado[indexDia]))
+        datas.feriasAdvogados.forEach(([mes, dia]) => {
+            if (mes == indexJaneiro) {
+                resultados.push(new Date(ano+1, mes, dia))
+                resultados.push(new Date(ano, mes, dia))
             }
             else {
-                resultados.push(new Date(ano, feriado[indexMes], feriado[indexDia]))
-                resultados.push(new Date(ano-1, feriado[indexMes], feriado[indexDia]))
+                resultados.push(new Date(ano, mes, dia))
+                resultados.push(new Date(ano-1, mes, dia))
             }
         })
 
         if (cliente.processo.estado == 'SE') {
-            datas.SE.forEach(feriado => {
-                resultados.push(new Date(ano, feriado[indexMes], feriado[indexDia]))
+            datas.SE.forEach(([mes, dia]) => {
+                resultados.push(new Date(ano, mes, dia))
             })
         }
 
         if (cliente.processo.estado == 'DF' || cliente.processo.estado == 'GO') {
-            datas.TRF1.forEach(feriado => {
-                resultados.push(new Date(ano, feriado[indexMes], feriado[indexDia]))
+            datas.TRF1.forEach(([mes, dia]) => {
+                resultados.push(new Date(ano, mes, dia))
             })
         }
         
         let date = Object.entries(datas)
         for (const [key,value] of date) {
             if (key == cliente.processo.cidade){
-                value.forEach(feriado => {
-                    resultados.push(new Date(ano, feriado[indexMes], feriado[indexDia]))
+                value.forEach(([mes, dia]) => {
+                    resultados.push(new Date(ano, mes, dia))
                 })
             }
         }
     }
 
-    datas.recessoForense.forEach(feriado => {
-        if (feriado[indexMes] == indexJaneiro) {
-            resultados.push(new Date(ano+1, feriado[indexMes], feriado[indexDia]))
-            resultados.push(new Date(ano, feriado[indexMes], feriado[indexDia]))
+    datas.recessoForense.forEach(([mes, dia]) => {
+        if (mes == indexJaneiro) {
+            resultados.push(new Date(ano+1, mes, dia))
+            resultados.push(new Date(ano, mes, dia))
         }
         else {
-            resultados.push(new Date(ano, feriado[indexMes], feriado[indexDia]))
-            resultados.push(new Date(ano-1, feriado[indexMes], feriado[indexDia]))
+            resultados.push(new Date(ano, mes, dia))
+            resultados.push(new Date(ano-1, mes, dia))
         }
     })
-
+    
     return resultados
 }
 
@@ -1028,12 +1037,13 @@ async function validaExecutorContatar () {
     async function requererTarefasContatar(data) {
         let adm = []
 
-        //Última atualização: 07/08/2023
+        //Última atualização: 24/05/2024
         // Padrão para data das viagens: ['DD/MM']
         const viagemAsley = null,
             viagemRobert = null,
             viagemHenrique = null,
-            viagemLucas = null,
+            viagemVinicius = ['28/05'],
+            viagemLucas = ['28/05'],
             parceiros = ['ELIZEU ( PARCEIRO)','MARIA DO POV. PREGUIÇA','AGENOR (PARCEIRO)','ELIZANGELA ( PARCEIRA)','ERMINIO','AUGUSTO ( PARCEIRO)'],
             varaEstancia = ['7ª VARA FEDERAL', '1ª VARA CIVEL DE ESTÂNCIA', '2ª VARA CIVEL DE ESTÂNCIA', 'JUIZADO ESPECIAL CÍVEL E CRIMINAL DE ESTÂNCIA', 'VARA DE ESTÂNCIA', 'VARA DO TRABALHO DE ESTÂNCIA'],
             idSandoval = 22,
@@ -1043,17 +1053,21 @@ async function validaExecutorContatar () {
             idYuriD = 161,
             idLucas = 199,
             idKaua = 196,
+            idThiago = 217,
             idVinicius = 188,
             estancia = [
+                // ID_USUÁRIO_SISTEMA_FR, NOME_COMPLETO, [INTERIORES], [DATAS_DE_VIAGEM], NÚMERO_TAREFAS
                 [idSandoval,"SANDOVAL FILHO CORREIA LIMA FILHO",null,null,0]
             ],
             aracaju = [
-                [idAsley,"ASLEY RODRIGO DE MELO LIMA",["CONDE/BA"],viagemAsley,0],
-                [idCarlosH,"CARLOS HENRIQUE ESPASIANI",["CAPELA","JAPARATUBA"],viagemHenrique,0],
+                // ID_USUÁRIO_SISTEMA_FR, NOME_COMPLETO, [INTERIORES], [DATAS_DE_VIAGEM], NÚMERO_TAREFAS
+                [idAsley,"ASLEY RODRIGO DE MELO LIMA",["CONDE/BA", "ALAGOINHAS"],viagemAsley,0],
+                [idCarlosH,"CARLOS HENRIQUE ESPASIANI",null,viagemHenrique,0],
                 [idKaua,"KAUÃ DE CARVALHO NASCIMENTO",["CARMOPÓLIS", "LOTEAMENTO JEOVA (BOTAFOGO)"],null,0],
-                [idLucas,"LUCAS NATHAN NOGUEIRA DA SILVA ",["ESTANCIA", "TOBIAS BARRETO"],viagemLucas,0],
+                [idLucas,"LUCAS NATHAN NOGUEIRA DA SILVA ",["ESTANCIA", "TOBIAS BARRETO", "PEDRINHAS"],viagemLucas,0],
                 [idMarcoR,"MARCOS ROBERT DE MELO LIMA",null,viagemRobert,0],
-                [idVinicius,"VINICIUS SOUSA BOMFIM",["PEDRINHAS"],null,0],
+                [idThiago,"THIAGO SANTOS SANTANA",["CAPELA","JAPARATUBA"],null,0],
+                [idVinicius,"VINICIUS SOUSA BOMFIM",["UMBAÚBA"],viagemVinicius,0],
                 [idYuriD,"YURI DIAS PEREIRA",null,null,0],
             ]
 
@@ -1086,7 +1100,6 @@ async function validaExecutorContatar () {
 }
 
 function converterParaTarefaAvulsa() {
-    console.log(cliente);
     const idCompromisso = document.querySelector("#fdt-form > input[type=hidden]:nth-child(2)"),
         idProcesso = document.querySelector("#fdt-form > input[type=hidden]:nth-child(3)"),
         idCliente = document.querySelector("#fdt-form > input[type=hidden]:nth-child(4)")
@@ -1099,7 +1112,7 @@ function converterParaTarefaAvulsa() {
 async function validaResponsavelTj (num) {
     const tarefa = cliente.compromisso.tipoTarefa,
         digito = Number(cliente.processo.origem[num-1]),
-        financeiro = ["RPV TRF1 BRASÌLIA", "RPV TRF1 GOIÁS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTÂNCIA", "RPV TRF1 BAHIA", "PRECATÓRIO"],
+        financeiro = ["RPV TRF1 BRASÌLIA", "RPV TRF1 GOIÁS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTÂNCIA", "RPV TRF1 BAHIA", "RECEBIMENTO DE PRECATÓRIO"],
         adm = ["CONTATAR CLIENTE","LEMBRAR CLIENTE"],
         sac = "SMS E WHATSAPP",
         natureza = cliente.processo.natureza
@@ -1142,7 +1155,7 @@ async function validaResponsavelTj (num) {
 async function validaResponsavelFederal (num) {
     const tarefa = cliente.compromisso.tipoTarefa,
         numeroProcesso = cliente.processo.origem,
-        tarefasFinanceiro = ["RPV TRF1 BRASÌLIA", "RPV TRF1 GOIÁS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTÂNCIA", "RPV TRF1 BAHIA", "PRECATÓRIO"],
+        tarefasFinanceiro = ["RPV TRF1 BRASÌLIA", "RPV TRF1 GOIÁS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTÂNCIA", "RPV TRF1 BAHIA", "RECEBIMENTO DE PRECATÓRIO"],
         tarefasAdm = ["CONTATAR CLIENTE","LEMBRAR CLIENTE"],
         tarefaSac = "SMS E WHATSAPP",
         secao = numeroProcesso.slice(num-4,num),
@@ -1357,7 +1370,7 @@ function proximaTarefa (descricaoTarefa) {
         periciaShort = ["SMS E WHATSAPP"],
         periciaDF = ["SMS E WHATSAPP","LEMBRAR CLIENTE","ATO ORDINATÓRIO"],
         periciaDFShort = ["SMS E WHATSAPP","ATO ORDINATÓRIO"],
-        financeiro = ["RECEBIMENTO DE ALVARÁ","RPV TRF1 BAHIA", "RPV TRF1 BRASÌLIA", "RPV TRF1 GOIÁS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTÂNCIA","PRECATÓRIO"],
+        financeiro = ["RECEBIMENTO DE ALVARÁ","RPV TRF1 BAHIA", "RPV TRF1 BRASÌLIA", "RPV TRF1 GOIÁS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTÂNCIA","RECEBIMENTO DE PRECATÓRIO"],
         emendar = "CONTATAR CLIENTE",
         sequencia = cliente.compromisso.tarefaSequencia,
         compromisso = cliente.compromisso.tipoCompromisso,
@@ -1943,8 +1956,6 @@ function extrairDadosRequisicaoProcessoHtml(response, gravarBtn) {
 
             cliente.cliente.id = idCliente
             cliente.processo.id = idProcesso
-
-            console.log(cliente);
         }
     })
 
@@ -2058,15 +2069,15 @@ function calcularPrazo (prazo,parametro) {
         dateInicial = new Date(),
         cont = 1,
         diasInterno,
-        i,
-        condiction
+        condiction,
+        i
 
 
     if (isProcessoCivel || isProcessoTrabalhista) {
         if (dataPub.value.length > 0) {
-            const data = dataPub.value.split('/')
-            dateFinal = new Date(data[2],Number(data[1])-1,Number(data[0]))
-            dateInicial = new Date(data[2],Number(data[1])-1,Number(data[0]))
+            const [ dia, mes, ano ] = dataPub.value.split('/')
+            dateFinal = new Date(ano,Number(mes)-1,Number(dia))
+            dateInicial = new Date(ano,Number(mes)-1,Number(dia))
         }
 
         if (dateInicial.getDay() === 6) {
@@ -2080,7 +2091,7 @@ function calcularPrazo (prazo,parametro) {
         i = dateFinal.getDay()
 
         if (i > 0 && i < 6 && !isFeriado(dateFinal,parametro)) {
-            cont = cont + 1
+            cont += 1
         }
     }
 
@@ -2103,8 +2114,7 @@ function calcularPrazo (prazo,parametro) {
     else {
         if (diasFatal === 5 && isProcessoCivel) {
             diasInterno = 3
-        }
-        if (diasFatal === 5 && isProcessoTrabalhista) {
+        } else if (diasFatal === 5 && isProcessoTrabalhista) {
             diasInterno = 2
         }
         else {
