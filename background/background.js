@@ -14,6 +14,7 @@ async function setInitialState() {
         active: true,
         functions: {
             todasPaginas: {
+                tipoIntimacaoIsJudicial: undefined,
                 digitarUsandoVoz: undefined,
                 contadorTarefas: undefined
             },
@@ -46,6 +47,7 @@ async function setInitialState() {
                 painelVisualizacaoTarefasTimeADM: undefined,
                 painelVisualizacaoTarefasTimeSAC: undefined,
                 painelVisualizacaoTarefasTimeFINANCEIRO: undefined,
+                painelVisualizacaoTarefasTimeINSS: undefined,
             },
             tjse: {
                 botaoExportarAlvaras: undefined

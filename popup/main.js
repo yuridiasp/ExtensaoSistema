@@ -1,5 +1,7 @@
 const btnActive = window.document.querySelector("#botaoAtiva")
 const inputsCheck = document.querySelectorAll('input[type=checkbox]')
+const tipoIntimacaoJudicial = document.querySelector('#tipoIntimacaoJudicial')
+const tipoIntimacaoAdministrativa = document.querySelector('#tipoIntimacaoAdministrativa')
 const googlemaps_APIKey = ""
 const genReport = document.querySelector('#genReport')
 
@@ -28,6 +30,7 @@ let initialState, state = {
     active: undefined,
     functions: {
         todasPaginas: {
+            tipoIntimacaoIsJudicial: null,
             digitarUsandoVoz: undefined,
             contadorTarefas: undefined
         },
@@ -60,6 +63,7 @@ let initialState, state = {
             painelVisualizacaoTarefasTimeADM: null,
             painelVisualizacaoTarefasTimeSAC: null,
             painelVisualizacaoTarefasTimeFINANCEIRO: null,
+            painelVisualizacaoTarefasTimeINSS: null,
         },
         tjse: {
             botaoExportarAlvaras: null
@@ -83,19 +87,31 @@ function updateCorBtn() {
 }
 
 function loadSelectionFunction(functions) {
-    inputsCheck.forEach(input => {
-        let estado = functions[input.dataset.aba][input.dataset.nome]
 
-        if (estado == null)
+    const isJudicialIntimation = functions.todasPaginas.tipoIntimacaoIsJudicial
+    
+    if (!isJudicialIntimation) {
+        tipoIntimacaoJudicial.checked = true
+        tipoIntimacaoAdministrativa.checked = true
+    }
+
+    tipoIntimacaoJudicial.addEventListener('change', async () => {
+        const { checked } = tipoIntimacaoJudicial
+        state.functions.todasPaginas.tipoIntimacaoIsJudicial = checked
+        await saveState(state)
+    })
+
+    inputsCheck.forEach(input => {
+        const estado = functions[input.dataset.aba][input.dataset.nome]
+
+        if (!estado)
             input.checked = false
         else
             input.checked = estado
 
         input.addEventListener('change', async event => {
-            let { checked } = event.target
-            //state.functions[event.target.dataset.aba][event.target.dataset.nome] = checked
+            const { checked } = event.target
             state.functions[event.target.dataset.aba][event.target.dataset.nome] = checked
-            console.log(state)
             await saveState(state)
         })
     })

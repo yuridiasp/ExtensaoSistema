@@ -2,6 +2,7 @@ const state = {
     active: null,
     functions: {
         todasPaginas: {
+            tipoIntimacaoIsJudicial: null,
             digitarUsandoVoz: undefined,
             contadorTarefas: undefined
         },
@@ -34,6 +35,7 @@ const state = {
             painelVisualizacaoTarefasTimeADM: null,
             painelVisualizacaoTarefasTimeSAC: null,
             painelVisualizacaoTarefasTimeFINANCEIRO: null,
+            painelVisualizacaoTarefasTimeINSS: null,
         },
         tjse: {
             botaoExportarAlvaras: null
@@ -41,25 +43,9 @@ const state = {
     }
 }
 
-function getEndereço (local) {
 
-    if (local.value.length == 0)
-        return ""
-    else {
-        let locais = Object.entries(locaisAudiencias)
-        for (const [key,value] of locais) {
-            if (removeAcentuacaoString(key) == removeAcentuacaoString(local.value)){
-                return `${key}: ${value}`
-            }
-        }
-        return local.value
-    }
-}
-
-
-let submit = true
-
-let cliente = {
+let submit = true,
+    cliente = {
         cliente: {
             id: null,
             nome: null,
@@ -115,628 +101,6 @@ function ouvirEventos (target) {
             console.log(e.type)
         })
     }
-}
-
-function calculaPascoa(ano) {
-    let X,
-        Y
-
-    if (ano >= 2020 && ano <= 2099) {
-        X = 24
-        Y = 5
-    }
-    if (ano >= 2100 && ano <= 2199) {
-        X = 24
-        Y = 6
-    }
-    if (ano >= 2200 && ano <= 2299) {
-        X = 25
-        Y = 7
-    }
-
-    let a = ano % 19,
-        b = ano % 4,
-        c = ano % 7,
-        d = (19 * a + X) % 30,
-        e = (2 * b + 4 * c + 6 * d + Y) % 7,
-        DIA,
-        MES
-
-    if (d+e > 9) {
-        DIA = d+e-9
-        MES = 3
-    } else {
-        DIA = d+e+22
-        MES = 2
-    }
-
-    if (MES == 3 && DIA == 26)
-        DIA = 19
-
-    if (MES == 3 && DIA == 25 && d == 28 && a > 10)
-        DIA = 18
-
-    return new Date(ano, MES, DIA)
-}
-
-function FeriadosFixos (ano, parametro) {
-
-    const tarefaContatar = (parametro == 1),
-        tarefaAdvogado = (parametro == 2),
-        indexJaneiro = 0,
-        diaInicioForense = 20,
-        mesInicioForense = 11,
-        diaFimForense = 6,
-        mesFimForense = 0,
-        diaInicioFeriasAdvogados = 20,
-        mesInicioFeriasAdvogados = 11,
-        diaFimFeriasAdvogados = 20,
-        mesFimFeriasAdvogados = 0,
-        isTJ = cliente.processo.origem.length === 12,
-        isTRT = cliente.processo.natureza === "TRABALHISTA",
-        isIS = isTJ || isTRT,
-        forense = setIntervaloFeriadosJudiciario(diaInicioForense, mesInicioForense, diaFimForense, mesFimForense),
-        advogados = setIntervaloFeriadosJudiciario(diaInicioFeriasAdvogados, mesInicioFeriasAdvogados, diaFimFeriasAdvogados, mesFimFeriasAdvogados)
-        let resultados = [],
-            datas = { // [mes, dia] (indice do mes de 0 a 11)
-                nacional: [
-                    [0,1], //CONFRATERNIZAÇÃO UNIVERSAL
-                    [3,21], //TIRADENTES
-                    [4,1], //DIA DO TRABALHO
-                    [8,7], //INDEPENDÊNCIA DO BRASIL
-                    [9,12], //DIA DAS CRIANÇAS - DIA DA PADROEIRA DO BRASIL
-                    [10,2], //FINADOS
-                    [10,15], //PROCLAMAÇÃO DA REPÚBLICA
-                    [11,25], //NATAL
-                ],
-                recessoForense : forense, //Recesso Forense 20/12 a 06/01
-                feriasAdvogados: advogados, //Recesso dos advogados 20/12 a 20/01 Art. 220 NCPC
-                justicaNacional: [
-                    [7,11], //DIA DO MAGISTRADO
-                    [9,28], //DIA DO FUNCIONÁRIO PÚBLICO
-                    [10,1], //LEI FEDERAL Nº 5.010/66
-                    [11,8], //DIA DA JUSTIÇA
-                ],
-                justicaEstadual: [
-                    [4,31] //Ponto Facultativo 2024
-                ],
-                TRF1: [],
-                'SE': [
-                    [5,24], //SÃO JOÃO
-                    [6,8], //EMANCIPAÇÃO POLÍTICA DE SERGIPE
-                ],
-                'AQUIDABA': [
-                    [3,4], //EMANCIPAÇÃO POLÍTICA
-                    [6,26] //PADROEIRA
-                ],
-                'ARACAJU': [
-                    [11,8], //PADROEIRA
-                    [2,17] //ANIVERSÁRIO DE ARACAJU
-                ],
-                'ARAUA': [
-                    [3,9], //EMANCIPAÇÃO POLÍTICA
-                    [9,5], //SÃO BENEDITO
-                    [11,8] //PADROEIRA
-                ],
-                'AREIA BRANCA': [
-                    [10,11], //FUNDAÇÃO DA CIDADE
-                    [11,8] //PADROEIRA
-                ],
-                'BARRA DOS COQUEIROS': [
-                    [10,25], //EMANCIPAÇÃO POLÍTICA
-                    [11,13] //PADROEIRA
-                ],
-                'BOQUIM': [
-                    [2,21], //CRIAÇÃO DO MUNICÍPIO
-                    [6,26] //PADROEIRA
-                ],
-                'CAMPO DO BRITO': [
-                    [7,15], //PADROEIRA
-                    [9,29] //EMANCIPAÇÃO POLÍTICA
-                ],
-                'CANINDE DE SAO FRANCISCO': [
-                    [10,25], //EMANCIPAÇÃO POLÍTICA
-                    [11,8] //EMANCIPAÇÃO POLÍTICA
-                ],
-                'CAPELA': [
-                    [1,2], //PADROEIRO
-                    [7,28] //EMANCIPAÇÃO POLÍTICA
-                ],
-                'CARIRA': [
-                    [4,2], //PADROEIRA
-                    [10,25] //EMANCIPAÇÃO POLÍTICA
-                ],
-                'CARMOPOLIS': [
-                    [6,16], //PADROEIRA
-                    [9,16], //EMANCIPAÇÃO POLÍTICA
-                    [10,29] //DIA DO EVANGÉLICO
-                ],
-                'CEDRO DE SAO JOAO': [
-                    [5,24], //PADROEIRO
-                    [9,4] //EMANCIPAÇÃO POLÍTICA
-                ],
-                'CRISTINAPOLIS': [
-                    [3,24], //EMANCIPAÇÃO POLÍTICA
-                    [6,31], //FERIADO MUNICIPAL EVANGÉLICO
-                    [9,4] //PADROEIRO
-                ],
-                'DIVINA PASTORA': [
-                    [2,13] //EMANCIPAÇÃO POLÍTICA
-                ],
-                'ESTANCIA': [
-                    [4,4], //ANIVERSÁRIO DA CIDADE
-                    [11,12] //PADROEIRA
-                ],
-                'FREI PAULO': [
-                    [5,30], //PADROEIRO
-                    [9,23] //EMANCIPAÇÃO POLÍTICA
-                ],
-                'GARARU': [
-                    [2,15], //EMANCIPAÇÃO POLÍTICA
-                    [4,10], //FESTA DO CRUZEIRO
-                    [7,15] //DIA DA ASSUNÇÃO DE NOSSA SENHORA
-                ],
-                'INDIAROBA': [
-                    [2,28], //EMANCIPAÇÃO POLÍTICA
-                    [11,8] //PADROEIRA
-                ],
-                'ITABAIANA': [
-                    [0,27], //PADROEIRO
-                    [5,13], //EMANCIPAÇÃO POLÍTICA
-                    [7,28] //PADROEIRA
-                ],
-                'ITABAIANINHA': [
-                    [9,19], //EMANCIPAÇÃO POLÍTICA
-                    [11,8] //PADROEIRA
-                ],
-                'ITAPORANGA DAJUDA': [
-                    [1,2], //PADROEIRA
-                    [2,28] //EMANCIPAÇÃO POLÍTICA
-                ],
-                'JAPARATUBA': [
-                    [5,11], //EMANCIPAÇÃO POLÍTICA
-                    [11,8] //PADROEIRA
-                ],
-                'JAPOATA': [
-                    [10,23], //EMANCIPAÇÃO POLÍTICA
-                    [10,25] //PADROEIRA
-                ],
-                'LAGARTO': [
-                    [3,20], //EMANCIPAÇÃO POLÍTICA
-                    [8,8] //PADROEIRA
-                ],
-                'LARANJEIRAS': [
-                    [5,26], //PADROEIRA
-                    [7,7] //EMANCIPAÇÃO POLÍTICA
-                ],
-                'MALHADOR': [
-                    [2,19], //PADROEIRO
-                    [10,25] //EMANCIPAÇÃO POLÍTICA
-                ],
-                'MARUIM': [
-                    [0,21], //PADROEIRO
-                    [4,5], //EMANCIPAÇÃO POLÍTICA
-                    [7,15] //CO-PADROEIRA NOSSA SENHORA DA PAZ
-                ],
-                'MONTE ALEGRE DE SERGIPE': [
-                    [5,24], //PADROEIRO
-                    [10,25] //EMANCIPAÇÃO POLÍTICA
-                ],
-                'NEOPOLIS': [
-                    [5,13], //PADROEIRO
-                    [5,29], //SÃO PEDRO
-                    [9,7], //NOSSA SENHORA DO ROSÁRIO
-                    [9,18] //FUNDAÇÃO DA CIDADE
-                ],
-                'NOSSA SENHORA DA GLORIA': [
-                    [0,5], //FESTA DOS SANTOS REIS
-                    [7,15], //PADROEIRA
-                    [8,26] //EMANCIPAÇÃO POLÍTICA
-                ],
-                'NOSSA SENHORA DAS DORES': [
-                    [5,11], //EMANCIPAÇÃO POLÍTICA
-                    [8,15] //PADROEIRA
-                ],
-                'SOCORRO': [
-                    [1,2], //PADROEIRA
-                    [6,7], //EMANCIPAÇÃO POLÍTICA
-                    [7,15] //FESTA DE NOSSA SENHORA DO AMPARO
-                ],
-                'PACATUBA': [
-                    [10,20], //PADROEIRO
-                    [10,25] //EMANCIPAÇÃO POLÍTICA
-                ],
-                'PEDRINHAS': [
-                    [2,19], //PADROEIRO
-                    [10,25] //EMANCIPAÇÃO POLÍTICA
-                ],
-                'PIRAMBU': [
-                    [1,11], //PADROEIRA
-                    [10,26] //EMANCIPAÇÃO POLÍTICA
-                ],
-                'POCO REDONDO': [
-                    [7,15], //PADROEIRA
-                    [10,25] //EMANCIPAÇÃO POLÍTICA
-                ],
-                'POCO VERDE': [
-                    [0,21], //PADROEIRO
-                    [4,3], //CO-PADROEIRA
-                    [10,25] //EMANCIPAÇÃO POLÍTICA
-                ],
-                'PORTO DA FOLHA': [
-                    [1,19], //EMANCIPAÇÃO POLÍTICA
-                    [11,7] //PADROEIRA
-                ],
-                'PROPRIA': [
-                    [1,7], //EMANCIPAÇÃO POLÍTICA
-                    [5,13] //PADROEIRO
-                ],
-                'RIACHAO DO DANTAS': [
-                    [4,9], //EMANCIPAÇÃO POLÍTICA
-                    [10,21] //PADROEIRA
-                ],
-                'RIACHUELO': [
-                    [0,25], //EMANCIPAÇÃO POLÍTICA
-                    [5,11], //BATALHA NAVAL DE RIACHUELO
-                    [11,8] //PADROEIRA
-                ],
-                'RIBEIROPOLIS': [
-                    [9,30], //PADROEIRO
-                    [11,18] //EMANCIPAÇÃO POLÍTICA
-                ],
-                'SALGADO': [
-                    [0,22], //PADROEIRO
-                    [9,4] //EMANCIPAÇÃO POLÍTICA
-                ],
-                'SANTANA DO SAO FRANCISCO': [
-                    [3,6], //EMANCIPAÇÃO POLÍTICA
-                    [6,26] //PADROEIRA
-                ],
-                'SANTO AMARO DAS BROTAS': [
-                    [0,15], //PADROEIRA
-                    [11,15] //EMANCIPAÇÃO POLÍTICA
-                ],
-                'SAO CRISTOVAO': [
-                    [8,8] //PADROEIRA
-                ],
-                'SAO DOMINGOS': [
-                    [9,21], //EMANCIPAÇÃO POLÍTICA
-                    [7,8] //PADROEIRO
-                ],
-                'SIMAO DIAS': [
-                    [5,12], //EMANCIPAÇÃO POLÍTICA
-                    [6,26] //PADROEIRA
-                ],
-                'TOBIAS BARRETO': [
-                    [5,7], //ANIVERSÁRIO DE NASCIMENTO DE TOBIAS BARRETO DE MENEZES
-                    [7,15], //PADROEIRA
-                    [9,23] //EMANCIPAÇÃO POLÍTICA
-                ],
-                'UMBAUBA': [
-                    [1,2], //PADROEIRA
-                    [1,6] //EMANCIPAÇÃO POLÍTICA
-                ]
-            }
-
-    function setIntervaloFeriadosJudiciario(diaInicio, mesInicio, diaFinal, mesFinal) {
-        const fimMesDezembro = 31,
-            diaPrimeiro = 1
-
-        let feriados = [],
-            condicao = true,
-            dia = diaInicio,
-            mes = mesInicio
-
-        while(condicao) {
-            feriados.push([mes, dia])
-            dia++
-            
-            if (dia > fimMesDezembro) {
-                dia = diaPrimeiro
-                mes = indexJaneiro
-            }
-            if ((dia > diaFinal) && (mes == mesFinal)) {
-                condicao = false
-            }
-        }
-
-        return feriados
-    }
-    
-    datas.nacional.forEach(([mes, dia]) => {
-        resultados.push(new Date(ano, mes, dia))
-    })
-
-    if (isIS) {
-        datas.justicaEstadual.forEach(([mes, dia]) => {
-            resultados.push(new Date(ano, mes, dia))
-        })
-    }
-
-    if (tarefaContatar) {
-        datas.SE.forEach(([mes, dia]) => {
-            resultados.push(new Date(ano, mes, dia))
-        })
-        datas.ARACAJU.forEach(([mes, dia]) => {
-            resultados.push(new Date(ano, mes, dia))
-        })
-    }
-
-    if (tarefaAdvogado) {
-        datas.justicaNacional.forEach(([mes, dia]) => {
-            resultados.push(new Date(ano, mes, dia))
-        })
-
-        datas.feriasAdvogados.forEach(([mes, dia]) => {
-            if (mes == indexJaneiro) {
-                resultados.push(new Date(ano+1, mes, dia))
-                resultados.push(new Date(ano, mes, dia))
-            }
-            else {
-                resultados.push(new Date(ano, mes, dia))
-                resultados.push(new Date(ano-1, mes, dia))
-            }
-        })
-
-        if (cliente.processo.estado == 'SE') {
-            datas.SE.forEach(([mes, dia]) => {
-                resultados.push(new Date(ano, mes, dia))
-            })
-        }
-
-        if (cliente.processo.estado == 'DF' || cliente.processo.estado == 'GO') {
-            datas.TRF1.forEach(([mes, dia]) => {
-                resultados.push(new Date(ano, mes, dia))
-            })
-        }
-        
-        let date = Object.entries(datas)
-        for (const [key,value] of date) {
-            if (key == cliente.processo.cidade){
-                value.forEach(([mes, dia]) => {
-                    resultados.push(new Date(ano, mes, dia))
-                })
-            }
-        }
-    }
-
-    datas.recessoForense.forEach(([mes, dia]) => {
-        if (mes == indexJaneiro) {
-            resultados.push(new Date(ano+1, mes, dia))
-            resultados.push(new Date(ano, mes, dia))
-        }
-        else {
-            resultados.push(new Date(ano, mes, dia))
-            resultados.push(new Date(ano-1, mes, dia))
-        }
-    })
-    
-    return resultados
-}
-
-function calculaFeriados(parametro) {
-    const interDiasPascoaQuartaSanta = 4,
-        interDiasPascoaQuintaSanta = 3,
-        interDiasPascoaSextaPaixao = 2,
-        interDiasPascoaSegundaCarnaval = 48,
-        interDiasPascoaTercaCarnaval = 47,
-        interDiasPascoaQuartaCinzas = 46,
-        interDiasPascoaCorpus = 60
-
-    let date = new Date(),
-        ano = date.getFullYear(),
-        fixos = FeriadosFixos(ano,parametro),
-        pascoa = calculaPascoa(ano),
-        pascoaMilleseconds = pascoa.valueOf(),
-        datePascoa1 = new Date(pascoaMilleseconds),
-        datePascoa2 = new Date(pascoaMilleseconds),
-        datePascoa3 = new Date(pascoaMilleseconds),
-        datePascoa4 = new Date(pascoaMilleseconds),
-        datePascoa5 = new Date(pascoaMilleseconds),
-        datePascoa6 = new Date(pascoaMilleseconds),
-        datePascoa7 = new Date(pascoaMilleseconds),
-        quartaSanta = new Date(datePascoa1.setDate(pascoa.getDate() - interDiasPascoaQuartaSanta)),
-        quintaSanta = new Date(datePascoa2.setDate(pascoa.getDate() - interDiasPascoaQuintaSanta)),
-        paixao = new Date(datePascoa3.setDate(pascoa.getDate() - interDiasPascoaSextaPaixao)),
-        segundaCarnaval = new Date(datePascoa4.setDate(pascoa.getDate() - interDiasPascoaSegundaCarnaval)),
-        tercaCarnaval = new Date(datePascoa5.setDate(pascoa.getDate() - interDiasPascoaTercaCarnaval)),
-        quartaCinzas = new Date(datePascoa6.setDate(pascoa.getDate() - interDiasPascoaQuartaCinzas)),
-        corpus = new Date (datePascoa7.setDate(pascoa.getDate() + interDiasPascoaCorpus)),
-        variaveis = [segundaCarnaval, tercaCarnaval, quartaCinzas, quartaSanta, quintaSanta, paixao, pascoa, corpus],
-        feriados = []
-
-    fixos.forEach(e => {
-        feriados.push(e)
-    })
-    variaveis.forEach(e => {
-        feriados.push(e)
-    })
-    
-    return feriados
-}
-
-function contarDias(inicial,final, parametro) {
-    let contaTodos = 0,
-        contaUteis = 0,
-        domingos = 0,
-        date = new Date(inicial[2],inicial[1],inicial[0]),
-        condiction,
-        i
-
-    if (date.toDateString() == final.toDateString())
-        return 0
-
-    while (date < final) {
-        date.setDate(date.getDate() + 1)
-        condiction = isFeriado(date, parametro)
-        i = date.getDay()
-
-        if (i == 0) {
-            domingos++
-        }
-
-        if ((i > 0 && i < 6) && (!condiction)) {
-            contaUteis++
-        } 
-        contaTodos++
-    }
-
-    cliente.compromisso.semanas = domingos
-
-    return { uteis: contaUteis, todosDias: contaTodos}
-}
-
-function dataContato(intervalo,dataInterno,parametro, todosDias) {
-    let hoje = new Date(),
-        fimIntervalo = Number(intervalo),
-        date,
-        anoContato,
-        mesContato,
-        diaContato,
-        condiction
-
-    hoje.setHours(0, 0, 0, 0)
-    
-    if (intervalo > 0) {
-        let c = 0
-        date = new Date(dataInterno)
-        while (c < fimIntervalo) {
-            date.setDate(date.getDate() -1)
-            condiction = isFeriado(date, parametro)
-            i = date.getDay()
-            if ((i > 0) && (i < 6) && !condiction) {
-                ++c
-            }
-        }
-    } else {
-        date = new Date(dataInterno)
-    }
-
-    anoContato = date.getFullYear()
-    mesContato = date.getMonth()+1
-    diaContato = date.getDate()
-
-    hoje.setDate(hoje.getDate() + todosDias)
-
-    return `${diaContato < 10 ? '0'.concat(diaContato) : diaContato}/${mesContato < 10 ? '0'.concat(mesContato) : mesContato}/${anoContato}`
-}
-
-function extrairDataPrazoFatalInput (prazoFatal) {
-    let data = prazoFatal.split('/')
-    return [data[0],Number(data[1])-1,data[2]]
-}
-
-function calculaIntervaloTarefas (dias) {
-    const { tipoCompromisso, tipoTarefa, tarefaSequencia, semanas, tarefaRestante } = cliente.compromisso,
-        { estado } = cliente.processo,
-        contDois = {
-            outros: ["EMENDAR","DADOS PERÍCIA SOCIAL","DADOS COMPLEMENTARES"],
-            financeiro: ["ALVARÁ","RPV","PRECATÓRIO"]
-        },
-        contTres = "PERÍCIA",
-        contQuatro = ["AUDIÊNCIA DE CONCILIAÇÃO", "AUDIÊNCIA CONCILIATÓRIA", "AUDIÊNCIA DE INTERROGATÓRIO"],
-        contCinco = ["AUDIÊNCIA DE INSTRUÇÃO", "AUDIÊNCIA INAUGURAL", "AUDIÊNCIA INICIAL", "AUDIÊNCIA DE INSTRUÇÃO E JULGAMENTO", "AUDIÊNCIA UNA"]
-
-    if (((contCinco.includes(tipoCompromisso) && dias > 11) || (contQuatro.includes(tipoCompromisso) && dias > 10) || (tipoCompromisso.search(contTres) === 0) && dias > 10)) {
-        if (semanas >= 2) {
-            if (tipoTarefa === 'ANÁLISE')
-                return dias-1
-            if ((tipoTarefa === 'CONTATAR CLIENTE' || tipoTarefa === 'SMS E WHATSAPP')) {
-                if (estado !== 'GO' && estado != 'DF') {
-                    return dias-2
-                }
-                else {
-                    if (tipoTarefa === 'CONTATAR CLIENTE') {
-                        return dias-3
-                    }
-                    if (tipoTarefa === 'SMS E WHATSAPP') {
-                        if (contQuatro.includes(tipoCompromisso))
-                            return dias-7
-                        return dias-2
-                    }
-                }
-            }
-            if (tipoTarefa === 'LEMBRAR CLIENTE')
-                return 2
-            if (tipoTarefa === 'ATO ORDINATÓRIO')
-                return dias-1
-        }
-    }
-    else {
-        const ehAudienciaOuPericia = (contCinco.includes(tipoCompromisso) || contQuatro.includes(tipoCompromisso) || tipoCompromisso.search(contTres) === 0)
-        if (ehAudienciaOuPericia) {
-            if ((tarefaRestante === tarefaSequencia) && tipoCompromisso.search(contTres) === -1)
-                return 0
-            else
-                if (tipoTarefa === 'LEMBRAR CLIENTE')
-                    return 2
-            if (estado === 'GO' || estado === 'DF') {
-                if (tipoTarefa === 'CONTATAR CLIENTE')
-                    return dias-1
-            }
-            return dias-1
-        }
-    }
-    
-    if (contDois.outros.includes(tipoCompromisso)) {
-        if (tipoTarefa === 'CONTATAR CLIENTE') {
-            return dias-1
-        }
-    }
-
-    const indiceTarefa = ((cliente.processo.estado === 'DF') || (cliente.processo.estado === 'GO') ? 1 : 2)
-
-    if (contDois.financeiro.includes(tipoCompromisso)) {
-        if (tipoCompromisso === 'RPV' && tarefaRestante === indiceTarefa) {
-            return 0
-        }
-
-        if (tipoCompromisso === 'RPV' && tarefaRestante !== indiceTarefa) {
-            return dias-5
-        }
-    }
-
-    return 0
-}
-
-function calcularDataTarefa(parametro) {
-    const dataFinalizacao = document.querySelector("#dataParaFinalizacao"),
-        dataFinalizacaoAgendada = document.querySelector("#dataParaFinalizacaoAgendada"),
-        hoje = new Date(),
-        ano = hoje.getFullYear(),
-        mes = hoje.getMonth(),
-        dia = hoje.getDate(),
-        data = extrairDataPrazoFatalInput(cliente.compromisso.prazoInterno),
-        dataInterno = new Date(data[2],data[1],data[0]),
-        dias = contarDias([dia, mes, ano], dataInterno, parametro),
-        { uteis, todosDias} = dias,
-        intervalo = calculaIntervaloTarefas (uteis),
-        dataTarefa = dataContato(intervalo, dataInterno, parametro, todosDias),
-        contactdiv = document.querySelector("#contactdiv")
-    
-    dataFinalizacao.value = dataTarefa
-    dataFinalizacaoAgendada.value = dataTarefa
-
-    dataFinalizacaoAgendada.addEventListener('blur', e => {
-        dataFinalizacao.value = e.target.value
-        if ((cliente.compromisso.tipoTarefa == "CONTATAR CLIENTE" || cliente.compromisso.tipoTarefa == "LEMBRAR CLIENTE") && (cliente.processo.estado != "DF" || cliente.processo.estado != "GO")) {
-            if (contactdiv != null) {
-                contactdiv.parentNode.removeChild(contactdiv)
-                validaExecutorContatar()
-            }
-        }
-    })
-
-    dataFinalizacao.addEventListener('blur', e => {
-        dataFinalizacaoAgendada.value = e.target.value
-        if ((cliente.compromisso.tipoTarefa == "CONTATAR CLIENTE" || cliente.compromisso.tipoTarefa == "LEMBRAR CLIENTE") && (cliente.processo.estado != "DF" || cliente.processo.estado != "GO")) {
-            let contactdiv = document.querySelector("#contactdiv")
-            if (contactdiv != null) {
-                contactdiv.parentNode.removeChild(contactdiv)
-                validaExecutorContatar()
-            }
-        }
-    })
 }
 
 function desativarAtualizacao() {
@@ -846,13 +210,13 @@ function habilitarEdicaoNumeroProcesso() {
     processoInputCad.style = ""
 }
 
-function selectRespExec (adv) {
+function selectRespExec (colaborador) {
     const responsavelSelect = document.querySelector("#fdt-form > div:nth-child(15) > div:nth-child(1) > div > div > ul"),
         executorSelect = document.querySelector("#fdt-form > div:nth-child(15) > div:nth-child(2) > div > div > ul")
     for (let index = 0; index < responsavelSelect.children.length; index++) {
-        if (responsavelSelect.children[index].innerText.trim() == adv.responsavel.trim()) 
+        if (responsavelSelect.children[index].innerText.trim() == colaborador.responsavel.trim()) 
             responsavelSelect.children[index].children[0].click()
-        if (responsavelSelect.children[index].innerText.trim() == adv.executor.trim())
+        if (responsavelSelect.children[index].innerText.trim() == colaborador.executor.trim())
             executorSelect.children[index].children[0].click()
     }
 }
@@ -914,22 +278,21 @@ function createListaTarefas () {
     })
 }
 
-function addListaTarefas(adm,data) {
+function addListaTarefas({ nome, datasViagem, tarefas }, data) {
     const ano = new Date().getFullYear(),
-        [diaData, mesData, anoData] = data,
+        [ diaData, mesData, anoData ] = data,
         date = `${diaData}/${mesData}/${anoData}`,
         div = document.querySelector('#contactdiv'),
-        p1 = document.createElement('p'),
-        [id, nome, interiores, datasViagem, contagemTarefas] = adm
+        p1 = document.createElement('p')
     
-    p1.innerHTML = `${nome.slice(0,nome.search(' '))}: ${contagemTarefas}`
+    p1.innerHTML = `${nome.slice(0,nome.search(' '))}: ${tarefas}`
     p1.style.color = 'white'
     p1.dataset.colaborador = nome
     p1.style.cursor = 'pointer'
 
-    if (datasViagem !== null) {
-        for (let index = 0; index < datasViagem.length; index++) {
-            if (date == `${datasViagem[index]}/${ano}`) 
+    if (datasViagem) {
+        for (const dataViagem of datasViagem) {
+            if (date == `${dataViagem}/${ano}`) 
                 p1.style.color = 'yellow'
         }
     }
@@ -960,143 +323,170 @@ function addListaTarefas(adm,data) {
     })
 }
 
-async function getTarefasAdm(element,data){ 
-    let idExecutor = element[0]
+async function selectExecutorContatar (element) {
+    const adm = await Promise.all(await element)
 
-    // uso da API para fornecer acesso a realizar requests ao servidor
-    let xhttp = new XMLHttpRequest();
-    // esta função é chamado sempre que o atributo readyState sofre alteração
-    xhttp.onreadystatechange = function() {
-        // readyState = 4   - referente a request concluida
-        // status     = 200 - referente ao status code http 'OK'
-        if (this.readyState == 4 && this.status == 200) {
-            // responsável por coletar a resposta. 
-            let response  = this.responseText
-            // preenchimento do resultado no HTML
-            let parser = new DOMParser()
-            let doc = parser.parseFromString(response,'text/html')
-            let tarefas = doc.documentElement.querySelectorAll('body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr')
+    const responsavelInterior = adm.reduce((previous, currrent) => {
+        if (currrent.interiores.includes(cliente.cliente.localAtendido)) {
+            return currrent
+        }
+        return previous
+    }, null)
+
+    if (responsavelInterior) {
+        return {responsavel: 'JULIANO OLIVEIRA DE SOUZA', executor: responsavelInterior.nome}
+    }
+
+    const executor = adm.reduce((previous, currrent) => {
+        if (previous.tarefas > currrent.tarefas) {
+            return currrent
+        }
+        return previous
+    }, adm[0])
+
+    return {responsavel: 'JULIANO OLIVEIRA DE SOUZA', executor: executor.nome}
+}
+
+async function getTarefasAdm(colaborador, [ dia, mes, ano ]){
+
+    const parser = new DOMParser()
+
+    const urlRequest = 'http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/default.asp'
+
+    const body = `bsAdvTarefas=s&bsAdvTarefasTecnica=&bsAdvTarefasDe=${dia}%2F${mes}%2F${ano}&bsAdvTarefasAte=${dia}%2F${mes}%2F${ano}&bsAdvTarefasTitulo=&bsAdvTarefasTipo=&bsAdvTarefasStatus=p&bsAdvTarefasAgendada=&bsAdvTarefasResponsavel=&bsAdvTarefasExecutor=${colaborador.id}&bsAdvTarefasCompromisso=&bsAdvTarefasCliente=&bsAdvTarefasCpf=&filtrar=Filtrar`
+
+    return await fetch(urlRequest, {
+            method: "POST",
+            body: body,
+            headers: new Headers({
+                'Content-Type': 'application/x-www-form-urlencoded'
+            })
+    }).then(function (response) {
+        return response.blob()
+    }).then(async function (result) {
+        const doc = parser.parseFromString(await result.text(),'text/html')
+
+        const tarefas = doc.documentElement.querySelectorAll('body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr')
             let contador = 0
             tarefas.forEach(e => {
                 if (e.children[2] != null) {
-                    if ((e.children[2].innerText.match("[0-9]*")[0].length >= 12) && !(e.children[3].innerText.search('Acompanhar') == 0)) {
+                    const lengthProcessTJ = 12
+                    if ((e.children[2].innerText.match("[0-9]*")[0].length >= lengthProcessTJ) && !(e.children[3].innerText.search('Acompanhar') == 0)) {
                         contador++
                     }
                 }
             })
-            element[4] = contador
-            addListaTarefas(element,data)
-        }
 
-        // Responsável por tratar o retorno que não for bem sucedido
-        if (this.readyState == 4 && this.status !== 200){
-            console.log('Data not found!') 
-        }
-    }
-    // URL
-    let url = 'http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/default.asp'
+        colaborador.tarefas = contador
+        addListaTarefas(colaborador, [ dia, mes, ano ])
 
-    // configuração para request
-    xhttp.open("POST", url, true)
-    xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-
-    // envio da request
-    xhttp.send(`bsAdvTarefas=s&bsAdvTarefasTecnica=&bsAdvTarefasDe=${data[0]}%2F${data[1]}%2F${data[2]}&bsAdvTarefasAte=${data[0]}%2F${data[1]}%2F${data[2]}&bsAdvTarefasTitulo=&bsAdvTarefasTipo=&bsAdvTarefasStatus=p&bsAdvTarefasAgendada=&bsAdvTarefasResponsavel=&bsAdvTarefasExecutor=${idExecutor}&bsAdvTarefasCompromisso=&bsAdvTarefasCliente=&bsAdvTarefasCpf=&filtrar=Filtrar`)
+        return colaborador
+    })
 }
 
+async function requererTarefasContatar(data) {
+    
+    const adm = []
+
+    //Última atualização: 24/05/2024
+    // Padrão para data das viagens: ['DD/MM']
+    const parceiros = ['ELIZEU ( PARCEIRO)','MARIA DO POV. PREGUIÇA','AGENOR (PARCEIRO)','ELIZANGELA ( PARCEIRA)','ERMINIO','AUGUSTO ( PARCEIRO)'],
+        varaEstancia = ['7ª VARA FEDERAL', '1ª VARA CIVEL DE ESTÂNCIA', '2ª VARA CIVEL DE ESTÂNCIA', 'JUIZADO ESPECIAL CÍVEL E CRIMINAL DE ESTÂNCIA', 'VARA DE ESTÂNCIA', 'VARA DO TRABALHO DE ESTÂNCIA'],
+        estancia = [
+            {
+                id: 22,
+                nome: "SANDOVAL FILHO CORREIA LIMA FILHO",
+                interiores: [],
+                datasViagem: [],
+                tarefas: 0
+            }
+        ],
+        aracaju = [
+            {
+                id: 131,
+                nome: "ASLEY RODRIGO DE MELO LIMA",
+                interiores: ["CONDE/BA", "ALAGOINHAS"],
+                datasViagem: [],
+                tarefas: 0
+            },
+            {
+                id: 94,
+                nome: "CARLOS HENRIQUE ESPASIANI",
+                interiores: [],
+                datasViagem: [],
+                tarefas: 0
+            },
+            {
+                id: 196,
+                nome: "KAUÃ DE CARVALHO NASCIMENTO",
+                interiores: ["CARMOPÓLIS", "LOTEAMENTO JEOVA (BOTAFOGO)"],
+                datasViagem: [],
+                tarefas: 0
+            },
+            {
+                id: 199,
+                nome: "LUCAS NATHAN NOGUEIRA DA SILVA ",
+                interiores: ["ESTANCIA", "TOBIAS BARRETO", "PEDRINHAS"],
+                datasViagem: [],
+                tarefas: 0
+            },
+            /* {
+                id: idMarcoR,
+                nome: "MARCOS ROBERT DE MELO LIMA",
+                interiores: [],
+                datasViagem: viagemMarcoR,
+                tarefas: 0
+            }, */
+            {
+                id: 217,
+                nome: "THIAGO SANTOS SANTANA",
+                interiores: ["CAPELA","JAPARATUBA"],
+                datasViagem: [],
+                tarefas: 0
+            },
+            {
+                id: 188,
+                nome: "VINICIUS SOUSA BOMFIM",
+                interiores: ["UMBAÚBA"],
+                datasViagem: [],
+                tarefas: 0
+            },
+            {
+                id: 161,
+                nome: "YURI DIAS PEREIRA",
+                interiores: [],
+                datasViagem: [],
+                tarefas: 0
+            },
+        ]
+
+    if (((cliente.cliente.cidade == "ESTANCIA" && cliente.cliente.localAtendido == "ESTANCIA")) || ((parceiros.includes(cliente.cliente.parceiro)) && varaEstancia.includes(cliente.processo.vara))) {
+        adm.push(...estancia)
+    } else {
+        if (varaEstancia.includes(cliente.processo.vara)) {
+            alert("Verificar executor manualmente!")
+            adm.push(...aracaju)
+            adm.push(...estancia)
+        } else {
+            adm.push(...aracaju)
+        }
+    }
+
+    return adm.map(async colaborador => {
+        return getTarefasAdm(colaborador, data)
+    })
+}
 
 async function validaExecutorContatar () {
-    let dataInput = document.querySelector('#dataParaFinalizacao')
+    const dataInput = document.querySelector('#dataParaFinalizacao')
+
     createListaTarefas()
-    setTimeout(async () => {
-        let adm = await requererTarefasContatar(dataInput.value.split('/'))
 
-        adm.forEach(e => {
-            if (e[2] != null)
-                if (e[2].length > 1) {
-                    e[2].forEach(local => {
-                        if (local == cliente.cliente.localAtendido) {
-                            return e[1]
-                        }
-                    })
-                }
-                else
-                    if (e[2] == cliente.cliente.localAtendido) {
-                        return e[1]
-                    }
-        })
-        let min = adm[0][3]
-        for (let index = 1; index < adm.length-1; index++) {
-            if (min > adm[index][3]) {
-                min = adm[index][3]
-            } 
-        }
-        return adm
-    }, 100)
-    
-    async function requererTarefasContatar(data) {
-        let adm = []
+    const adm = requererTarefasContatar(dataInput.value.split('/'))
 
-        //Última atualização: 24/05/2024
-        // Padrão para data das viagens: ['DD/MM']
-        const viagemAsley = null,
-            viagemRobert = null,
-            viagemHenrique = null,
-            viagemVinicius = ['28/05'],
-            viagemLucas = ['28/05'],
-            parceiros = ['ELIZEU ( PARCEIRO)','MARIA DO POV. PREGUIÇA','AGENOR (PARCEIRO)','ELIZANGELA ( PARCEIRA)','ERMINIO','AUGUSTO ( PARCEIRO)'],
-            varaEstancia = ['7ª VARA FEDERAL', '1ª VARA CIVEL DE ESTÂNCIA', '2ª VARA CIVEL DE ESTÂNCIA', 'JUIZADO ESPECIAL CÍVEL E CRIMINAL DE ESTÂNCIA', 'VARA DE ESTÂNCIA', 'VARA DO TRABALHO DE ESTÂNCIA'],
-            idSandoval = 22,
-            idAsley = 131,
-            idCarlosH = 94,
-            idMarcoR = 141,
-            idYuriD = 161,
-            idLucas = 199,
-            idKaua = 196,
-            idThiago = 217,
-            idVinicius = 188,
-            estancia = [
-                // ID_USUÁRIO_SISTEMA_FR, NOME_COMPLETO, [INTERIORES], [DATAS_DE_VIAGEM], NÚMERO_TAREFAS
-                [idSandoval,"SANDOVAL FILHO CORREIA LIMA FILHO",null,null,0]
-            ],
-            aracaju = [
-                // ID_USUÁRIO_SISTEMA_FR, NOME_COMPLETO, [INTERIORES], [DATAS_DE_VIAGEM], NÚMERO_TAREFAS
-                [idAsley,"ASLEY RODRIGO DE MELO LIMA",["CONDE/BA", "ALAGOINHAS"],viagemAsley,0],
-                [idCarlosH,"CARLOS HENRIQUE ESPASIANI",null,viagemHenrique,0],
-                [idKaua,"KAUÃ DE CARVALHO NASCIMENTO",["CARMOPÓLIS", "LOTEAMENTO JEOVA (BOTAFOGO)"],null,0],
-                [idLucas,"LUCAS NATHAN NOGUEIRA DA SILVA ",["ESTANCIA", "TOBIAS BARRETO", "PEDRINHAS"],viagemLucas,0],
-                [idMarcoR,"MARCOS ROBERT DE MELO LIMA",null,viagemRobert,0],
-                [idThiago,"THIAGO SANTOS SANTANA",["CAPELA","JAPARATUBA"],null,0],
-                [idVinicius,"VINICIUS SOUSA BOMFIM",["UMBAÚBA"],viagemVinicius,0],
-                [idYuriD,"YURI DIAS PEREIRA",null,null,0],
-            ]
+    const executorContatar = await selectExecutorContatar(adm)
 
-        if (((cliente.cliente.cidade == "ESTANCIA" && cliente.cliente.localAtendido == "ESTANCIA")) || ((parceiros.includes(cliente.cliente.parceiro)) && varaEstancia.includes(cliente.processo.vara)))
-            estancia.forEach(e => {
-                adm.push(e)
-            })
-        else {
-            if (varaEstancia.includes(cliente.processo.vara)) {
-                alert("Verificar executor manualmente!")
-                aracaju.forEach(e => {
-                    adm.push(e)
-                })
-                estancia.forEach(e => {
-                    adm.push(e)
-                })
-            }
-            else
-                aracaju.forEach(e => {
-                    adm.push(e)
-                })
-        }
-
-        adm.forEach(async e => {
-            getTarefasAdm(e,data)
-        })
-
-        return adm
-    }
+    selectRespExec(executorContatar)
 }
 
 function converterParaTarefaAvulsa() {
@@ -1141,7 +531,6 @@ async function validaResponsavelTj (num) {
     if (natureza === "BANCÁRIO" || natureza === "CÍVEL" || natureza === "CONSUMIDOR" || natureza === "SERVIDOR PÚBLICO") {
         const ala = [0,1,8]
         const gabriel = [2,3,4,6]
-        //const rodrigo = [5,7,9,4,6,8]
         if (tarefa != "SESSÃO DE JULGAMENTO" && tarefa.search("AUDIÊNCIA") != 0) {
             if (gabriel.includes(digito))
                 return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "GABRIEL DAVILA FILGUEIRAS MELLONE"}
@@ -1158,7 +547,8 @@ async function validaResponsavelFederal (num) {
         tarefasFinanceiro = ["RPV TRF1 BRASÌLIA", "RPV TRF1 GOIÁS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTÂNCIA", "RPV TRF1 BAHIA", "RECEBIMENTO DE PRECATÓRIO"],
         tarefasAdm = ["CONTATAR CLIENTE","LEMBRAR CLIENTE"],
         tarefaSac = "SMS E WHATSAPP",
-        secao = numeroProcesso.slice(num-4,num),
+        lengthSecao = 4,
+        secao = numeroProcesso.slice(num - lengthSecao,num),
         secaoDFGO = ["3400","3501","3502","3506", "0015"],
         setimoDigito = Number(numeroProcesso[6]),
         digitoVerificador = numeroProcesso.slice(13,16),
@@ -1295,7 +685,7 @@ async function validaResponsavelFederal (num) {
 }
 
 async function validaEsferaProcesso() {
-    let caracteresProcesso = cliente.processo.origem.length
+    const caracteresProcesso = cliente.processo.origem.length
     let adv
     if (caracteresProcesso === 12) {
         adv = await validaResponsavelTj(caracteresProcesso)
@@ -1306,21 +696,22 @@ async function validaEsferaProcesso() {
         if (adv !== null)
             selectRespExec(adv)
     } else
-        console.log("Erro no cadastro do número do processo")
+        alert("Erro no cadastro do número do processo")
 }
 
 function validaTipoIntimacao(txt) {
-    let p1 = txt.search("PERÍCIA")
+    const p1 = txt.search("PERÍCIA")
     const ehPericia = (p1 === 0)
+    const { cidade, estado } = cliente.processo
 
     if (txt === "RPV") {
-        if (cliente.processo.cidade === "ESTANCIA")
+        if (cidade === "ESTANCIA")
             return "RPV TRF5 ESTÂNCIA"
-        if (cliente.processo.estado === "DF")
+        if (estado === "DF")
             return "RPV TRF1 BRASÌLIA"
-        if (cliente.processo.estado === "GO")
+        if (estado === "GO")
             return "RPV TRF1 GOIÁS"
-        if (cliente.processo.cidade === "BA")
+        if (estado === "BA")
             return "RPV TRF1 BAHIA"
         return "RPV TRF5 ARACAJU"
     }
@@ -1761,8 +1152,8 @@ function loadInfo () {
                 contactdiv.parentNode.removeChild(contactdiv)
             }
 
-            if ((optionLi.children[index].children[0].children[0].innerText.toUpperCase() == "CONTATAR CLIENTE" || optionLi.children[index].children[0].children[0].innerText.toUpperCase() == "LEMBRAR CLIENTE") && (cliente.processo.estado != "DF" || cliente.processo.estado != "GO")) {
-                validaExecutorContatar()
+            if ((optionLi.children[index].children[0].children[0].innerText.toUpperCase() == "CONTATAR CLIENTE" || optionLi.children[index].children[0].children[0].innerText.toUpperCase() == "LEMBRAR CLIENTE") && cliente.processo.estado != "DF" && cliente.processo.estado != "GO") {
+                const executor = validaExecutorContatar()
             }
 
             submitAtualizarTarefa(descricaoTarefa)
@@ -1963,336 +1354,35 @@ function extrairDadosRequisicaoProcessoHtml(response, gravarBtn) {
 }
 
 async function ajax (opt, link, id, gravarBtn) {
-
-    let httpRequest
+    
     const parser = new DOMParser()
 
-    if (opt == 3)
-        makeRequest("http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/default.asp")
-    else
-        makeRequest(`${link}${id}`)
+    const urlRequest = opt == 3 ? "http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/default.asp" : `${link}${id}`
 
-    function makeRequest(url) {
-      if (window.XMLHttpRequest) {
-        httpRequest = new XMLHttpRequest()
-        } else if (window.ActiveXObject) {
-            try {
-            httpRequest = new ActiveXObject("Msxml2.XMLHTTP")
-            }
-            catch (e) {
-            try {
-                httpRequest = new ActiveXObject("Microsoft.XMLHTTP")
-            }
-            catch (e) {}
-            }
-        }
-    
-        if (!httpRequest) {
-            alert('Giving up :( Cannot create an XMLHTTP instance')
-            return false
-        }
-        httpRequest.onreadystatechange = alertContents;
-        if (opt != 3) {
-            httpRequest.open('GET', url)
-            httpRequest.send()
+    const body = `bsAdvClientes=s&org=&idPR=&idCR=&idCP=&bsAdvClientesProspect=&bsAdvClientesTexto=&bsAdvClientesCPF=${id}&bsAdvClientesCNPJ=&bsAdvClientesGrupo=&bsAdvClientesSituacao=&bsAdvClientesEstado=&bsAdvClientesCidade=&bsAdvClientesNaturalUF=&bsAdvClientesNaturalCidade=&bsAdvClientesFornecedor=&bsAdvClientesLocalAtendido=&bsAdvClientesNascimentoDataDe=&bsAdvClientesNascimentoDataAte=&bsAdvClientesDataDe=&bsAdvClientesDataAte=&bsAdvClientesIncluidoPor=&bsAdvClientesProcessosStatus=&bsAdvClientesAtualizacaoDe=&bsAdvClientesAtualizacaoAte=&bsAdvClientesAtualizacaoCampo=&bsAdvClientesProcessosDataDe=&bsAdvClientesProcessosDataAte=&bsAdvClientesProcessosNatureza=&bsAdvClientesProcessosMerito=&bsAdvClientesProcessosSentenca=&bsAdvClientesINSSDe=&bsAdvClientesINSSAte=&bsAdvClientesINSSResponsavel=&bsAdvClientesINSSResultado=&bsAdvResponsavelPendencia=&bsAdvComoChegou=&filtrar=Filtrar`
+
+    fetch(urlRequest, {
+            method: opt != 3 ? "GET" : "POST",
+            body: opt != 3 ? null : body,
+            headers: new Headers({
+                'Content-Type': 'application/x-www-form-urlencoded'
+            })
+    }).then(function (response) {
+        return response.blob()
+    }).then(async function (result) {
+        const doc = parser.parseFromString(await result.text(),'text/html')
+
+        if (opt === 1) {
+            extrairDadosRequisicaoProcessoHtml(doc, gravarBtn)
         }
         else {
-            httpRequest.open('POST', url)
-            httpRequest.setRequestHeader('Content-Type','application/x-www-form-urlencoded')
-            httpRequest.send(`bsAdvClientes=s&org=&idPR=&idCR=&idCP=&bsAdvClientesProspect=&bsAdvClientesTexto=&bsAdvClientesCPF=${id}&bsAdvClientesCNPJ=&bsAdvClientesGrupo=&bsAdvClientesSituacao=&bsAdvClientesEstado=&bsAdvClientesCidade=&bsAdvClientesNaturalUF=&bsAdvClientesNaturalCidade=&bsAdvClientesFornecedor=&bsAdvClientesLocalAtendido=&bsAdvClientesNascimentoDataDe=&bsAdvClientesNascimentoDataAte=&bsAdvClientesDataDe=&bsAdvClientesDataAte=&bsAdvClientesIncluidoPor=&bsAdvClientesProcessosStatus=&bsAdvClientesAtualizacaoDe=&bsAdvClientesAtualizacaoAte=&bsAdvClientesAtualizacaoCampo=&bsAdvClientesProcessosDataDe=&bsAdvClientesProcessosDataAte=&bsAdvClientesProcessosNatureza=&bsAdvClientesProcessosMerito=&bsAdvClientesProcessosSentenca=&bsAdvClientesINSSDe=&bsAdvClientesINSSAte=&bsAdvClientesINSSResponsavel=&bsAdvClientesINSSResultado=&bsAdvResponsavelPendencia=&bsAdvComoChegou=&filtrar=Filtrar`)
-        }
-    }
-    
-        function alertContents() {
-        if (httpRequest.readyState === 4) {
-            if (httpRequest.status === 200) {
-                let doc = parser.parseFromString(httpRequest.responseText,'text/html')
-                
-                if (opt == 1) {
-                    extrairDadosRequisicaoProcessoHtml(doc, gravarBtn)
-                }
-                else {
-                    if (opt == 2)
-                        extrairDadosRequisicaoClienteHtml(doc, gravarBtn)
-                    else
-                        extrairIDRequisicaoClienteHtml(doc, gravarBtn)
-                }
-                setCliente(cliente)
-                gravarBtn.removeAttribute('disabled')
-            } else {
-                console.log('There was a problem with the request.')
-            }
-        }
-    }
-}
-
-function formataData (dia,mes,ano) {
-    if (mes < 10)
-        mes = `0${mes}`
-    if (dia < 10)
-        dia = `0${dia}`
-    return `${dia}/${mes}/${ano}`
-}
-
-function isFeriado (date,parametro) {
-    const feriados = calculaFeriados(parametro)
-    let feriado = false,
-        ehFeriado
-
-    for (let index = 0; index < feriados.length; index++) {
-        ehFeriado = feriados[index].toDateString() == date.toDateString()
-        if (ehFeriado) {
-            feriado = true
-            break
-        }
-    }
-
-    return feriado
-}
-
-function calcularPrazo (prazo,parametro) {
-    const dataPub = document.querySelector("#dataPublicacao"),
-        tipoIntimacao = document.querySelector("#descricao"),
-        processo = document.querySelector('#numeroProcesso'),
-        diasFatal = Number(prazo),
-        StringTipoIntimacao = removeAcentuacaoString(tipoIntimacao.value).toUpperCase(),
-        isSentenca = (StringTipoIntimacao.search("SENTENCA") === 0),
-        isDecisao = (StringTipoIntimacao.search("DECISAO") === 0),
-        isAcordao = (StringTipoIntimacao.search("ACORDAO") == 0),
-        isSentencaOrAcordaoOrDecisao = (isSentenca || isDecisao || isAcordao),
-        numCharProcessoTJSE = 12,
-        natureza = cliente.processo.natureza,
-        isProcessoCivel = (processo.value.length === numCharProcessoTJSE),
-        isProcessoTrabalhista = (natureza === "TRABALHISTA")
-
-    let dateFinal = new Date(),
-        dateInicial = new Date(),
-        cont = 1,
-        diasInterno,
-        condiction,
-        i
-
-
-    if (isProcessoCivel || isProcessoTrabalhista) {
-        if (dataPub.value.length > 0) {
-            const [ dia, mes, ano ] = dataPub.value.split('/')
-            dateFinal = new Date(ano,Number(mes)-1,Number(dia))
-            dateInicial = new Date(ano,Number(mes)-1,Number(dia))
-        }
-
-        if (dateInicial.getDay() === 6) {
-            dateFinal.setDate(dateFinal.getDate()+2)
-            dateInicial.setDate(dateInicial.getDate()+2)
-        }
-    }
-
-    while (diasFatal >= cont) {
-        dateFinal.setDate(dateFinal.getDate() + 1)
-        i = dateFinal.getDay()
-
-        if (i > 0 && i < 6 && !isFeriado(dateFinal,parametro)) {
-            cont += 1
-        }
-    }
-
-    let ano = dateFinal.getFullYear(),
-        mes = dateFinal.getMonth()+1,
-        dia =  dateFinal.getDate(),
-        final = formataData(dia, mes, ano)
-    
-    if (isSentencaOrAcordaoOrDecisao) {
-        if (isProcessoCivel || isProcessoTrabalhista) {
-            diasInterno = 3
-        }
-        else {
-            if (diasFatal === 5)
-                diasInterno = 2
+            if (opt === 2)
+                extrairDadosRequisicaoClienteHtml(doc, gravarBtn)
             else
-                diasInterno = 5
+                extrairIDRequisicaoClienteHtml(doc, gravarBtn)
         }
-    }
-    else {
-        if (diasFatal === 5 && isProcessoCivel) {
-            diasInterno = 3
-        } else if (diasFatal === 5 && isProcessoTrabalhista) {
-            diasInterno = 2
-        }
-        else {
-            diasInterno = diasFatal-3
-        }
-    }
-    
-    cont = 1
-
-    const isGoias = (cliente.processo.estado === 'GO'),
-        isDF = (cliente.processo.estado === 'DF'),
-        ehBarril = (isGoias || isDF)
-
-    if (ehBarril && !isSentencaOrAcordaoOrDecisao) {
-        dateInicial = new Date (dateFinal.getFullYear(), dateFinal.getMonth(), dateFinal.getDate()-1)
-        while (cont <= 3) {
-            i = dateInicial.getDay()
-            condiction = isFeriado(dateInicial,parametro)
-            
-            if (condiction) {
-                dateInicial.setDate(dateInicial.getDate() - 1)
-            } else {
-                if (cont === 3) {
-                    if ((i === 6) || (i === 0)) {
-                        if (i === 0) {
-                            dateInicial.setDate(dateInicial.getDate() - 2)
-                        }
-                        if (i === 6) {
-                            dateInicial.setDate(dateInicial.getDate() - 1)
-                        }
-                    }
-                    break
-                } else {
-                    dateInicial.setDate(dateInicial.getDate() - 1)
-                    cont++
-                }
-            }
-        }
-    } else {
-        while (diasInterno >= cont) {
-            dateInicial.setDate(dateInicial.getDate() + 1)
-            i = dateInicial.getDay()
-            condiction = isFeriado(dateInicial,parametro)
-            
-            if (diasInterno >= cont) {
-                if (i > 0 && i < 6 && !condiction) {
-                    cont = cont + 1
-                }
-            }
-            else {
-                if (condiction && i > 0 && i < 6) {
-                    dateInicial.setDate(dateInicial.getDate() - 1)
-                    cont = cont + 1
-                }
-                else
-                    if (i > 0 && i < 6)
-                        cont = cont + 1
-            }
-        }
-    }
-
-    ano = dateInicial.getFullYear()
-    mes = dateInicial.getMonth()+1
-    dia = dateInicial.getDate()
-    let inicial = formataData(dia, mes, ano)
-
-    return [inicial,final]
-}
-
-function createButtonPrazo() {
-    if (!state.functions.cadastroCompromisso.mostrarBotoesAuxiliaresdeDias) {
-        return
-    }
-    
-    const dataPub = document.querySelector('#dataPublicacao'),
-        prazoInicial = document.querySelector("#dataPrazoInterno"),
-        prazoFinal = document.querySelector("#dataPrazoFatal"),
-        divDataPublicacao = document.querySelector('#fdt-form > div:nth-child(7) > div:nth-child(2)'),
-        divAuxiliar = document.createElement('div'),
-        divCinco = document.createElement('div'),
-        divOito = document.createElement('div'),
-        divDez = document.createElement('div'),
-        divQuinze = document.createElement('div'),
-        buttonCinco = document.createElement('input'),
-        buttonOito = document.createElement('input'),
-        buttonDez = document.createElement('input'),
-        buttonQuinze = document.createElement('input'),
-        pCinco = document.createElement('p'),
-        pOito = document.createElement('p'),
-        pDez = document.createElement('p'),
-        pQuinze = document.createElement('p')
-    
-    buttonCinco.setAttribute('id','button5')
-    buttonOito.setAttribute('id','button8')
-    buttonDez.setAttribute('id','button10')
-    buttonQuinze.setAttribute('id','button15')
-    pCinco.setAttribute('id','prazo5')
-    pOito.setAttribute('id','prazo8')
-    pDez.setAttribute('id','prazo10')
-    pQuinze.setAttribute('id','prazo15')
-    buttonCinco.setAttribute('class','btnPrazo')
-    buttonCinco.setAttribute('value','05')
-    buttonCinco.setAttribute('type','button')
-    buttonOito.setAttribute('class','btnPrazo')
-    buttonOito.setAttribute('value','08')
-    buttonOito.setAttribute('type','button')
-    buttonDez.setAttribute('class','btnPrazo')
-    buttonDez.setAttribute('value','10')
-    buttonDez.setAttribute('type','button')
-    buttonQuinze.setAttribute('class','btnPrazo')
-    buttonQuinze.setAttribute('value','15')
-    buttonQuinze.setAttribute('type','button')
-    divDataPublicacao.appendChild(divAuxiliar)
-    divAuxiliar.appendChild(divCinco)
-    divAuxiliar.appendChild(divOito)
-    divAuxiliar.appendChild(divDez)
-    divAuxiliar.appendChild(divQuinze)
-    divCinco.appendChild(buttonCinco)
-    divCinco.appendChild(pCinco)
-    divOito.appendChild(buttonOito)
-    divOito.appendChild(pOito)
-    divDez.appendChild(buttonDez)
-    divDez.appendChild(pDez)
-    divQuinze.appendChild(buttonQuinze)
-    divQuinze.appendChild(pQuinze)
-    divDataPublicacao.style.position = 'relative'
-    divAuxiliar.style.position = 'absolute'
-    divAuxiliar.style.display = 'flex'
-    divAuxiliar.style.flexDirection = 'column'
-    divAuxiliar.style.top = '-82px'
-    divAuxiliar.style.right = '-150px'
-    pCinco.style.color = 'gray'
-    pOito.style.color = 'gray'
-    pDez.style.color = 'gray'
-    pQuinze.style.color = 'gray'
-    pCinco.innerHTML = `5 DIAS`
-    pOito.innerHTML = `8 DIAS`
-    pDez.innerHTML = `10 DIAS`
-    pQuinze.innerHTML = `15 DIAS`
-    divCinco.style.display = 'flex'
-    divCinco.style.flexDirection = 'row'
-    divCinco.style.alignItems = 'center'
-    divOito.style.display = 'flex'
-    divOito.style.flexDirection = 'row'
-    divOito.style.alignItems = 'center'
-    divDez.style.display = 'flex'
-    divDez.style.flexDirection = 'row'
-    divDez.style.alignItems = 'center'
-    divQuinze.style.display = 'flex'
-    divQuinze.style.flexDirection = 'row'
-    divQuinze.style.alignItems = 'center'
-
-    dataPub.addEventListener('blur', () => {
-        const prazoCinco = calcularPrazo(buttonCinco.value,2),
-            prazoOito = calcularPrazo(buttonOito.value,2),
-            prazoDez = calcularPrazo(buttonDez.value,2),
-            prazoQuinze = calcularPrazo(buttonQuinze.value,2)
-
-        pCinco.innerHTML = `${prazoCinco[0].slice(0,5)} - ${prazoCinco[1].slice(0,5)}`
-        pOito.innerHTML = `${prazoOito[0].slice(0,5)} - ${prazoOito[1].slice(0,5)}`
-        pDez.innerHTML = `${prazoDez[0].slice(0,5)} - ${prazoDez[1].slice(0,5)}`
-        pQuinze.innerHTML = `${prazoQuinze[0].slice(0,5)} - ${prazoQuinze[1].slice(0,5)}`
-    })
-    
-    let btn = document.querySelectorAll('.btnPrazo')
-
-    btn.forEach(e => {
-        e.addEventListener('click', event => {
-            const [inicial, final] = calcularPrazo(Number(event.target.value),2)
-            prazoInicial.value = inicial
-            prazoFinal.value =  final
-        })
-        e.style.padding = '15px'
-        e.style.borderRadius = '5px'
-        e.style.margin = '5px'
-        e.style.background = 'rgb(77, 72, 72)'
-        e.style.color = 'white'
-        e.style.border = '1px solid #ccc'
+        setCliente(cliente)
+        gravarBtn.removeAttribute('disabled')
     })
 }
 
@@ -2302,124 +1392,28 @@ function setValidacaoFunctionOff () {
         addTarefaAvulsaBtn = document.querySelector('body > section > section > div.fdt-espaco > div > div.fdt-pg-header > a:nth-child(1)'),
         addTarefaClienteBtn = document.querySelector('body > section > section > div.fdt-espaco > div > div.fdt-pg-header > a:nth-child(2)'),
         btnTarefaClientePesq = document.querySelector("body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr > td:nth-child(2) > a")
-    
-    if (editCompromissoBtn != null)
-        editCompromissoBtn.addEventListener('click', () => {
-            setAutoComplete(false)
-        })
 
-    if (addTarefaBtn != null)
-        addTarefaBtn.addEventListener('click', () => {
-            setAutoComplete(false)
-        })
+    const buttons = [editCompromissoBtn, addTarefaBtn, addTarefaAvulsaBtn, addTarefaClienteBtn, btnTarefaClientePesq]
 
-    if (addTarefaAvulsaBtn != null)
-        addTarefaAvulsaBtn.addEventListener('click', () => {
-            setAutoComplete(false)
-        })
-
-    if (addTarefaClienteBtn != null)
-        addTarefaClienteBtn.addEventListener('click', () => {
-            setAutoComplete(false)
-        })
-
-    if (btnTarefaClientePesq != null)
-        btnTarefaClientePesq.addEventListener('click', () => {
-            setAutoComplete(false)
-        })
+    buttons.forEach(button => {
+        if (button)
+            button.addEventListener('click', () => {
+                setAutoComplete(false)
+            })
+    })
 }
 
 function setValidacaoFunctionOn() {
     const addCompromissoBtn = document.querySelector('body > section > section > div.fdt-espaco > div > div.fdt-pg-header > a:nth-child(3) > i')
 
-    if (addCompromissoBtn != null)
+    if (addCompromissoBtn)
         addCompromissoBtn.addEventListener('click', async () => {
             await setAutoComplete(true)
         })
 }
 
-function createButtonRolagem () {
-    if (!state.functions.abaCompromissosProcesso.mostrarBotadeRolagem) {
-        return
-    }
-    const  arrow = document.createElement('input')
-
-    arrow.setAttribute('type','button')
-    arrow.value = 'DOWN'
-    document.body.after(arrow)
-    arrow.style.position = 'fixed'
-    arrow.style.top = '0'
-    arrow.style.right = '0'
-    arrow.style.margin = '8em'
-    arrow.style.background = 'dimgray'
-    arrow.style.padding = '30px'
-    arrow.style.width = '10em'
-    arrow.style.height = '10em'
-    arrow.style.borderRadius = '1em'
-    arrow.style.MozBorderRadius = '1em'
-    arrow.style.WebkitBorderRadius = '1em'
-    arrow.style.color = 'white'
-    arrow.style.fontWeight = 'bold'
-    arrow.style.borderStyle = 'none'
-    arrow.style.boxShadow = '10px 5px 5px black'
-
-    arrow.addEventListener('click', () => {
-        if (arrow.value == 'DOWN') {
-            arrow.setAttribute('disabled','')
-            window.scroll(0, document.documentElement.scrollHeight)
-            arrow.value = 'UP'
-            arrow.removeAttribute('disabled')
-        }
-        else {
-            window.scroll(0,0)
-            arrow.value = 'DOWN'
-        }
-    })
-}
-
 function removeAcentuacaoString (string) {
     return string.normalize('NFD').replace(/[\u0300-\u036f]/g, "")
-}
-
-function padronizaStrings (string) {
-    return string.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replaceAll(' ','').replaceAll('-','').toUpperCase()
-}
-
-function completarInputs () {
-    const titleFile = document.querySelectorAll("#fdt-form > div.alert.alert-success.fs20.margemCima20"),
-        filesName = [],
-        buttonsList = [],
-        divs = document.querySelectorAll("#fdt-form > div")
-    
-    for (let index = 0; index < divs.length; index++) {
-        const isTitleFile = divs[index].classList.contains("alert-success")
-
-        if (isTitleFile) {
-            buttonsList.push(divs[index+1])
-        }
-    }
-
-    titleFile.forEach(e => {
-        const textArray = e.textContent.split('.')
-
-        filesName.push(textArray[0].trim())
-    })
-
-    for (let index = 0; index < titleFile.length; index++) {
-        const input = document.querySelector(`#descricao_${index+1}`),
-            ul = buttonsList[index].children[0].children[1].children[1].children[1].children
-        
-            input.value = filesName[index]
-
-        for (let i = 0; i < ul.length; i++) {
-            const sFileName = padronizaStrings(filesName[index]),
-                span = ul[i].children[0].children[0], sSpan = padronizaStrings(span.textContent)
-
-            if (sSpan == sFileName) {
-                span.click()
-            }
-        }
-    }
 }
 
 async function idPage(url) {
@@ -2435,18 +1429,18 @@ async function idPage(url) {
         urlPortalDoAdvogado = "https://www.tjse.jus.br/tjnet/portaladv/index.wsp",
         urlCadastroPreProcesso = "http://fabioribeiro.eastus.cloudapp.azure.com/pre/preProcessos/formularioCria.asp",
         autoCompletar = await getAutoComplete(),
-        pageBuscaProcessos = (url.search(urlProcessos) > -1),
-        pageTarefas = (url.search(urlTarefas) > -1),
-        pageCompromissos = (url.search(urlCompromissos) > -1),
-        pageCadastroProcesso = (url.search(urlProcessosCadastro) > -1),
-        pageVisualizacaoAbaCompromissos = (url.search(urlCompromissoDefault) > -1),
-        pageVisualizacaoCompromisso = (url.search(urlCompromissoFicha) > -1),
-        pageFormularioAddTarefaSemCompromisso = (url.search(urlClienteAddtarefa) > -1),
-        pageVisualizacaoTarefa = (url.search(urlTarefasFicha) > -1),
-        pageUploadArquivo = (url.search(urlUpFile) > -1),
-        pagePortalDoAdvogado = (url.search(urlPortalDoAdvogado) > -1),
-        isSistema = (url.search("http://fabioribeiro.eastus.cloudapp.azure.com") > -1),
-        isPJE = (url.search("/pje/") > 0)
+        pageBuscaProcessos = (url.includes(urlProcessos)),
+        pageTarefas = (url.includes(urlTarefas)),
+        pageCompromissos = (url.includes(urlCompromissos)),
+        pageCadastroProcesso = (url.includes(urlProcessosCadastro)),
+        pageVisualizacaoAbaCompromissos = (url.includes(urlCompromissoDefault)),
+        pageVisualizacaoCompromisso = (url.includes(urlCompromissoFicha)),
+        pageFormularioAddTarefaSemCompromisso = (url.includes(urlClienteAddtarefa)),
+        pageVisualizacaoTarefa = (url.includes(urlTarefasFicha)),
+        pageUploadArquivo = (url.includes(urlUpFile)),
+        pagePortalDoAdvogado = (url.includes(urlPortalDoAdvogado)),
+        isSistema = (url.includes("http://fabioribeiro.eastus.cloudapp.azure.com")),
+        isPJE = (url.includes("/pje/"))
     
     digitacaoPorVoz()
 
@@ -2454,6 +1448,7 @@ async function idPage(url) {
         createPainel('ADM', ADM, state.functions.supervisor.painelVisualizacaoTarefasTimeADM)
         createPainel('SAC', SAC, state.functions.supervisor.painelVisualizacaoTarefasTimeSAC)
         createPainel('FINANCEIRO', FINANCEIRO, state.functions.supervisor.painelVisualizacaoTarefasTimeFINANCEIRO)
+        createPainel('INSS', INSS, state.functions.supervisor.painelVisualizacaoTarefasTimeINSS)
         contarTarefasParaHoje()
 
         if (pageBuscaProcessos) {
@@ -2542,13 +1537,9 @@ async function idPage(url) {
     }
 }
 
-function getURL() {
-    return document.URL
-}
-
 async function activate() {
     const [ estado, clienteSaved ] = await Promise.all([getState(), getCliente()]),
-        url = getURL()
+        { URL } = document
 
     const { active, functions } = estado
 
@@ -2562,16 +1553,14 @@ async function activate() {
     if (!active)
         return
 
-    idPage(url)
+    idPage(URL)
 }
 
 function updateEvent() {
     enviarResposta()
-}
+};
 
-async function run () {
+(async function run () {
     activate()
     updateEvent()
-}
-
-window.onload = run
+})()

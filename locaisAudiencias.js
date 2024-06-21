@@ -237,3 +237,19 @@ const locaisAudiencias = {
     'MOGI DAS CRUZES': 'AVENIDA FERNANDO COSTA, 820 - VILA RUBENS - MOGI DAS CRUZES - SP - 08735-000',
     'CENTRAL DE CONCILIAÇÃO DA SJDF': 'EDIFÍCIO-SEDE I - ANEXO "A" - EDIFÍCIO-SEDE I - SETOR DE AUTARQUIAS SUL, QUADRA 2, BLOCO G, LOTE 8, 70070-933, BRASÍLIA – DF',
 };
+
+
+function getEndereço (local) {
+
+    if (local.value.length == 0)
+        return ""
+    else {
+        let locais = Object.entries(locaisAudiencias)
+        for (const [key,value] of locais) {
+            if (removeAcentuacaoString(key) == removeAcentuacaoString(local.value)){
+                return `${key}: ${value}`
+            }
+        }
+        return local.value
+    }
+}

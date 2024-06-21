@@ -236,25 +236,78 @@ const ADM = [
             atrasadas: 0
         },
     ],
-    INSS = [],
-    PREVIDENCIARIO = [],
+    INSS = [
+        {
+            id: 132,
+            nome: "DANIEL CABRAL PEREIRA SANTOS",
+            nomeTLC: "daniel",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 139,
+            nome: "FLAVIO LUCAS LIMA SOUZA",
+            nomeTLC: "flavio",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 115,
+            nome: "GABRIEL FRANÇA VITAL",
+            nomeTLC: "gabriel",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 190,
+            nome: "JOSE PEDRO DE GOIS NETO",
+            nomeTLC: "josé",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 154,
+            nome: "OSMAR SILVA VIANA",
+            nomeTLC: "osmar",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 24,
+            nome: "SILVANIA PINHEIRO DE LEMOS",
+            nomeTLC: "silvania",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+
+    ]
+    /* PREVIDENCIARIO = [],
     TRABALHISTA = [],
-    CIVEL = []
+    CIVEL = [] */
 
 let updateCount = {
         ADM: ADM.length * 2,
         SAC: SAC.length * 2,
-        FINANCEIRO: FINANCEIRO.length * 2
+        FINANCEIRO: FINANCEIRO.length * 2,
+        INSS: INSS.length * 2,
     },
     percent = {
         ADM: 0,
         SAC: 0,
-        FINANCEIRO: 0
+        FINANCEIRO: 0,
+        INSS: 0,
     },
     contIteration = {
         ADM: 0,
         SAC: 0,
-        FINANCEIRO: 0
+        FINANCEIRO: 0,
+        INSS: 0,
     }
 
 function createPainel (setor, colaboradores, condiction) {
@@ -268,7 +321,8 @@ function createPainel (setor, colaboradores, condiction) {
     const cor = {
         ADM: "azul",
         SAC: "verde",
-        FINANCEIRO: "vermelho"
+        FINANCEIRO: "vermelho",
+        INSS: "preto",
     }
 
     const html = `<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span data-toggle="tooltip" data-placement="bottom" title="Painel do Supervisor ${setor}" data-original-title="Painel do Supervisor ${setor}"><i class="fa fa-fw fa-table fdt-cor-${cor[setor]}"></i></span></a>
