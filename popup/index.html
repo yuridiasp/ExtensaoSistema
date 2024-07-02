@@ -10,7 +10,7 @@
 
     <body>
         <header>
-            <img class="icon" src="../icon.png" alt="logo" srcset="">
+            <img class="icon" src="../assets/logotipoSistema.png" alt="logo" srcset="">
             <h4>System FR Extension</h4>
             <input id="botaoAtiva" class="btn-ok" type="button">
         </header>
@@ -77,6 +77,10 @@
                     <input id="AutoPreenchimentoPrazoInterno" data-nome="AutoPreenchimentoPrazoInterno" data-aba="cadastroCompromisso" type="checkbox" name="AutoPreenchimentoPrazoInterno" id="AutoPreenchimentoPrazoInterno">
                     <label for="AutoPreenchimentoPrazoInterno">Autopreenchimento do prazo interno (Pauta, Perícia, Audiência)</lab>
                 </div>
+                <div>
+                    <input id="exibirListaTarefas" data-nome="exibirListaTarefas" data-aba="cadastroCompromisso" type="checkbox" name="exibirListaTarefas" id="exibirListaTarefas">
+                    <label for="exibirListaTarefas">Exibir lista de tarefas</lab>
+                </div>
             </div>
             <div class="section-config">
                 <h5>Cadastro de Tarefa</h5>
@@ -86,21 +90,14 @@
                 </div>
             </div>
             <div class="section-config">
-                <h5>Carregamento de arquivo</h5>
-                <div>
-                    <input id="selecaoTipoArquivo" data-nome="selecaoTipoArquivo" data-aba="carregamentoArquivo" type="checkbox">
-                    <label for="selecaoTipoArquivo">Seleção do Tipo de Arquivo</label>
-                </div>
-                <div>
-                    <input id="preenchimentoCamposArquivos" data-nome="preenchimentoCamposArquivos" data-aba="carregamentoArquivo" type="checkbox">
-                    <label for="preenchimentoCamposArquivos">Autopreenchimento dos Campos de Arquivos</label>
-                </div>
-            </div>
-            <div class="section-config">
                 <h5>Pré-processo</h5>
                 <div>
                     <input id="preenchimentoNomePasta" data-nome="preenchimentoNomePasta" data-aba="preProcesso" type="checkbox">
                     <label for="preenchimentoNomePasta">Autopreenchimento do nome da pasta</label>
+                </div>
+                <div>
+                    <input id="preenchimentoFormularioPreProcesso" data-nome="preenchimentoFormularioPreProcesso" data-aba="preProcesso" type="checkbox">
+                    <label for="preenchimentoFormularioPreProcesso">Autopreenchimento Formulário Pré-processo</label>
                 </div>
             </div>
             <div class="section-config">
@@ -127,6 +124,13 @@
                 <div>
                     <input id="botaoExportarAlvaras" data-nome="botaoExportarAlvaras" data-aba="tjse" type="checkbox">
                     <label for="botaoExportarAlvaras">Habilitar botão Exportar Intimações Alvarás</label>
+                </div>
+            </div>
+            <div class="section-config">
+                <h5>GERID</h5>
+                <div>
+                    <input id="botaoExportarNotificacoes" data-nome="botaoExportarNotificacoes" data-aba="gerid" type="checkbox">
+                    <label for="botaoExportarNotificacoes">Habilitar botão Exportar Notificações</label>
                 </div>
             </div>
         </section>

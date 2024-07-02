@@ -24,7 +24,6 @@
                 "chromeUtils.js",
                 "content.js",
                 "prazos.js",
-                "uploadArquivos.js",
                 "compromissos.js",
                 "painelSupervisor.js",
                 "recognition.js",

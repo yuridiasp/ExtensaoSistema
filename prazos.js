@@ -1,8 +1,8 @@
-function contarDias(inicial,final, parametro) {
+function contarDias([ dia, mes, ano], final, parametro) {
     let contaTodos = 0,
         contaUteis = 0,
         domingos = 0,
-        date = new Date(inicial[2],inicial[1],inicial[0]),
+        date = new Date(ano, mes, dia),
         condiction,
         i
 
@@ -29,7 +29,7 @@ function contarDias(inicial,final, parametro) {
     return { uteis: contaUteis, todosDias: contaTodos}
 }
 
-function dataContato(intervalo,dataInterno,parametro, todosDias) {
+function dataContato(intervalo, dataInterno, parametro, todosDias) {
     let hoje = new Date(),
         fimIntervalo = Number(intervalo),
         date,
@@ -64,73 +64,115 @@ function dataContato(intervalo,dataInterno,parametro, todosDias) {
     return `${diaContato < 10 ? '0'.concat(diaContato) : diaContato}/${mesContato < 10 ? '0'.concat(mesContato) : mesContato}/${anoContato}`
 }
 
-function calculaIntervaloTarefas (dias) {
-    const { tipoCompromisso, tipoTarefa, tarefaSequencia, semanas, tarefaRestante } = cliente.compromisso,
+function calculaIntervaloTarefasAdministrativo(dias) {
+    
+    const { tipoCompromisso, tarefas, semanas, quantidadeTarefas } = cliente.compromisso,
+        contTres = "PERICIA",
+        contQuatro = "EXIGENCIA INSS",
+        tipoCompromissoNormalizado = removeAcentuacaoString(tipoCompromisso),
+        tarefaAtualNormalizada = removeAcentuacaoString(tarefas[0])
+
+    if (contQuatro.includes(tipoCompromissoNormalizado)) {
+        if (tarefaAtualNormalizada === "ANALISE DE EXIGENCIA INSS DIGITAL") {
+            return dias-1
+        }
+
+        if (tarefaAtualNormalizada === "INTERVENCAO - CONTROLE INSS DIGITAL" && tarefas.length === 3) {
+            return dias-2
+        }
+
+        if (tarefaAtualNormalizada === "INTERVENCAO - CONTROLE INSS DIGITAL" && tarefas.length === 2) {
+            return 1
+        }
+
+        if (tarefaAtualNormalizada === "CUMPRIMENTO EXIGENCIA INSS DIGITAL") {
+            return 0
+        }
+    }
+
+    if (tipoCompromissoNormalizado.search(contTres) === 0 && dias > 10) {
+        if (semanas >= 2) {
+            if (tarefaAtualNormalizada === 'CONTATAR CLIENTE') {
+                return dias-1
+            }
+            if (tarefaAtualNormalizada === 'SMS E WHATSAPP') {
+                return dias-1
+            }
+            if (tarefaAtualNormalizada === 'LEMBRAR CLIENTE')
+                return 2
+        }
+    }
+
+    return 0
+}
+
+function calculaIntervaloTarefasJudicial(dias) {
+    const { tipoCompromisso, tarefas, semanas, quantidadeTarefas } = cliente.compromisso,
         { estado } = cliente.processo,
         contDois = {
-            outros: ["EMENDAR","DADOS PERÍCIA SOCIAL","DADOS COMPLEMENTARES"],
-            financeiro: ["ALVARÁ","RPV","PRECATÓRIO"]
+            outros: ["EMENDAR","DADOS PERICIA SOCIAL","DADOS COMPLEMENTARES"],
+            financeiro: ["RPV TRF1 BRASILIA", "RPV TRF1 GOIAS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTANCIA", "RPV TRF1 BAHIA", "RECEBIMENTO DE PRECATORIO", "RECEBIMENTO DE ALVARA"]
         },
-        contTres = "PERÍCIA",
-        contQuatro = ["AUDIÊNCIA DE CONCILIAÇÃO", "AUDIÊNCIA CONCILIATÓRIA", "AUDIÊNCIA DE INTERROGATÓRIO"],
-        contCinco = ["AUDIÊNCIA DE INSTRUÇÃO", "AUDIÊNCIA INAUGURAL", "AUDIÊNCIA INICIAL", "AUDIÊNCIA DE INSTRUÇÃO E JULGAMENTO", "AUDIÊNCIA UNA"]
+        contTres = "PERICIA",
+        contQuatro = ["AUDIENCIA DE CONCILIACAO", "AUDIENCIA CONCILIATORIA", "AUDIENCIA DE INTERROGATORIO"],
+        contCinco = ["AUDIENCIA DE INSTRUCAO", "AUDIENCIA INAUGURAL", "AUDIENCIA INICIAL", "AUDIENCIA DE INSTRUCAO E JULGAMENTO", "AUDIENCIA UNA"],
+        tipoCompromissoNormalizado = removeAcentuacaoString(tipoCompromisso),
+        tarefaAtualNormalizada = removeAcentuacaoString(tarefas[0])
 
-    if (((contCinco.includes(tipoCompromisso) && dias > 11) || (contQuatro.includes(tipoCompromisso) && dias > 10) || (tipoCompromisso.search(contTres) === 0) && dias > 10)) {
+    if (((contCinco.includes(tipoCompromisso) && dias > 11) || (contQuatro.includes(tipoCompromissoNormalizado) && dias > 10) || (tipoCompromissoNormalizado.search(contTres) === 0) && dias > 10)) {
         if (semanas >= 2) {
-            if (tipoTarefa === 'ANÁLISE')
+            if (tarefaAtualNormalizada === 'ANALISE')
                 return dias-1
-            if ((tipoTarefa === 'CONTATAR CLIENTE' || tipoTarefa === 'SMS E WHATSAPP')) {
+            if ((tarefaAtualNormalizada === 'CONTATAR CLIENTE' || tarefaAtualNormalizada === 'SMS E WHATSAPP')) {
                 if (estado !== 'GO' && estado != 'DF') {
                     return dias-2
                 }
                 else {
-                    if (tipoTarefa === 'CONTATAR CLIENTE') {
+                    if (tarefaAtualNormalizada === 'CONTATAR CLIENTE') {
                         return dias-3
                     }
-                    if (tipoTarefa === 'SMS E WHATSAPP') {
-                        if (contQuatro.includes(tipoCompromisso))
+                    if (tarefaAtualNormalizada === 'SMS E WHATSAPP') {
+                        if (contQuatro.includes(tipoCompromissoNormalizado))
                             return dias-7
                         return dias-2
                     }
                 }
             }
-            if (tipoTarefa === 'LEMBRAR CLIENTE')
+            if (tarefaAtualNormalizada === 'LEMBRAR CLIENTE')
                 return 2
-            if (tipoTarefa === 'ATO ORDINATÓRIO')
+            if (tarefaAtualNormalizada === 'ATO ORDINATORIO')
                 return dias-1
         }
     }
     else {
-        const ehAudienciaOuPericia = (contCinco.includes(tipoCompromisso) || contQuatro.includes(tipoCompromisso) || tipoCompromisso.search(contTres) === 0)
+        const ehAudienciaOuPericia = (contCinco.includes(tipoCompromissoNormalizado) || contQuatro.includes(tipoCompromissoNormalizado) || tipoCompromissoNormalizado.search(contTres) === 0)
         if (ehAudienciaOuPericia) {
-            if ((tarefaRestante === tarefaSequencia) && tipoCompromisso.search(contTres) === -1)
+            if (tarefas.length === quantidadeTarefas && tipoCompromissoNormalizado.search(contTres) === -1)
                 return 0
             else
-                if (tipoTarefa === 'LEMBRAR CLIENTE')
+                if (tarefaAtualNormalizada === 'LEMBRAR CLIENTE')
                     return 2
             if (estado === 'GO' || estado === 'DF') {
-                if (tipoTarefa === 'CONTATAR CLIENTE')
+                if (tarefaAtualNormalizada === 'CONTATAR CLIENTE')
                     return dias-1
             }
             return dias-1
         }
     }
     
-    if (contDois.outros.includes(tipoCompromisso)) {
-        if (tipoTarefa === 'CONTATAR CLIENTE') {
+    if (contDois.outros.includes(tipoCompromissoNormalizado)) {
+        if (tarefaAtualNormalizada === 'CONTATAR CLIENTE') {
             return dias-1
         }
     }
 
-    const indiceTarefa = ((cliente.processo.estado === 'DF') || (cliente.processo.estado === 'GO') ? 1 : 2)
-
-    if (contDois.financeiro.includes(tipoCompromisso)) {
-        if (tipoCompromisso === 'RPV' && tarefaRestante === indiceTarefa) {
-            return 0
-        }
-
-        if (tipoCompromisso === 'RPV' && tarefaRestante !== indiceTarefa) {
+    if (contDois.financeiro.includes(tipoCompromissoNormalizado)) {
+        if ((tipoCompromissoNormalizado.includes('RPV') || tipoCompromissoNormalizado.includes('PRECATORIO')) && tarefaAtualNormalizada.includes("ADVOGADO")) {
             return dias-5
+        }
+        
+        if ((tipoCompromissoNormalizado.includes('RPV') || tipoCompromissoNormalizado.includes('PRECATORIO')) && tarefaAtualNormalizada.includes("FINANCEIRO")) {
+            return 0
         }
     }
 
@@ -138,7 +180,7 @@ function calculaIntervaloTarefas (dias) {
 }
 
 function extrairDataPrazoFatalInput (prazoFatal) {
-    let data = prazoFatal.split('/')
+    const data = prazoFatal.split('/')
     return [data[0],Number(data[1])-1,data[2]]
 }
 
@@ -151,35 +193,27 @@ function calcularDataTarefa(parametro) {
         dia = hoje.getDate(),
         data = extrairDataPrazoFatalInput(cliente.compromisso.prazoInterno),
         dataInterno = new Date(data[2],data[1],data[0]),
-        dias = contarDias([dia, mes, ano], dataInterno, parametro),
-        { uteis, todosDias} = dias,
-        intervalo = calculaIntervaloTarefas (uteis),
+        { uteis, todosDias} = contarDias([dia, mes, ano], dataInterno, parametro),
+        intervalo = state.functions.todasPaginas.tipoIntimacaoIsJudicial ? calculaIntervaloTarefasJudicial(uteis) : calculaIntervaloTarefasAdministrativo(uteis),
         dataTarefa = dataContato(intervalo, dataInterno, parametro, todosDias),
         contactdiv = document.querySelector("#contactdiv")
     
     dataFinalizacao.value = dataTarefa
     dataFinalizacaoAgendada.value = dataTarefa
 
-    dataFinalizacaoAgendada.addEventListener('blur', e => {
-        dataFinalizacao.value = e.target.value
-        if ((cliente.compromisso.tipoTarefa == "CONTATAR CLIENTE" || cliente.compromisso.tipoTarefa == "LEMBRAR CLIENTE") && (cliente.processo.estado != "DF" || cliente.processo.estado != "GO")) {
-            if (contactdiv != null) {
+    const verifyContactTask = ({ target }) => {
+        target.value = target.value
+        if (((cliente.compromisso.tarefas[0] == "CONTATAR CLIENTE" || cliente.compromisso.tarefas[0] == "LEMBRAR CLIENTE") && (cliente.processo.estado != "DF" || cliente.processo.estado != "GO")) || !state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
+            if (contactdiv) {
                 contactdiv.parentNode.removeChild(contactdiv)
                 validaExecutorContatar()
             }
         }
-    })
+    }
 
-    dataFinalizacao.addEventListener('blur', e => {
-        dataFinalizacaoAgendada.value = e.target.value
-        if ((cliente.compromisso.tipoTarefa == "CONTATAR CLIENTE" || cliente.compromisso.tipoTarefa == "LEMBRAR CLIENTE") && (cliente.processo.estado != "DF" || cliente.processo.estado != "GO")) {
-            let contactdiv = document.querySelector("#contactdiv")
-            if (contactdiv != null) {
-                contactdiv.parentNode.removeChild(contactdiv)
-                validaExecutorContatar()
-            }
-        }
-    })
+    dataFinalizacaoAgendada.addEventListener('blur', verifyContactTask)
+
+    dataFinalizacao.addEventListener('blur', verifyContactTask)
 }
 
 function formataData (dia,mes,ano) {
@@ -202,7 +236,7 @@ function calcularPrazo (prazo,parametro) {
         isSentencaOrAcordaoOrDecisao = (isSentenca || isDecisao || isAcordao),
         numCharProcessoTJSE = 12,
         natureza = cliente.processo.natureza,
-        isProcessoCivel = (processo.value.length === numCharProcessoTJSE),
+        isProcessoCivel = processo ? (processo.value.length === numCharProcessoTJSE) : false,
         isProcessoTrabalhista = (natureza === "TRABALHISTA")
 
     let dateFinal = new Date(),
@@ -213,7 +247,7 @@ function calcularPrazo (prazo,parametro) {
         i
 
 
-    if (isProcessoCivel || isProcessoTrabalhista) {
+    if (isProcessoCivel || isProcessoTrabalhista || !state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
         if (dataPub.value.length > 0) {
             const [ dia, mes, ano ] = dataPub.value.split('/')
             dateFinal = new Date(ano,Number(mes)-1,Number(dia))

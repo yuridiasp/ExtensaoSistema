@@ -42,8 +42,33 @@ function calculaPascoa(ano) {
 
 function FeriadosFixos (ano, parametro) {
 
-    const tarefaContatar = (parametro == 1),
-        tarefaAdvogado = (parametro == 2),
+    const setIntervaloFeriadosJudiciario = (diaInicio, mesInicio, diaFinal, mesFinal) => {
+        const fimMesDezembro = 31,
+            diaPrimeiro = 1
+
+        let feriados = [],
+            condicao = true,
+            dia = diaInicio,
+            mes = mesInicio
+
+        while(condicao) {
+            feriados.push([mes, dia])
+            dia++
+            
+            if (dia > fimMesDezembro) {
+                dia = diaPrimeiro
+                mes = indexJaneiro
+            }
+            if ((dia > diaFinal) && (mes == mesFinal)) {
+                condicao = false
+            }
+        }
+
+        return feriados
+    }
+    
+    const tarefaContatar = parametro === parametros.tarefaContatar,
+        tarefaAdvogado = parametro === parametros.tarefaAdvogado,
         indexJaneiro = 0,
         diaInicioForense = 20,
         mesInicioForense = 11,
@@ -53,7 +78,7 @@ function FeriadosFixos (ano, parametro) {
         mesInicioFeriasAdvogados = 11,
         diaFimFeriasAdvogados = 20,
         mesFimFeriasAdvogados = 0,
-        isTJ = cliente.processo.origem.length === 12,
+        isTJ = cliente.processo.origem ? cliente.processo.origem.length === 12 : false,
         isTRT = cliente.processo.natureza === "TRABALHISTA",
         isIS = isTJ || isTRT,
         forense = setIntervaloFeriadosJudiciario(diaInicioForense, mesInicioForense, diaFimForense, mesFimForense),
@@ -298,31 +323,6 @@ function FeriadosFixos (ano, parametro) {
                     [1,6] //EMANCIPAÇÃO POLÍTICA
                 ]
             }
-
-    function setIntervaloFeriadosJudiciario(diaInicio, mesInicio, diaFinal, mesFinal) {
-        const fimMesDezembro = 31,
-            diaPrimeiro = 1
-
-        let feriados = [],
-            condicao = true,
-            dia = diaInicio,
-            mes = mesInicio
-
-        while(condicao) {
-            feriados.push([mes, dia])
-            dia++
-            
-            if (dia > fimMesDezembro) {
-                dia = diaPrimeiro
-                mes = indexJaneiro
-            }
-            if ((dia > diaFinal) && (mes == mesFinal)) {
-                condicao = false
-            }
-        }
-
-        return feriados
-    }
     
     datas.nacional.forEach(([mes, dia]) => {
         resultados.push(new Date(ano, mes, dia))
@@ -358,7 +358,7 @@ function FeriadosFixos (ano, parametro) {
                 resultados.push(new Date(ano-1, mes, dia))
             }
         })
-
+        
         if (cliente.processo.estado == 'SE') {
             datas.SE.forEach(([mes, dia]) => {
                 resultados.push(new Date(ano, mes, dia))
@@ -438,16 +438,12 @@ function calculaFeriados(parametro) {
 
 function isFeriado (date,parametro) {
     const feriados = calculaFeriados(parametro)
-    let feriado = false,
-        ehFeriado
-
-    for (let index = 0; index < feriados.length; index++) {
-        ehFeriado = feriados[index].toDateString() == date.toDateString()
-        if (ehFeriado) {
-            feriado = true
-            break
+    for (const feriado of feriados) {
+        const foundFeriado = feriado.toDateString() == date.toDateString()
+        if (foundFeriado) {
+            return true
         }
     }
 
-    return feriado
+    return false
 }

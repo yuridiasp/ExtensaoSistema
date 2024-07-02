@@ -32,16 +32,14 @@ async function setInitialState() {
                 selecaodoTipodeCompromisso: undefined,
                 mostrarBotoesAuxiliaresdeDias: undefined,
                 AutoPreenchimentoPrazoInterno: undefined,
+                exibirListaTarefas: undefined
             },
             cadastroTarefa:{
                 AutoPreenchimentoTarefasIntimacoes: undefined,
             },
-            carregamentoArquivo:{
-                seleçãoTipoArquivo: undefined,
-                preenchimentoCamposArquivos: undefined,
-            },
             preProcesso:{
-                preenchimentoNomePasta: null,
+                preenchimentoNomePasta: undefined,
+                preenchimentoFormularioPreProcesso: undefined
             },
             supervisor: {
                 painelVisualizacaoTarefasTimeADM: undefined,
@@ -51,6 +49,9 @@ async function setInitialState() {
             },
             tjse: {
                 botaoExportarAlvaras: undefined
+            },
+            gerid: {
+                botaoExportarNotificacoes: undefined
             }
         }
     }

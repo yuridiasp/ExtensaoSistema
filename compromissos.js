@@ -121,10 +121,13 @@ function createButtonPrazo() {
     })
 
     btns.forEach(e => {
-        e.addEventListener('click', event => {
+        e.addEventListener('click', async event => {
             const [inicial, final] = calcularPrazo(Number(event.target.value),2)
             prazoInicial.value = inicial
             prazoFinal.value =  final
+            cliente.compromisso.tarefas = state.functions.todasPaginas.tipoIntimacaoIsJudicial ? getListaTarefasCompromissoJudicial() : getListaTarefasCompromissoAdministrativo()
+            atualizarListaTarefasAbaCompromissos()
+            await setCliente(cliente)
         })
         e.style.padding = '15px'
         e.style.borderRadius = '5px'

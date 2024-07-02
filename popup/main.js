@@ -1,7 +1,6 @@
 const btnActive = window.document.querySelector("#botaoAtiva")
 const inputsCheck = document.querySelectorAll('input[type=checkbox]')
-const tipoIntimacaoJudicial = document.querySelector('#tipoIntimacaoJudicial')
-const tipoIntimacaoAdministrativa = document.querySelector('#tipoIntimacaoAdministrativa')
+const radiosTipoIntimacao = document.querySelectorAll('input[type=radio]')
 const googlemaps_APIKey = ""
 const genReport = document.querySelector('#genReport')
 
@@ -48,16 +47,14 @@ let initialState, state = {
             selecaodoTipodeCompromisso: null,
             mostrarBotoesAuxiliaresdeDias: null,
             AutoPreenchimentoPrazoInterno: null,
+            exibirListaTarefas: null
         },
         cadastroTarefa:{
             AutoPreenchimentoTarefasIntimacoes: null,
         },
-        carregamentoArquivo:{
-            seleçãoTipoArquivo: null,
-            preenchimentoCamposArquivos: null,
-        },
         preProcesso:{
             preenchimentoNomePasta: null,
+            preenchimentoFormularioPreProcesso: null
         },
         supervisor: {
             painelVisualizacaoTarefasTimeADM: null,
@@ -67,6 +64,9 @@ let initialState, state = {
         },
         tjse: {
             botaoExportarAlvaras: null
+        },
+        gerid: {
+            botaoExportarNotificacoes: null
         }
     }
 }
@@ -91,24 +91,42 @@ function loadSelectionFunction(functions) {
     const isJudicialIntimation = functions.todasPaginas.tipoIntimacaoIsJudicial
     
     if (!isJudicialIntimation) {
-        tipoIntimacaoJudicial.checked = true
+        tipoIntimacaoJudicial.checked = false
         tipoIntimacaoAdministrativa.checked = true
     }
 
-    tipoIntimacaoJudicial.addEventListener('change', async () => {
-        const { checked } = tipoIntimacaoJudicial
-        state.functions.todasPaginas.tipoIntimacaoIsJudicial = checked
-        await saveState(state)
+    radiosTipoIntimacao.forEach(radio => {
+        console.log(state.functions.todasPaginas.tipoIntimacaoIsJudicial);
+        radio.addEventListener('input', async () => {
+            const { checked, value } = radio
+            if (value === "judicial"  && checked) {
+                state.functions.todasPaginas.tipoIntimacaoIsJudicial = true
+            }
+
+            if (value === "administrativa" && checked) {
+                state.functions.todasPaginas.tipoIntimacaoIsJudicial = false
+            }
+
+            await saveState(state)
+        })
     })
 
-    inputsCheck.forEach(input => {
-        const estado = functions[input.dataset.aba][input.dataset.nome]
-
-        if (!estado)
+    inputsCheck.forEach(async input => {
+        try {
+            const estado = functions[input.dataset.aba][input.dataset.nome]
+    
+            if (!estado)
+                input.checked = false
+            else
+                input.checked = estado
+        } catch (error) {
+            console.log(error)
             input.checked = false
-        else
-            input.checked = estado
-
+            functions[input.dataset.aba] = {}
+            functions[input.dataset.aba][input.dataset.nome] = false
+            await saveState(state)
+        }
+        
         input.addEventListener('change', async event => {
             const { checked } = event.target
             state.functions[event.target.dataset.aba][event.target.dataset.nome] = checked
