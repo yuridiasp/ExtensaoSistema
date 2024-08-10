@@ -37,6 +37,10 @@
                     <input id="contadorTarefas" data-nome="contadorTarefas" data-aba="todasPaginas" type="checkbox">
                     <label for="contadorTarefas">Controle de tarefas lançadas para o mesmo dia</label>
                 </div>
+                <div>
+                    <input id="datepickerHighlighter" data-nome="datepickerHighlighter" data-aba="todasPaginas" type="checkbox">
+                    <label for="datepickerHighlighter">Marcar feriados nos selecionadores de data</label>
+                </div>
             </div>
             <div class="section-config">
                 <h5>Aba Cadastro/Edição de Processo</h5>
@@ -70,6 +74,10 @@
                     <label for="selecaodoTipodeCompromisso">Seleção do Tipo de Compromisso</label>
                 </div>
                 <div>
+                    <input id="exibirlistaDescricaoCompromisso" data-nome="exibirlistaDescricaoCompromisso" data-aba="cadastroCompromisso" type="checkbox" name="exibirlistaDescricaoCompromisso" id="exibirlistaDescricaoCompromisso">
+                    <label for="exibirlistaDescricaoCompromisso">Exibir lista de sugestões de Descrição de Compromisso</label>
+                </div>
+                <div>
                     <input data-nome="mostrarBotoesAuxiliaresdeDias" data-aba="cadastroCompromisso" type="checkbox" name="mostrarBotoesAuxiliaresdeDias" id="mostrarBotoesAuxiliaresdeDias">
                     <label for="mostrarBotoesAuxiliaresdeDias">Mostrar Botões Auxiliares de Dias</label>
                 </div>
@@ -87,6 +95,10 @@
                 <div>
                     <input id="AutoPreenchimentoTarefasIntimacoes" data-nome="AutoPreenchimentoTarefasIntimacoes" data-aba="cadastroTarefa" type="checkbox">
                     <label for="AutoPreenchimentoTarefasIntimacoes">Autopreenchimento de Tarefas Intimações</label>
+                </div>
+                <div>
+                    <input id="criarHistoricoINSSDigital" data-nome="criarHistoricoINSSDigital" data-aba="cadastroTarefa" type="checkbox">
+                    <label for="criarHistoricoINSSDigital">Gerar histórico automático INSS Digital</label>
                 </div>
             </div>
             <div class="section-config">
@@ -137,10 +149,11 @@
         <hr />
         <button id="genReport">Gerar Relatório PJE</button>
         <div id="mensagem"></div>
+        <script src="../utils/state/initialState.js"></script>
         <script src="../chromeUtils.js" defer></script>
         <script src="../background/background.js"defer></script>
-        <script src="../utils/pdfmake.min.js"></script>
-        <script src="../utils/vfs_fonts.js"></script>
+        <script src="../utils/pdf-exporter/pdfmake.min.js"></script>
+        <script src="../utils/pdf-exporter/vfs_fonts.js"></script>
         <script src="main.js" defer></script>
     </body>
 </html>

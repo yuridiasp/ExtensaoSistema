@@ -64,14 +64,6 @@ const ADM = [
             atrasadas: 0
         },
         {
-            id: 201,
-            nome: "MARCO AURELIO LEITE GOMES",
-            nomeTLC: "marco aurelio",
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
             id: 141,
             nome: "MARCOS ROBERT DE MELO LIMA",
             nomeTLC: "marcos robert",
@@ -122,14 +114,6 @@ const ADM = [
     ],
     SAC = [
         {
-            id: 183,
-            nome: "ALEXSANDRO DE SOUZA JUNIOR",
-            nomeTLC: "alexsandro",
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
             id: 213,
             nome: "HELLEN VITORIA ROCHA SILVA SANTOS",
             nomeTLC: "hellen",
@@ -170,17 +154,17 @@ const ADM = [
             atrasadas: 0
         },
         {
-            id: 153,
-            nome: "TRICYA MATEUS ROLEMBERG",
-            nomeTLC: "tricya",
+            id: 201,
+            nome: "MARCO AURELIO LEITE GOMES",
+            nomeTLC: "marco aurelio",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
         },
         {
-            id: 145,
-            nome: "WENDEL CARLOS SANTOS",
-            nomeTLC: "wendel",
+            id: 153,
+            nome: "TRICYA MATEUS ROLEMBERG",
+            nomeTLC: "tricya",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -191,6 +175,14 @@ const ADM = [
             id: 14,
             nome: "ALINE RIBEIRO",
             nomeTLC: "aline",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 216,
+            nome: "CAMILA TOJAL MACHADO SANTOS",
+            nomeTLC: "camila",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -265,6 +257,14 @@ const ADM = [
             id: 190,
             nome: "JOSE PEDRO DE GOIS NETO",
             nomeTLC: "josé",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 162,
+            nome: "MIQUEAS CAMPOS DA SILVA",
+            nomeTLC: "miqueas",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -400,18 +400,21 @@ function createPainel (setor, colaboradores, condiction) {
     
     document.querySelector(`#painelBTNSup${setor}`).addEventListener('click', () => {
         showContentBar(contentBar, setor)
-        getTarefasAtrasadas(colaboradores).then(result => {
-            colaboradores.forEach(e => {
-                inputDados(e.nomeTLC, result[e.nome])
+
+        colaboradores.forEach(({ id, nomeTLC }) => {
+
+            const params = `&bsAdvTarefasExecutor=${id}`
+
+            const tarefasAtrasadas = { atrasadas: 0 }
+
+            getTarefasAtrasadas(params, tarefasAtrasadas).then(result => {
+                inputDados(nomeTLC, result)
+            })
+
+            getTarefasSemanal(id, datas).then(result => {
+                inputDados(nomeTLC, result)
             })
         })
-        
-        for(let c = 0; c < colaboradores.length; c++) {
-            colaboradores[c].contagem = getTarefasSemanal(colaboradores[c].id, datas).then(result => {
-                inputDados(colaboradores[c].nomeTLC,result)
-                return result
-            })
-        }
     })
 }
 
@@ -505,15 +508,6 @@ function getTarefasSemanal (id, datas) {
     
     const url = 'http://fabioribeiro.eastus.cloudapp.azure.com/adv/ajax/jsonAgendaTarefas.asp'
 
-    let headers = new Headers({
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Accept': 'application/json, text/javascript, */*; q=0.01',
-        'Content-Length': '64',
-        'Accept-Encoding': 'gzip, deflate',
-        'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
-        'Connection': 'keep-alive'
-    })
-
     const data = {
         idTI: '',
         idST: '',
@@ -524,15 +518,13 @@ function getTarefasSemanal (id, datas) {
         end: datas[datas.length-2].toISOString().split('T')[0],
     }
 
-    let init = {
+    const body = JSON.stringify(data).replaceAll('"','').replaceAll(':','=').replaceAll('{','').replaceAll('}','').replaceAll(',','&')
+
+    const result = fetch(url, {
         method: 'POST',
-        headers: headers,
-        body: JSON.stringify(data).replaceAll('"','').replaceAll(':','=').replaceAll('{','').replaceAll('}','').replaceAll(',','&')
-    }
-
-    const request = new Request(url, init)
-
-    const result = fetch(request)
+        headers: new Headers({ 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}),
+        body
+    })
     .then(response => response.text())
     .then(response => {
         let str = response
@@ -544,15 +536,16 @@ function getTarefasSemanal (id, datas) {
         let chavesErradas = ["'id': '","', 'title': '","', 'allDay': '","', 'start': '","', 'end': '","', 'color': '","', 'textColor': '","', 'borderColor': '","', 'url': '","' }"]
 
         for (c = 0; c < chavesCorretas.length; c++) {
-            str = str.replaceAll(chavesErradas[c],chavesCorretas[c])
+            str = str.replaceAll(chavesErradas[c], chavesCorretas[c])
         }
 
         return JSON.parse(str)
     })
     .then(resp => {
+        const contagem = {
+            idTarefas: []
+        }
 
-        const contagem = {}
-        contagem['idTarefas'] = []
         for (c = 0; c < datas.length; c++) {
             if (c > 0)
                 contagem[(datas[c].toISOString().split("T"))[0]] = {
@@ -583,24 +576,13 @@ function getTarefasSemanal (id, datas) {
     return result
 }
 
-async function getTarefasAtrasadas (colaboradores) {
-
-    const array = {}
-
+async function getTarefasAtrasadas (params, tarefasAtrasadas) {
+    
     const ontem = new Date()
     const passado = new Date(ontem.getFullYear()-10,ontem.getMonth(), ontem.getDate())
     ontem.setDate(ontem.getDate()-1)
     
     const url = 'http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/default.asp'
-
-    let headers = new Headers({
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Accept': 'application/json, text/javascript, */*; q=0.01',
-        'Content-Length': '64',
-        'Accept-Encoding': 'gzip, deflate',
-        'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
-        'Connection': 'keep-alive'
-    })
 
     const data = {
         bsAdvTarefas: "s",
@@ -619,33 +601,28 @@ async function getTarefasAtrasadas (colaboradores) {
         filtrar: "Filtrar",
     }
 
-    let str = ""
+    const body = JSON.stringify(data).replaceAll('"','').replaceAll(':','=').replaceAll('{','').replaceAll('}','').replaceAll(',','&') + params
 
-    colaboradores.forEach(e => {
-        str += `&bsAdvTarefasExecutor=${e.id}`
-        array[e.nome] = { atrasadas: 0 }
-    })
-
-    let init = {
+    const result = await fetch(url, {
         method: 'POST',
-        headers: headers,
-        body: JSON.stringify(data).replaceAll('"','').replaceAll(':','=').replaceAll('{','').replaceAll('}','').replaceAll(',','&') + str
-    }
-
-    const request = new Request(url, init)
-
-    const result = fetch(request)
+        headers: new Headers({ 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }),
+        body
+    })
     .then(response => response.text())
     .then(response => {
-        let parser = new DOMParser()
-        let doc = parser.parseFromString(response,'text/html')
-        let tarefas = doc.documentElement.querySelectorAll('body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr')
-        tarefas.forEach(e => {
-            if (e.children[5].children[3]) {
-                array[e.children[5].children[3].innerText.trim()].atrasadas++
-            }
-        })
-        return array
+        const parser = new DOMParser()
+        const doc = parser.parseFromString(response,'text/html')
+        const tarefas = doc.documentElement.querySelectorAll('body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr')
+
+        const lastTask = tarefas[tarefas.length - 1]
+
+        if (lastTask) {
+            console.log(lastTask);
+            const counter = lastTask.querySelector("td.text-center.fdt-counter")
+            tarefasAtrasadas.atrasadas = counter ? counter.innerText : 0
+        }
+
+        return tarefasAtrasadas
     })
     
     return result
@@ -657,19 +634,19 @@ function resetBar(setor) {
     percent[setor] = 0
     contIteration[setor] = 0
     const bar = document.querySelector('#bar' + setor)
-    bar.style.width = `${percent[setor]}%`
+    bar.value = percent[setor]
 }
 
 function finishLoad(bar, interval, setor) {
     interval.clearInterval()
-    bar.style.width = percent[setor] + '%'
+    bar.value = percent[setor]
 }
 
 function incrementBar(setor) {
     const bar = document.querySelector("#bar" + setor)
     const unidade = 100 / updateCount[setor]
     percent[setor] += unidade
-    bar.style.width = `${percent[setor]}%`
+    bar.value = Math.round(percent[setor])
     contIteration[setor]++
     if (updateCount[setor] == contIteration[setor]) {
         const contentBar = document.querySelector("#contentBar" + setor)
@@ -686,20 +663,56 @@ function showContentBar(contentBar, setor) {
     contentBar.style.display = "flex"
 }
 
+function createStyleProgressBar() {
+    const style = document.createElement('style')
+
+    style.innerHTML = `
+        progress {
+            width: 50%;
+            height: 20px;
+        }
+
+        progress::-webkit-progress-bar {
+            background-color: #eee;
+            border-radius: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        }
+
+        progress::-webkit-progress-value {
+            border-radius: 10px;
+            transition: width 0.5s;
+            background: linear-gradient(to right, #4caf50, #81c784);
+        }
+
+        progress::-moz-progress-bar {
+            border-radius: 10px;
+            transition: width 0.5s;
+            background: linear-gradient(to right, #4caf50, #81c784);
+        }
+
+        progress::-ms-fill {
+            border-radius: 10px;
+            transition: width 0.5s;
+            background: linear-gradient(to right, #4caf50, #81c784);
+        }
+    `
+
+    document.head.appendChild(style)
+}
+
 function createBar(setor) {
+    const maxValueProgressBar = 100
     const contentBar = document.createElement('div')
-    const progress = document.createElement('div')
-    const bar = document.createElement('div')
+    const progress = document.createElement('progress')
     const p = document.createElement('p')
     contentBar.append(p)
     contentBar.append(progress)
-    progress.append(bar)
     contentBar.id = "contentBar" + setor
-    bar.id = "bar" + setor
-    progress.id = "progress" + setor
+    progress.id = "bar" + setor
     p.innerHTML="Carregando..."
 
-    p.style.color = "#005689"
+    p.style.fontSize = "1.5em"
+    p.style.color = "#40383A"
 
     contentBar.style.position = "absolute"
     contentBar.style.flexDirection = "column"
@@ -711,18 +724,7 @@ function createBar(setor) {
     contentBar.style.width = "100%"
     contentBar.style.height = "100%"
 
-    progress.style.position = "relative"
-    progress.style.background = "#FFF"
-    progress.style.width = "80%"
-    progress.style.height = "10%"
-    progress.style.zIndex = "100"
-    progress.style.borderRadius = "10px"
-
-    bar.style.position = "absolute"
-    bar.style.background = "#005689"
-    bar.style.width = `${percent[setor]}%`
-    bar.style.height = "100%"
-    bar.style.borderRadius = "10px"
+    progress.max = maxValueProgressBar
     
     return contentBar
 }

@@ -18,11 +18,14 @@
                 "http://fabioribeiro.eastus.cloudapp.azure.com/*",
                 "https://maps.googleapis.com/*",
                 "https://*/pje/*",
-                "https://www.tjse.jus.br/tjnet/portaladv/*"
+                "https://www.tjse.jus.br/*"
             ],
             "js": [
                 "chromeUtils.js",
+                "utils/state/initialState.js",
+                "utils/typeListCompromissos/typeListCompromissos.js",
                 "content.js",
+                "gerid.js",
                 "prazos.js",
                 "compromissos.js",
                 "painelSupervisor.js",
@@ -32,6 +35,7 @@
                 "filtroAlvaraTJSE.js",
                 "locaisAudiencias.js",
                 "feriados.js",
+                "historico.js",
                 "utils/pdf-exporter/pdfmake.min.js",
                 "utils/pdf-exporter/vfs_fonts.js"
             ]

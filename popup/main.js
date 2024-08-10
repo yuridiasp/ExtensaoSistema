@@ -4,8 +4,33 @@ const radiosTipoIntimacao = document.querySelectorAll('input[type=radio]')
 const googlemaps_APIKey = ""
 const genReport = document.querySelector('#genReport')
 
+let initialState
+
 async function clearReportSaved() {
     await setReport(null)
+}
+
+function PDFGen (array) {
+    const nome = setNamePDF()
+    const content = [[ 'Processo', 'Nome', 'Expediente', 'Registro da Ciência', 'Portal' ]]
+
+    array.forEach(({ processo, expediente, ciencia, portal }) => {
+        content.push([ processo, expediente, ciencia, portal ])
+    })
+
+    const docDefinition = {
+        content: [
+            {
+                layout: 'lightHorizontalLines',
+                table: {
+                    headerRows: 1,
+                    body: content
+                }
+            }
+        ]
+    }
+
+    pdfMake.createPdf(docDefinition).download(nome)
 }
 
 function setNamePDF() {
@@ -24,52 +49,6 @@ genReport.addEventListener('click', async () => {
         alert('Não há registros de intimações.')
     }
 })
-
-let initialState, state = {
-    active: undefined,
-    functions: {
-        todasPaginas: {
-            tipoIntimacaoIsJudicial: null,
-            digitarUsandoVoz: undefined,
-            contadorTarefas: undefined
-        },
-        abaCadastrodeProcesso: {
-            autoFormatNumProcesso: null,
-            alteracaoNumeroProcesso: null
-        },
-        abaPesquisaProcesso: {
-            autoFormatacaoNumProcessoPesquisa: null
-        },
-        abaCompromissosProcesso: {
-            mostrarBotadeRolagem: null
-        },
-        cadastroCompromisso:{
-            selecaodoTipodeCompromisso: null,
-            mostrarBotoesAuxiliaresdeDias: null,
-            AutoPreenchimentoPrazoInterno: null,
-            exibirListaTarefas: null
-        },
-        cadastroTarefa:{
-            AutoPreenchimentoTarefasIntimacoes: null,
-        },
-        preProcesso:{
-            preenchimentoNomePasta: null,
-            preenchimentoFormularioPreProcesso: null
-        },
-        supervisor: {
-            painelVisualizacaoTarefasTimeADM: null,
-            painelVisualizacaoTarefasTimeSAC: null,
-            painelVisualizacaoTarefasTimeFINANCEIRO: null,
-            painelVisualizacaoTarefasTimeINSS: null,
-        },
-        tjse: {
-            botaoExportarAlvaras: null
-        },
-        gerid: {
-            botaoExportarNotificacoes: null
-        }
-    }
-}
 
 function sendMessage(status) {
     enviarMensagem()
@@ -96,7 +75,6 @@ function loadSelectionFunction(functions) {
     }
 
     radiosTipoIntimacao.forEach(radio => {
-        console.log(state.functions.todasPaginas.tipoIntimacaoIsJudicial);
         radio.addEventListener('input', async () => {
             const { checked, value } = radio
             if (value === "judicial"  && checked) {

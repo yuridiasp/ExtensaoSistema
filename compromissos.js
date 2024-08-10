@@ -78,7 +78,11 @@ function createButtonPrazo() {
         return division
     }
 
-    const createDivAux = () => {
+    const createArrayButtons = (prazos) => {
+        return prazos.map(prazo => createDivision(prazo))
+    }
+
+    const createDivAux = (prazos) => {
         const divAuxiliar = document.createElement('div')
         divAuxiliar.style.position = 'absolute'
         divAuxiliar.style.display = 'flex'
@@ -86,15 +90,11 @@ function createButtonPrazo() {
         divAuxiliar.style.top = '-82px'
         divAuxiliar.style.right = '-150px'
 
-        const divCinco = createDivision('05')
-        const divOito = createDivision('08')
-        const divDez = createDivision('10')
-        const divQuinze = createDivision('15')
+        const buttons = createArrayButtons(prazos)
 
-        divAuxiliar.appendChild(divCinco)
-        divAuxiliar.appendChild(divOito)
-        divAuxiliar.appendChild(divDez)
-        divAuxiliar.appendChild(divQuinze)
+        buttons.forEach(button => {
+            divAuxiliar.appendChild(button)
+        })
 
         return divAuxiliar
     }
@@ -102,8 +102,14 @@ function createButtonPrazo() {
     const dataPub = document.querySelector('#dataPublicacao'),
         prazoInicial = document.querySelector("#dataPrazoInterno"),
         prazoFinal = document.querySelector("#dataPrazoFatal"),
-        divDataPublicacao = document.querySelector('#fdt-form > div:nth-child(7) > div:nth-child(2)'),
-        divAuxiliar = createDivAux()
+        divDataPublicacao = document.querySelector('#fdt-form > div:nth-child(7) > div:nth-child(2)')
+    
+    const prazosJudicial = ['05', '08', '10', '15']
+    const prazosAdministrativo = []
+
+    const prazos = state.functions.todasPaginas.tipoIntimacaoIsJudicial ? prazosJudicial : prazosAdministrativo
+        
+    const divAuxiliar = createDivAux(prazos)
     
     divDataPublicacao.appendChild(divAuxiliar)
     divDataPublicacao.style.position = 'relative'
@@ -112,16 +118,17 @@ function createButtonPrazo() {
 
     dataPub.addEventListener('blur', () => {
 
-        btns.forEach(({ value }) => {
-            const [ prazoInterno, prazoFatal ] = calcularPrazo(value, 2)
+        btns.forEach(button => {
+            const { value } = button
+            const [ prazoInterno, prazoFatal ] = calcularPrazo(value, parametros.tarefaAdvogado)
             const paragraph = document.querySelector(`#prazo${Number(value)}`)
             paragraph.innerHTML = `${prazoInterno.slice(0,5)} - ${prazoFatal.slice(0,5)}`
         })
 
     })
 
-    btns.forEach(e => {
-        e.addEventListener('click', async event => {
+    btns.forEach(btn => {
+        btn.addEventListener('click', async event => {
             const [inicial, final] = calcularPrazo(Number(event.target.value),2)
             prazoInicial.value = inicial
             prazoFinal.value =  final
@@ -129,11 +136,34 @@ function createButtonPrazo() {
             atualizarListaTarefasAbaCompromissos()
             await setCliente(cliente)
         })
-        e.style.padding = '15px'
-        e.style.borderRadius = '5px'
-        e.style.margin = '5px'
-        e.style.background = 'rgb(77, 72, 72)'
-        e.style.color = 'white'
-        e.style.border = '1px solid #ccc'
+        btn.style.padding = '15px'
+        btn.style.borderRadius = '5px'
+        btn.style.margin = '5px'
+        btn.style.background = 'rgb(77, 72, 72)'
+        btn.style.color = 'white'
+        btn.style.border = '1px solid #ccc'
     })
+}
+
+function createDataListCompromissos () {
+
+    if (!state.functions.cadastroCompromisso.exibirlistaDescricaoCompromisso) {
+        return
+    }
+
+    const listCompromissos = state.functions.todasPaginas.tipoIntimacaoIsJudicial ? typeListCompromissos.judicial : typeListCompromissos.administrativo
+
+    const descricaoCompromissoInput = document.querySelector('#descricao')
+
+    const div = document.querySelector("#fdt-form > div:nth-child(7) > div:nth-child(1)")
+
+    const datalist = document.createElement('datalist')
+
+    datalist.id = 'typeListCompromissos'
+
+    div.appendChild(datalist)
+
+    datalist.innerHTML = listCompromissos.reduce((previousValue, itemList) => previousValue + `<option value="${itemList}"></option>`, '')
+
+    descricaoCompromissoInput.setAttribute('list', 'typeListCompromissos')
 }

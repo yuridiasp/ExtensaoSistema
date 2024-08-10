@@ -3,7 +3,6 @@ function contarDias([ dia, mes, ano], final, parametro) {
         contaUteis = 0,
         domingos = 0,
         date = new Date(ano, mes, dia),
-        condiction,
         i
 
     if (date.toDateString() == final.toDateString())
@@ -11,14 +10,14 @@ function contarDias([ dia, mes, ano], final, parametro) {
 
     while (date < final) {
         date.setDate(date.getDate() + 1)
-        condiction = isFeriado(date, parametro)
+        const { isHoliday } = isFeriado(date, parametro)
         i = date.getDay()
 
         if (i == 0) {
             domingos++
         }
 
-        if ((i > 0 && i < 6) && (!condiction)) {
+        if ((i > 0 && i < 6) && (!isHoliday)) {
             contaUteis++
         } 
         contaTodos++
@@ -29,14 +28,14 @@ function contarDias([ dia, mes, ano], final, parametro) {
     return { uteis: contaUteis, todosDias: contaTodos}
 }
 
-function dataContato(intervalo, dataInterno, parametro, todosDias) {
+function dataContato(intervalo, dataInterno, parametro) {
     let hoje = new Date(),
         fimIntervalo = Number(intervalo),
         date,
         anoContato,
         mesContato,
-        diaContato,
-        condiction
+        diaContato
+        
 
     hoje.setHours(0, 0, 0, 0)
     
@@ -45,9 +44,9 @@ function dataContato(intervalo, dataInterno, parametro, todosDias) {
         date = new Date(dataInterno)
         while (c < fimIntervalo) {
             date.setDate(date.getDate() -1)
-            condiction = isFeriado(date, parametro)
+            const { isHoliday } = isFeriado(date, parametro)
             i = date.getDay()
-            if ((i > 0) && (i < 6) && !condiction) {
+            if ((i > 0) && (i < 6) && !isHoliday) {
                 ++c
             }
         }
@@ -55,18 +54,20 @@ function dataContato(intervalo, dataInterno, parametro, todosDias) {
         date = new Date(dataInterno)
     }
 
-    anoContato = date.getFullYear()
-    mesContato = date.getMonth()+1
-    diaContato = date.getDate()
+    if (date < hoje) {
+        date = hoje   
+    }
 
-    hoje.setDate(hoje.getDate() + todosDias)
+    anoContato = date.getFullYear()
+    mesContato = date.getMonth() + 1
+    diaContato = date.getDate()
 
     return `${diaContato < 10 ? '0'.concat(diaContato) : diaContato}/${mesContato < 10 ? '0'.concat(mesContato) : mesContato}/${anoContato}`
 }
 
 function calculaIntervaloTarefasAdministrativo(dias) {
     
-    const { tipoCompromisso, tarefas, semanas, quantidadeTarefas } = cliente.compromisso,
+    const { tipoCompromisso, tarefas, semanas } = cliente.compromisso,
         contTres = "PERICIA",
         contQuatro = "EXIGENCIA INSS",
         tipoCompromissoNormalizado = removeAcentuacaoString(tipoCompromisso),
@@ -111,20 +112,23 @@ function calculaIntervaloTarefasJudicial(dias) {
         { estado } = cliente.processo,
         contDois = {
             outros: ["EMENDAR","DADOS PERICIA SOCIAL","DADOS COMPLEMENTARES"],
-            financeiro: ["RPV TRF1 BRASILIA", "RPV TRF1 GOIAS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTANCIA", "RPV TRF1 BAHIA", "RECEBIMENTO DE PRECATORIO", "RECEBIMENTO DE ALVARA"]
+            calculo: ["MANIFESTACAO SOBRE CALCULOS", "MANIFESTACAO SOBRE CALCULO", 'PLANILHA'],
+            financeiro: ["RPV TRF1 BRASILIA", "RPV TRF1 GOIAS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTANCIA", "RPV TRF1 BAHIA", "RECEBIMENTO DE PRECATORIO", "RECEBIMENTO DE ALVARA"],
+            adm: ['DECISAO ANTECIPACAO PERICIA']
         },
         contTres = "PERICIA",
         contQuatro = ["AUDIENCIA DE CONCILIACAO", "AUDIENCIA CONCILIATORIA", "AUDIENCIA DE INTERROGATORIO"],
         contCinco = ["AUDIENCIA DE INSTRUCAO", "AUDIENCIA INAUGURAL", "AUDIENCIA INICIAL", "AUDIENCIA DE INSTRUCAO E JULGAMENTO", "AUDIENCIA UNA"],
         tipoCompromissoNormalizado = removeAcentuacaoString(tipoCompromisso),
-        tarefaAtualNormalizada = removeAcentuacaoString(tarefas[0])
+        tarefaAtualNormalizada = removeAcentuacaoString(tarefas[0]),
+        isDFOrGO = estado === 'GO' || estado === 'DF'
 
     if (((contCinco.includes(tipoCompromisso) && dias > 11) || (contQuatro.includes(tipoCompromissoNormalizado) && dias > 10) || (tipoCompromissoNormalizado.search(contTres) === 0) && dias > 10)) {
         if (semanas >= 2) {
             if (tarefaAtualNormalizada === 'ANALISE')
                 return dias-1
             if ((tarefaAtualNormalizada === 'CONTATAR CLIENTE' || tarefaAtualNormalizada === 'SMS E WHATSAPP')) {
-                if (estado !== 'GO' && estado != 'DF') {
+                if (!isDFOrGO) {
                     return dias-2
                 }
                 else {
@@ -145,14 +149,15 @@ function calculaIntervaloTarefasJudicial(dias) {
         }
     }
     else {
-        const ehAudienciaOuPericia = (contCinco.includes(tipoCompromissoNormalizado) || contQuatro.includes(tipoCompromissoNormalizado) || tipoCompromissoNormalizado.search(contTres) === 0)
-        if (ehAudienciaOuPericia) {
+        const isCourtHearingOrExpertise = (contCinco.includes(tipoCompromissoNormalizado) || contQuatro.includes(tipoCompromissoNormalizado) || tipoCompromissoNormalizado.search(contTres) === 0)
+
+        if (isCourtHearingOrExpertise) {
             if (tarefas.length === quantidadeTarefas && tipoCompromissoNormalizado.search(contTres) === -1)
                 return 0
             else
                 if (tarefaAtualNormalizada === 'LEMBRAR CLIENTE')
                     return 2
-            if (estado === 'GO' || estado === 'DF') {
+            if (isDFOrGO) {
                 if (tarefaAtualNormalizada === 'CONTATAR CLIENTE')
                     return dias-1
             }
@@ -166,14 +171,33 @@ function calculaIntervaloTarefasJudicial(dias) {
         }
     }
 
-    if (contDois.financeiro.includes(tipoCompromissoNormalizado)) {
-        if ((tipoCompromissoNormalizado.includes('RPV') || tipoCompromissoNormalizado.includes('PRECATORIO')) && tarefaAtualNormalizada.includes("ADVOGADO")) {
-            return dias-5
-        }
-        
-        if ((tipoCompromissoNormalizado.includes('RPV') || tipoCompromissoNormalizado.includes('PRECATORIO')) && tarefaAtualNormalizada.includes("FINANCEIRO")) {
+    const isAttorneyTask = tarefaAtualNormalizada.includes('ADVOGADO')
+
+    if (contDois.calculo.includes(tipoCompromissoNormalizado)) {
+        if (isAttorneyTask) {
             return 0
         }
+        
+        return 2
+    }
+
+    if (contDois.adm.includes(tipoCompromissoNormalizado)) {
+        if (isAttorneyTask) {
+            return 0
+        }
+
+        return dias-1
+    }
+
+    if (contDois.financeiro.includes(tipoCompromissoNormalizado)) {
+
+        const isFinanceTask = tipoCompromissoNormalizado.includes('RPV') || tipoCompromissoNormalizado.includes('PRECATORIO')
+
+        if (isFinanceTask && isAttorneyTask) {
+            return dias-5
+        }
+
+        return 0
     }
 
     return 0
@@ -191,19 +215,26 @@ function calcularDataTarefa(parametro) {
         ano = hoje.getFullYear(),
         mes = hoje.getMonth(),
         dia = hoje.getDate(),
-        data = extrairDataPrazoFatalInput(cliente.compromisso.prazoInterno),
-        dataInterno = new Date(data[2],data[1],data[0]),
-        { uteis, todosDias} = contarDias([dia, mes, ano], dataInterno, parametro),
+        [ diaPrazoInterno, mesPrazoInterno, anoPrazoInterno ] = extrairDataPrazoFatalInput(cliente.compromisso.prazoInterno),
+        dataInterno = new Date(anoPrazoInterno, mesPrazoInterno, diaPrazoInterno),
+        { uteis } = contarDias([dia, mes, ano], dataInterno, parametro),
         intervalo = state.functions.todasPaginas.tipoIntimacaoIsJudicial ? calculaIntervaloTarefasJudicial(uteis) : calculaIntervaloTarefasAdministrativo(uteis),
-        dataTarefa = dataContato(intervalo, dataInterno, parametro, todosDias),
-        contactdiv = document.querySelector("#contactdiv")
+        dataTarefa = dataContato(intervalo, dataInterno, parametro)
     
     dataFinalizacao.value = dataTarefa
     dataFinalizacaoAgendada.value = dataTarefa
 
     const verifyContactTask = ({ target }) => {
-        target.value = target.value
-        if (((cliente.compromisso.tarefas[0] == "CONTATAR CLIENTE" || cliente.compromisso.tarefas[0] == "LEMBRAR CLIENTE") && (cliente.processo.estado != "DF" || cliente.processo.estado != "GO")) || !state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
+        dataFinalizacaoAgendada.value = target.value
+        dataFinalizacao.value = target.value
+
+        const isTaskContatar = cliente.compromisso.tarefas[0] == "CONTATAR CLIENTE"
+        const isTaskLembrar = cliente.compromisso.tarefas[0] == "LEMBRAR CLIENTE"
+        const isDFOrGO = cliente.processo.estado === "DF" || cliente.processo.estado === "GO"
+
+        if (((isTaskContatar || isTaskLembrar) && !isDFOrGO) || !state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
+            const contactdiv = document.querySelector("#contactdiv")
+            
             if (contactdiv) {
                 contactdiv.parentNode.removeChild(contactdiv)
                 validaExecutorContatar()
@@ -225,6 +256,7 @@ function formataData (dia,mes,ano) {
 }
 
 function calcularPrazo (prazo,parametro) {
+    
     const dataPub = document.querySelector("#dataPublicacao"),
         tipoIntimacao = document.querySelector("#descricao"),
         processo = document.querySelector('#numeroProcesso'),
@@ -232,49 +264,52 @@ function calcularPrazo (prazo,parametro) {
         StringTipoIntimacao = removeAcentuacaoString(tipoIntimacao.value).toUpperCase(),
         isSentenca = (StringTipoIntimacao.search("SENTENCA") === 0),
         isDecisao = (StringTipoIntimacao.search("DECISAO") === 0),
-        isAcordao = (StringTipoIntimacao.search("ACORDAO") == 0),
-        isSentencaOrAcordaoOrDecisao = (isSentenca || isDecisao || isAcordao),
+        isAcordao = (StringTipoIntimacao.search("ACORDAO") === 0),
         numCharProcessoTJSE = 12,
-        natureza = cliente.processo.natureza,
+        { natureza, estado } = cliente.processo,
         isProcessoCivel = processo ? (processo.value.length === numCharProcessoTJSE) : false,
-        isProcessoTrabalhista = (natureza === "TRABALHISTA")
+        isProcessoTrabalhista = (natureza === "TRABALHISTA"),
+        sunday = 0,
+        saturday = 6
 
     let dateFinal = new Date(),
         dateInicial = new Date(),
         cont = 1,
-        diasInterno,
-        condiction,
-        i
+        diasInterno
 
 
     if (isProcessoCivel || isProcessoTrabalhista || !state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
-        if (dataPub.value.length > 0) {
+        if (dataPub.value.length) {
             const [ dia, mes, ano ] = dataPub.value.split('/')
-            dateFinal = new Date(ano,Number(mes)-1,Number(dia))
-            dateInicial = new Date(ano,Number(mes)-1,Number(dia))
+            dateFinal = new Date(ano, Number(mes)-1, Number(dia))
+            dateInicial = new Date(ano, Number(mes)-1, Number(dia))
         }
 
         if (dateInicial.getDay() === 6) {
-            dateFinal.setDate(dateFinal.getDate()+2)
-            dateInicial.setDate(dateInicial.getDate()+2)
+            dateFinal.setDate(dateFinal.getDate() + 2)
+            dateInicial.setDate(dateInicial.getDate() + 2)
         }
     }
 
     while (diasFatal >= cont) {
         dateFinal.setDate(dateFinal.getDate() + 1)
-        i = dateFinal.getDay()
 
-        if (i > 0 && i < 6 && !isFeriado(dateFinal,parametro)) {
+        const weekDay = dateFinal.getDay()
+
+        const { isHoliday } = isFeriado(dateFinal,parametro)
+
+        if (weekDay > sunday && weekDay < saturday && !isHoliday) {
             cont += 1
         }
     }
 
     let ano = dateFinal.getFullYear(),
-        mes = dateFinal.getMonth()+1,
-        dia =  dateFinal.getDate(),
-        final = formataData(dia, mes, ano)
+        mes = dateFinal.getMonth() + 1,
+        dia =  dateFinal.getDate()
+
+    const final = formataData(dia, mes, ano)
     
-    if (isSentencaOrAcordaoOrDecisao) {
+    if (isSentenca || isDecisao || isAcordao) {
         if (isProcessoCivel || isProcessoTrabalhista) {
             diasInterno = 3
         }
@@ -292,33 +327,29 @@ function calcularPrazo (prazo,parametro) {
             diasInterno = 2
         }
         else {
-            diasInterno = diasFatal-3
+            diasInterno = diasFatal - 3
         }
     }
     
     cont = 1
 
-    const isGoias = (cliente.processo.estado === 'GO'),
-        isDF = (cliente.processo.estado === 'DF'),
-        ehBarril = (isGoias || isDF)
+    const isDFOrGo = estado === 'GO' || estado === 'DF'
 
-    if (ehBarril && !isSentencaOrAcordaoOrDecisao) {
+    if (isDFOrGo && !(isSentenca || isDecisao || isAcordao)) {
         dateInicial = new Date (dateFinal.getFullYear(), dateFinal.getMonth(), dateFinal.getDate()-1)
         while (cont <= 3) {
-            i = dateInicial.getDay()
-            condiction = isFeriado(dateInicial,parametro)
+            const weekDay = dateInicial.getDay()
+            const { isHoliday } = isFeriado(dateInicial,parametro)
             
-            if (condiction) {
+            if (isHoliday) {
                 dateInicial.setDate(dateInicial.getDate() - 1)
             } else {
                 if (cont === 3) {
-                    if ((i === 6) || (i === 0)) {
-                        if (i === 0) {
-                            dateInicial.setDate(dateInicial.getDate() - 2)
-                        }
-                        if (i === 6) {
-                            dateInicial.setDate(dateInicial.getDate() - 1)
-                        }
+                    if (weekDay === sunday) {
+                        dateInicial.setDate(dateInicial.getDate() - 2)
+                    }
+                    if (weekDay === saturday) {
+                        dateInicial.setDate(dateInicial.getDate() - 1)
                     }
                     break
                 } else {
@@ -330,30 +361,38 @@ function calcularPrazo (prazo,parametro) {
     } else {
         while (diasInterno >= cont) {
             dateInicial.setDate(dateInicial.getDate() + 1)
-            i = dateInicial.getDay()
-            condiction = isFeriado(dateInicial,parametro)
+            const weekDay = dateInicial.getDay()
+            const { isHoliday } = isFeriado(dateInicial,parametro)
             
             if (diasInterno >= cont) {
-                if (i > 0 && i < 6 && !condiction) {
+                if (weekDay > sunday && weekDay < saturday && !isHoliday) {
                     cont = cont + 1
                 }
             }
             else {
-                if (condiction && i > 0 && i < 6) {
+                if (isHoliday && weekDay > sunday && weekDay < saturday) {
                     dateInicial.setDate(dateInicial.getDate() - 1)
                     cont = cont + 1
                 }
                 else
-                    if (i > 0 && i < 6)
+                    if (weekDay > sunday && weekDay < saturday)
                         cont = cont + 1
             }
         }
     }
 
+    const hoje = new Date()
+    hoje.setHours(0, 0, 0, 0)
+
+    if (dateInicial < hoje) {
+        dateInicial = hoje
+    }
+
     ano = dateInicial.getFullYear()
     mes = dateInicial.getMonth()+1
     dia = dateInicial.getDate()
-    let inicial = formataData(dia, mes, ano)
 
-    return [inicial,final]
+    const inicial = formataData(dia, mes, ano)
+
+    return [inicial, final]
 }

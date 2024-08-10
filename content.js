@@ -1,51 +1,7 @@
-const state = {
-    active: null,
-    functions: {
-        todasPaginas: {
-            tipoIntimacaoIsJudicial: null,
-            digitarUsandoVoz: undefined,
-            contadorTarefas: undefined
-        },
-        abaCadastrodeProcesso: {
-            autoFormatNumProcesso: null,
-            alteracaoNumeroProcesso: null
-        },
-        abaPesquisaProcesso: {
-            autoFormatacaoNumProcessoPesquisa: null
-        },
-        abaCompromissosProcesso: {
-            mostrarBotadeRolagem: null
-        },
-        cadastroCompromisso:{
-            selecaodoTipodeCompromisso: null,
-            mostrarBotoesAuxiliaresdeDias: null,
-            AutoPreenchimentoPrazoInterno: null,
-            exibirListaTarefas: null
-        },
-        cadastroTarefa:{
-            AutoPreenchimentoTarefasIntimacoes: null,
-        },
-        preProcesso:{
-            preenchimentoNomePasta: null,
-            preenchimentoFormularioPreProcesso: null
-        },
-        supervisor: {
-            painelVisualizacaoTarefasTimeADM: null,
-            painelVisualizacaoTarefasTimeSAC: null,
-            painelVisualizacaoTarefasTimeFINANCEIRO: null,
-            painelVisualizacaoTarefasTimeINSS: null,
-        },
-        tjse: {
-            botaoExportarAlvaras: null
-        },
-        gerid: {
-            botaoExportarNotificacoes: null
-        }
-    }
-},
-parametros = {
+const parametros = {
     tarefaContatar: 1,
-    tarefaAdvogado: 2
+    tarefaAdvogado: 2,
+    highlight: 3
 }
 
 
@@ -164,7 +120,7 @@ function createListaTarefasAbaCompromissos () {
 }
 
 function atualizarListaTarefasAbaCompromissos() {
-    if (cliente.compromisso.tarefas.length < 2) {
+    if (cliente.compromisso.tarefas.length < 2 || !state.functions.cadastroCompromisso.exibirListaTarefas) {
         return
     }
     const listagem = createListaTarefasAbaCompromissos()
@@ -202,7 +158,7 @@ function getListaTarefasCompromissoAdministrativo(tipoCompromisso = cliente.comp
     contarDias([ dia, mes, ano], dataInterno, parametros.tarefaAdvogado)
 
     const isMoreWeek = cliente.compromisso.semanas > 1
-    const isPericia = tipoCompromissoNormalizado.includes("PERICIA")
+    const isPericia = tipoCompromissoNormalizado.search("PERICIA") === 0
     const isExigencia = tipoCompromissoNormalizado.includes("EXIGENCIA")
 
     if (isPericia && isMoreWeek) {
@@ -241,7 +197,11 @@ function getListaTarefasCompromissoJudicial(tipoCompromisso = cliente.compromiss
 
     const emendar = ["EMENDAR", "CONTATAR CLIENTE"]
 
+    const calculo = ["MANIFESTAÇÃO - ADVOGADO", "ANÁLISE - CÁLCULO"]
+
     const tipoCompromissoNormalizado = removeAcentuacaoString(tipoCompromisso),
+        contDoisADM = "DECISAO ANTECIPACAO PERICIA",
+        contDoisCalculo = ["MANIFESTACAO SOBRE CALCULOS", "MANIFESTACAO SOBRE CALCULO"],
         contDoisEmenda = ["EMENDAR","DADOS PERICIA SOCIAL","DADOS COMPLEMENTARES"],
         contDoisFinanceiro = ["RECEBIMENTO DE ALVARA", "RPV TRF1 BRASILIA", "RPV TRF1 GOIAS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTANCIA", "RPV TRF1 BAHIA", "RECEBIMENTO DE PRECATORIO"],
         contTres = "PERICIA",
@@ -261,8 +221,10 @@ function getListaTarefasCompromissoJudicial(tipoCompromisso = cliente.compromiss
     const isMoreWeek = cliente.compromisso.semanas > 1
     const hasFiveTasks = contCinco.includes(tipoCompromissoNormalizado)
     const hasFourTasks = contQuatro.includes(tipoCompromissoNormalizado)
-    const isPericia = tipoCompromissoNormalizado.includes(contTres)
+    const isPericia = tipoCompromissoNormalizado.search(contTres) === 0
+    const isLiminarPericiaAdm = tipoCompromissoNormalizado.includes(contDoisADM)
     const hasTwoTasksEmenda = contDoisEmenda.includes(tipoCompromissoNormalizado)
+    const hasTwoTasksCalculo = contDoisCalculo.includes(tipoCompromissoNormalizado)
     const hasTwoTasksFinanceiro = contDoisFinanceiro.includes(tipoCompromissoNormalizado)
     
     if (hasFiveTasks && isMoreWeek) {
@@ -299,9 +261,15 @@ function getListaTarefasCompromissoJudicial(tipoCompromisso = cliente.compromiss
 
     if (hasTwoTasksEmenda)
         return emendar
+
+    if (hasTwoTasksCalculo)
+        return calculo
     
     if (hasTwoTasksFinanceiro)
         return [cliente.compromisso.tipoCompromisso + " - ADVOGADO", cliente.compromisso.tipoCompromisso + " - FINANCEIRO"]
+    
+    if (isLiminarPericiaAdm)
+        return [cliente.compromisso.tipoCompromisso + " - ADVOGADO", "ACOMPANHAR - ADM"]
 
     return [cliente.compromisso.tipoCompromisso]
 }
@@ -342,25 +310,56 @@ function selectTipoCompromisso (descricaoTarefa, typeOptions) {
     }
 }
 
+function loadObserver(injectedFunction, target) {
+    const callback = (mutationList, observer) => {
+        for (const mutation of mutationList) {
+            if (mutation.type === "childList") {
+                injectedFunction()
+                observer.disconnect()
+            }
+        }
+    }
+    const observer = new MutationObserver(callback)
+    observer.observe(target, { attributes: true, childList: true, subtree: true })
+}
+
 function handleCompromisso() {
     if (!state.functions.cadastroCompromisso.selecaodoTipodeCompromisso) {
         return
     }
-    const descricaoTarefa = document.querySelector("#descricao"),
-        typeOptions = document.querySelectorAll("#fdt-form > div:nth-child(6) > div:nth-child(1) > div > div > ul > li")
+    
+    const descricaoTarefa = document.querySelector("#descricao")
 
-    if (descricaoTarefa) {
-        descricaoTarefa.focus()
-        descricaoTarefa.addEventListener('change', async () => {
-            descricaoTarefa.value = descricaoTarefa.value.toUpperCase()
-            selectTipoCompromisso(descricaoTarefa, typeOptions)
-            cliente.compromisso.tipoCompromisso = validaTipoCompromisso(descricaoTarefa.value.trim())
-            if (state.functions.cadastroCompromisso.exibirListaTarefas) {
+    const typeOptions = document.querySelectorAll("#fdt-form > div:nth-child(6) > div:nth-child(1) > div > div > ul > li")
+
+    const listener = () => {
+        if (descricaoTarefa) {
+            const typeOptions = document.querySelectorAll("#fdt-form > div:nth-child(6) > div:nth-child(1) > div > div > ul > li")
+
+            const selectCompromisso = async () => {
+                descricaoTarefa.value = descricaoTarefa.value.toUpperCase()
+                selectTipoCompromisso(descricaoTarefa, typeOptions)
+                cliente.compromisso.tipoCompromisso = validaTipoCompromisso(descricaoTarefa.value.trim())
                 cliente.compromisso.tarefas = state.functions.todasPaginas.tipoIntimacaoIsJudicial ? getListaTarefasCompromissoJudicial() : getListaTarefasCompromissoAdministrativo()
                 atualizarListaTarefasAbaCompromissos()
                 await setCliente(cliente)
             }
-        })
+
+            if (descricaoTarefa.length) {
+                selectCompromisso()
+            }
+
+            descricaoTarefa.focus()
+
+            descricaoTarefa.addEventListener('change', selectCompromisso)
+        }
+    }
+
+    if (!typeOptions.length) {
+        const target = document.querySelector("#fdt-form > div:nth-child(6) > div:nth-child(1)")
+        loadObserver(listener, target)
+    } else {
+        listener()
     }
 }
 
@@ -529,36 +528,32 @@ function addListaTarefas({ nome, datasViagem, tarefas }, data) {
     })
 
     p1.addEventListener('click', event => {
-        let respExec = {}
+        const responsaveisAdministrativos = ['SILVANIA PINHEIRO DE LEMOS', 'JOSE PEDRO DE GOIS NETO']
+        const executor = event.target.dataset.colaborador
+        const responsavel = !state.functions.todasPaginas.tipoIntimacaoIsJudicial && responsaveisAdministrativos.includes(executor) ? executor : document.querySelector("#idResponsavel").selectedOptions[0].innerText
 
-        if (state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
-            const tarefaForEstancia = event.target.dataset.colaborador.search('SANDOVAL') == 0
-
-            if (tarefaForEstancia) {
-                respExec = {responsavel: event.target.dataset.colaborador, executor: event.target.dataset.colaborador}
-            } else {
-                respExec = {responsavel: 'JULIANO OLIVEIRA DE SOUZA', executor: event.target.dataset.colaborador}
-            }
-        } else {
-            const responsavel = document.querySelector("#idResponsavel").options[document.querySelector("#idResponsavel").selectedIndex].innerText
-            respExec = { responsavel: responsavel, executor: event.target.dataset.colaborador }
-        }
+        const respExec = { responsavel, executor }
 
         selectRespExec(respExec)
     })
 }
 
+async function selectExecutorCalculo (colaboradores) {
+    const colaboradoresCalculo = await Promise.all(await colaboradores)
+
+    const executor = colaboradoresCalculo.reduce((previous, currrent) => {
+        if (previous.tarefas > currrent.tarefas) {
+            return currrent
+        }
+        return previous
+    }, colaboradoresCalculo[0])
+
+    return {responsavel: 'GUILHERME JASMIM', executor: executor.nome}
+}
+
 async function selectExecutorContatarAdministrativo (colaboradores) {
     const adm = await Promise.all(await colaboradores)
     const tipoCompromissoNormalizado = removeAcentuacaoString(cliente.compromisso.tipoCompromisso)
-    
-    const getResponsavelAdministrativo = () => {
-        if (tipoCompromissoNormalizado.includes("PERICIA") || (tipoCompromissoNormalizado.includes("EXIGENCIA INSS") && cliente.compromisso.tarefas.length === 3)) {
-            return "FLAVIO LUCAS LIMA SOUZA"
-        }
-
-        return "SILVANIA PINHEIRO DE LEMOS"
-    }
 
     const executor = adm.reduce((previous, currrent) => {
         if (previous.tarefas > currrent.tarefas) {
@@ -566,6 +561,18 @@ async function selectExecutorContatarAdministrativo (colaboradores) {
         }
         return previous
     }, adm[0])
+
+    const getResponsavelAdministrativo = () => {
+        if (tipoCompromissoNormalizado.includes("PERICIA") || (tipoCompromissoNormalizado.includes("EXIGENCIA INSS") && cliente.compromisso.tarefas.length === 3)) {
+            return "FLAVIO LUCAS LIMA SOUZA"
+        }
+
+        if (executor.nome === "JOSE PEDRO DE GOIS NETO") {
+            return executor.nome
+        }
+
+        return "SILVANIA PINHEIRO DE LEMOS"
+    }
 
     return { responsavel: getResponsavelAdministrativo(), executor: executor.nome }
 }
@@ -591,11 +598,23 @@ async function selectExecutorContatarJudicial (colaboradores) {
         return previous
     }, adm[0])
 
-    return {responsavel: 'JULIANO OLIVEIRA DE SOUZA', executor: executor.nome}
+    const responsavel = executor.nome.includes("SANDOVAL") ? 'SANDOVAL FILHO CORREIA LIMA FILHO' : 'JULIANO OLIVEIRA DE SOUZA'
+
+    return { responsavel, executor: executor.nome }
 }
 
 async function selectExecutorContatar(colaboradores) {
-    return state.functions.todasPaginas.tipoIntimacaoIsJudicial ? await selectExecutorContatarJudicial(colaboradores) : await selectExecutorContatarAdministrativo (colaboradores)
+    const isTaskCalculo = removeAcentuacaoString(cliente.compromisso.tipoCompromisso).includes("CALCULO") && removeAcentuacaoString(cliente.compromisso.tarefas[0]).includes("CALCULO")
+
+    if (isTaskCalculo) {
+        return await selectExecutorCalculo(colaboradores)
+    }
+    
+    if (state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
+        return await selectExecutorContatarJudicial(colaboradores)
+    }
+    
+    return await selectExecutorContatarAdministrativo (colaboradores)
 }
 
 async function getTarefasColaboradores(colaborador, [ dia, mes, ano ]){
@@ -635,6 +654,34 @@ async function getTarefasColaboradores(colaborador, [ dia, mes, ano ]){
     })
 }
 
+function filterColaboradoresCalculo () {
+    const calculo = [
+        {
+            id: 180,
+            nome: "ANSELMO DAVID DOS SANTOS RODRIGUES",
+            interiores: [],
+            datasViagem: [],
+            tarefas: 0
+        },
+        {
+            id: 100,
+            nome: "GUILHERME JASMIM",
+            interiores: [],
+            datasViagem: [],
+            tarefas: 0
+        },
+        {
+            id: 147,
+            nome: "WILKE RODRIGUES DE JESUS",
+            interiores: [],
+            datasViagem: [],
+            tarefas: 0
+        },
+    ]
+    
+    return calculo
+}
+
 function filterColaboradoresAdministrativo () {
     const tipoCompromisso = removeAcentuacaoString(cliente.compromisso.tipoCompromisso)
 
@@ -666,6 +713,14 @@ function filterColaboradoresAdministrativo () {
             interiores: [],
             datasViagem: [],
             tarefas: 0
+        },
+        {
+            id: 162,
+            nome: "MIQUEAS CAMPOS DA SILVA",
+            nomeTLC: "miqueas",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
         },
         {
             id: 154,
@@ -764,7 +819,7 @@ function filterColaboradoresJudicial () {
             {
                 id: 188,
                 nome: "VINICIUS SOUSA BOMFIM",
-                interiores: ["UMBAÚBA", "CARMOPÓLIS", "LOTEAMENTO JEOVA (BOTAFOGO)"],
+                interiores: ["UMBAUBA", "CARMOPOLIS", "LOTEAMENTO JEOVA (BOTAFOGO)"],
                 datasViagem: [],
                 tarefas: 0
             },
@@ -809,7 +864,9 @@ function filterColaboradoresJudicial () {
 async function requererTarefasContatar(data) {
     const isJudicial = state.functions.todasPaginas.tipoIntimacaoIsJudicial
 
-    const colaboradores = isJudicial ? filterColaboradoresJudicial() : filterColaboradoresAdministrativo()
+    const isTaskCalculo = removeAcentuacaoString(cliente.compromisso.tipoCompromisso).includes("CALCULO") && removeAcentuacaoString(cliente.compromisso.tarefas[0]).includes("CALCULO")
+
+    const colaboradores = isTaskCalculo ? filterColaboradoresCalculo() : isJudicial ? filterColaboradoresJudicial() : filterColaboradoresAdministrativo()
 
     return colaboradores.map(async colaborador => {
         return await getTarefasColaboradores(colaborador, data)
@@ -840,39 +897,55 @@ function converterParaTarefaAvulsa() {
 }
 
 async function validaResponsavelTj (num) {
-    const tarefa = cliente.compromisso.tarefas[0],
-        digito = Number(cliente.processo.origem[num-1]),
-        financeiro = ["RPV TRF1 BRASÌLIA", "RPV TRF1 GOIÁS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTÂNCIA", "RPV TRF1 BAHIA", "RECEBIMENTO DE PRECATÓRIO"],
-        adm = ["CONTATAR CLIENTE","LEMBRAR CLIENTE"],
+    const digito = Number(cliente.processo.origem[num-1]),
+        financeiro = ["RPV TRF1 BRASILIA", "RPV TRF1 GOIAS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTANCIA", "RPV TRF1 BAHIA", "RECEBIMENTO DE PRECATORIO"],
+        tarefasAdm = ["CONTATAR CLIENTE","LEMBRAR CLIENTE"],
         sac = "SMS E WHATSAPP",
-        natureza = cliente.processo.natureza
-    
-    
-    if (tarefa.includes("RECEBIMENTO DE ALVARA") && cliente.compromisso.tarefas[0].includes("FINANCEIRO")) {
+        liminarPericiaAdm = "ACOMPANHAR",
+        natureza = cliente.processo.natureza,
+        tipoCompromissoNormalizado = removeAcentuacaoString(cliente.compromisso.tipoCompromisso),
+        tarefaAtualNormalizada = removeAcentuacaoString(cliente.compromisso.tarefas[0])
+
+    if (tarefaAtualNormalizada.includes(liminarPericiaAdm)  && tarefaAtualNormalizada.includes("ADM")) {
         converterParaTarefaAvulsa()
-        return {responsavel: "LUCIANA DOS SANTOS ARAUJO",executor: "LUCIANA LIMA REZENDE"}
+        return {responsavel: 'LEANDRO SANTOS', executor: 'LEANDRO SANTOS'}
+    }
+    
+    if (tarefaAtualNormalizada.includes("RECEBIMENTO DE ALVARA") && tarefaAtualNormalizada.includes("FINANCEIRO")) {
+        converterParaTarefaAvulsa()
+        return {responsavel: "VICTOR MENDES DOS SANTOS",executor: "VICTOR MENDES DOS SANTOS"}
     }
 
-    if (financeiro.includes(tarefa.split("-")[0].trim()) && cliente.compromisso.tarefas[0].includes("FINANCEIRO")) {
+    if (financeiro.includes(tarefaAtualNormalizada.split("-")[0].trim()) && tarefaAtualNormalizada.includes("FINANCEIRO")) {
         //let ehMateusFinanceiro = await getFinanceiro()
         //setFinanceiro(!ehMateusFinanceiro)
-        return {responsavel: "LUCIANA DOS SANTOS ARAUJO",executor: "OVERLANDIA SANTOS MELO"} //ehMateusFinanceiro ? "MATEUS DOS SANTOS SILVA":"OVERLANDIA SANTOS MELO"
+        return {responsavel: "LUCIANA LIMA REZENDE",executor: "SHEYLA SANTANA SANTOS"} //ehMateusFinanceiro ? "MATEUS DOS SANTOS SILVA":"OVERLANDIA SANTOS MELO"
     }
-    if (adm.includes(tarefa)){
+
+    if (tarefasAdm.includes(tarefaAtualNormalizada)) {
         if (cliente.cliente.cidade === "ESTANCIA" && cliente.cliente.localAtendido === "ESTANCIA")
             return {responsavel: "SANDOVAL FILHO CORREIA LIMA FILHO",executor: "SANDOVAL FILHO CORREIA LIMA FILHO"}
         return {responsavel: "JULIANO OLIVEIRA DE SOUZA",executor: "JULIANO OLIVEIRA DE SOUZA"}
     }
-    if (sac === tarefa)
+
+    if (sac === tarefaAtualNormalizada)
         return {responsavel: "HENYR GOIS DOS SANTOS",executor: "LAYNE DA SILVA GOIS"}
+
+    if (tipoCompromissoNormalizado === "MANIFESTACAO SOBRE CALCULOS" && tarefaAtualNormalizada.includes("ANALISE")) {
+        return {responsavel: "GUILHERME JASMIM", executor: "GUILHERME JASMIM"}
+    }
+
     if (natureza === "TRABALHISTA")
-        return {responsavel: "FELIPE PANTA CARDOSO",executor: "FELIPE PANTA CARDOSO"}
+        return {responsavel: "GLENISSON NASCIMENTO",executor: "GLENISSON NASCIMENTO"}
+        //return {responsavel: "FELIPE PANTA CARDOSO",executor: "FELIPE PANTA CARDOSO"}
+
     if (natureza === "PREVIDENCIÁRIA")
         return {responsavel: "KEVEN FARO DE CARVALHO",executor: "KEVEN FARO DE CARVALHO"}
+
     if (natureza === "BANCÁRIO" || natureza === "CÍVEL" || natureza === "CONSUMIDOR" || natureza === "SERVIDOR PÚBLICO") {
         const ala = [0,1,8]
         const gabriel = [2,3,4,6]
-        if (tarefa != "SESSÃO DE JULGAMENTO" && tarefa.search("AUDIÊNCIA") != 0) {
+        if (tarefaAtualNormalizada !== "SESSÃO DE JULGAMENTO" && tarefaAtualNormalizada.search("AUDIENCIA") !== 0) {
             if (gabriel.includes(digito))
                 return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "GABRIEL DAVILA FILGUEIRAS MELLONE"}
             if (ala.includes(digito))
@@ -883,30 +956,36 @@ async function validaResponsavelTj (num) {
 }
 
 async function validaResponsavelFederal (num) {
-    const tarefa = removeAcentuacaoString(cliente.compromisso.tarefas[0]),
+    const tarefaAtualNormalizada = removeAcentuacaoString(cliente.compromisso.tarefas[0]),
         numeroProcesso = cliente.processo.origem,
-        financeiro = ["RPV TRF1 BRASÌLIA", "RPV TRF1 GOIÁS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTÂNCIA", "RPV TRF1 BAHIA", "RECEBIMENTO DE PRECATÓRIO"],
+        financeiro = ["RPV TRF1 BRASILIA", "RPV TRF1 GOIAS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTANCIA", "RPV TRF1 BAHIA", "RECEBIMENTO DE PRECATORIO"],
         tarefasAdm = ["CONTATAR CLIENTE","LEMBRAR CLIENTE"],
         tarefaSac = "SMS E WHATSAPP",
+        liminarPericiaAdm = "ACOMPANHAR",
         lengthSecao = 4,
         secao = numeroProcesso.slice(num - lengthSecao,num),
         secaoDFGO = ["3400","3501","3502","3506", "0015"],
         setimoDigito = Number(numeroProcesso[6]),
         digitoVerificador = numeroProcesso.slice(13,16),
         natureza = cliente.processo.natureza
-    
-    if (tarefa.includes("RECEBIMENTO DE ALVARA") && cliente.compromisso.tarefas[0].includes("FINANCEIRO")) {
+
+    if (tarefaAtualNormalizada.includes(liminarPericiaAdm) && tarefaAtualNormalizada.includes("ADM")) {
         converterParaTarefaAvulsa()
-        return {responsavel: "LUCIANA DOS SANTOS ARAUJO",executor: "LUCIANA LIMA REZENDE"}
+        return {responsavel: 'LEANDRO SANTOS', executor: 'LEANDRO SANTOS'}
+    }
+    
+    if (tarefaAtualNormalizada.includes("RECEBIMENTO DE ALVARA") && tarefaAtualNormalizada.includes("FINANCEIRO")) {
+        converterParaTarefaAvulsa()
+        return {responsavel: "VICTOR MENDES DOS SANTOS",executor: "VICTOR MENDES DOS SANTOS"}
     }
 
-    if (financeiro.includes(tarefa.split("-")[0].trim()) && cliente.compromisso.tarefas[0].includes("FINANCEIRO")) {
+    if (financeiro.includes(tarefaAtualNormalizada.split("-")[0].trim()) && tarefaAtualNormalizada.includes("FINANCEIRO")) {
         //let ehMateusFinanceiro = await getFinanceiro()
         //setFinanceiro(!ehMateusFinanceiro)
-        return {responsavel: "LUCIANA DOS SANTOS ARAUJO",executor: "OVERLANDIA SANTOS MELO"} //ehMateusFinanceiro ? "MATEUS DOS SANTOS SILVA":"OVERLANDIA SANTOS MELO"
+        return {responsavel: "LUCIANA LIMA REZENDE",executor: "SHEYLA SANTANA SANTOS"} //ehMateusFinanceiro ? "MATEUS DOS SANTOS SILVA":"OVERLANDIA SANTOS MELO"
     }
 
-    if (tarefasAdm.includes(tarefa)) {
+    if (tarefasAdm.includes(tarefaAtualNormalizada)) {
         //Tarefa contatar para BSB
         if (cliente.processo.estado === "DF" || cliente.processo.estado === "GO") {
             return {responsavel: "HENYR GOIS DOS SANTOS",executor: "LAYNE DA SILVA GOIS"}
@@ -921,12 +1000,13 @@ async function validaResponsavelFederal (num) {
         return {responsavel: "JULIANO OLIVEIRA DE SOUZA",executor: "JULIANO OLIVEIRA DE SOUZA"} 
     }
 
-    if (tarefaSac === tarefa) { //Tarefas para o SAC
+    if (tarefaSac === tarefaAtualNormalizada) { //Tarefas para o SAC
         return {responsavel: "HENYR GOIS DOS SANTOS",executor: "LAYNE DA SILVA GOIS"}
     }
 
     if ((digitoVerificador === "520" || natureza === "TRABALHISTA") || (natureza === "SERVIDOR PÚBLICO" && cliente.processo.responsavel === "VICTOR HUGO SOUSA ANDRADE")) {  //Processos Trabalhistas TRT20
-        return {responsavel: "FELIPE PANTA CARDOSO",executor: "FELIPE PANTA CARDOSO"}
+        return {responsavel: "GLENISSON NASCIMENTO",executor: "GLENISSON NASCIMENTO"}
+        //return {responsavel: "FELIPE PANTA CARDOSO",executor: "FELIPE PANTA CARDOSO"}
     }
 
     if (digitoVerificador === "401" || secaoDFGO.includes(secao)) { // Processos do TRF1
@@ -937,7 +1017,7 @@ async function validaResponsavelFederal (num) {
                 alert('Atenção: Confirme o responsável e executor da tarefa!')
             }
             let bruno = [0,1,2]
-            if (bruno.includes(setimoDigito) || tarefa.search("AUDIENCIA") === 0)
+            if (bruno.includes(setimoDigito) || tarefaAtualNormalizada.search("AUDIENCIA") === 0)
                 return {responsavel: "BRUNO PRADO GUIMARAES",executor: "BRUNO PRADO GUIMARAES"}
             return {responsavel: "BRUNO PRADO GUIMARAES",executor: "PAULO VICTOR SANTANA TEIXEIRA"}
         }
@@ -946,28 +1026,24 @@ async function validaResponsavelFederal (num) {
             return {responsavel: "LAIS PEREIRA MORAES",executor: "LAIS PEREIRA MORAES"}
         }
 
-        // return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
-        return {responsavel: "MARCUS VINICIUS DE SOUZA MORAIS",executor: "MARCUS VINICIUS DE SOUZA MORAIS"}
+        return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
     }
 
     if (natureza === "PREVIDENCIÁRIA") {
         if (digitoVerificador === "403") { //Processos do TRF3
-            // return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
-            return {responsavel: "MARCUS VINICIUS DE SOUZA MORAIS",executor: "MARCUS VINICIUS DE SOUZA MORAIS"}
+            return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
         }
 
         if (digitoVerificador === "405" && numeroProcesso.search('080') === 0) { //Processos do TRF5
             if (cliente.processo.merito === "MANDADO DE SEGURANÇA") {
-                /* if (setimoDigito <= 4) {
+                if (setimoDigito <= 4) {
                     return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
-                } */
+                }
 
-                // return {responsavel: "DIEGO MELO SOBRINHO",executor: "ITALO DE ANDRADE BEZERRA"}
-                return {responsavel: "MARCUS VINICIUS DE SOUZA MORAIS",executor: "ITALO DE ANDRADE BEZERRA"}
+                return {responsavel: "DIEGO MELO SOBRINHO",executor: "ITALO DE ANDRADE BEZERRA"}
             }
 
-            // return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
-            return {responsavel: "MARCUS VINICIUS DE SOUZA MORAIS",executor: "MARCUS VINICIUS DE SOUZA MORAIS"}
+            return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
         }
 
         else {
@@ -976,7 +1052,7 @@ async function validaResponsavelFederal (num) {
                     return {responsavel: "KEVEN FARO DE CARVALHO",executor: "KEVEN FARO DE CARVALHO"}
                 }
 
-                const responsavel = function responsavel () {
+                /* const responsavel = function responsavel () {
                     // Verifica se há um valor armazenado no localStorage para o índice atual
                     if (!localStorage.getItem('currentIndex')) {
                         localStorage.setItem('currentIndex', '0')
@@ -999,7 +1075,7 @@ async function validaResponsavelFederal (num) {
     
                     return elementoAtual
     
-                }
+                } */
 
                 //const advogado = responsavel()
                 
@@ -1013,18 +1089,21 @@ async function validaResponsavelFederal (num) {
             if (secao === "8502") { //Processos da seção de Estância
                 if (setimoDigito < 3)
                     return {responsavel: "KEVEN FARO DE CARVALHO",executor: "KEVEN FARO DE CARVALHO"}
-                return {responsavel: "SARA GONÇALVES PINHEIRO",executor: "SARA GONÇALVES PINHEIRO"}
+                return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
+                //return {responsavel: "SARA GONÇALVES PINHEIRO",executor: "SARA GONÇALVES PINHEIRO"}
             }
             if (secao === "8503") //Processos da seção de Lagarto
-                return {responsavel: "SARA GONÇALVES PINHEIRO",executor: "SARA GONÇALVES PINHEIRO"}
+                return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
+                //return {responsavel: "SARA GONÇALVES PINHEIRO",executor: "SARA GONÇALVES PINHEIRO"}
             if (secao === "8504")//Processos da seção de Propriá
                 return {responsavel: "LAIS PEREIRA MORAES",executor: "LAIS PEREIRA MORAES"}
-            return null
+            //return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
+                
         }
     }
     
     if (natureza === "CÍVEL" || natureza === "CONSUMIDOR" || natureza === "SERVIDOR PÚBLICO" || natureza === "BANCÁRIO") { //Processos de natureza cível
-        if ((cliente.processo.estado === "DF" || cliente.processo.estado === "GO") && tarefa.search("AUDIENCIA") === 0) {
+        if (cliente.processo.estado === "DF" || cliente.processo.estado === "GO") {
             return {responsavel: "BRUNO PRADO GUIMARAES",executor: "BRUNO PRADO GUIMARAES"}
         }
         return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "RODRIGO AGUIAR SANTOS"}
@@ -1035,7 +1114,7 @@ function validaResponsavelAdministrativo() {
     const tarefa = removeAcentuacaoString(cliente.compromisso.tarefas[0]),
         tarefaSac = "SMS E WHATSAPP"
 
-        if (tarefaSac === tarefa) { //Tarefas para o SAC
+        if (tarefaSac === tarefa) {
             return {responsavel: "HENYR GOIS DOS SANTOS",executor: "LAYNE DA SILVA GOIS"}
         }
 
@@ -1045,12 +1124,16 @@ function validaResponsavelAdministrativo() {
 async function validaEsferaProcesso() {
     if (state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
         const caracteresProcesso = cliente.processo.origem.length
+        const lengthCharProcessTJ = 12
+        const lengthCharProcessFederalProtocol = 15
+        const lengthCharProcessFederalEcint = 17
+        const lengthCharProcessAllFederal = 20
     
-        if (caracteresProcesso === 12) {
+        if (caracteresProcesso === lengthCharProcessTJ) {
             return await validaResponsavelTj(caracteresProcesso)
         }
         
-        if (caracteresProcesso === 15 || caracteresProcesso === 17 || caracteresProcesso === 20) {
+        if (caracteresProcesso === lengthCharProcessFederalProtocol || caracteresProcesso === lengthCharProcessFederalEcint || caracteresProcesso === lengthCharProcessAllFederal) {
             return await validaResponsavelFederal(caracteresProcesso)
         }
     
@@ -1085,7 +1168,7 @@ function validaTipoCompromisso(descriptionCompromisso) {
         return "SESSÃO DE JULGAMENTO"
 
     if (descriptionCompromissoNormalizado === "ALVARA")
-        return "RECEBIMENTO DE ALVARA"
+        return "RECEBIMENTO DE ALVARÁ"
 
     if (descriptionCompromissoNormalizado === "PRECATORIO")
         return "RECEBIMENTO DE PRECATÓRIO"
@@ -1120,12 +1203,18 @@ async function submitAtualizarTarefa () {
 
     gravarBtn.addEventListener('click', async event => {
         event.preventDefault()
+
         if (cliente.compromisso.tarefas.length === cliente.compromisso.quantidadeTarefas) {
             cliente.compromisso.descricao = descricaoTarefa.value
         }
+
         cliente.compromisso.tarefas.shift()
         desativarAtualizacao()
         await setCliente(cliente)
+
+        if (!state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
+            await createHistorico()
+        }
 
         formTarefa.submit()
     })
@@ -1161,7 +1250,7 @@ function atualizaHora (horarioInicial) {
 function atualizaDescricao (descricaoTarefa, horarioInicial, horarioFinal, local) {
     const isJudicial = state.functions.todasPaginas.tipoIntimacaoIsJudicial
     const fistWordInTarefa = removeAcentuacaoString(cliente.compromisso.tarefas[0].split(" ")[0]),
-        endereço = getEndereço(local),
+        localText = getEndereço(local),
         numero = isJudicial ? existeOrigem() : cliente.requerimento.protocolo,
         tipoTarefaNormalizado = removeAcentuacaoString(cliente.compromisso.tarefas[0]),
         tipoCompromissoNormalizado = removeAcentuacaoString(cliente.compromisso.tipoCompromisso)
@@ -1169,7 +1258,7 @@ function atualizaDescricao (descricaoTarefa, horarioInicial, horarioFinal, local
     horarioFinal.value = atualizaHora(horarioInicial)
 
     
-    if (cliente.compromisso.descricao && removeAcentuacaoString(fistWordInTarefa) !== "ANALISE" && tipoTarefaNormalizado !== "ATO ORDINATORIO" && cliente.compromisso.tipoCompromisso !== "EMENDAR") {
+    if (cliente.compromisso.descricao && removeAcentuacaoString(fistWordInTarefa) !== "ANALISE" && tipoTarefaNormalizado !== "ATO ORDINATORIO" && cliente.compromisso.tipoCompromisso !== "EMENDAR"  && !tipoCompromissoNormalizado.includes('DECISAO ANTECIPACAO PERICIA') && !tipoCompromissoNormalizado.includes("EXIGENCIA")) {
 
         descricaoTarefa.value = cliente.compromisso.descricao
 
@@ -1177,19 +1266,21 @@ function atualizaDescricao (descricaoTarefa, horarioInicial, horarioFinal, local
         if (state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
             const perito = document.querySelector('#inputPerito')
     
-            descricaoTarefa.value = `${numero} - ${cliente.compromisso.tipoCompromisso} DE ${cliente.cliente.nome} ${cliente.cliente.cpf}, NO DIA ${cliente.compromisso.prazoInterno} ÀS ${horarioInicial.value}, PERITO: ${perito ? perito.value : ''}, LOCAL: ${endereço}`
+            descricaoTarefa.value = `${numero} - ${cliente.compromisso.tipoCompromisso} DE ${cliente.cliente.nome} (${cliente.cliente.cpf}), NO DIA ${cliente.compromisso.prazoInterno} ÀS ${horarioInicial.value}, PERITO: ${perito ? perito.value : ''}, LOCAL: ${localText}`
         } else {
-            descricaoTarefa.value = `${numero} - ${cliente.compromisso.tipoCompromisso}: DATA E HORA: ${cliente.compromisso.prazoInterno} ÀS ${horarioInicial.value}, LOCAL: ${endereço}. ORIENTAR A LEVAR O AGENDAMENTO, RELATÓRIOS MÉDICOS E DOCUMENTOS PERTINENTES A ATIVIDADE RURAL / PESCADO (CASO EXERÇA). CHEGAR COM 30 MINUTOS DE ANTECEDÊNCIA`
+            const inputEndereco = document.querySelector('#inputEndereco')
+
+            descricaoTarefa.value = `${numero} - ${cliente.compromisso.tipoCompromisso}: DATA E HORA: ${cliente.compromisso.prazoInterno} ÀS ${horarioInicial.value}, LOCAL: ${localText}, ENDEREÇO: ${inputEndereco ? inputEndereco.value : ''}. ORIENTAR A LEVAR O AGENDAMENTO, RELATÓRIOS MÉDICOS E DOCUMENTOS PERTINENTES A ATIVIDADE RURAL / PESCADO (CASO EXERÇA). CHEGAR COM 30 MINUTOS DE ANTECEDÊNCIA`
         }
 
     } else if (isJudicial) {
 
         if (fistWordInTarefa == "AUDIENCIA" && cliente.compromisso.quantidadeTarefas === cliente.compromisso.tarefas.length) {
 
-            descricaoTarefa.value = `${numero} - ${cliente.compromisso.tipoCompromisso} DE ${cliente.cliente.nome} ${cliente.cliente.cpf} X ${cliente.processo.reu.length > 0 ? cliente.processo.reu : '_______'}, NO DIA ${cliente.compromisso.prazoInterno} ÀS ${horarioInicial.value}, LOCAL: ${endereço}`
+            descricaoTarefa.value = `${numero} - ${cliente.compromisso.tipoCompromisso} DE ${cliente.cliente.nome} (${cliente.cliente.cpf}) X ${cliente.processo.reu.length > 0 ? cliente.processo.reu : ''}, NO DIA ${cliente.compromisso.prazoInterno} ÀS ${horarioInicial.value}, LOCAL: ${localText}`
 
         }
-        else if (tipoTarefaNormalizado === "ATO ORDINATORIO" && tipoCompromissoNormalizado === 'PERICIA') {
+        else if (tipoTarefaNormalizado === "ATO ORDINATORIO" && tipoCompromissoNormalizado.includes('PERICIA')) {
 
             descricaoTarefa.value = `${numero} - ATO ORDINATÓRIO (PERÍCIA DESIGNADA)`
 
@@ -1201,6 +1292,8 @@ function atualizaDescricao (descricaoTarefa, horarioInicial, horarioFinal, local
 
             descricaoTarefa.value = `${numero} - `
 
+        } else if (tipoTarefaNormalizado.includes('ACOMPANHAR')  && tipoCompromissoNormalizado.includes('DECISAO ANTECIPACAO PERICIA')) {
+            descricaoTarefa.value = `${numero} - ACOMPANHAR ANTECIPAÇÃO DA PERÍCIA ADMINISTRATIVA`
         } else {
 
             descricaoTarefa.value = `${numero} - ${cliente.compromisso.tipoCompromisso}`
@@ -1223,8 +1316,8 @@ function atualizaDescricao (descricaoTarefa, horarioInicial, horarioFinal, local
     }
 }
 
-function searchTipoIntimacao() {
-    const selectTipoIntimacaoInput = document.querySelectorAll("#fdt-form > div:nth-child(10) > div.form-group.col-sm-8 > div > div > ul > li")
+function searchTipoIntimacao(selectTipoIntimacaoInput) {
+    
     const tipoIntimacaoToUpperNormalized = removeAcentuacaoString(cliente.compromisso.tarefas[0].toUpperCase())
     
     let achou = false,
@@ -1259,9 +1352,20 @@ function searchTipoIntimacao() {
 }
 
 function selectTipoIntimacao() {
-    const input = searchTipoIntimacao()
-    
-    input.click()
+    const selectTipoIntimacaoInput = document.querySelectorAll("#fdt-form > div:nth-child(10) > div.form-group.col-sm-8 > div > div > ul > li")
+
+    const listener = () => {
+        const selectTipoIntimacaoInput = document.querySelectorAll("#fdt-form > div:nth-child(10) > div.form-group.col-sm-8 > div > div > ul > li")
+
+        searchTipoIntimacao(selectTipoIntimacaoInput).click()
+    }
+
+    if (!selectTipoIntimacaoInput.length) {
+        const target = document.querySelector("#fdt-form > div:nth-child(10) > div.form-group.col-sm-8")
+        loadObserver(listener, target)
+    } else {
+        listener()
+    }
 }
 
 function createInputDependente() {
@@ -1286,14 +1390,15 @@ function createInputDependente() {
 }
 
 function mostrarCamposPericia () {
+    const idInputSecundario = state.functions.todasPaginas.tipoIntimacaoIsJudicial ? 'inputPerito' : 'inputEndereco'
     const tarefaNormal = document.querySelector('#divTipoTarefaNormal'),
         dataInput = document.querySelector('#divTipoTarefaNormal > div:nth-child(1) > div.col-sm-8'),
         horarioFinal = document.querySelector("#horarioFinal"),
         descricaoTarefa = document.querySelector("#descricao"),
         divRow2 = document.createElement('div'),
-        divPerito = document.createElement('div'),
-        labelPerito = document.createElement('label'),
-        inputPerito = document.createElement('input'),
+        divSecundario = document.createElement('div'),
+        labelSecundario = document.createElement('label'),
+        inputSecundario = document.createElement('input'),
         divLocal = document.createElement('div'),
         labelLocal = document.createElement('label'),
         inputLocal = document.createElement('input'),
@@ -1306,13 +1411,10 @@ function mostrarCamposPericia () {
     divRow2.setAttribute('class','row')
     tarefaNormal.appendChild(divRow2)
     
-    labelPerito.innerHTML = 'Perito(a): '
-    divPerito.setAttribute('class','form-group col-sm-4')
-    inputPerito.setAttribute('class','form-control')
-    inputPerito.setAttribute('id','inputPerito')
-    if (!state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
-        inputPerito.disabled = true
-    }
+    labelSecundario.innerHTML = state.functions.todasPaginas.tipoIntimacaoIsJudicial ? 'Perito(a): ' : 'Endereço: '
+    divSecundario.setAttribute('class','form-group col-sm-4')
+    inputSecundario.setAttribute('class','form-control')
+    inputSecundario.setAttribute('id', idInputSecundario)
     
     labelLocal.innerHTML = 'Local: '
     divLocal.setAttribute('class','form-group col-sm-4')
@@ -1342,11 +1444,11 @@ function mostrarCamposPericia () {
         atualizaDescricao(descricaoTarefa, inputHorarioInicial,horarioFinal, inputLocal)
     })
 
-    divRow2.appendChild(divPerito)
-    divPerito.appendChild(labelPerito)
-    divPerito.appendChild(inputPerito)
-    inputPerito.addEventListener('input',() => {
-        inputPerito.value = inputPerito.value.toUpperCase()
+    divRow2.appendChild(divSecundario)
+    divSecundario.appendChild(labelSecundario)
+    divSecundario.appendChild(inputSecundario)
+    inputSecundario.addEventListener('input',() => {
+        inputSecundario.value = inputSecundario.value.toUpperCase()
         atualizaDescricao(descricaoTarefa, inputHorarioInicial,horarioFinal, inputLocal)
     })
 }
@@ -1357,9 +1459,15 @@ async function selecionarResponsavelExecutor(option) {
     if (adv)
         selectRespExec(adv)
 
-    if (((option.children[0].children[0].innerText.toUpperCase() == "CONTATAR CLIENTE" || option.children[0].children[0].innerText.toUpperCase() == "LEMBRAR CLIENTE") && cliente.processo.estado != "DF" && cliente.processo.estado != "GO") || !state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
+    const isTaskCalculo = removeAcentuacaoString(cliente.compromisso.tipoCompromisso).includes("CALCULO") && removeAcentuacaoString(cliente.compromisso.tarefas[0]).includes("CALCULO")
+    const isTaskContatar = option.children[0].children[0].innerText.toUpperCase() == "CONTATAR CLIENTE"
+    const isTaskLembrar = option.children[0].children[0].innerText.toUpperCase() == "LEMBRAR CLIENTE"
+    const isDFOrGO = cliente.processo.estado === "DF" || cliente.processo.estado === "GO"
+
+    if (((isTaskContatar || isTaskLembrar) && !isDFOrGO) || !state.functions.todasPaginas.tipoIntimacaoIsJudicial && !adv || isTaskCalculo) {
         validaExecutorContatar()
     }
+
 }
 
 function loadInfo () {
@@ -1385,7 +1493,7 @@ function loadInfo () {
     for (const option of optionsLi) {
         option.children[0].addEventListener('click', async () => {
 
-            const eventTargets = [horarioInicial,local,processoDependente],
+            const eventTargets = [horarioInicial, local, processoDependente],
                 contactdiv = document.querySelector("#contactdiv")
 
             const arrayAudiencias = ["AUDIÊNCIA DE INSTRUÇÃO E JULGAMENTO", "AUDIÊNCIA UNA", "AUDIÊNCIA DE INSTRUÇÃO", "AUDIÊNCIA INICIAL", "AUDIÊNCIA INAUGURAL"]
@@ -1439,7 +1547,7 @@ async function requestIdClientFromProtocol(protocolo) {
     
     const parser = new DOMParser()
     const urlRequest = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/inss/default.asp"
-    const formData = `bsAdvINSS=s&org=&bsAdvINSSData=inssData&bsAdvINSSDataDe=29%2F06%2F2010&bsAdvINSSDataAte=02%2F07%2F2050&bsAdvINSSCpf=&bsAdvINSSResponsavel=&bsAdvINSSCliente=${protocolo}&filtrar=Filtrar`
+    const formData = `bsAdvINSS=s&org=&bsAdvINSSData=inssData&bsAdvINSSDataDe=29%2F06%2F2010&bsAdvINSSDataAte=02%2F07%2F2050&bsAdvINSSCpf=&bsAdvINSSResponsavel=&bsAdvINSSCliente=&bsAdvINSSProtocolo=${protocolo}&filtrar=Filtrar`
 
     const doc = await fetch(urlRequest, {
         method: "POST",
@@ -1450,7 +1558,7 @@ async function requestIdClientFromProtocol(protocolo) {
     }).then(function (response) {
         return response.blob()
     }).then(async (result) => parser.parseFromString(await result.text(),'text/html'))
-    console.log(doc);
+    
     const urlFichaCliente = await doc.documentElement.querySelector("body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr > td.fdt-acao > div > div > a:nth-child(3)").href
     
     return urlFichaCliente.split("idPK=")[1]
@@ -1519,7 +1627,7 @@ function extrairDadosRequisicaoClienteHtml(response) {
 }
 
 function extrairDadosRequisicaoProcessoHtml(response) {
-    console.log(response);
+    
     const dataClient = {
         idCliente: response.documentElement.querySelector("#fdt-form > input[type=hidden]:nth-child(2)").value.toUpperCase(),
         processo: {
@@ -1655,6 +1763,12 @@ async function preenchimentoTarefasDeCompromissos() {
     loadInfo()
 }
 
+async function setIdClientPreProcesso() {
+    const idClient = document.querySelector("#fdt-form > input[type=hidden]:nth-child(1)").value
+    cliente.cliente.id = idClient
+    await setCliente(cliente)
+}
+
 async function preenchimentoFormularioPreProcesso() {
     
     if (!state.functions.preProcesso.preenchimentoFormularioPreProcesso) {
@@ -1709,28 +1823,22 @@ async function preenchimentoFormularioPreProcesso() {
         return responsaveis[naturezaNormalizado]
     }
 
-    // *Cliente primeira vez?
     const primeiraVez = document.querySelectorAll("#fdt-form > div:nth-child(7) > div.col-sm-3 > div > div > ul > li")
     selectItemList(primeiraVez, situacao === 'CLIENTE 1ª VEZ' ? 'Sim': 'Não')
 
-    // *Origem:
     const origem = document.querySelectorAll("#fdt-form > div:nth-child(7) > div.form-group.col-sm-2 > div > div > ul > li")
     selectItemList(origem, 'A identificar')
-
-    // *Advogado:           
+    
     const advogado = document.querySelectorAll("#fdt-form > div:nth-child(9) > div:nth-child(2) > div > div > ul > li")
     const responsavel = verificarResposavel()
     selectItemList(advogado, responsavel)
 
-    // *Escritório de origem:
     const escritorioOrigem = document.querySelectorAll("#fdt-form > div:nth-child(9) > div:nth-child(3) > div > div > ul > li")
     selectItemList(escritorioOrigem, localAtendido, true)
 
-    // *Escritório responsável:
     const escritorioResponsavel = document.querySelectorAll("#fdt-form > div:nth-child(9) > div:nth-child(4) > div > div > ul > li")
     selectItemList(escritorioResponsavel, "Matriz (Aracaju)")
 
-    // *Natureza da ação:
     const naturezaAcao = document.querySelectorAll("#fdt-form > div:nth-child(11) > div:nth-child(2) > div > div > ul > li")
     selectItemList(naturezaAcao, naturezaTitle === "Previdenciário" ? "Previdenciária" : naturezaTitle)
 }
@@ -1748,7 +1856,158 @@ function prenchimentoNomePasta() {
 }
 
 function createExportButtonGeridListNotifications() {
-    // TODO: Gerid function
+
+    const notifications = document.querySelectorAll("#notificacoesBarra > div.filtro-content > div.card")
+
+    const arrayNotifications = Array.from(notifications).map(notification => {
+        return {
+            titulo: notification.querySelector("div.conteudo > div:nth-child(1) > div > span").innerText,
+            subtitulo: notification.querySelector("div.conteudo > div.open").innerText
+        }
+    })
+    
+    const divIcons = document.querySelector("#notificacoesBarra > div.barra-opcoes-notificacao > div:nth-child(2)")
+
+    const button = document.createElement("button")
+
+    button.innerHTML = "EXPORTAR CSV"
+    const hoje = new Date()
+    const nome = `GERID-${hoje.toLocaleDateString().replaceAll("/", "-")}`
+
+    button.addEventListener("click", () => toCSV(arrayNotifications, nome))
+
+    divIcons.append(button)
+}
+
+function addListenersCompromisso() {
+    const dataFinal =  document.querySelector("#dataPrazoFatal"),
+        dataInicial = document.querySelector("#dataPrazoInterno"),
+        tipoIntimacao = document.querySelector("#descricao"),
+        formCompromisso = document.querySelector("#fdt-form"),
+        gravarBtn = document.querySelector("#fdt-form > div.row.margemCima20 > div > input.btn.fdt-btn-verde")
+
+    handleCompromisso()
+
+    gravarBtn.addEventListener("click", async event => {
+        event.preventDefault()
+        cliente.compromisso.prazoInterno = dataInicial.value
+        cliente.compromisso.prazoFatal = dataFinal.value
+        cliente.compromisso.quantidadeTarefas = cliente.compromisso.tarefas.length
+        await setCliente(cliente)
+        formCompromisso.submit()
+    })
+    
+    dataInicial.addEventListener('blur', async () => {
+        cliente.compromisso.tarefas = state.functions.todasPaginas.tipoIntimacaoIsJudicial ? getListaTarefasCompromissoJudicial() : getListaTarefasCompromissoAdministrativo()
+        atualizarListaTarefasAbaCompromissos()
+        await setCliente(cliente)
+    })
+
+    dataFinal.addEventListener('blur', async () => {
+        const indiceAudiencia = removeAcentuacaoString(tipoIntimacao.value).search('AUDIENCIA'),
+            indicePericia = removeAcentuacaoString(tipoIntimacao.value).search('PERICIA'),
+            indicePauta = tipoIntimacao.value.search('PAUTA'),
+            ehAudiencia = (indiceAudiencia == 0),
+            ehPericia = (indicePericia == 0),
+            ehPauta = (indicePauta == 0)
+
+        if (ehAudiencia || ehPauta || ehPericia) {
+            if (state.functions.cadastroCompromisso.AutoPreenchimentoPrazoInterno)
+                dataInicial.value = dataFinal.value
+            cliente.compromisso.tarefas = state.functions.todasPaginas.tipoIntimacaoIsJudicial ? getListaTarefasCompromissoJudicial() : getListaTarefasCompromissoAdministrativo()
+            atualizarListaTarefasAbaCompromissos()
+            await setCliente(cliente)
+        }
+    })
+}
+
+async function buscarDadosClienteProcessos(url) {
+    const gravarBtn = document.querySelector("#fdt-form > div.row.margemCima20 > div > input.btn.fdt-btn-verde"),
+        idProcesso = getIdCliente(url)
+
+    const { idCliente, processo, requerimento } = await requestDataCliente({
+        id: idProcesso,
+        module: state.functions.todasPaginas.tipoIntimacaoIsJudicial ? "processos" : "inss",
+        gravarBtn
+    })
+
+    const { nome, cpf, estado, cidade, localAtendido, parceiro } = await requestDataCliente({
+        id: idCliente,
+        module: "cliente",
+        gravarBtn
+    })
+    
+    cliente.cliente.id = idCliente
+    cliente.cliente.nome = nome
+    cliente.cliente.cpf = cpf
+    cliente.cliente.estado = estado
+    cliente.cliente.cidade = cidade
+    cliente.cliente.localAtendido = localAtendido
+    cliente.cliente.parceiro = parceiro
+
+    if (state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
+        cliente.processo.id = idProcesso
+        cliente.processo.origem = processo.origem
+        cliente.processo.reu = processo.reu
+        cliente.processo.responsavel = processo.responsavel
+        cliente.processo.natureza = processo.natureza
+        cliente.processo.merito = processo.merito
+        cliente.processo.estado = processo.estado
+        cliente.processo.cidade = processo.cidade
+        cliente.processo.vara = processo.vara
+    } else {
+        cliente.requerimento.id = requerimento.id
+        cliente.requerimento.protocolo = requerimento.protocolo
+        cliente.requerimento.responsavel = requerimento.responsavel
+        cliente.requerimento.tipoBeneficio = requerimento.tipoBeneficio
+        cliente.requerimento.status = requerimento.status
+        cliente.requerimento.data = requerimento.data
+        cliente.requerimento.postoINSS = requerimento.postoINSS
+    }
+
+    setCliente(cliente)
+}
+
+function datepickerHighlighter () {
+
+    if (!state.functions.todasPaginas.datepickerHighlighter) {
+        return
+    }
+
+    const datepickers = document.querySelectorAll(".datepicker")
+
+    datepickers.forEach(datepicker => {
+    
+        const callback = (mutationList, observer) => {
+            for (const mutation of mutationList) {
+                if (mutation.type === "childList") {
+                    const dateTimeWidget = datepicker.querySelector(".bootstrap-datetimepicker-widget")
+                
+                    if (dateTimeWidget) {
+                        const tbody = dateTimeWidget.querySelector("ul > li:nth-child(1) > div > div.datepicker-days > table > tbody")
+                        const tds = tbody.querySelectorAll("td")
+                        tds.forEach(td => {
+                            if (td.dataset.day) {
+                                const [dia, mes, ano] = td.dataset.day.split("/")
+                                const date = new Date(`${mes}/${dia}/${ano}`)
+                                const { isHoliday, holiday, isNacional } = isFeriado(date, parametros.highlight, ano)
+                                
+                                if (isHoliday) {
+                                    td.style.backgroundColor = isNacional ? '#fce3e4' : '#CCC'
+                                    td.style.border = isNacional ? '1px solid #fe9595' : '1px solid #ffe5e7'
+                                    td.title = holiday
+                                }
+                            }
+                        })
+                    }
+                }
+            }
+        }
+    
+        const observer = new MutationObserver(callback)
+        
+        observer.observe(datepicker, { attributes: true, childList: true, subtree: true })
+    })
 }
 
 async function idPage(url) {
@@ -1786,8 +2045,10 @@ async function idPage(url) {
         isGerid = url.includes(urlGeridINSS)
         
     digitacaoPorVoz()
+    datepickerHighlighter()
     
     if (isSistema) {
+        createStyleProgressBar()
         createPainel('ADM', ADM, state.functions.supervisor.painelVisualizacaoTarefasTimeADM)
         createPainel('SAC', SAC, state.functions.supervisor.painelVisualizacaoTarefasTimeSAC)
         createPainel('FINANCEIRO', FINANCEIRO, state.functions.supervisor.painelVisualizacaoTarefasTimeFINANCEIRO)
@@ -1802,95 +2063,10 @@ async function idPage(url) {
         } else if (pageTarefas && autoCompletar) {
             preenchimentoTarefasDeCompromissos()
         } else if (pageCompromissos && autoCompletar) {
-                const dataFinal =  document.querySelector("#dataPrazoFatal"),
-                    dataInicial = document.querySelector("#dataPrazoInterno"),
-                    tipoIntimacao = document.querySelector("#descricao"),
-                    formCompromisso = document.querySelector("#fdt-form"),
-                    gravarBtn = document.querySelector("#fdt-form > div.row.margemCima20 > div > input.btn.fdt-btn-verde")
-
-                gravarBtn.addEventListener("click", async event => {
-                    event.preventDefault()
-                    cliente.compromisso.prazoInterno = dataInicial.value
-                    cliente.compromisso.prazoFatal = dataFinal.value
-                    cliente.compromisso.quantidadeTarefas = cliente.compromisso.tarefas.length
-                    await setCliente(cliente)
-                    formCompromisso.submit()
-                })
-                
-                dataInicial.addEventListener('blur', async () => {
-                    if (state.functions.cadastroCompromisso.exibirListaTarefas) {
-                        cliente.compromisso.tarefas = state.functions.todasPaginas.tipoIntimacaoIsJudicial ? getListaTarefasCompromissoJudicial() : getListaTarefasCompromissoAdministrativo()
-                        atualizarListaTarefasAbaCompromissos()
-                        await setCliente(cliente)
-                    }
-                })
-
-                dataFinal.addEventListener('blur', async () => {
-                    const indiceAudiencia = removeAcentuacaoString(tipoIntimacao.value).search('AUDIENCIA'),
-                        indicePericia = removeAcentuacaoString(tipoIntimacao.value).search('PERICIA'),
-                        indicePauta = tipoIntimacao.value.search('PAUTA'),
-                        ehAudiencia = (indiceAudiencia == 0),
-                        ehPericia = (indicePericia == 0),
-                        ehPauta = (indicePauta == 0)
-        
-                    if (ehAudiencia || ehPauta || ehPericia) {
-                        if (state.functions.cadastroCompromisso.AutoPreenchimentoPrazoInterno)
-                            dataInicial.value = dataFinal.value
-                        if (state.functions.cadastroCompromisso.exibirListaTarefas) {
-                            cliente.compromisso.tarefas = state.functions.todasPaginas.tipoIntimacaoIsJudicial ? getListaTarefasCompromissoJudicial() : getListaTarefasCompromissoAdministrativo()
-                            atualizarListaTarefasAbaCompromissos()
-                            await setCliente(cliente)
-                        }
-                    }
-                })
-    
-                handleCompromisso()
+                createDataListCompromissos()
+                addListenersCompromisso()
                 createButtonPrazo()
-
-                const idProcesso = getIdCliente(url)
-
-                const { idCliente, processo, requerimento } = await requestDataCliente({
-                    id: idProcesso,
-                    module: state.functions.todasPaginas.tipoIntimacaoIsJudicial ? "processos" : "inss",
-                    gravarBtn
-                })
-
-                const { nome, cpf, estado, cidade, localAtendido, parceiro } = await requestDataCliente({
-                    id: idCliente,
-                    module: "cliente",
-                    gravarBtn
-                })
-                
-                cliente.cliente.id = idCliente
-                cliente.cliente.nome = nome
-                cliente.cliente.cpf = cpf
-                cliente.cliente.estado = estado
-                cliente.cliente.cidade = cidade
-                cliente.cliente.localAtendido = localAtendido
-                cliente.cliente.parceiro = parceiro
-
-                if (state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
-                    cliente.processo.id = idProcesso
-                    cliente.processo.origem = processo.origem
-                    cliente.processo.reu = processo.reu
-                    cliente.processo.responsavel = processo.responsavel
-                    cliente.processo.natureza = processo.natureza
-                    cliente.processo.merito = processo.merito
-                    cliente.processo.estado = processo.estado
-                    cliente.processo.cidade = processo.cidade
-                    cliente.processo.vara = processo.vara
-                } else {
-                    cliente.requerimento.id = requerimento.id
-                    cliente.requerimento.protocolo = requerimento.protocolo
-                    cliente.requerimento.responsavel = requerimento.responsavel
-                    cliente.requerimento.tipoBeneficio = requerimento.tipoBeneficio
-                    cliente.requerimento.status = requerimento.status
-                    cliente.requerimento.data = requerimento.data
-                    cliente.requerimento.postoINSS = requerimento.postoINSS
-                }
-
-                console.log(cliente);
-                setCliente(cliente)
+                buscarDadosClienteProcessos(url)
         } else if (pageCadastroProcesso) {
             formataNumProcesso()
             habilitarEdicaoNumeroProcesso()
@@ -1902,9 +2078,7 @@ async function idPage(url) {
         } else if (pageVisualizacaoTarefa) {
             addEventToAutocomplete()
         } else if (pagePreProcessoPasta) {
-            const idClient = document.querySelector("#fdt-form > input[type=hidden]:nth-child(1)").value
-            cliente.cliente.id = idClient
-            await setCliente(cliente)
+            await setIdClientPreProcesso()
             prenchimentoNomePasta()
         } else if (pagePreProcessoFormulario) {
             preenchimentoFormularioPreProcesso()
@@ -1913,7 +2087,7 @@ async function idPage(url) {
         }
         
     } else if (pagePortalDoAdvogado) {
-            filtroAlvaraTJSE()
+        filtroAlvaraTJSE()
     } else if (isPJE) {
         activatePJEMarker()
     } else if (isGerid) {

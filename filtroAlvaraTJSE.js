@@ -3,72 +3,72 @@ function filtroAlvaraTJSE() {
         return
     }
 
-    let frame = null
     const downFrame = document.querySelector('#downFrame')
-    
-    if (downFrame) {
-        frame = downFrame.contentDocument.querySelector("#mainFrame")
-    }
-    
-    if (frame) {
-        try {
-            frame.onload = () => {
-                const alvaras = []
-                const intimacoes = frame.contentDocument.querySelectorAll("body > center > table > tbody > tr")
-                const title = frame.contentDocument.querySelector("body > h3")
 
-                if (title.innerText === "CONSULTA A PROCESSOS TRAMITADOS") {
-                    const periodo = frame.contentDocument.querySelector("body > p")
-                    const regex = /\d{2}\/\d{2}\/\d{4}/g
-                    const [ dataInicial, dataFinal ] = periodo.innerText.match(regex)
-                    const nome = `${dataInicial}-${dataFinal}`
-                    const parent = title.parentNode
-                    const button = document.createElement("button")
-                    const buscaAlvara = (descricao, termo) => {
-                        const descricao_normalizada = descricao.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase(),
-                            termo_normalizado = termo.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
-                        
-                        if (descricao_normalizada.includes(termo_normalizado)) {
-                            return descricao
-                        }
-                        return null
-                    }
-        
-                    button.innerHTML = "Exportar Alvarás para CSV"
-                    parent.insertBefore(button, title)
-                    
-                    if (intimacoes) {
-                        intimacoes.forEach(intimacao => {
-                            const linhas = intimacao.querySelectorAll("td > table:nth-child(2) > tbody > tr")
-                            const processo = "'" + linhas[1].children[0].innerText
-                            const descricao = linhas[5].innerText.replaceAll("\n", " | ").replaceAll(";", ".")
+    if (downFrame) {
+        const mainFrame = downFrame.contentDocument.querySelector("#mainFrame")
+
+        if (mainFrame) {
+            mainFrame.onload = () => {
+                try {
+                    const alvaras = []
+                    const intimacoes = mainFrame.contentDocument.querySelectorAll("body > center > table > tbody > tr")
+                    const title = mainFrame.contentDocument.querySelector("body > h3")
+    
+                    if (title.innerText === "CONSULTA A PROCESSOS TRAMITADOS") {
+                        const periodo = mainFrame.contentDocument.querySelector("body > p")
+                        const regex = /\d{2}\/\d{2}\/\d{4}/g
+                        const [ dataInicial, dataFinal ] = periodo.innerText.match(regex)
+                        const nome = `Alvarás-${dataInicial}-${dataFinal}`
+                        const parent = title.parentNode
+                        const button = document.createElement("button")
+                        const buscaAlvara = (descricao, termo) => {
+                            const descricao_normalizada = descricao.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase(),
+                                termo_normalizado = termo.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
                             
-                            if (buscaAlvara(descricao, "alvará")) {
-                                alvaras.push({ processo, descricao })
+                            if (descricao_normalizada.includes(termo_normalizado)) {
+                                return descricao
                             }
-                        })
-                        console.log(alvaras)
-                        button.addEventListener('click', () => toCSV(alvaras, nome))
+                            return null
+                        }
+            
+                        button.innerHTML = "Exportar Alvarás para CSV"
+                        parent.insertBefore(button, title)
+                        
+                        if (intimacoes) {
+                            intimacoes.forEach(intimacao => {
+                                const linhas = intimacao.querySelectorAll("td > table:nth-child(2) > tbody > tr")
+                                const processo = "'" + linhas[1].children[0].innerText
+                                const descricao = linhas[5].innerText.replaceAll("\n", " | ").replaceAll(";", ".")
+                                
+                                if (buscaAlvara(descricao, "alvará")) {
+                                    alvaras.push({ processo, descricao })
+                                }
+                            })
+                            console.log(alvaras)
+                            button.addEventListener('click', () => toCSV(alvaras, nome))
+                        }
                     }
+                } catch (error) {
+                    console.log(error)
                 }
             }
-        } catch (error) {
-            console.log(error)
         }
     }
 }
 
 
-function toCSV(alvaras, nome) {
-    const head = ["Número do Processo", "Descrição da Intimação"]
+function toCSV(array, nome) {
+    const head = Object.keys(array[0]).map(element => element.toUpperCase())
     let csv_data = [head.join(";")]
 
-
-
-    alvaras.map(alvara => {
+    array.map(element => {
         let csvrow = []
-        csvrow.push(alvara.processo)
-        csvrow.push(alvara.descricao)
+        const keys = Object.keys(element)
+
+        keys.forEach(key => {
+            csvrow.push(element[key])
+        })
         csv_data.push(csvrow.join(";"))
     })
 
@@ -91,7 +91,7 @@ function downloadCSVFile(csv_data, nome) {
     let temp_link = document.createElement('a')
 
     // Download csv file
-    temp_link.download = "Alvarás-" + nome.replaceAll("/","") + ".csv"
+    temp_link.download = nome.replaceAll("/","") + ".csv"
     let url = window.URL.createObjectURL(CSVFile)
     temp_link.href = url
 
