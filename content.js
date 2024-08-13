@@ -2026,6 +2026,9 @@ async function idPage(url) {
         urlSistemaFR = "http://fabioribeiro.eastus.cloudapp.azure.com",
         urlPortalDoAdvogadoTJSE = "https://www.tjse.jus.br/tjnet/portaladv/index.wsp",
         urlPJE = "/pje/",
+        urlCRETA = 'https://creta.jfse.jus.br/',
+        urlTRF51G = 'https://pje.jfse.jus.br/',
+        urlTRF52G = 'https://pje.trf5.jus.br/',
         urlGeridINSS = "https://atendimento.inss.gov.br/",
         autoCompletar = await getAutoComplete(),
         pageBuscaProcessos = url.includes(urlProcessos),
@@ -2042,6 +2045,8 @@ async function idPage(url) {
         pagePortalDoAdvogado = url.includes(urlPortalDoAdvogadoTJSE),
         isSistema = url.includes(urlSistemaFR),
         isPJE = url.includes(urlPJE),
+        isCRETA = url.includes(urlCRETA),
+        isTRF5 = url.includes(urlTRF51G) || url.includes(urlTRF52G),
         isGerid = url.includes(urlGeridINSS)
         
     digitacaoPorVoz()
@@ -2088,8 +2093,8 @@ async function idPage(url) {
         
     } else if (pagePortalDoAdvogado) {
         filtroAlvaraTJSE()
-    } else if (isPJE) {
-        activatePJEMarker()
+    } else if (isTRF5 || isCRETA || isPJE) {
+        activateReportSummons({ isPJE, isCRETA, isTRF5 })
     } else if (isGerid) {
         createExportButtonGeridListNotifications()
     }

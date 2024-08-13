@@ -18,6 +18,7 @@
                 "http://fabioribeiro.eastus.cloudapp.azure.com/*",
                 "https://maps.googleapis.com/*",
                 "https://*/pje/*",
+                "https://creta.jfse.jus.br/*",
                 "https://www.tjse.jus.br/*"
             ],
             "js": [
@@ -31,7 +32,7 @@
                 "painelSupervisor.js",
                 "recognition.js",
                 "notificacaoTarefasAdicionais.js",
-                "pje.js",
+                "registerReport.js",
                 "filtroAlvaraTJSE.js",
                 "locaisAudiencias.js",
                 "feriados.js",

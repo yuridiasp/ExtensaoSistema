@@ -10,12 +10,24 @@ async function clearReportSaved() {
     await setReport(null)
 }
 
+function exportToExcel(data) {
+    const nome = setNameFile()
+    
+    const worksheet = XLSX.utils.json_to_sheet(data);
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Relatório");
+
+    XLSX.writeFile(workbook, nome);
+}
+
+
 function PDFGen (array) {
-    const nome = setNamePDF()
+    const nome = setNameFile()
     const content = [[ 'Processo', 'Nome', 'Expediente', 'Registro da Ciência', 'Portal' ]]
 
-    array.forEach(({ processo, expediente, ciencia, portal }) => {
-        content.push([ processo, expediente, ciencia, portal ])
+    array.forEach(({ processo, nome, expediente, ciencia, portal }) => {
+        content.push([ processo, nome, expediente, ciencia, portal ])
     })
 
     const docDefinition = {
@@ -33,18 +45,18 @@ function PDFGen (array) {
     pdfMake.createPdf(docDefinition).download(nome)
 }
 
-function setNamePDF() {
+function setNameFile() {
     const date = new Date()
     const dia = date.getDate(), mes = date.getMonth()+1, ano = date.getFullYear()
-    return `PJE ${dia}${mes < 10 ? '0' + mes : mes}${ano}.pdf`
+    return `REPORT${dia}${mes < 10 ? '0' + mes : mes}${ano}.xlsx`
 }
 
 genReport.addEventListener('click', async () => {
     const report = await getReport()
     console.log(report);
     if (report) {
-        PDFGen(report)
-        //clearReportSaved()
+        exportToExcel(report)
+        clearReportSaved()
     } else {
         alert('Não há registros de intimações.')
     }
@@ -171,4 +183,5 @@ async function getInitialState() {
     initialState = { ...state }
     stateBtn()
     //await distanceMatrix()
+    exportToExcel()
 })()

@@ -32,6 +32,7 @@ const typeListCompromissos = {
         'DECISÃO',
         'DECISÃO + QUESITOS',
         'DECISÃO + RECOLHER CUSTAS',
+        'DECISÃO ANTECIPAÇÃO PERÍCIA',
         'DECISÃO INCOMPETÊNCIA',
         'DECISÃO SUSPENSÃO',
         'DESCIDA DOS AUTOS',
