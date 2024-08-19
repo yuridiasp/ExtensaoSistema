@@ -64,14 +64,6 @@ const ADM = [
             atrasadas: 0
         },
         {
-            id: 141,
-            nome: "MARCOS ROBERT DE MELO LIMA",
-            nomeTLC: "marcos robert",
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
             id: 198,
             nome: "MURILLO VICTOR SANTOS ROCHA",
             nomeTLC: "murilo",

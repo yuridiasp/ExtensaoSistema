@@ -14,6 +14,9 @@ function filtroAlvaraTJSE() {
                     const alvaras = []
                     const intimacoes = mainFrame.contentDocument.querySelectorAll("body > center > table > tbody > tr")
                     const title = mainFrame.contentDocument.querySelector("body > h3")
+
+                    if (!title)
+                        return null
     
                     if (title.innerText === "CONSULTA A PROCESSOS TRAMITADOS") {
                         const periodo = mainFrame.contentDocument.querySelector("body > p")

@@ -579,6 +579,7 @@ async function selectExecutorContatarAdministrativo (colaboradores) {
 
 async function selectExecutorContatarJudicial (colaboradores) {
     const adm = await Promise.all(await colaboradores)
+    let responsavel = 'JULIANO OLIVEIRA DE SOUZA'
 
     const responsavelInterior = adm.reduce((previous, currrent) => {
         if (currrent.interiores.includes(removeAcentuacaoString(cliente.cliente.localAtendido))) {
@@ -588,7 +589,7 @@ async function selectExecutorContatarJudicial (colaboradores) {
     }, null)
 
     if (responsavelInterior) {
-        return {responsavel: 'JULIANO OLIVEIRA DE SOUZA', executor: responsavelInterior.nome}
+        return {responsavel, executor: responsavelInterior.nome}
     }
 
     const executor = adm.reduce((previous, currrent) => {
@@ -598,7 +599,11 @@ async function selectExecutorContatarJudicial (colaboradores) {
         return previous
     }, adm[0])
 
-    const responsavel = executor.nome.includes("SANDOVAL") ? 'SANDOVAL FILHO CORREIA LIMA FILHO' : 'JULIANO OLIVEIRA DE SOUZA'
+    if (executor.nome.includes("SANDOVAL"))
+        responsavel =  'SANDOVAL FILHO CORREIA LIMA FILHO'
+    else if (cliente.processo.estado === 'GO' || cliente.processo.estado === 'DF') {
+        responsavel = 'HENYR GOIS DOS SANTOS'
+    }
 
     return { responsavel, executor: executor.nome }
 }
@@ -801,17 +806,10 @@ function filterColaboradoresJudicial () {
                 interiores: ["ESTANCIA", "TOBIAS BARRETO", "PEDRINHAS"],
                 datasViagem: [],
                 tarefas: 0
-            },
-            {
-                id: 141,
-                nome: "MARCOS ROBERT DE MELO LIMA",
-                interiores: ["CAPELA","JAPARATUBA", "CONDE/BA", "ALAGOINHAS"],
-                datasViagem: [],
-                tarefas: 0
-            },
+            }, //[],
             /* {
-                id: 217,
-                nome: "THIAGO SANTOS SANTANA",
+                id: 225,
+                nome: "ERINALDO FARO SANTOS",
                 interiores: [],
                 datasViagem: [],
                 tarefas: 0
@@ -826,7 +824,7 @@ function filterColaboradoresJudicial () {
             {
                 id: 94,
                 nome: "CARLOS HENRIQUE ESPASIANI",
-                interiores: [],
+                interiores: ["CAPELA", "JAPARATUBA", "CONDE/BA", "ALAGOINHAS"],
                 datasViagem: [],
                 tarefas: 0
             },
@@ -844,9 +842,41 @@ function filterColaboradoresJudicial () {
                 datasViagem: [],
                 tarefas: 0
             },
+        ],
+        brasilia = [
+            {
+                id: 215,
+                nome: "JÚLIA ROBERTA DE FÁTIMA SOUSA ARAÚJO",
+                interiores: [],
+                datasViagem: [],
+                tarefas: 0
+            },
+            {
+                id: 223,
+                nome: "MATHEUS CAMPELO DA SILVA",
+                interiores: [],
+                datasViagem: [],
+                tarefas: 0
+            },
+            {
+                id: 80,
+                nome: "PATRICIA ANDRE SIMÃO DE SOUZA",
+                interiores: [],
+                datasViagem: [],
+                tarefas: 0
+            },
+            {
+                id: 222,
+                nome: "STEFANNY MORAIS DO NASCIMENTO",
+                interiores: [],
+                datasViagem: [],
+                tarefas: 0
+            },
         ]
 
-    if (((cliente.cliente.cidade == "ESTANCIA" && cliente.cliente.localAtendido == "ESTANCIA")) || ((parceiros.includes(cliente.cliente.parceiro)) && varaEstancia.includes(cliente.processo.vara))) {
+    if (cliente.processo.estado === 'GO' || cliente.processo.estado === 'DF') {
+        colaboradores.push(...brasilia)
+    } else if (((cliente.cliente.cidade == "ESTANCIA" && cliente.cliente.localAtendido == "ESTANCIA")) || ((parceiros.includes(cliente.cliente.parceiro)) && varaEstancia.includes(cliente.processo.vara))) {
         colaboradores.push(...estancia)
     } else {
         if (varaEstancia.includes(cliente.processo.vara)) {
@@ -857,6 +887,8 @@ function filterColaboradoresJudicial () {
             colaboradores.push(...aracaju)
         }
     }
+
+    debugger
 
     return colaboradores
 }
@@ -929,15 +961,14 @@ async function validaResponsavelTj (num) {
     }
 
     if (sac === tarefaAtualNormalizada)
-        return {responsavel: "HENYR GOIS DOS SANTOS",executor: "LAYNE DA SILVA GOIS"}
+        return {responsavel: "HENYR GOIS DOS SANTOS",executor: "HENYR GOIS DOS SANTOS"}
 
     if (tipoCompromissoNormalizado === "MANIFESTACAO SOBRE CALCULOS" && tarefaAtualNormalizada.includes("ANALISE")) {
         return {responsavel: "GUILHERME JASMIM", executor: "GUILHERME JASMIM"}
     }
 
     if (natureza === "TRABALHISTA")
-        return {responsavel: "GLENISSON NASCIMENTO",executor: "GLENISSON NASCIMENTO"}
-        //return {responsavel: "FELIPE PANTA CARDOSO",executor: "FELIPE PANTA CARDOSO"}
+        return {responsavel: "FELIPE PANTA CARDOSO",executor: "FELIPE PANTA CARDOSO"}
 
     if (natureza === "PREVIDENCIÁRIA")
         return {responsavel: "KEVEN FARO DE CARVALHO",executor: "KEVEN FARO DE CARVALHO"}
@@ -988,7 +1019,7 @@ async function validaResponsavelFederal (num) {
     if (tarefasAdm.includes(tarefaAtualNormalizada)) {
         //Tarefa contatar para BSB
         if (cliente.processo.estado === "DF" || cliente.processo.estado === "GO") {
-            return {responsavel: "HENYR GOIS DOS SANTOS",executor: "LAYNE DA SILVA GOIS"}
+            return {responsavel: "HENYR GOIS DOS SANTOS", executor: "HENYR GOIS DOS SANTOS"}
         }
 
         //Tarefa contatar para escritório de Estância
@@ -1001,12 +1032,11 @@ async function validaResponsavelFederal (num) {
     }
 
     if (tarefaSac === tarefaAtualNormalizada) { //Tarefas para o SAC
-        return {responsavel: "HENYR GOIS DOS SANTOS",executor: "LAYNE DA SILVA GOIS"}
+        return {responsavel: "HENYR GOIS DOS SANTOS",executor: "HENYR GOIS DOS SANTOS"}
     }
 
     if ((digitoVerificador === "520" || natureza === "TRABALHISTA") || (natureza === "SERVIDOR PÚBLICO" && cliente.processo.responsavel === "VICTOR HUGO SOUSA ANDRADE")) {  //Processos Trabalhistas TRT20
-        return {responsavel: "GLENISSON NASCIMENTO",executor: "GLENISSON NASCIMENTO"}
-        //return {responsavel: "FELIPE PANTA CARDOSO",executor: "FELIPE PANTA CARDOSO"}
+        return {responsavel: "FELIPE PANTA CARDOSO",executor: "FELIPE PANTA CARDOSO"}
     }
 
     if (digitoVerificador === "401" || secaoDFGO.includes(secao)) { // Processos do TRF1
@@ -1089,12 +1119,10 @@ async function validaResponsavelFederal (num) {
             if (secao === "8502") { //Processos da seção de Estância
                 if (setimoDigito < 3)
                     return {responsavel: "KEVEN FARO DE CARVALHO",executor: "KEVEN FARO DE CARVALHO"}
-                return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
-                //return {responsavel: "SARA GONÇALVES PINHEIRO",executor: "SARA GONÇALVES PINHEIRO"}
+                return {responsavel: "SARA GONÇALVES PINHEIRO",executor: "SARA GONÇALVES PINHEIRO"}
             }
             if (secao === "8503") //Processos da seção de Lagarto
-                return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
-                //return {responsavel: "SARA GONÇALVES PINHEIRO",executor: "SARA GONÇALVES PINHEIRO"}
+                return {responsavel: "SARA GONÇALVES PINHEIRO",executor: "SARA GONÇALVES PINHEIRO"}
             if (secao === "8504")//Processos da seção de Propriá
                 return {responsavel: "LAIS PEREIRA MORAES",executor: "LAIS PEREIRA MORAES"}
             //return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
@@ -1115,7 +1143,7 @@ function validaResponsavelAdministrativo() {
         tarefaSac = "SMS E WHATSAPP"
 
         if (tarefaSac === tarefa) {
-            return {responsavel: "HENYR GOIS DOS SANTOS",executor: "LAYNE DA SILVA GOIS"}
+            return {responsavel: "HENYR GOIS DOS SANTOS",executor: "HENYR GOIS DOS SANTOS"}
         }
 
         return null
@@ -1318,8 +1346,7 @@ function atualizaDescricao (descricaoTarefa, horarioInicial, horarioFinal, local
 
 function searchTipoIntimacao(selectTipoIntimacaoInput) {
     
-    const tipoIntimacaoToUpperNormalized = removeAcentuacaoString(cliente.compromisso.tarefas[0].toUpperCase())
-    
+    const tipoIntimacaoToUpperNormalized = removeAcentuacaoString(cliente.compromisso.tarefas[0].toUpperCase()).split("-")[0].trim()
     let achou = false,
         inputManifestacao = null,
         shortInput = null
@@ -1462,9 +1489,10 @@ async function selecionarResponsavelExecutor(option) {
     const isTaskCalculo = removeAcentuacaoString(cliente.compromisso.tipoCompromisso).includes("CALCULO") && removeAcentuacaoString(cliente.compromisso.tarefas[0]).includes("CALCULO")
     const isTaskContatar = option.children[0].children[0].innerText.toUpperCase() == "CONTATAR CLIENTE"
     const isTaskLembrar = option.children[0].children[0].innerText.toUpperCase() == "LEMBRAR CLIENTE"
+    const isTaskWhatsapp = option.children[0].children[0].innerText.toUpperCase() == "SMS E WHATSAPP"
     const isDFOrGO = cliente.processo.estado === "DF" || cliente.processo.estado === "GO"
 
-    if (((isTaskContatar || isTaskLembrar) && !isDFOrGO) || !state.functions.todasPaginas.tipoIntimacaoIsJudicial && !adv || isTaskCalculo) {
+    if ((isTaskContatar || isTaskLembrar) || (isDFOrGO && (isTaskContatar || isTaskLembrar || isTaskWhatsapp)) || !state.functions.todasPaginas.tipoIntimacaoIsJudicial && !adv || isTaskCalculo) {
         validaExecutorContatar()
     }
 
