@@ -45,7 +45,11 @@ let cliente = {
             quantidadeTarefas: null,
             tipoCompromisso: null,
             descricao: null,
-            semanas: null
+            semanas: null,
+            local: null,
+            endereco: null,
+            horario: null,
+            perito: null
         }
     }
 
@@ -528,7 +532,7 @@ function addListaTarefas({ nome, datasViagem, tarefas }, data) {
     })
 
     p1.addEventListener('click', event => {
-        const responsaveisAdministrativos = ['SILVANIA PINHEIRO DE LEMOS', 'JOSE PEDRO DE GOIS NETO']
+        const responsaveisAdministrativos = ['SILVANIA PINHEIRO DE LEMOS']
         const executor = event.target.dataset.colaborador
         const responsavel = !state.functions.todasPaginas.tipoIntimacaoIsJudicial && responsaveisAdministrativos.includes(executor) ? executor : document.querySelector("#idResponsavel").selectedOptions[0].innerText
 
@@ -567,9 +571,9 @@ async function selectExecutorContatarAdministrativo (colaboradores) {
             return "FLAVIO LUCAS LIMA SOUZA"
         }
 
-        if (executor.nome === "JOSE PEDRO DE GOIS NETO") {
+        /* if (executor.nome === "JOSE PEDRO DE GOIS NETO") {
             return executor.nome
-        }
+        } */
 
         return "SILVANIA PINHEIRO DE LEMOS"
     }
@@ -713,13 +717,6 @@ function filterColaboradoresAdministrativo () {
             tarefas: 0
         },
         {
-            id: 190,
-            nome: "JOSE PEDRO DE GOIS NETO",
-            interiores: [],
-            datasViagem: [],
-            tarefas: 0
-        },
-        {
             id: 162,
             nome: "MIQUEAS CAMPOS DA SILVA",
             nomeTLC: "miqueas",
@@ -755,7 +752,7 @@ function filterColaboradoresAdministrativo () {
             const isLastTask = cliente.compromisso.tarefas.length === 1
 
             if (isFirstTask) {
-                return nomeNormalizado.includes("SILVANIA") || nomeNormalizado.includes("JOSE PEDRO")
+                return nomeNormalizado.includes("SILVANIA")
             }
             if (isSecondTask) {
                 return nomeNormalizado.includes("FLAVIO")
@@ -766,10 +763,10 @@ function filterColaboradoresAdministrativo () {
             }
 
             if (isLastTask) {
-                return !nomeNormalizado.includes("SILVANIA") && !nomeNormalizado.includes("JOSE PEDRO")
+                return !nomeNormalizado.includes("SILVANIA")
             }
         } else if (tipoCompromisso.includes("PERICIA")) {
-            return !nomeNormalizado.includes("FLAVIO") && !nomeNormalizado.includes("SILVANIA") && !nomeNormalizado.includes("JOSE PEDRO")
+            return !nomeNormalizado.includes("FLAVIO") && !nomeNormalizado.includes("SILVANIA")
         }
     })
 
@@ -961,7 +958,7 @@ async function validaResponsavelTj (num) {
     }
 
     if (sac === tarefaAtualNormalizada)
-        return {responsavel: "HENYR GOIS DOS SANTOS",executor: "HENYR GOIS DOS SANTOS"}
+        return {responsavel: "HENYR GOIS DOS SANTOS",executor: "LAYNE DA SILVA GOIS"}
 
     if (tipoCompromissoNormalizado === "MANIFESTACAO SOBRE CALCULOS" && tarefaAtualNormalizada.includes("ANALISE")) {
         return {responsavel: "GUILHERME JASMIM", executor: "GUILHERME JASMIM"}
@@ -1028,11 +1025,11 @@ async function validaResponsavelFederal (num) {
         }
 
         //Tarefa contatar para demais localidades
-        return {responsavel: "JULIANO OLIVEIRA DE SOUZA",executor: "JULIANO OLIVEIRA DE SOUZA"} 
+        return {responsavel: "JULIANO OLIVEIRA DE SOUZA",executor: "JULIANO OLIVEIRA DE SOUZA"}
     }
 
     if (tarefaSac === tarefaAtualNormalizada) { //Tarefas para o SAC
-        return {responsavel: "HENYR GOIS DOS SANTOS",executor: "HENYR GOIS DOS SANTOS"}
+        return {responsavel: "HENYR GOIS DOS SANTOS",executor: "LAYNE DA SILVA GOIS"}
     }
 
     if ((digitoVerificador === "520" || natureza === "TRABALHISTA") || (natureza === "SERVIDOR PÚBLICO" && cliente.processo.responsavel === "VICTOR HUGO SOUSA ANDRADE")) {  //Processos Trabalhistas TRT20
@@ -1143,7 +1140,7 @@ function validaResponsavelAdministrativo() {
         tarefaSac = "SMS E WHATSAPP"
 
         if (tarefaSac === tarefa) {
-            return {responsavel: "HENYR GOIS DOS SANTOS",executor: "HENYR GOIS DOS SANTOS"}
+            return {responsavel: "HENYR GOIS DOS SANTOS",executor: "LAYNE DA SILVA GOIS"}
         }
 
         return null
@@ -1457,26 +1454,36 @@ function mostrarCamposPericia () {
     divLocal.appendChild(labelLocal)
     divLocal.appendChild(inputLocal)
     
-    inputLocal.addEventListener('input', () => {
+    inputLocal.addEventListener('input', async () => {
         inputLocal.value = inputLocal.value.toUpperCase()
         atualizaDescricao(descricaoTarefa, inputHorarioInicial,horarioFinal, inputLocal)
+        cliente.compromisso.local = inputLocal.value
+        await setCliente(cliente)
     })
 
     divRow2.appendChild(divHorarioInicial)
     divHorarioInicial.appendChild(labelHorarioInicial)
     divHorarioInicial.appendChild(inputHorarioInicial)
     inputHorarioInicial.value = '00:00'
-    inputHorarioInicial.addEventListener('input',() => {
+    inputHorarioInicial.addEventListener('input', async () => {
         inputHorarioInicial.value = inputHorarioInicial.value.toUpperCase()
         atualizaDescricao(descricaoTarefa, inputHorarioInicial,horarioFinal, inputLocal)
+        cliente.compromisso.horario = inputHorarioInicial.value
+        await setCliente(cliente)
     })
 
     divRow2.appendChild(divSecundario)
     divSecundario.appendChild(labelSecundario)
     divSecundario.appendChild(inputSecundario)
-    inputSecundario.addEventListener('input',() => {
+    inputSecundario.addEventListener('input', async () => {
         inputSecundario.value = inputSecundario.value.toUpperCase()
-        atualizaDescricao(descricaoTarefa, inputHorarioInicial,horarioFinal, inputLocal)
+        atualizaDescricao(descricaoTarefa, inputHorarioInicial, horarioFinal, inputLocal)
+        if (state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
+            cliente.compromisso.perito = inputSecundario.value
+        } else {
+            cliente.compromisso.endereco = inputSecundario.value
+        }
+        await setCliente(cliente)
     })
 }
 
@@ -2038,9 +2045,48 @@ function datepickerHighlighter () {
     })
 }
 
+function criarTarefaClientePrimeiraVez() {
+    if (!state.functions.abaCadastroCliente.criarTarefaCRM) {
+        return
+    }
+
+    const formCliente = document.querySelector("#fdt-form")
+    const btnGravar = document.querySelector("#btnGravar")
+    const idSituacaoClientePrimeiraVez = "10"
+
+    btnGravar.addEventListener('click', async event => {
+        event.preventDefault()
+
+        btnGravar.disabled = true
+        
+        if (formCliente.idSituacao.value === idSituacaoClientePrimeiraVez) { //Leads === 13
+            const formData = new FormData(formCliente)
+    
+            try {
+                const idCL = await createCliente(formData)
+    
+                if (!idCL) {
+                    throw new Error('Falha ao criar cliente.')
+                }
+                const dataParaFinalizacao = calcularProximoDiaUtil(parametros.tarefaContatar)
+                await createTarefa({ idCL, dataParaFinalizacao })
+    
+                const pageAddFoto = `http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/foto.asp?msg=add&idPK=${idCL}`
+                window.location.replace(pageAddFoto)
+            } catch (error) {
+                console.error(error)
+                formCliente.submit()
+            }
+        } else {
+            formCliente.submit()
+        }
+    })
+}
+
 async function idPage(url) {
     
-    const urlProcessosCadastro = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/formulario",
+    const urlClienteCadastro = 'http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/formulario.asp?org=',
+        urlProcessosCadastro = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/formulario",
         urlProcessos = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/default",
         urlCompromissos = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/compromissos/formulario",
         urlCompromissoFicha = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/compromissos/ficha",
@@ -2063,6 +2109,7 @@ async function idPage(url) {
         pageTarefas = url.includes(urlTarefas),
         pageCompromissos = url.includes(urlCompromissos),
         pageCompromissoEscolherTipo = url.includes(urlCompromissoEscolherTipo),
+        pageCadastroCliente = url.includes(urlClienteCadastro),
         pageCadastroProcesso = url.includes(urlProcessosCadastro),
         pageVisualizacaoAbaCompromissos = url.includes(urlCompromissoDefault),
         pageVisualizacaoCompromisso = url.includes(urlCompromissoFicha),
@@ -2117,6 +2164,8 @@ async function idPage(url) {
             preenchimentoFormularioPreProcesso()
         } else if (pageCompromissoEscolherTipo) {
             await setAutoComplete(true)
+        } else if (pageCadastroCliente) {
+            criarTarefaClientePrimeiraVez()
         }
         
     } else if (pagePortalDoAdvogado) {
@@ -2128,6 +2177,19 @@ async function idPage(url) {
     }
 }
 
+function validateFunctions(initFunctions, savedFunctions) {
+
+    const keysFunctions = Object.keys(initFunctions)
+    const keysSaveds = Object.keys(savedFunctions)
+    const filtredKeys = keysFunctions.filter(key => !keysSaveds.includes(key))
+
+    filtredKeys.forEach(key => {
+        savedFunctions[key] = initFunctions[key]
+    })
+    
+    return savedFunctions
+}
+
 async function activate() {
     const [ estado, clienteSaved ] = await Promise.all([getState(), getCliente()]),
         { URL } = document
@@ -2137,15 +2199,15 @@ async function activate() {
     const { active, functions } = estado
 
     state.active = active
-    state.functions = functions    
-
+    state.functions = validateFunctions(state.functions, functions)
+    
     if (!clienteSaved) {
         await setCliente(cliente)
     }
 
     if (!active)
         return
-
+    
     idPage(URL)
 }
 

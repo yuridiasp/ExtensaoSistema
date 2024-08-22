@@ -7,6 +7,9 @@ let state = {
             contadorTarefas: null,
             datepickerHighlighter: null
         },
+        abaCadastroCliente: {
+            criarTarefaCRM: null
+        },
         abaCadastrodeProcesso: {
             autoFormatNumProcesso: null,
             alteracaoNumeroProcesso: null

@@ -71,7 +71,25 @@ function calculaIntervaloTarefasAdministrativo(dias) {
         contTres = "PERICIA",
         contQuatro = "EXIGENCIA INSS",
         tipoCompromissoNormalizado = removeAcentuacaoString(tipoCompromisso),
-        tarefaAtualNormalizada = removeAcentuacaoString(tarefas[0])
+        tarefaAtualNormalizada = removeAcentuacaoString(tarefas[0]),
+        agenciasGODF = [
+            'AG. AGUAS LINDAS DE GOIAS',
+            'AG. ANAPOLIS - CENTRO',
+            'AG. ANAPOLIS - VILA JAIARA',
+            'AG. BRASILIA - ASA SUL',
+            'AG. BRASILIA - CEILANDIA',
+            'AG. BRASILIA - GAMA',
+            'AG. BRASILIA - PLANALTINA',
+            'AG. BRASILIA - SOBRADINHO',
+            'AG. BRASILIA - TAGUATINGA',
+            'AG. GOIANIA - CENTRO',
+            'AG. GOIANIA - UNIVERSITARIO',
+            'AG. GOIAS',
+            'AG. GOIAS - CIDADE OCIDENTAL',
+            'AG. GOIAS - PADRE BERNARDO',
+            'AG. LUZIANIA',
+            'AG. VALPARAISO DE GOIAS'
+        ]
 
     if (contQuatro.includes(tipoCompromissoNormalizado)) {
         if (tarefaAtualNormalizada === "ANALISE DE EXIGENCIA INSS DIGITAL") {
@@ -94,6 +112,9 @@ function calculaIntervaloTarefasAdministrativo(dias) {
     if (tipoCompromissoNormalizado.search(contTres) === 0 && dias > 10) {
         if (semanas >= 2) {
             if (tarefaAtualNormalizada === 'CONTATAR CLIENTE') {
+                if (agenciasGODF.includes(cliente.requerimento.postoINSS)) {
+                    return dias-2
+                }
                 return dias-1
             }
             if (tarefaAtualNormalizada === 'SMS E WHATSAPP') {
@@ -395,4 +416,14 @@ function calcularPrazo (prazo,parametro) {
     const inicial = formataData(dia, mes, ano)
 
     return [inicial, final]
+}
+
+function calcularProximoDiaUtil (parametro) {
+    const date = new Date()
+
+    do {
+        date.setDate(date.getDate() + 1)
+    } while(isFeriado(date, parametro) && (date.getDay() === 0 || date.getDay() === 6))
+
+    return date.toLocaleDateString()
 }

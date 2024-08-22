@@ -246,14 +246,6 @@ const ADM = [
             atrasadas: 0
         },
         {
-            id: 190,
-            nome: "JOSE PEDRO DE GOIS NETO",
-            nomeTLC: "josé",
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
             id: 162,
             nome: "MIQUEAS CAMPOS DA SILVA",
             nomeTLC: "miqueas",

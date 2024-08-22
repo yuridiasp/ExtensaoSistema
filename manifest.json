@@ -25,6 +25,8 @@
                 "chromeUtils.js",
                 "utils/state/initialState.js",
                 "utils/typeListCompromissos/typeListCompromissos.js",
+                "cliente.js",
+                "tarefas.js",
                 "content.js",
                 "gerid.js",
                 "prazos.js",
