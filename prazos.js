@@ -31,10 +31,7 @@ function contarDias([ dia, mes, ano], final, parametro) {
 function dataContato(intervalo, dataInterno, parametro) {
     let hoje = new Date(),
         fimIntervalo = Number(intervalo),
-        date,
-        anoContato,
-        mesContato,
-        diaContato
+        date
         
 
     hoje.setHours(0, 0, 0, 0)
@@ -58,11 +55,7 @@ function dataContato(intervalo, dataInterno, parametro) {
         date = hoje   
     }
 
-    anoContato = date.getFullYear()
-    mesContato = date.getMonth() + 1
-    diaContato = date.getDate()
-
-    return `${diaContato < 10 ? '0'.concat(diaContato) : diaContato}/${mesContato < 10 ? '0'.concat(mesContato) : mesContato}/${anoContato}`
+    return date.toLocaleDateString()
 }
 
 function calculaIntervaloTarefasAdministrativo(dias) {
@@ -113,7 +106,7 @@ function calculaIntervaloTarefasAdministrativo(dias) {
         if (semanas >= 2) {
             if (tarefaAtualNormalizada === 'CONTATAR CLIENTE') {
                 if (agenciasGODF.includes(cliente.requerimento.postoINSS)) {
-                    return dias-2
+                    return dias-3
                 }
                 return dias-1
             }
@@ -123,6 +116,8 @@ function calculaIntervaloTarefasAdministrativo(dias) {
             if (tarefaAtualNormalizada === 'LEMBRAR CLIENTE')
                 return 2
         }
+    } else {
+        return dias-1
     }
 
     return 0

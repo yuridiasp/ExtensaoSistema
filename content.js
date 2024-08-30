@@ -379,12 +379,19 @@ function submitPesquisaProcesso() {
 }
 
 function addEventoPasteProcesso (processoInput) {
-    processoInput.addEventListener('paste', () => {
-        setTimeout(() => {
-            processoInput.value = removeCaracteresProcesso(processoInput.value)
-            submitPesquisaProcesso()
-        }, 10);
-    })
+    if (!state.functions.abaPesquisaProcesso.autoBuscaNumProcessoPesquisa) {
+        return
+    }
+    if (processoInput) {
+        processoInput.addEventListener('paste', () => {
+            setTimeout(() => {
+                if (state.functions.abaPesquisaProcesso.autoFormatacaoNumProcessoPesquisa) {
+                    processoInput.value = removeCaracteresProcesso(processoInput.value)
+                }
+                submitPesquisaProcesso()
+            }, 10);
+        })
+    }
 }
 
 function removeCaracteresProcesso(numeroProcesso) {
@@ -403,20 +410,10 @@ function removeCaracteresProcesso(numeroProcesso) {
     return processoFormatado
 }
 
-function formataNumProcesso () {
-    if (!state.functions.abaCadastrodeProcesso.autoFormatNumProcesso) {
-        return
-    }
-    const processoInput = document.querySelector("#bsAdvProcessosTexto"),
-        processoInputCad = document.querySelector("#numero")
-    
-    
+function formataNumProcesso (processoInput) {
     if (processoInput) {
-        addEventoPasteProcesso(processoInput)
-    }
-    if (processoInputCad) {
-        processoInputCad.addEventListener('change', event => {
-                event.target.value = removeCaracteresProcesso(event.target.value)
+        processoInput.addEventListener('change', event => {
+            event.target.value = removeCaracteresProcesso(event.target.value)
         })
     }
 }
@@ -739,7 +736,41 @@ function filterColaboradoresAdministrativo () {
             contagem: 0,
             atrasadas: 0
         }
+    ],
+    brasilia = [
+        {
+            id: 215,
+            nome: "JÚLIA ROBERTA DE FÁTIMA SOUSA ARAÚJO",
+            interiores: [],
+            datasViagem: [],
+            tarefas: 0
+        },
+        {
+            id: 223,
+            nome: "MATHEUS CAMPELO DA SILVA",
+            interiores: [],
+            datasViagem: [],
+            tarefas: 0
+        },
+        {
+            id: 80,
+            nome: "PATRICIA ANDRE SIMÃO DE SOUZA",
+            interiores: [],
+            datasViagem: [],
+            tarefas: 0
+        },
+        {
+            id: 222,
+            nome: "STEFANNY MORAIS DO NASCIMENTO",
+            interiores: [],
+            datasViagem: [],
+            tarefas: 0
+        },
     ]
+
+    /* if (cliente.processo.estado === 'GO' || cliente.processo.estado === 'DF') {
+        colaboradores.push(...brasilia)
+    } */
 
     const colaboradores = INSS.filter(({ nome }) => {
 
@@ -884,8 +915,6 @@ function filterColaboradoresJudicial () {
             colaboradores.push(...aracaju)
         }
     }
-
-    debugger
 
     return colaboradores
 }
@@ -1352,7 +1381,7 @@ function searchTipoIntimacao(selectTipoIntimacaoInput) {
         const optionToUpperNormalized = removeAcentuacaoString(option.innerText.toUpperCase().trim())
         const isManifestacao = optionToUpperNormalized.includes("MANIFESTACAO")
         const isTask = optionToUpperNormalized === tipoIntimacaoToUpperNormalized
-        const fistWordIncluded = optionToUpperNormalized.includes(tipoIntimacaoToUpperNormalized.split(" ")[0])
+        const fistWordIncluded = optionToUpperNormalized.split(" ").includes(tipoIntimacaoToUpperNormalized.split(" ")[0])
         
         if (isManifestacao) {
             inputManifestacao = option.children[0]
@@ -1499,7 +1528,7 @@ async function selecionarResponsavelExecutor(option) {
     const isTaskWhatsapp = option.children[0].children[0].innerText.toUpperCase() == "SMS E WHATSAPP"
     const isDFOrGO = cliente.processo.estado === "DF" || cliente.processo.estado === "GO"
 
-    if ((isTaskContatar || isTaskLembrar) || (isDFOrGO && (isTaskContatar || isTaskLembrar || isTaskWhatsapp)) || !state.functions.todasPaginas.tipoIntimacaoIsJudicial && !adv || isTaskCalculo) {
+    if ((isTaskContatar || isTaskLembrar) || (isDFOrGO && (isTaskContatar || isTaskLembrar)) || !state.functions.todasPaginas.tipoIntimacaoIsJudicial && !adv || isTaskCalculo) {
         validaExecutorContatar()
     }
 
@@ -1570,11 +1599,26 @@ function loadInfo () {
 
 
 function focarInputProcesso() {
+    if (!state.functions.abaPesquisaProcesso.autofocoNumProcessoPesquisa) {
+        return
+    }
+
+    const inputProcesso = document.querySelector("#bsAdvProcessosTexto")
+
+    if (inputProcesso) {
+        inputProcesso.focus()
+    }
+}
+
+function limparInputProcesso() {
+    if (!state.functions.abaPesquisaProcesso.autolimpezaNumProcessoPesquisa) {
+        return
+    }
+
     const inputProcesso = document.querySelector("#bsAdvProcessosTexto")
 
     if (inputProcesso) {
         inputProcesso.value = ""
-        inputProcesso.focus()
     }
 }
 
@@ -2088,15 +2132,17 @@ async function idPage(url) {
     const urlClienteCadastro = 'http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/formulario.asp?org=',
         urlProcessosCadastro = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/formulario",
         urlProcessos = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/default",
+        urlProcessosFicha = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/ficha",
         urlCompromissos = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/compromissos/formulario",
         urlCompromissoFicha = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/compromissos/ficha",
-        urlCompromissoDefault = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/compromissos/default.asp",
-        urlCompromissoEscolherTipo= "http://fabioribeiro.eastus.cloudapp.azure.com/adv/compromissos/incluirEscolhe.asp",
-        urlTarefas = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/formulario",
-        urlTarefasFicha = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/default",
+        urlCompromissoDefault = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/compromissos/default",
+        urlCompromissoEscolherTipo= "http://fabioribeiro.eastus.cloudapp.azure.com/adv/compromissos/incluirEscolhe",
+        urlListaTarefas = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/default",
+        urlTarefasForm = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/formulario",
+        urlClienteFicha = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/ficha",
         urlClienteAddtarefa = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/default",
-        urlCadastroPreProcesso = "http://fabioribeiro.eastus.cloudapp.azure.com/pre/preProcessos/formulario.asp",
-        urlCadastroPreProcessoPasta = "http://fabioribeiro.eastus.cloudapp.azure.com/pre/preProcessos/formularioCria.asp",
+        urlCadastroPreProcesso = "http://fabioribeiro.eastus.cloudapp.azure.com/pre/preProcessos/formulario",
+        urlCadastroPreProcessoPasta = "http://fabioribeiro.eastus.cloudapp.azure.com/pre/preProcessos/formularioCria",
         urlSistemaFR = "http://fabioribeiro.eastus.cloudapp.azure.com",
         urlPortalDoAdvogadoTJSE = "https://www.tjse.jus.br/tjnet/portaladv/index.wsp",
         urlPJE = "/pje/",
@@ -2106,15 +2152,17 @@ async function idPage(url) {
         urlGeridINSS = "https://atendimento.inss.gov.br/",
         autoCompletar = await getAutoComplete(),
         pageBuscaProcessos = url.includes(urlProcessos),
-        pageTarefas = url.includes(urlTarefas),
+        pageListaTarefas = url.includes(urlListaTarefas),
+        pageTarefasForm = url.includes(urlTarefasForm),
+        pageVisualizacaoProcesso = url.includes(urlProcessosFicha),
         pageCompromissos = url.includes(urlCompromissos),
         pageCompromissoEscolherTipo = url.includes(urlCompromissoEscolherTipo),
+        pageFichaCliente = url.includes(urlClienteFicha),
         pageCadastroCliente = url.includes(urlClienteCadastro),
         pageCadastroProcesso = url.includes(urlProcessosCadastro),
         pageVisualizacaoAbaCompromissos = url.includes(urlCompromissoDefault),
         pageVisualizacaoCompromisso = url.includes(urlCompromissoFicha),
         pageFormularioAddTarefaSemCompromisso = url.includes(urlClienteAddtarefa),
-        pageVisualizacaoTarefa = url.includes(urlTarefasFicha),
         pagePreProcessoPasta = url.includes(urlCadastroPreProcessoPasta),
         pagePreProcessoFormulario = url.includes(urlCadastroPreProcesso),
         pagePortalDoAdvogado = url.includes(urlPortalDoAdvogadoTJSE),
@@ -2135,12 +2183,16 @@ async function idPage(url) {
         createPainel('INSS', INSS, state.functions.supervisor.painelVisualizacaoTarefasTimeINSS)
         contarTarefasParaHoje()
         if (pageBuscaProcessos) {
-            if (!state.functions.abaPesquisaProcesso.autoFormatacaoNumProcessoPesquisa) {
-                return
+            const processoInput = document.querySelector("#bsAdvProcessosTexto")
+
+            if (state.functions.abaPesquisaProcesso.autoFormatacaoNumProcessoPesquisa) {
+                formataNumProcesso(processoInput)
             }
-            formataNumProcesso()
+            addEventoPasteProcesso(processoInput)
             focarInputProcesso()
-        } else if (pageTarefas && autoCompletar) {
+            limparInputProcesso()
+            createButtonLinkJusticePortalForCase("listaProcesso")
+        } else if (pageTarefasForm && autoCompletar) {
             preenchimentoTarefasDeCompromissos()
         } else if (pageCompromissos && autoCompletar) {
                 createDataListCompromissos()
@@ -2148,15 +2200,19 @@ async function idPage(url) {
                 createButtonPrazo()
                 buscarDadosClienteProcessos(url)
         } else if (pageCadastroProcesso) {
-            formataNumProcesso()
+            if (state.functions.abaCadastrodeProcesso.autoFormatNumProcesso) {
+                const processoInputCad = document.querySelector("#numero")
+                formataNumProcesso(processoInputCad)
+            }
             habilitarEdicaoNumeroProcesso()
         } else if (pageVisualizacaoAbaCompromissos) {
             createButtonRolagem()
             setValidacaoFunctionOn()
         } else if (pageVisualizacaoCompromisso || pageFormularioAddTarefaSemCompromisso) {
             setValidacaoFunctionOff()
-        } else if (pageVisualizacaoTarefa) {
+        } else if (pageListaTarefas) {
             addEventToAutocomplete()
+            createButtonLinkJusticePortalForCase("tarefas")
         } else if (pagePreProcessoPasta) {
             await setIdClientPreProcesso()
             prenchimentoNomePasta()
@@ -2166,6 +2222,10 @@ async function idPage(url) {
             await setAutoComplete(true)
         } else if (pageCadastroCliente) {
             criarTarefaClientePrimeiraVez()
+        } else if (pageVisualizacaoProcesso) {
+            createButtonLinkJusticePortalForCase("processo")
+        } else if (pageFichaCliente) {
+            createButtonLinkJusticePortalForCase("cliente")
         }
         
     } else if (pagePortalDoAdvogado) {

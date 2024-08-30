@@ -5,27 +5,30 @@ let state = {
             tipoIntimacaoIsJudicial: null,
             digitarUsandoVoz: null,
             contadorTarefas: null,
-            datepickerHighlighter: null
+            datepickerHighlighter: null,
+            criarBotaoAcessoPortalJusticaProcesso: null,
         },
         abaCadastroCliente: {
-            criarTarefaCRM: null
+            criarTarefaCRM: null,
         },
         abaCadastrodeProcesso: {
-            autoFormatNumProcesso: null,
-            alteracaoNumeroProcesso: null
+            alteracaoNumeroProcesso: null,
         },
         abaPesquisaProcesso: {
-            autoFormatacaoNumProcessoPesquisa: null
+            autoBuscaNumProcessoPesquisa: null,
+            autofocoNumProcessoPesquisa: null,
+            autolimpezaNumProcessoPesquisa: null,
+            autoFormatacaoNumProcessoPesquisa: null,
         },
         abaCompromissosProcesso: {
-            mostrarBotadeRolagem: null
+            mostrarBotadeRolagem: null,
         },
         cadastroCompromisso:{
             selecaodoTipodeCompromisso: null,
             exibirlistaDescricaoCompromisso: null,
             mostrarBotoesAuxiliaresdeDias: null,
             AutoPreenchimentoPrazoInterno: null,
-            exibirListaTarefas: null
+            exibirListaTarefas: null,
         },
         cadastroTarefa:{
             AutoPreenchimentoTarefasIntimacoes: null,
@@ -33,7 +36,7 @@ let state = {
         },
         preProcesso:{
             preenchimentoNomePasta: null,
-            preenchimentoFormularioPreProcesso: null
+            preenchimentoFormularioPreProcesso: null,
         },
         supervisor: {
             painelVisualizacaoTarefasTimeADM: null,
@@ -42,10 +45,10 @@ let state = {
             painelVisualizacaoTarefasTimeINSS: null,
         },
         tjse: {
-            botaoExportarAlvaras: null
+            botaoExportarAlvaras: null,
         },
         gerid: {
-            botaoExportarNotificacoes: null
+            botaoExportarNotificacoes: null,
         }
     }
 }
