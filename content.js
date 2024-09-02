@@ -1091,13 +1091,13 @@ async function validaResponsavelFederal (num) {
         }
 
         if (digitoVerificador === "405" && numeroProcesso.search('080') === 0) { //Processos do TRF5
-            if (cliente.processo.merito === "MANDADO DE SEGURANÇA") {
+            /* if (cliente.processo.merito === "MANDADO DE SEGURANÇA") {
                 if (setimoDigito <= 4) {
                     return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
                 }
 
                 return {responsavel: "DIEGO MELO SOBRINHO",executor: "ITALO DE ANDRADE BEZERRA"}
-            }
+            } */
 
             return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
         }
