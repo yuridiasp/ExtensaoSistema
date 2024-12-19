@@ -28,6 +28,7 @@ const typeListCompromissos = {
         'CONTRARRAZÕES',
         'CONTRARRAZÕES + CONTRAMINUTA',
         'DADOS BANCÁRIOS',
+        "DADOS COMPLEMENTARES PARA PERÍCIA SOCIAL",
         'DILAÇÃO',
         'DECISÃO',
         'DECISÃO + QUESITOS',

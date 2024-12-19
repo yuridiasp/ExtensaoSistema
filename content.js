@@ -205,8 +205,8 @@ function getListaTarefasCompromissoJudicial(tipoCompromisso = cliente.compromiss
 
     const tipoCompromissoNormalizado = removeAcentuacaoString(tipoCompromisso),
         contDoisADM = "DECISAO ANTECIPACAO PERICIA",
-        contDoisCalculo = ["MANIFESTACAO SOBRE CALCULOS", "MANIFESTACAO SOBRE CALCULO"],
-        contDoisEmenda = ["EMENDAR","DADOS PERICIA SOCIAL","DADOS COMPLEMENTARES"],
+        /* contDoisCalculo = ["MANIFESTACAO SOBRE CALCULOS", "MANIFESTACAO SOBRE CALCULO"], */
+        contDoisEmenda = ["EMENDAR","DADOS PERICIA SOCIAL","DADOS COMPLEMENTARES", "DADOS PARA PERICIA SOCIAL", "DADOS COMPLEMENTARES PARA PERÍCIA SOCIAL"],
         contDoisFinanceiro = ["RECEBIMENTO DE ALVARA", "RPV TRF1 BRASILIA", "RPV TRF1 GOIAS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTANCIA", "RPV TRF1 BAHIA", "RECEBIMENTO DE PRECATORIO"],
         contTres = "PERICIA",
         contQuatro = ["AUDIENCIA DE CONCILIACAO", "AUDIENCIA CONCILIATORIA", "AUDIENCIA DE INTERROGATORIO"],
@@ -228,7 +228,7 @@ function getListaTarefasCompromissoJudicial(tipoCompromisso = cliente.compromiss
     const isPericia = tipoCompromissoNormalizado.search(contTres) === 0
     const isLiminarPericiaAdm = tipoCompromissoNormalizado.includes(contDoisADM)
     const hasTwoTasksEmenda = contDoisEmenda.includes(tipoCompromissoNormalizado)
-    const hasTwoTasksCalculo = contDoisCalculo.includes(tipoCompromissoNormalizado)
+    /* const hasTwoTasksCalculo = contDoisCalculo.includes(tipoCompromissoNormalizado) */
     const hasTwoTasksFinanceiro = contDoisFinanceiro.includes(tipoCompromissoNormalizado)
     
     if (hasFiveTasks && isMoreWeek) {
@@ -266,14 +266,14 @@ function getListaTarefasCompromissoJudicial(tipoCompromisso = cliente.compromiss
     if (hasTwoTasksEmenda)
         return emendar
 
-    if (hasTwoTasksCalculo)
-        return calculo
+    /* if (hasTwoTasksCalculo)
+        return calculo */
     
     if (hasTwoTasksFinanceiro)
         return [cliente.compromisso.tipoCompromisso + " - ADVOGADO", cliente.compromisso.tipoCompromisso + " - FINANCEIRO"]
     
-    if (isLiminarPericiaAdm)
-        return [cliente.compromisso.tipoCompromisso + " - ADVOGADO", "ACOMPANHAR - ADM"]
+    /* if (isLiminarPericiaAdm)
+        return [cliente.compromisso.tipoCompromisso + " - ADVOGADO", "ACOMPANHAR - ADM"] */
 
     return [cliente.compromisso.tipoCompromisso]
 }
@@ -565,7 +565,7 @@ async function selectExecutorContatarAdministrativo (colaboradores) {
 
     const getResponsavelAdministrativo = () => {
         if (tipoCompromissoNormalizado.includes("PERICIA") || (tipoCompromissoNormalizado.includes("EXIGENCIA INSS") && cliente.compromisso.tarefas.length === 3)) {
-            return "FLAVIO LUCAS LIMA SOUZA"
+            return "GABRIEL FRANÇA VITAL"
         }
 
         /* if (executor.nome === "JOSE PEDRO DE GOIS NETO") {
@@ -689,7 +689,7 @@ function filterColaboradoresCalculo () {
 }
 
 function filterColaboradoresAdministrativo () {
-    const tipoCompromisso = removeAcentuacaoString(cliente.compromisso.tipoCompromisso)
+    const tipoCompromissoNormalizado = removeAcentuacaoString(cliente.compromisso.tipoCompromisso)
 
     const INSS = [
         {
@@ -739,6 +739,13 @@ function filterColaboradoresAdministrativo () {
     ],
     brasilia = [
         {
+            id: 234,
+            nome: "DAVI ALVES DOS SANTOS",
+            interiores: [],
+            datasViagem: [],
+            tarefas: 0
+        },
+        {
             id: 215,
             nome: "JÚLIA ROBERTA DE FÁTIMA SOUSA ARAÚJO",
             interiores: [],
@@ -748,13 +755,6 @@ function filterColaboradoresAdministrativo () {
         {
             id: 223,
             nome: "MATHEUS CAMPELO DA SILVA",
-            interiores: [],
-            datasViagem: [],
-            tarefas: 0
-        },
-        {
-            id: 80,
-            nome: "PATRICIA ANDRE SIMÃO DE SOUZA",
             interiores: [],
             datasViagem: [],
             tarefas: 0
@@ -776,7 +776,7 @@ function filterColaboradoresAdministrativo () {
 
         const nomeNormalizado = removeAcentuacaoString(nome)
 
-        if (tipoCompromisso.includes("EXIGENCIA INSS")) {
+        if (tipoCompromissoNormalizado.includes("EXIGENCIA INSS")) {
             const isFirstTask = cliente.compromisso.tarefas.length === 4
             const isSecondTask = cliente.compromisso.tarefas.length === 3
             const isThirdTask = cliente.compromisso.tarefas.length === 2
@@ -786,7 +786,7 @@ function filterColaboradoresAdministrativo () {
                 return nomeNormalizado.includes("SILVANIA")
             }
             if (isSecondTask) {
-                return nomeNormalizado.includes("FLAVIO")
+                return nomeNormalizado.includes("GABRIEL")
             }
 
             if (isThirdTask) {
@@ -796,8 +796,8 @@ function filterColaboradoresAdministrativo () {
             if (isLastTask) {
                 return !nomeNormalizado.includes("SILVANIA")
             }
-        } else if (tipoCompromisso.includes("PERICIA")) {
-            return !nomeNormalizado.includes("FLAVIO") && !nomeNormalizado.includes("SILVANIA")
+        } else if (tipoCompromissoNormalizado.includes("PERICIA")) {
+            return !nomeNormalizado.includes("GABRIEL") && !nomeNormalizado.includes("SILVANIA")
         }
     })
 
@@ -821,10 +821,17 @@ function filterColaboradoresJudicial () {
             }
         ],
         aracaju = [
-            {
+            /* {
                 id: 196,
                 nome: "KAUÃ DE CARVALHO NASCIMENTO",
-                interiores: [],
+                interiores: ["UMBAUBA", "LOTEAMENTO JEOVA (BOTAFOGO)", "SANTA ROSA DE LIMA"],
+                datasViagem: [],
+                tarefas: 0
+            }, */
+            {
+                id: 201,
+                nome: "MARCO AURELIO LEITE GOMES",
+                interiores: ["CARMOPOLIS", "LOTEAMENTO JEOVA (BOTAFOGO)", "SANTA ROSA DE LIMA", "JAPOATÃ"],
                 datasViagem: [],
                 tarefas: 0
             },
@@ -834,34 +841,14 @@ function filterColaboradoresJudicial () {
                 interiores: ["ESTANCIA", "TOBIAS BARRETO", "PEDRINHAS"],
                 datasViagem: [],
                 tarefas: 0
-            }, //[],
-            /* {
-                id: 225,
-                nome: "ERINALDO FARO SANTOS",
-                interiores: [],
-                datasViagem: [],
-                tarefas: 0
-            }, */
-            {
-                id: 188,
-                nome: "VINICIUS SOUSA BOMFIM",
-                interiores: ["UMBAUBA", "CARMOPOLIS", "LOTEAMENTO JEOVA (BOTAFOGO)"],
-                datasViagem: [],
-                tarefas: 0
             },
             {
-                id: 94,
-                nome: "CARLOS HENRIQUE ESPASIANI",
+                id: 217,
+                nome: "THIAGO SANTOS SANTANA",
                 interiores: ["CAPELA", "JAPARATUBA", "CONDE/BA", "ALAGOINHAS"],
-                datasViagem: [],
-                tarefas: 0
-            },
-            {
-                id: 131,
-                nome: "ASLEY RODRIGO DE MELO LIMA",
-                interiores: [],
-                datasViagem: [],
-                tarefas: 0
+                diasViagem: null,
+                contagem: 0,
+                atrasadas: 0
             },
             {
                 id: 161,
@@ -873,6 +860,13 @@ function filterColaboradoresJudicial () {
         ],
         brasilia = [
             {
+                id: 234,
+                nome: "DAVI ALVES DOS SANTOS",
+                interiores: [],
+                datasViagem: [],
+                tarefas: 0
+            },
+            {
                 id: 215,
                 nome: "JÚLIA ROBERTA DE FÁTIMA SOUSA ARAÚJO",
                 interiores: [],
@@ -882,13 +876,6 @@ function filterColaboradoresJudicial () {
             {
                 id: 223,
                 nome: "MATHEUS CAMPELO DA SILVA",
-                interiores: [],
-                datasViagem: [],
-                tarefas: 0
-            },
-            {
-                id: 80,
-                nome: "PATRICIA ANDRE SIMÃO DE SOUZA",
                 interiores: [],
                 datasViagem: [],
                 tarefas: 0
@@ -908,9 +895,9 @@ function filterColaboradoresJudicial () {
         colaboradores.push(...estancia)
     } else {
         if (varaEstancia.includes(cliente.processo.vara)) {
-            alert("Verificar executor manualmente!")
             colaboradores.push(...aracaju)
             colaboradores.push(...estancia)
+            alert("Verificar executor manualmente!")
         } else {
             colaboradores.push(...aracaju)
         }
@@ -922,7 +909,7 @@ function filterColaboradoresJudicial () {
 async function requererTarefasContatar(data) {
     const isJudicial = state.functions.todasPaginas.tipoIntimacaoIsJudicial
 
-    const isTaskCalculo = removeAcentuacaoString(cliente.compromisso.tipoCompromisso).includes("CALCULO") && removeAcentuacaoString(cliente.compromisso.tarefas[0]).includes("CALCULO")
+    const isTaskCalculo = false /* removeAcentuacaoString(cliente.compromisso.tipoCompromisso).includes("CALCULO") && removeAcentuacaoString(cliente.compromisso.tarefas[0]).includes("CALCULO") */
 
     const colaboradores = isTaskCalculo ? filterColaboradoresCalculo() : isJudicial ? filterColaboradoresJudicial() : filterColaboradoresAdministrativo()
 
@@ -1013,6 +1000,7 @@ async function validaResponsavelTj (num) {
 }
 
 async function validaResponsavelFederal (num) {
+    
     const tarefaAtualNormalizada = removeAcentuacaoString(cliente.compromisso.tarefas[0]),
         numeroProcesso = cliente.processo.origem,
         financeiro = ["RPV TRF1 BRASILIA", "RPV TRF1 GOIAS", "RPV TRF5 ARACAJU", "RPV TRF5 ESTANCIA", "RPV TRF1 BAHIA", "RECEBIMENTO DE PRECATORIO"],
@@ -1064,9 +1052,9 @@ async function validaResponsavelFederal (num) {
     if ((digitoVerificador === "520" || natureza === "TRABALHISTA") || (natureza === "SERVIDOR PÚBLICO" && cliente.processo.responsavel === "VICTOR HUGO SOUSA ANDRADE")) {  //Processos Trabalhistas TRT20
         return {responsavel: "FELIPE PANTA CARDOSO",executor: "FELIPE PANTA CARDOSO"}
     }
-
-    if (digitoVerificador === "401" || secaoDFGO.includes(secao)) { // Processos do TRF1
-        const varasDF = ["23ª VARA FEDERAL BRASÍLIA", "24ª VARA FEDERAL DE BRASÍLIA", "25ª VARA FEDERAL DE BRASÍLIA", "26ª VARA FEDERAL DE BRASÍLIA", "27ª VARA FEDERAL DE BRASÍLIA", "23ª VARA FEDERAL", "24ª VARA FEDERAL", "25ª VARA FEDERAL", "26ª VARA FEDERAL", "27ª VARA FEDERAL", "BRASILIA", "1ª VARA FEDERAL CÍVEL SJGO", "TJ GOIÁS", "VARA FEDERAL DA SSJ LUZIÂNIA-GO", "VARA DE ÁGUAS LINDAS DE GOIÁS", "VARA FEDERAL DE RIO VERDE-GO", "VARA FEDERAL SJDF"]
+    
+    if (digitoVerificador === "401" || digitoVerificador === "807" || secaoDFGO.includes(secao)) { // Processos do TRF1
+        const varasDF = ["21º VARA FEDERAL","23ª VARA FEDERAL BRASÍLIA", "24ª VARA FEDERAL DE BRASÍLIA", "25ª VARA FEDERAL DE BRASÍLIA", "26ª VARA FEDERAL DE BRASÍLIA", "27ª VARA FEDERAL DE BRASÍLIA", "23ª VARA FEDERAL", "24ª VARA FEDERAL", "25ª VARA FEDERAL", "26ª VARA FEDERAL", "27ª VARA FEDERAL", "BRASILIA", "1ª VARA FEDERAL CÍVEL SJGO", "TJ GOIÁS", "VARA FEDERAL DA SSJ LUZIÂNIA-GO", "VARA DE ÁGUAS LINDAS DE GOIÁS", "VARA FEDERAL DE RIO VERDE-GO", "VARA FEDERAL SJDF", "VARA DE AÇÕES PREVIDENCIÁRIAS DO DF", "20ª VARA FEDERAL DA SJDF", "2ª VARA FEDERAL DE ANÁPOLIS"]
         
         if ((cliente.processo.estado === "DF" || cliente.processo.estado === "GO")) {
             if (!varasDF.includes(cliente.processo.vara)) {
@@ -1182,7 +1170,7 @@ async function validaEsferaProcesso() {
         const lengthCharProcessFederalProtocol = 15
         const lengthCharProcessFederalEcint = 17
         const lengthCharProcessAllFederal = 20
-    
+        
         if (caracteresProcesso === lengthCharProcessTJ) {
             return await validaResponsavelTj(caracteresProcesso)
         }
@@ -1517,12 +1505,14 @@ function mostrarCamposPericia () {
 }
 
 async function selecionarResponsavelExecutor(option) {
+    
     const adv = await validaEsferaProcesso()
 
     if (adv)
         selectRespExec(adv)
 
-    const isTaskCalculo = removeAcentuacaoString(cliente.compromisso.tipoCompromisso).includes("CALCULO") && removeAcentuacaoString(cliente.compromisso.tarefas[0]).includes("CALCULO")
+   /*  const isTaskCalculo = removeAcentuacaoString(cliente.compromisso.tipoCompromisso).includes("CALCULO") && removeAcentuacaoString(cliente.compromisso.tarefas[0]).includes("CALCULO") */
+    const isTaskCalculo = null
     const isTaskContatar = option.children[0].children[0].innerText.toUpperCase() == "CONTATAR CLIENTE"
     const isTaskLembrar = option.children[0].children[0].innerText.toUpperCase() == "LEMBRAR CLIENTE"
     const isTaskWhatsapp = option.children[0].children[0].innerText.toUpperCase() == "SMS E WHATSAPP"
@@ -1531,10 +1521,10 @@ async function selecionarResponsavelExecutor(option) {
     if ((isTaskContatar || isTaskLembrar) || (isDFOrGO && (isTaskContatar || isTaskLembrar)) || !state.functions.todasPaginas.tipoIntimacaoIsJudicial && !adv || isTaskCalculo) {
         validaExecutorContatar()
     }
-
 }
 
 function loadInfo () {
+    
     if (!state.functions.cadastroTarefa.AutoPreenchimentoTarefasIntimacoes || !cliente.compromisso.tarefas.length) {
         return
     }
@@ -1836,6 +1826,7 @@ function removeAcentuacaoString (string) {
 }
 
 async function preenchimentoTarefasDeCompromissos() {
+    
     cliente = await getCliente()
     if (cliente.compromisso.atualizar)
         createInputDependente()
@@ -2089,6 +2080,22 @@ function datepickerHighlighter () {
     })
 }
 
+function pinSideMenu() {
+    
+    if (!state.functions.todasPaginas.fixarMenuNavegacaoLateral) {
+        return
+    }
+
+    const mainSection = document.querySelector("body > section > section")
+
+    if (mainSection) {
+        const body = document.querySelector("body")
+        body.style.height = "100vh"
+        mainSection.style.display = "block"
+        mainSection.style.overflowY = "auto"
+    }
+}
+
 function criarTarefaClientePrimeiraVez() {
     if (!state.functions.abaCadastroCliente.criarTarefaCRM) {
         return
@@ -2139,6 +2146,7 @@ async function idPage(url) {
         urlCompromissoEscolherTipo= "http://fabioribeiro.eastus.cloudapp.azure.com/adv/compromissos/incluirEscolhe",
         urlListaTarefas = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/default",
         urlTarefasForm = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/formulario",
+        urlTarefasFicha = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/ficha",
         urlClienteFicha = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/ficha",
         urlClienteAddtarefa = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/default",
         urlCadastroPreProcesso = "http://fabioribeiro.eastus.cloudapp.azure.com/pre/preProcessos/formulario",
@@ -2152,6 +2160,7 @@ async function idPage(url) {
         urlGeridINSS = "https://atendimento.inss.gov.br/",
         autoCompletar = await getAutoComplete(),
         pageBuscaProcessos = url.includes(urlProcessos),
+        pageFichaTarefas = url.includes(urlTarefasFicha),
         pageListaTarefas = url.includes(urlListaTarefas),
         pageTarefasForm = url.includes(urlTarefasForm),
         pageVisualizacaoProcesso = url.includes(urlProcessosFicha),
@@ -2174,6 +2183,7 @@ async function idPage(url) {
         
     digitacaoPorVoz()
     datepickerHighlighter()
+    pinSideMenu()
     
     if (isSistema) {
         createStyleProgressBar()
@@ -2199,6 +2209,8 @@ async function idPage(url) {
                 addListenersCompromisso()
                 createButtonPrazo()
                 buscarDadosClienteProcessos(url)
+        } else if (pageFichaTarefas) {
+            createButtonLinkJusticePortalForCase("fichaTarefa")
         } else if (pageCadastroProcesso) {
             if (state.functions.abaCadastrodeProcesso.autoFormatNumProcesso) {
                 const processoInputCad = document.querySelector("#numero")
@@ -2221,7 +2233,7 @@ async function idPage(url) {
         } else if (pageCompromissoEscolherTipo) {
             await setAutoComplete(true)
         } else if (pageCadastroCliente) {
-            criarTarefaClientePrimeiraVez()
+            //criarTarefaClientePrimeiraVez()
         } else if (pageVisualizacaoProcesso) {
             createButtonLinkJusticePortalForCase("processo")
         } else if (pageFichaCliente) {
@@ -2251,24 +2263,25 @@ function validateFunctions(initFunctions, savedFunctions) {
 }
 
 async function activate() {
+    
     const [ estado, clienteSaved ] = await Promise.all([getState(), getCliente()]),
         { URL } = document
-
+        
     console.log(clienteSaved)
-
+    
     const { active, functions } = estado
-
+    
     state.active = active
     state.functions = validateFunctions(state.functions, functions)
     
     if (!clienteSaved) {
         await setCliente(cliente)
     }
-
+    
     if (!active)
         return
     
-    idPage(URL)
+    await idPage(URL)
 }
 
 function updateEvent() {

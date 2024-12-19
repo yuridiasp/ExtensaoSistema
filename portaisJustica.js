@@ -111,6 +111,10 @@ function getNumberCase(page, container) {
         return document.querySelector("body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div:nth-child(2) > div:nth-child(2) > span").innerText
     }
 
+    if (page === "fichaTarefa") {
+        return document.querySelector("body > section > section > div.fdt-espaco > div > div:nth-child(1) > h4").innerHTML.replace("Ficha da tarefa: ", "")
+    }
+
     if (page === "listaProcesso") {
         return container.parentElement.parentElement.parentElement.querySelector("td:nth-child(3)").innerText
     }
@@ -129,7 +133,7 @@ function getNumberCase(page, container) {
 }
 
 function getContainers(page) {
-    if (page === "processo") {
+    if (page === "processo" || page === "fichaTarefa") {
         return document.querySelectorAll("body > section > section > div.fdt-espaco > div > div:nth-child(2)")
     }
 

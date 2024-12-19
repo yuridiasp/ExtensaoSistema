@@ -246,9 +246,9 @@ function calcularDataTarefa(parametro) {
 
         const isTaskContatar = cliente.compromisso.tarefas[0] == "CONTATAR CLIENTE"
         const isTaskLembrar = cliente.compromisso.tarefas[0] == "LEMBRAR CLIENTE"
-        const isDFOrGO = cliente.processo.estado === "DF" || cliente.processo.estado === "GO"
+        /* const isDFOrGO = cliente.processo.estado === "DF" || cliente.processo.estado === "GO" */
 
-        if (((isTaskContatar || isTaskLembrar) && !isDFOrGO) || !state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
+        if (isTaskContatar || isTaskLembrar || !state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
             const contactdiv = document.querySelector("#contactdiv")
             
             if (contactdiv) {

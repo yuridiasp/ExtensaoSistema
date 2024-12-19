@@ -21,7 +21,7 @@ async function createHistorico() {
             tipo: '63'
         },
         'PERICIA': {
-            historico: `${cliente.requerimento.protocolo} - ${cliente.compromisso.tipoCompromisso}\r\nData e Hora: ${cliente.compromisso.prazoFatal} (${day}) às ${cliente.compromisso.prazoFatal}\r\nLocal: ${cliente.compromisso.local}\r\nEndereço: ${cliente.compromisso.endereco}\r\nOrientar a levar o agendamento, relatórios médicos e documentos pertinentes a atividade rural / pescador (caso exerça).\r\nChegar com 30 minutos de antecedência.`,
+            historico: `${cliente.requerimento.protocolo} - ${cliente.compromisso.tipoCompromisso}\r\nData e Hora: ${cliente.compromisso.prazoFatal} (${day}) às ${cliente.compromisso.horario}\r\nLocal: ${cliente.compromisso.local}\r\nEndereço: ${cliente.compromisso.endereco}\r\nOrientar a levar o agendamento, relatórios médicos e documentos pertinentes a atividade rural / pescador (caso exerça).\r\nChegar com 30 minutos de antecedência.`,
             tipo: '20'
         }
     }

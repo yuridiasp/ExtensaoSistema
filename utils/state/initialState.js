@@ -7,6 +7,7 @@ let state = {
             contadorTarefas: null,
             datepickerHighlighter: null,
             criarBotaoAcessoPortalJusticaProcesso: null,
+            fixarMenuNavegacaoLateral: null,
         },
         abaCadastroCliente: {
             criarTarefaCRM: null,
@@ -22,6 +23,7 @@ let state = {
         },
         abaCompromissosProcesso: {
             mostrarBotadeRolagem: null,
+            rolagemSuavePagina: null,
         },
         cadastroCompromisso:{
             selecaodoTipodeCompromisso: null,

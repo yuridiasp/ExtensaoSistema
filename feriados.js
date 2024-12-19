@@ -42,24 +42,28 @@ function calculaPascoa(ano) {
 
 function FeriadosFixos (ano, parametro) {
 
+    const indexJaneiro = 0
+    
     const dataFactory = (date, resultados, increment = null) => {
         const { data: [mes, dia], feriado, isNacional } = date
-        const yearCalculated = increment === null ? ano : (increment ? ano + 1 :  ano - 1)
+        const yearCalculated = increment === null ? ano : (increment == true ? ano + 1 :  ano - 1)
         const dateString = (new Date(yearCalculated, mes, dia)).toDateString()
-
+        
         resultados[dateString] ? resultados[dateString].push({ feriado, isNacional: isNacional ? isNacional : false }) : resultados[dateString] = [ { feriado, isNacional: isNacional ? isNacional : false } ]
     }
 
     const setIntervaloFeriadosJudiciario = (diaInicio, mesInicio, diaFinal, mesFinal, feriado) => {
+        
         const fimMesDezembro = 31,
             diaPrimeiro = 1
-
+        
         let feriados = [],
             dia = diaInicio,
             mes = mesInicio
-
-        while(dia > diaFinal && mes == mesFinal) {
-            feriados.push({data: [mes, dia], feriado})
+        
+        
+        while(mes !== mesFinal || dia <= diaFinal && mes === mesFinal) {
+            feriados.push({data: [mes, dia], feriado, isNacional: feriado === "RECESSO FORENSE: 20/12 A 06/01"})
             dia++
             
             if (dia > fimMesDezembro) {
@@ -74,7 +78,6 @@ function FeriadosFixos (ano, parametro) {
     const tarefaContatar = parametro === parametros.tarefaContatar,
         tarefaAdvogado = parametro === parametros.tarefaAdvogado,
         isHighlight = parametro === parametros.highlight,
-        indexJaneiro = 0,
         diaInicioForense = 20,
         mesInicioForense = 11,
         diaFimForense = 6,
@@ -98,6 +101,7 @@ function FeriadosFixos (ano, parametro) {
                     {data: [9,12], feriado: "DIA DAS CRIANÇAS - DIA DA PADROEIRA DO BRASIL - NACIONAL", isNacional: true},
                     {data: [10,2], feriado: "FINADOS - NACIONAL", isNacional: true},
                     {data: [10,15], feriado: "PROCLAMAÇÃO DA REPÚBLICA - NACIONAL", isNacional: true},
+                    {data: [10,20], feriado: "DIA DA CONSCIÊNCIA NEGRA - NACIONAL", isNacional: true},
                     {data: [11,25], feriado: "NATAL - NACIONAL", isNacional: true},
                 ],
                 recessoForense : forense,
@@ -330,7 +334,7 @@ function FeriadosFixos (ano, parametro) {
             }
     
     datas.nacional.forEach(date => dataFactory(date, resultados))
-
+    
     if (isIS || isHighlight) {
         datas.justicaEstadual.forEach(date => dataFactory(date, resultados))
     }
@@ -345,11 +349,11 @@ function FeriadosFixos (ano, parametro) {
         datas.justicaNacional.forEach(date => dataFactory(date, resultados))
 
         datas.feriasAdvogados.forEach(date => {
-            const month = date[0]
-
+            const month = date.data[0]
+            
             let increment = null
 
-            if (month == indexJaneiro) {
+            if (month === indexJaneiro) {
                 increment = true
             }
             else {
@@ -377,8 +381,8 @@ function FeriadosFixos (ano, parametro) {
     }
 
     datas.recessoForense.forEach(date => {
-        const month = date[0]
-
+        const month = date.data[0]
+        
         let increment = null
 
         if (month == indexJaneiro) {
@@ -395,7 +399,7 @@ function FeriadosFixos (ano, parametro) {
         dataFactory(date, resultados, increment)
         dataFactory(date, resultados)
     })
-    
+    console.log(resultados)
     return resultados
 }
 
@@ -471,3 +475,19 @@ function isFeriado (date, parametro, year = null) {
 
     return { isHoliday: false }
 }
+/* const cliente = {
+    processo: {
+        origem: '00048838720214058500',
+        estado: 'SE',
+        natureza: 'PREVIDENCIÁRIO'
+    }
+}
+const parametros = {
+    tarefaContatar: 1,
+    tarefaAdvogado: 2,
+    highlight: 3
+}
+
+const date = new Date('06/01/2025')
+
+console.log(isFeriado(date)) */

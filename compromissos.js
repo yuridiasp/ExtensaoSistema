@@ -22,16 +22,26 @@ function createButtonRolagem () {
     arrow.style.fontWeight = 'bold'
     arrow.style.borderStyle = 'none'
     arrow.style.boxShadow = '10px 5px 5px black'
+    arrow.style.zIndex = '2'
 
     arrow.addEventListener('click', () => {
+        const mainSection = document.querySelector("body > section > section")
+        const elementForScrolling = state.functions.todasPaginas.fixarMenuNavegacaoLateral ? mainSection : window
+        const elementHeightReference = state.functions.todasPaginas.fixarMenuNavegacaoLateral ? mainSection.scrollHeight : document.documentElement.scrollHeight
+        const elementForScrollingEffect = state.functions.todasPaginas.fixarMenuNavegacaoLateral ? mainSection : document.querySelector("html")
+
+        if (state.functions.abaCompromissosProcesso.rolagemSuavePagina)
+            elementForScrollingEffect.style.scrollBehavior = "smooth"
+
         if (arrow.value == 'DOWN') {
             arrow.setAttribute('disabled','')
-            window.scroll(0, document.documentElement.scrollHeight)
+            
+            elementForScrolling.scroll(0, elementHeightReference)
             arrow.value = 'UP'
             arrow.removeAttribute('disabled')
         }
         else {
-            window.scroll(0,0)
+            elementForScrolling.scroll(0,0)
             arrow.value = 'DOWN'
         }
     })
