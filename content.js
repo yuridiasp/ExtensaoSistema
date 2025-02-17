@@ -1,4 +1,5 @@
 const parametros = {
+    inss: 0,
     tarefaContatar: 1,
     tarefaAdvogado: 2,
     highlight: 3
@@ -44,6 +45,7 @@ let cliente = {
             tarefas: null,
             quantidadeTarefas: null,
             tipoCompromisso: null,
+            descricaoCompromisso: null,
             descricao: null,
             semanas: null,
             local: null,
@@ -159,7 +161,7 @@ function getListaTarefasCompromissoAdministrativo(tipoCompromisso = cliente.comp
         data = extrairDataPrazoFatalInput(inputPrazoInterno.value),
         dataInterno = new Date(data[2],data[1],data[0])
 
-    contarDias([ dia, mes, ano], dataInterno, parametros.tarefaAdvogado)
+    contarDias([ dia, mes, ano], dataInterno, parametros.inss)
 
     const isMoreWeek = cliente.compromisso.semanas > 1
     const isPericia = tipoCompromissoNormalizado.search("PERICIA") === 0
@@ -341,9 +343,10 @@ function handleCompromisso() {
             const typeOptions = document.querySelectorAll("#fdt-form > div:nth-child(6) > div:nth-child(1) > div > div > ul > li")
 
             const selectCompromisso = async () => {
-                descricaoTarefa.value = descricaoTarefa.value.toUpperCase()
+                descricaoTarefa.value = descricaoTarefa.value.toUpperCase().trim()
+                cliente.compromisso.descricaoCompromisso = descricaoTarefa.value
                 selectTipoCompromisso(descricaoTarefa, typeOptions)
-                cliente.compromisso.tipoCompromisso = validaTipoCompromisso(descricaoTarefa.value.trim())
+                cliente.compromisso.tipoCompromisso = validaTipoCompromisso(descricaoTarefa.value)
                 cliente.compromisso.tarefas = state.functions.todasPaginas.tipoIntimacaoIsJudicial ? getListaTarefasCompromissoJudicial() : getListaTarefasCompromissoAdministrativo()
                 atualizarListaTarefasAbaCompromissos()
                 await setCliente(cliente)
@@ -395,7 +398,7 @@ function addEventoPasteProcesso (processoInput) {
 }
 
 function removeCaracteresProcesso(numeroProcesso) {
-    
+    console.log(numeroProcesso)
     let processoFormatado = ''
 
     function isNumber(n) {
@@ -564,13 +567,20 @@ async function selectExecutorContatarAdministrativo (colaboradores) {
     }, adm[0])
 
     const getResponsavelAdministrativo = () => {
+        const brasilia = [
+            "DAVI ALVES DOS SANTOS",
+            "JÚLIA ROBERTA DE FÁTIMA SOUSA ARAÚJO",
+            "MATHEUS CAMPELO DA SILVA",
+            "STEFANNY MORAIS DO NASCIMENTO"
+        ]
+
+        if (brasilia.includes(executor.nome)) {
+            return "HENYR GOIS DOS SANTOS"
+        }
+
         if (tipoCompromissoNormalizado.includes("PERICIA") || (tipoCompromissoNormalizado.includes("EXIGENCIA INSS") && cliente.compromisso.tarefas.length === 3)) {
             return "GABRIEL FRANÇA VITAL"
         }
-
-        /* if (executor.nome === "JOSE PEDRO DE GOIS NETO") {
-            return executor.nome
-        } */
 
         return "SILVANIA PINHEIRO DE LEMOS"
     }
@@ -583,6 +593,7 @@ async function selectExecutorContatarJudicial (colaboradores) {
     let responsavel = 'JULIANO OLIVEIRA DE SOUZA'
 
     const responsavelInterior = adm.reduce((previous, currrent) => {
+        console.log(currrent, cliente)
         if (currrent.interiores.includes(removeAcentuacaoString(cliente.cliente.localAtendido))) {
             return currrent
         }
@@ -689,9 +700,38 @@ function filterColaboradoresCalculo () {
 }
 
 function filterColaboradoresAdministrativo () {
+    const colaboradores = []
+    const tarefasAdm = ["CONTATAR CLIENTE","LEMBRAR CLIENTE"]
+    const tarefaAtualNormalizada = removeAcentuacaoString(cliente.compromisso.tarefas[0])
     const tipoCompromissoNormalizado = removeAcentuacaoString(cliente.compromisso.tipoCompromisso)
 
+    const postosDFGO = [
+        "AG. AGUAS LINDAS DE GOIAS",
+        "AG. ANAPOLIS - CENTRO",
+        "AG. ANAPOLIS - VILA JAIARA",
+        "AG. BRASILIA - ASA SUL",
+        "AG. BRASILIA - CEILANDIA",
+        "AG. BRASILIA - GAMA",
+        "AG. BRASILIA - PLANALTINA",
+        "AG. BRASILIA - SOBRADINHO",
+        "AG. BRASILIA - TAGUATINGA",
+        "AG. GOIANIA - CENTRO",
+        "AG. GOIANIA - UNIVERSITARIO",
+        "AG. GOIAS",
+        "AG. GOIAS - CIDADE OCIDENTAL",
+        "AG. GOIAS - PADRE BERNARDO",
+        "AG. LUZIANIA",
+        "AG. VALPARAISO DE GOIAS",
+    ]
+
     const INSS = [
+        /* {
+            id: 235,
+            nome: "ANDRÉ LEVY BATISTA DA SILVA",
+            interiores: [],
+            datasViagem: [],
+            tarefas: 0
+        }, */
         {
             id: 132,
             nome: "DANIEL CABRAL PEREIRA SANTOS",
@@ -721,13 +761,22 @@ function filterColaboradoresAdministrativo () {
             contagem: 0,
             atrasadas: 0
         },
-        {
-            id: 154,
-            nome: "OSMAR SILVA VIANA",
-            interiores: [],
-            datasViagem: [],
-            tarefas: 0
+        /* {
+            id: 212,
+            nome: "LUIZ CARLOS LOPES DOS SANTOS",
+            nomeTLC: "luiz carlos",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
         },
+        {
+            id: 229,
+            nome: "YAN THADEU PORTO DE OLIVEIRA SANTOS",
+            nomeTLC: "yan",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        }, */
         {
             id: 24,
             nome: "SILVANIA PINHEIRO DE LEMOS",
@@ -768,38 +817,40 @@ function filterColaboradoresAdministrativo () {
         },
     ]
 
-    /* if (cliente.processo.estado === 'GO' || cliente.processo.estado === 'DF') {
+    if (postosDFGO.includes(cliente.requerimento.postoINSS.toUpperCase()) && tarefasAdm.includes(tarefaAtualNormalizada)) {
         colaboradores.push(...brasilia)
-    } */
-
-    const colaboradores = INSS.filter(({ nome }) => {
-
-        const nomeNormalizado = removeAcentuacaoString(nome)
-
-        if (tipoCompromissoNormalizado.includes("EXIGENCIA INSS")) {
-            const isFirstTask = cliente.compromisso.tarefas.length === 4
-            const isSecondTask = cliente.compromisso.tarefas.length === 3
-            const isThirdTask = cliente.compromisso.tarefas.length === 2
-            const isLastTask = cliente.compromisso.tarefas.length === 1
-
-            if (isFirstTask) {
-                return nomeNormalizado.includes("SILVANIA")
+    } else {
+        colaboradores = INSS.filter(({ nome }) => {
+    
+            const nomeNormalizado = removeAcentuacaoString(nome)
+    
+            if (tipoCompromissoNormalizado.includes("EXIGENCIA INSS")) {
+                const isFirstTask = cliente.compromisso.tarefas.length === 4
+                const isSecondTask = cliente.compromisso.tarefas.length === 3
+                const isThirdTask = cliente.compromisso.tarefas.length === 2
+                const isLastTask = cliente.compromisso.tarefas.length === 1
+    
+                if (isFirstTask) {
+                    return nomeNormalizado.includes("SILVANIA")
+                }
+                if (isSecondTask) {
+                    return nomeNormalizado.includes("GABRIEL")
+                }
+    
+                if (isThirdTask) {
+                    return nomeNormalizado.includes("SILVANIA")
+                }
+    
+                if (isLastTask) {
+                    return !nomeNormalizado.includes("SILVANIA")
+                }
+            } else if (tipoCompromissoNormalizado.includes("PERICIA")) {
+                
+                return !nomeNormalizado.includes("GABRIEL") && !nomeNormalizado.includes("SILVANIA")
             }
-            if (isSecondTask) {
-                return nomeNormalizado.includes("GABRIEL")
-            }
+        })
+    }
 
-            if (isThirdTask) {
-                return nomeNormalizado.includes("SILVANIA")
-            }
-
-            if (isLastTask) {
-                return !nomeNormalizado.includes("SILVANIA")
-            }
-        } else if (tipoCompromissoNormalizado.includes("PERICIA")) {
-            return !nomeNormalizado.includes("GABRIEL") && !nomeNormalizado.includes("SILVANIA")
-        }
-    })
 
     return colaboradores
 }
@@ -824,35 +875,56 @@ function filterColaboradoresJudicial () {
             /* {
                 id: 196,
                 nome: "KAUÃ DE CARVALHO NASCIMENTO",
-                interiores: ["UMBAUBA", "LOTEAMENTO JEOVA (BOTAFOGO)", "SANTA ROSA DE LIMA"],
+                interiores: [],
                 datasViagem: [],
                 tarefas: 0
             }, */
             {
                 id: 201,
                 nome: "MARCO AURELIO LEITE GOMES",
-                interiores: ["CARMOPOLIS", "LOTEAMENTO JEOVA (BOTAFOGO)", "SANTA ROSA DE LIMA", "JAPOATÃ"],
+                interiores: ["CARMOPOLIS", "PEDRINHAS"],
+                datasViagem: [],
+                tarefas: 0
+            },
+            {
+                id: 221,
+                nome: "LEONARDO TEIXEIRA SANTOS SILVA",
+                interiores: ["LOTEAMENTO JEOVA (BOTAFOGO)", "SANTA ROSA DE LIMA", "JAPOATÃ", "UMBAUBA", "ALAGOINHAS"],
                 datasViagem: [],
                 tarefas: 0
             },
             {
                 id: 199,
                 nome: "LUCAS NATHAN NOGUEIRA DA SILVA ",
-                interiores: ["ESTANCIA", "TOBIAS BARRETO", "PEDRINHAS"],
+                interiores: ["ESTANCIA", "TOBIAS BARRETO"],
                 datasViagem: [],
                 tarefas: 0
             },
             {
                 id: 217,
                 nome: "THIAGO SANTOS SANTANA",
-                interiores: ["CAPELA", "JAPARATUBA", "CONDE/BA", "ALAGOINHAS"],
-                diasViagem: null,
+                interiores: ["CAPELA", "JAPARATUBA", "CONDE/BA"],
+                datasViagem: [],
                 contagem: 0,
                 atrasadas: 0
             },
+            /* {
+                id: 241,
+                nome: "JEFERSON ALMEIDA SANTOS",
+                interiores: [],
+                datasViagem: [],
+                tarefas: 0
+            }, */
             {
                 id: 161,
                 nome: "YURI DIAS PEREIRA",
+                interiores: [],
+                datasViagem: [],
+                tarefas: 0
+            },
+            {
+                id: 239,
+                nome: "ISAC CRUZ SANTOS",
                 interiores: [],
                 datasViagem: [],
                 tarefas: 0
@@ -1155,9 +1227,10 @@ async function validaResponsavelFederal (num) {
 function validaResponsavelAdministrativo() {
     const tarefa = removeAcentuacaoString(cliente.compromisso.tarefas[0]),
         tarefaSac = "SMS E WHATSAPP"
+        
 
         if (tarefaSac === tarefa) {
-            return {responsavel: "HENYR GOIS DOS SANTOS",executor: "LAYNE DA SILVA GOIS"}
+            return {responsavel: "HENYR GOIS DOS SANTOS", executor: "LAYNE DA SILVA GOIS"}
         }
 
         return null
@@ -1191,7 +1264,7 @@ function validaTipoCompromisso(descriptionCompromisso) {
     const { cidade, estado } = cliente.processo
     const descriptionCompromissoNormalizado = removeAcentuacaoString(descriptionCompromisso)
     const pauta = ["PAUTA", "RETIRADO DE PAUTA"]
-    const emendar = ["DADOS PERICIA SOCIAL", "DADOS COMPLEMENTARES", "EMENDA", "EMENDA A INICIAL", "EMENDAR A INICIAL", "EMENDAR"]
+    const emendar = ["DADOS PERICIA SOCIAL", "DADOS COMPLEMENTARES", "DADOS COMPLEMENTARES PARA PERÍCIA", "DADOS COMPLEMENTARES PARA PERÍCIA SOCIAL", "EMENDA", "EMENDA A INICIAL", "EMENDAR A INICIAL", "EMENDAR"]
     const pedidoVistas = ["PEDIDO DE VISTAS", "PEDIDO DE VISTA"]
 
     if (descriptionCompromissoNormalizado === "RPV") {
@@ -1227,7 +1300,7 @@ function validaTipoCompromisso(descriptionCompromisso) {
     if (emendar.includes(descriptionCompromissoNormalizado))
         return "EMENDAR"
     
-    if (pedidoVistas.includes(descriptionCompromissoNormalizado))
+    if (pedidoVistas.includes(descriptionCompromissoNormalizado) || descriptionCompromissoNormalizado === "JULGAMENTO ANTECIPADO")
         return "MANIFESTAÇÃO"
 
     return descriptionCompromisso
@@ -1300,7 +1373,7 @@ function atualizaDescricao (descricaoTarefa, horarioInicial, horarioFinal, local
     horarioFinal.value = atualizaHora(horarioInicial)
 
     
-    if (cliente.compromisso.descricao && removeAcentuacaoString(fistWordInTarefa) !== "ANALISE" && tipoTarefaNormalizado !== "ATO ORDINATORIO" && cliente.compromisso.tipoCompromisso !== "EMENDAR"  && !tipoCompromissoNormalizado.includes('DECISAO ANTECIPACAO PERICIA') && !tipoCompromissoNormalizado.includes("EXIGENCIA")) {
+    if (cliente.compromisso.descricao && removeAcentuacaoString(fistWordInTarefa) !== "ANALISE" && tipoTarefaNormalizado !== "ATO ORDINATORIO" && tipoCompromissoNormalizado !== "EMENDAR"  && !tipoCompromissoNormalizado.includes('DECISAO ANTECIPACAO PERICIA') && !tipoCompromissoNormalizado.includes("EXIGENCIA")) {
 
         descricaoTarefa.value = cliente.compromisso.descricao
 
@@ -1308,18 +1381,18 @@ function atualizaDescricao (descricaoTarefa, horarioInicial, horarioFinal, local
         if (state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
             const perito = document.querySelector('#inputPerito')
     
-            descricaoTarefa.value = `${numero} - ${cliente.compromisso.tipoCompromisso} DE ${cliente.cliente.nome} (${cliente.cliente.cpf}), NO DIA ${cliente.compromisso.prazoInterno} ÀS ${horarioInicial.value}, PERITO: ${perito ? perito.value : ''}, LOCAL: ${localText}`
+            descricaoTarefa.value = `${numero} - ${cliente.compromisso.descricaoCompromisso} DE ${cliente.cliente.nome} (${cliente.cliente.cpf}), NO DIA ${cliente.compromisso.prazoInterno} ÀS ${horarioInicial.value}, PERITO: ${perito ? perito.value : ''}, LOCAL: ${localText}`
         } else {
             const inputEndereco = document.querySelector('#inputEndereco')
 
-            descricaoTarefa.value = `${numero} - ${cliente.compromisso.tipoCompromisso}: DATA E HORA: ${cliente.compromisso.prazoInterno} ÀS ${horarioInicial.value}, LOCAL: ${localText}, ENDEREÇO: ${inputEndereco ? inputEndereco.value : ''}. ORIENTAR A LEVAR O AGENDAMENTO, RELATÓRIOS MÉDICOS E DOCUMENTOS PERTINENTES A ATIVIDADE RURAL / PESCADO (CASO EXERÇA). CHEGAR COM 30 MINUTOS DE ANTECEDÊNCIA`
+            descricaoTarefa.value = `${numero} - ${cliente.compromisso.descricaoCompromisso}: DATA E HORA: ${cliente.compromisso.prazoInterno} ÀS ${horarioInicial.value}, LOCAL: ${localText}, ENDEREÇO: ${inputEndereco ? inputEndereco.value : ''}. ORIENTAR A LEVAR O AGENDAMENTO, RELATÓRIOS MÉDICOS E DOCUMENTOS PERTINENTES A ATIVIDADE RURAL / PESCADO (CASO EXERÇA). CHEGAR COM 30 MINUTOS DE ANTECEDÊNCIA`
         }
 
     } else if (isJudicial) {
 
         if (fistWordInTarefa == "AUDIENCIA" && cliente.compromisso.quantidadeTarefas === cliente.compromisso.tarefas.length) {
 
-            descricaoTarefa.value = `${numero} - ${cliente.compromisso.tipoCompromisso} DE ${cliente.cliente.nome} (${cliente.cliente.cpf}) X ${cliente.processo.reu.length > 0 ? cliente.processo.reu : ''}, NO DIA ${cliente.compromisso.prazoInterno} ÀS ${horarioInicial.value}, LOCAL: ${localText}`
+            descricaoTarefa.value = `${numero} - ${cliente.compromisso.descricaoCompromisso} DE ${cliente.cliente.nome} (${cliente.cliente.cpf}) X ${cliente.processo.reu.length > 0 ? cliente.processo.reu : ''}, NO DIA ${cliente.compromisso.prazoInterno} ÀS ${horarioInicial.value}, LOCAL: ${localText}`
 
         }
         else if (tipoTarefaNormalizado === "ATO ORDINATORIO" && tipoCompromissoNormalizado.includes('PERICIA')) {
@@ -1338,7 +1411,7 @@ function atualizaDescricao (descricaoTarefa, horarioInicial, horarioFinal, local
             descricaoTarefa.value = `${numero} - ACOMPANHAR ANTECIPAÇÃO DA PERÍCIA ADMINISTRATIVA`
         } else {
 
-            descricaoTarefa.value = `${numero} - ${cliente.compromisso.tipoCompromisso}`
+            descricaoTarefa.value = `${numero} - ${cliente.compromisso.descricaoCompromisso}`
 
         }
     } else {
@@ -1558,7 +1631,7 @@ function loadInfo () {
             if (removeAcentuacaoString(cliente.compromisso.tipoCompromisso).search('PERICIA') == 0 && cliente.compromisso.tarefas.length === cliente.compromisso.quantidadeTarefas)
                 mostrarCamposPericia()
 
-            calcularDataTarefa((ehTarefaParaAdmOuSac || ehAudiencia) ? parametros.tarefaContatar : parametros.tarefaAdvogado)
+            calcularDataTarefa(!state.functions.todasPaginas.tipoIntimacaoIsJudicial ? parametros.inss : (ehTarefaParaAdmOuSac || ehAudiencia) ? parametros.tarefaContatar : parametros.tarefaAdvogado)
 
             if ((horarioInicial.value.length == 0 || local.value.length == 0))
                 atualizaDescricao(descricaoTarefa, horarioInicial, horarioFinal, local)
@@ -1770,11 +1843,11 @@ async function ajax(link, id) {
     const urlRequest = `${link}${id}`
 
     return await fetch(urlRequest, {
-            method: "GET",
-            body: null,
-            headers: new Headers({
-                'Content-Type': 'application/x-www-form-urlencoded'
-            })
+        method: "GET",
+        body: null,
+        headers: new Headers({
+            'Content-Type': 'application/x-www-form-urlencoded'
+        })
     }).then(function (response) {
         return response.blob()
     }).then(async (result) => parser.parseFromString(await result.text(),'text/html'))
@@ -1822,7 +1895,8 @@ function addEventToAutocomplete() {
 }
 
 function removeAcentuacaoString (string) {
-    return string.normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+    //console.log(string)
+    return string ? string.normalize('NFD').replace(/[\u0300-\u036f]/g, "") : ''
 }
 
 async function preenchimentoTarefasDeCompromissos() {
@@ -1962,7 +2036,7 @@ function addListenersCompromisso() {
         event.preventDefault()
         cliente.compromisso.prazoInterno = dataInicial.value
         cliente.compromisso.prazoFatal = dataFinal.value
-        cliente.compromisso.quantidadeTarefas = cliente.compromisso.tarefas.length
+        cliente.compromisso.quantidadeTarefas = cliente.compromisso.tarefas?.length
         await setCliente(cliente)
         formCompromisso.submit()
     })
@@ -2193,8 +2267,10 @@ async function idPage(url) {
         createPainel('INSS', INSS, state.functions.supervisor.painelVisualizacaoTarefasTimeINSS)
         contarTarefasParaHoje()
         if (pageBuscaProcessos) {
+            
             const processoInput = document.querySelector("#bsAdvProcessosTexto")
-
+            
+            console.log(state.functions.abaPesquisaProcesso.autoFormatacaoNumProcessoPesquisa)
             if (state.functions.abaPesquisaProcesso.autoFormatacaoNumProcessoPesquisa) {
                 formataNumProcesso(processoInput)
             }

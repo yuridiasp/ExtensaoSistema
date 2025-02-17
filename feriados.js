@@ -77,17 +77,18 @@ function FeriadosFixos (ano, parametro) {
     
     const tarefaContatar = parametro === parametros.tarefaContatar,
         tarefaAdvogado = parametro === parametros.tarefaAdvogado,
+        tarefaINSSDigital = parametro === parametros.inss,
         isHighlight = parametro === parametros.highlight,
+        isTJ = cliente.processo.origem ? cliente.processo.origem.length === 12 : false,
         diaInicioForense = 20,
         mesInicioForense = 11,
         diaFimForense = 6,
         mesFimForense = 0,
         diaInicioFeriasAdvogados = 20,
         mesInicioFeriasAdvogados = 11,
-        diaFimFeriasAdvogados = 20,
-        mesFimFeriasAdvogados = 0,
-        isTJ = cliente.processo.origem ? cliente.processo.origem.length === 12 : false,
+        diaFimFeriasAdvogados = isTJ ? 20 : 21,
         isTRT = cliente.processo.natureza === "TRABALHISTA",
+        mesFimFeriasAdvogados = 0,
         isIS = isTJ || isTRT,
         forense = setIntervaloFeriadosJudiciario(diaInicioForense, mesInicioForense, diaFimForense, mesFimForense, "RECESSO FORENSE: 20/12 A 06/01"),
         advogados = setIntervaloFeriadosJudiciario(diaInicioFeriasAdvogados, mesInicioFeriasAdvogados, diaFimFeriasAdvogados, mesFimFeriasAdvogados, "RECESSO DOS ADVOGADOS (ART. 220 NCPC): 20/12 a 20/01")
@@ -339,7 +340,7 @@ function FeriadosFixos (ano, parametro) {
         datas.justicaEstadual.forEach(date => dataFactory(date, resultados))
     }
 
-    if (tarefaContatar || isHighlight) {
+    if (tarefaContatar || isHighlight || tarefaINSSDigital) {
         datas.SE.forEach(date => dataFactory(date, resultados))
 
         datas.ARACAJU.forEach(date => dataFactory(date, resultados))
@@ -399,7 +400,7 @@ function FeriadosFixos (ano, parametro) {
         dataFactory(date, resultados, increment)
         dataFactory(date, resultados)
     })
-    console.log(resultados)
+    
     return resultados
 }
 

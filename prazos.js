@@ -124,6 +124,7 @@ function calculaIntervaloTarefasAdministrativo(dias) {
 }
 
 function calculaIntervaloTarefasJudicial(dias) {
+    
     const { tipoCompromisso, tarefas, semanas, quantidadeTarefas } = cliente.compromisso,
         { estado } = cliente.processo,
         contDois = {
@@ -139,7 +140,7 @@ function calculaIntervaloTarefasJudicial(dias) {
         tarefaAtualNormalizada = removeAcentuacaoString(tarefas[0]),
         isDFOrGO = estado === 'GO' || estado === 'DF'
 
-    if (((contCinco.includes(tipoCompromisso) && dias > 11) || (contQuatro.includes(tipoCompromissoNormalizado) && dias > 10) || (tipoCompromissoNormalizado.search(contTres) === 0) && dias > 10)) {
+    if (((contCinco.includes(tipoCompromissoNormalizado) && dias > 11) || (contQuatro.includes(tipoCompromissoNormalizado) && dias > 10) || (tipoCompromissoNormalizado.search(contTres) === 0) && dias > 10)) {
         if (semanas >= 2) {
             if (tarefaAtualNormalizada === 'ANALISE')
                 return dias-1
