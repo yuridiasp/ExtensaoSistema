@@ -16,6 +16,14 @@ const ADM = [
             atrasadas: 0
         },
         {
+            id: 139,
+            nome: "FLAVIO LUCAS LIMA SOUZA",
+            nomeTLC: "FLAVIO",
+            diasViagem: [],
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
             id: 239,
             nome: "ISAC CRUZ SANTOS",
             nomeTLC: "ISAC",
@@ -83,6 +91,14 @@ const ADM = [
             id: 201,
             nome: "MARCO AURELIO LEITE GOMES",
             nomeTLC: "MARCO AURELIO",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 246,
+            nome: "MARQUISE ANTONIA LIMA SANTOS DA SILVA",
+            nomeTLC: "MARQUISE",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
