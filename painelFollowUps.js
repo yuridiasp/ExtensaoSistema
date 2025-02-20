@@ -215,7 +215,10 @@ function getArrayDateFollowUps(qtdDias) {
 }
 
 function getFollowUps(datas) {
-    const url = "http://fabioribeiro.eastus.cloudapp.azure.com/flw/followups/default.asp?pg=7&bsFlwFollows=s&bsFlwFollowsAcao=&bsFlwFollowsUsuario=&bsFlwFollowsCliente=&bsFlwFollowsDataDe=10/02/2025&bsFlwFollowsDataAte=14/02/2025&bsFlwFollowsStatus=0&bsFlwFollowsTipo=&bsFlwFollowsCPF=&bsFlwFollowsChegou="
+    const dataDe = '10/02/2025'
+    const dataAte = '14/02/2025'
+    const pages = 10
+    const url = `http://fabioribeiro.eastus.cloudapp.azure.com/flw/followups/default.asp?pg=${pages}&bsFlwFollows=s&bsFlwFollowsAcao=&bsFlwFollowsUsuario=&bsFlwFollowsCliente=&bsFlwFollowsDataDe=${dataDe}&bsFlwFollowsDataAte=${dataAte}&bsFlwFollowsStatus=0&bsFlwFollowsTipo=&bsFlwFollowsCPF=&bsFlwFollowsChegou=`
 
     const result = fetch(url, {
         method: "GET",
@@ -224,43 +227,6 @@ function getFollowUps(datas) {
         })
     })
         .then((response) => response.text())
-        .then((response) => {
-            let str = response
-            str = str.replace(/(\r\n|\n|\r|\t)/gm, "").replaceAll('"', "'")
-            if (str.match(/\x07/)) {
-                str = str.replace(/\x07/, "")
-            }
-            let chavesCorretas = [
-                '"id": "',
-                '", "title": "',
-                '", "allDay": "',
-                '", "start": "',
-                '", "end": "',
-                '", "color": "',
-                '", "textColor": "',
-                '", "borderColor": "',
-                '", "url": "',
-                '" }',
-            ];
-            let chavesErradas = [
-                "'id': '",
-                "', 'title': '",
-                "', 'allDay': '",
-                "', 'start': '",
-                "', 'end': '",
-                "', 'color': '",
-                "', 'textColor': '",
-                "', 'borderColor': '",
-                "', 'url': '",
-                "' }",
-            ]
-
-            for (c = 0; c < chavesCorretas.length; c++) {
-                str = str.replaceAll(chavesErradas[c], chavesCorretas[c])
-            }
-
-            return JSON.parse(str)
-        })
         .then((resp) => {
             const contagem = {
                 idTarefas: [],
