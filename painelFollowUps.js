@@ -215,17 +215,12 @@ function getArrayDateFollowUps(qtdDias) {
 }
 
 function getFollowUps(datas) {
-    const dataDe = '10/02/2025'
-    const dataAte = '14/02/2025'
+    const dataDe = datas[0].toLocaleDateString()
+    const dataAte = datas[datas.length - 1].toLocaleDateString()
     const pages = 10
     const url = `http://fabioribeiro.eastus.cloudapp.azure.com/flw/followups/default.asp?pg=${pages}&bsFlwFollows=s&bsFlwFollowsAcao=&bsFlwFollowsUsuario=&bsFlwFollowsCliente=&bsFlwFollowsDataDe=${dataDe}&bsFlwFollowsDataAte=${dataAte}&bsFlwFollowsStatus=0&bsFlwFollowsTipo=&bsFlwFollowsCPF=&bsFlwFollowsChegou=`
 
-    const result = fetch(url, {
-        method: "GET",
-        headers: new Headers({
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
-        })
-    })
+    const result = fetch(url)
         .then((response) => response.text())
         .then((resp) => {
             const contagem = {
