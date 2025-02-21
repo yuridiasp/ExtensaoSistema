@@ -1,16 +1,32 @@
 const ADM = [
         {
+            id: 219,
+            nome: "ARTHUR PORTO ROSENDO",
+            nomeTLC: "BRYAN",
+            diasViagem: [],
+            contagem: 0,
+            atrasadas: 0
+        },
+        /* {
             id: 242,
             nome: "BRYAN CAMPOS DE ANDRADE",
             nomeTLC: "BRYAN",
             diasViagem: [],
             contagem: 0,
             atrasadas: 0
-        },
+        }, */
         {
             id: 204,
             nome: "DIEGO DOS SANTOS SILVA",
             nomeTLC: "DIEGO",
+            diasViagem: [],
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 238,
+            nome: "ERICK RODRIGUES DE JEUS",
+            nomeTLC: "ERICK",
             diasViagem: [],
             contagem: 0,
             atrasadas: 0
@@ -55,22 +71,22 @@ const ADM = [
             contagem: 0,
             atrasadas: 0
         },
-        {
+        /* {
             id: 196,
             nome: "KAUÃ DE CARVALHO NASCIMENTO",
             nomeTLC: "KAUÃ",
             diasViagem: [],
             contagem: 0,
             atrasadas: 0
-        },
-        {
+        }, */
+        /* {
             id: 64,
             nome: "LEANDRO SANTOS",
             nomeTLC: "LEANDRO",
             diasViagem: [],
             contagem: 0,
             atrasadas: 0
-        },
+        }, */
         {
             id: 221,
             nome: "LEONARDO TEIXEIRA SANTOS SILVA",
@@ -293,14 +309,14 @@ const ADM = [
             contagem: 0,
             atrasadas: 0
         },
-        {
+        /* {
             id: 139,
             nome: "FLAVIO LUCAS LIMA SOUZA",
             nomeTLC: "FLAVIO",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
-        },
+        }, */
         {
             id: 115,
             nome: "GABRIEL FRANÇA VITAL",

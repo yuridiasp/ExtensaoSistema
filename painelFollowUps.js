@@ -10,8 +10,8 @@ function createPainelFollowUps(condiction) {
     const painelBar = document.querySelector(
         "#fdt-mt-header > ul:nth-child(1)"
     )
-    const qtdDias = 7
-    const { datas, dias } = getArrayDateFollowUps(qtdDias)
+    
+    const { datas, dias } = getArrayDateFollowUps()
     const cor = {
         ADM: "azul",
         SAC: "verde",
@@ -118,6 +118,11 @@ function generateTableFollowUps(tiposAtendimento, datas, dias) {
         "Quinta",
         "Sexta",
     ]
+    const horarios = {
+        morning: "Manhã",
+        afternoon: "Tarde",
+        undefined: "Indefinido"
+    }
     let table = `<table class="tabela">`
 
     for (c = 0; c <= tiposAtendimento.length; c++) {
@@ -131,7 +136,7 @@ function generateTableFollowUps(tiposAtendimento, datas, dias) {
 
         for (let j = 0; j <= datas.length; j++) {
             if (j == 0 && c == 0) {
-                table += `<th style="background: rgb(0 86 137);">&nbsp;</th>`;
+                table += `<th style="background: rgb(0 86 137);">&nbsp;</th>`
             } else if (j != 0 && c == 0) {
                 if (j > 1)
                     table += `<th colspan="3" data-date="${
@@ -144,7 +149,7 @@ function generateTableFollowUps(tiposAtendimento, datas, dias) {
                         datas[j - 1]
                     }" class="dRow">Tarefas ${datas[j - 1]}</th>`;
             } else if (j == 0 && c > 0) {
-                table += `<th data-nome="${nome}" class="nCollumn">${nome.toUpperCase()}</th>`;
+                table += `<th data-nome="${nome}" class="nCollumn">${nome.toUpperCase()}</th>`
             } else {
                 if (j > 1)
                     table += `<td data-toggle="tooltip" data-original-title="Agendamentos" data-placement="Top" style="background: #A5D5EF;" data-categoria="Agendamentos" data-nome="${nome}" data-date="${
@@ -193,66 +198,139 @@ function estilizarTabelaFollowUps() {
     })
 }
 
-function getArrayDateFollowUps(qtdDias) {
+function getArrayDateFollowUps() {
     let datas = [],
         dias = [],
-        date = new Date()
+        date = new Date(),
+        indiceDiaSemana = date.getDay(),
+        IsSegundaSemana = false
 
-    for (let c = 1; c <= qtdDias; c++) {
+    do {
         date.setHours(0, 0, 0, 0)
-        let indiceDiaSemana = date.getDay()
-        if (indiceDiaSemana > 0 && indiceDiaSemana < 6) {
-            dias.push(indiceDiaSemana)
-            datas.push(date)
-        } else {
-            --c
+        
+        if (indiceDiaSemana === 0) {
+            IsSegundaSemana = true
         }
+        dias.push(indiceDiaSemana)
+        datas.push(date)
+
         date = new Date(date)
         date.setDate(date.getDate() + 1)
-    }
+        indiceDiaSemana = date.getDay()
+    } while(!(indiceDiaSemana === 6 && IsSegundaSemana))
 
     return { datas, dias }
 }
 
-function getFollowUps(datas) {
-    const dataDe = datas[0].toLocaleDateString()
-    const dataAte = datas[datas.length - 1].toLocaleDateString()
-    const pages = 10
-    const url = `http://fabioribeiro.eastus.cloudapp.azure.com/flw/followups/default.asp?pg=${pages}&bsFlwFollows=s&bsFlwFollowsAcao=&bsFlwFollowsUsuario=&bsFlwFollowsCliente=&bsFlwFollowsDataDe=${dataDe}&bsFlwFollowsDataAte=${dataAte}&bsFlwFollowsStatus=0&bsFlwFollowsTipo=&bsFlwFollowsCPF=&bsFlwFollowsChegou=`
+async function getFollowUps(datas) {
+    
+    let totalPages = 1,
+        currentPage = 1,
+        listFollowUps = {}
 
-    const result = fetch(url)
-        .then((response) => response.text())
-        .then((resp) => {
-            const contagem = {
-                idTarefas: [],
+    const isMorning = (hora) => {
+        
+        return Number(hora) >= 0 && Number(hora) < 12
+    }
+
+    const fillListFollowUps = (doc, listFollowUps) => {
+        const followUps = doc.querySelectorAll("body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr")
+        
+        const list = Array.from(followUps).reduce((listFollowUps, followUp) => {
+            const tipoFollowUp = followUp.querySelector("td:nth-child(6) > span").textContent
+            const dataAgendamentoElement = followUp.querySelector("td:nth-child(7)")
+            const isPrioridade = dataAgendamentoElement.innerHTML.includes("fa-exclamation-triangle")
+            const [ data, hora ] = dataAgendamentoElement.innerText.includes("às") ? dataAgendamentoElement.innerText.trim().split(":")[0].split(" às ") : [dataAgendamentoElement.innerText.trim().slice(0, 10), undefined ]
+            
+            if (!listFollowUps[tipoFollowUp]) {
+                listFollowUps[tipoFollowUp] = {}
             }
 
-            for (c = 0; c < datas.length; c++) {
-                if (c > 0)
-                    contagem[datas[c].toISOString().split("T")[0]] = {
-                        Total: 0,
-                        Ativas: 0,
-                        Encerradas: 0,
+            if (!listFollowUps[tipoFollowUp][data]) {
+                listFollowUps[tipoFollowUp][data] = {
+                    morning: {
+                        total: 0,
+                        priority: 0,
+                        scheduling: 0
+                    },
+                    afternoon: {
+                        total: 0,
+                        priority: 0,
+                        scheduling: 0
+                    },
+                    undefined: {
+                        total: 0,
+                        priority: 0,
+                        scheduling: 0
                     }
+                } 
             }
 
-            resp.forEach((e) => {
-                const data = e["start"].replace(/T\d\d:\d\d:\d\d/, "")
-
-                try {
-                    contagem[data]["Total"]++;
-                    if (e.color == "#A5D5EF") contagem[data]["Ativas"]++
-                    if (e.color == "#CCC") contagem[data]["Encerradas"]++
-                    if (data == datas[1].toISOString().split("T")[0])
-                        contagem["idTarefas"].push(e["id"])
-                } catch (error) {
-                    console.log(contagem, data, e, error)
+            if (isPrioridade) {
+                if (hora === undefined) {
+                    listFollowUps[tipoFollowUp][data]['undefined']['total'] += 1
+                    listFollowUps[tipoFollowUp][data]['undefined']['priority'] += 1
+                } else if (isMorning(hora)) {
+                    listFollowUps[tipoFollowUp][data]['morning']['total'] += 1
+                    listFollowUps[tipoFollowUp][data]['morning']['priority'] += 1
+                } else {
+                    listFollowUps[tipoFollowUp][data]['afternoon']['total'] += 1
+                    listFollowUps[tipoFollowUp][data]['afternoon']['priority'] += 1
                 }
-            })
-            return contagem
-        })
+            } else {
+                if (hora === undefined) {
+                    listFollowUps[tipoFollowUp][data]['undefined']['scheduling'] += 1
+                    listFollowUps[tipoFollowUp][data]['undefined']['total'] += 1
+                } else if (isMorning(hora)) {
+                    listFollowUps[tipoFollowUp][data]['morning']['scheduling'] += 1
+                    listFollowUps[tipoFollowUp][data]['morning']['total'] += 1
+                } else {
+                    listFollowUps[tipoFollowUp][data]['afternoon']['scheduling'] += 1
+                    listFollowUps[tipoFollowUp][data]['afternoon']['total'] += 1
+                }
+            }
 
-    return result
+            return listFollowUps
+        }, listFollowUps)
+
+        return list
+    }
+
+    const requestData = async (page, datas, listFollowUps) => {
+        const firstIndexDate = 0
+        const lastIndexDate = datas.length - 1
+        const dataDe = datas[firstIndexDate].toLocaleDateString()
+        const dataAte = datas[lastIndexDate].toLocaleDateString()
+        const numberPageTextIndex = 3
+        const html = await (await fetch(`http://fabioribeiro.eastus.cloudapp.azure.com/flw/followups/default.asp?pg=${page}&bsFlwFollows=s&bsFlwFollowsAcao=&bsFlwFollowsUsuario=&bsFlwFollowsCliente=&bsFlwFollowsDataDe=${dataDe}&bsFlwFollowsDataAte=${dataAte}&bsFlwFollowsStatus=0&bsFlwFollowsTipo=&bsFlwFollowsCPF=&bsFlwFollowsChegou=`)).text()
+
+        const parser = new DOMParser()
+
+        const doc = parser.parseFromString(html, 'text/html')
+
+        const followUps = fillListFollowUps(doc, listFollowUps)
+
+        if (page === 1) {
+            const pages = doc.querySelector("body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.row.margemCimaNeg15.fs12 > div > p").textContent.split(' ')[numberPageTextIndex]
+
+            return { pages, followUps }
+        }
+        
+        return { followUps }
+    }
+
+    do {
+        const { pages, followUps } = await requestData(currentPage, datas, listFollowUps)
+
+        listFollowUps = followUps
+
+        if (pages)
+            totalPages = pages
+
+        currentPage++
+    } while (currentPage <= totalPages)
+
+    return listFollowUps
 }
 
 // Barra de Carregamento

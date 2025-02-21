@@ -739,13 +739,13 @@ function filterColaboradoresAdministrativo () {
             datasViagem: [],
             tarefas: 0
         },
-        {
+        /* {
             id: 139,
             nome: "FLAVIO LUCAS LIMA SOUZA",
             interiores: [],
             datasViagem: [],
             tarefas: 0
-        },
+        }, */
         {
             id: 115,
             nome: "GABRIEL FRANÇA VITAL",
