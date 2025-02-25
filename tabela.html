@@ -9,38 +9,6 @@
     <table id="tabela"></table>
     <script>
         function generateTableFollowUps(tiposAtendimento, datas) {
-            /* 
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="background: #CCC;" rowspan="3">Atendimento / Data</th>
-                            <th colspan="9">24/02/2025</th>
-                        </tr>
-                        <tr>
-                            <th colspan="9">Segunda</th>
-                        </tr>
-                        <tr>
-                            <th colspan="3">Manhã</th>
-                            <th colspan="3">Tarde</th>
-                            <th colspan="3">Indefinido</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th>ATENDIMENTO DR. DIEGO</th>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                    </tbody>
-                </table>
-            */
             const semana = [
                 "Domingo",
                 "Segunda",
@@ -51,7 +19,7 @@
                 "Sábado"
             ]
 
-            const table = document.createElement('table')
+            const table = document.createElement("table")
             const thead = document.createElement("thead")
             const tbody = document.createElement("tbody")
 
@@ -62,55 +30,89 @@
             const trDiasSemanaTHead = document.createElement('tr')
             const trHorariosTHead = document.createElement('tr')
 
-            trDatasTHead.innerHTML = `<th style="background: rgb(0 86 137);" rowspan="3">Atendimento / Data</th>`
+            const th = document.createElement("th")
+            th.style.background = "rgb(0 86 137)"
+            th.style.color = "#FFF"
+            th.rowSpan = 3
+            th.innerHTML = "Atendimento / Data"
+            trDatasTHead.appendChild(th)
 
             thead.appendChild(trDatasTHead)
             thead.appendChild(trDiasSemanaTHead)
-            thead.appendChild(trHorariosTHead)
+            thead.appendChild(trHorariosTHead)                
             
-            //THead
-            for (const data of datas) {
-                const thData = document.createElement("th")
-                thData.colSpan = 9
-                thData.innerHTML = data.toLocaleDateString()
-                trDatasTHead.appendChild(thData)
-
-                const thSemana = document.createElement("th")
-                thSemana.colSpan = 9
-                thSemana.innerHTML = semana[data.getDay()]
-                trDiasSemanaTHead.appendChild(thSemana)
-
-                const thMorning = document.createElement("th")
-                thMorning.innerHTML = "Manhã"
-                thMorning.colSpan = 3
-                trHorariosTHead.appendChild(thMorning)
-
-                const thAfternoon = document.createElement("th")
-                thAfternoon.innerHTML = "Tarde"
-                thAfternoon.colSpan = 3
-                trHorariosTHead.appendChild(thAfternoon)
-
-                const thUndefined = document.createElement("th")
-                thUndefined.innerHTML = "Indefinido"
-                thUndefined.colSpan = 3
-                trHorariosTHead.appendChild(thUndefined)
-            }
-                
-            //TBody
             for (const tipo of tiposAtendimento) {
                 const tr = document.createElement("tr")
                 const th = document.createElement("th")
                 th.innerHTML = tipo
+                tr.classList.add("nCollumn")
                 tr.appendChild(th)
-                for(const data in datas) {
+                for(const data of datas) {
+                    //THead
+                    if (tipo === tiposAtendimento[0]) {
+                        const thData = document.createElement("th")
+                        thData.colSpan = 9
+                        thData.innerHTML = data.toLocaleDateString()
+                        thData.dataset['date'] = data.toLocaleDateString()
+                        thData.classList.add("dRow")
+                        trDatasTHead.appendChild(thData)
+
+                        const thSemana = document.createElement("th")
+                        thSemana.colSpan = 9
+                        thSemana.innerHTML = semana[data.getDay()]
+                        thSemana.dataset['date'] = data.toLocaleDateString()
+                        thSemana.classList.add("dRow")
+                        trDiasSemanaTHead.appendChild(thSemana)
+
+                        const thMorning = document.createElement("th")
+                        thMorning.innerHTML = "Manhã"
+                        thMorning.colSpan = 3
+                        thMorning.classList.add("dRow")
+                        trHorariosTHead.appendChild(thMorning)
+
+                        const thAfternoon = document.createElement("th")
+                        thAfternoon.innerHTML = "Tarde"
+                        thAfternoon.colSpan = 3
+                        thAfternoon.classList.add("dRow")
+                        trHorariosTHead.appendChild(thAfternoon)
+
+                        const thUndefined = document.createElement("th")
+                        thUndefined.innerHTML = "Indefinido"
+                        thUndefined.colSpan = 3
+                        thUndefined.classList.add("dRow")
+                        trHorariosTHead.appendChild(thUndefined)
+                    }
+                    
+                    //TBody
                     for (let index = 1; index <= 3; index++) {
                         const tdAgendamentos = document.createElement("td")
-                        tdAgendamentos.innerHTML = "-"
+                        tdAgendamentos.dataset['originalTitle'] = "Agendamentos"
+                        tdAgendamentos.dataset['toggle'] = "tooltip"
+                        tdAgendamentos.dataset['placement'] = "Top"
+                        tdAgendamentos.dataset['categoria'] = "Agendamentos"
+                        tdAgendamentos.dataset['nome'] = tipo
+                        tdAgendamentos.dataset['date'] = data.toLocaleDateString()
+                        tdAgendamentos.style.background = "#A5D5EF"
+                        tdAgendamentos.innerHTML = '-'
                         
                         const tdPrioridades = document.createElement("td")
+                        tdPrioridades.dataset['originalTitle'] = "Prioridades"
+                        tdPrioridades.dataset['toggle'] = "tooltip"
+                        tdPrioridades.dataset['placement'] = "Top"
+                        tdPrioridades.dataset['categoria'] = "Prioridades"
+                        tdPrioridades.dataset['nome'] = tipo
+                        tdPrioridades.dataset['date'] = data.toLocaleDateString()
+                        tdPrioridades.style.background = "#CCC"
                         tdPrioridades.innerHTML = "-"
                         
                         const tdTotal = document.createElement("td")
+                        tdPrioridades.dataset['originalTitle'] = "Total"
+                        tdTotal.dataset['toggle'] = "tooltip"
+                        tdTotal.dataset['placement'] = "Top"
+                        tdTotal.dataset['categoria'] = "Total"
+                        tdTotal.dataset['nome'] = tipo
+                        tdTotal.dataset['date'] = data.toLocaleDateString()
+                        tdTotal.style.background = "#ADADAD"
                         tdTotal.innerHTML = "-"
     
                         tr.appendChild(tdAgendamentos)

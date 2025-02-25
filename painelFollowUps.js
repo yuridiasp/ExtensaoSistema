@@ -7,11 +7,12 @@ const horarios = {
         total: "Agendamentos",
         priority: "Prioridades",
         scheduling: "Total"
-    }
+    },
+    maxValueProgressBar = 100
 
-let updateCountFollowUps = 1,
-    percent = 0,
-    contIteration = 0
+let updateCountFollowUps,
+    percentFollowUps = 0,
+    contIterationFollowUps = 0
 
 async function getFollowUpTypes() {
     const parser = new DOMParser()
@@ -39,23 +40,23 @@ async function createPainelFollowUps(condiction) {
 
     const html = `<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span data-toggle="tooltip" data-placement="bottom" title="Painel Geral de Follow-Ups" data-original-title="Painel Geral de Follow-Ups"><i class="fa fa-fw fa-magnet fdt-cor-violeta"></i></span></a>
                 <ul id="panelFollowUps" class="dropdown-menu hidden-xs">
-                    <li class="fdt-dropdown-cabecalho" style="color: #005689;">Painel do Supervisor</li>
+                    <li class="fdt-dropdown-cabecalho" style="color: #005689;">Painel Geral de Follow-Ups</li>
                     <li class="fdt-widget-lembretes">
                         <ul>
                             <li>
-                                <table>${generateTableFollowUps(tiposAtendimento, datas, dias)}</table>
+                                <table class="tabela follow">${generateTableFollowUps(tiposAtendimento, datas, dias)}</table>
                             </li>
                         </ul>
                     </li>
                     <li class="fdt-widget-lembretes" style="display: flex; justify-content: center; align-items: center; gap: 10px; padding: 10px 0;">
                         <div style="display: flex; gap: 5px; justify-content: center; align-items: center;">
-                            <span style="background: #A5D5EF; width: 10px; height: 10px;"></span>Agendamentos
+                            <span style="background: #A5D5EF; width: 10px; height: 10px;"></span>Total (Agendamentos + Prioridades)
                         </div>
                         <div style="display: flex; gap: 5px; justify-content: center; align-items: center;">
                             <span style="background: #CCC; width: 10px; height: 10px;"></span>Prioridades
                         </div>
                         <div style="display: flex; gap: 5px; justify-content: center; align-items: center;">
-                            <span style="background: #ADADAD; width: 10px; height: 10px;"></span>Total (Agendamentos + Prioridades)
+                            <span style="background: #ADADAD; width: 10px; height: 10px;"></span>Agendamentos
                         </div>
                     </li>
                 </ul>`
@@ -67,87 +68,64 @@ async function createPainelFollowUps(condiction) {
     const li = document.createElement("li")
     li.innerHTML = html
     li.setAttribute("class", "dropdown mensagens hidden-xs")
-    li.setAttribute("id", `painelBTNSupFollowUps`)
+    li.setAttribute("id", 'painelBTNSupFollowUps')
     painelBar.appendChild(li)
-    const panelSup = document.querySelector(`#panelSupFollowUps`)
+    const panelSup = document.querySelector('#panelFollowUps')
     const contentBar = createBarFollowUps()
-    panelSup.append(contentBar)
+    panelSup.appendChild(contentBar)
     estilizarTabelaFollowUps()
 
-    const inputDadosFollowUps = (result) => {
-        // TODO
-        const tds = document.querySelectorAll(".tabela td")
+    const inputDadosFollowUps = (tipoFollowUp, result) => {
+        
+        const tds = document.querySelectorAll(".tabela.follow td")
         let tdsSeparados = {}
-        tdsSeparados[nome] = {}
         tds.forEach((td) => {
-            if (td.dataset.nome == nome) {
-                if (!tdsSeparados[nome][td.dataset.date]) {
-                    tdsSeparados[nome][td.dataset.date] = {}
+            if (td.dataset.nome === tipoFollowUp) {
+                if (!tdsSeparados[tipoFollowUp]) {
+                    tdsSeparados[tipoFollowUp] = {}
                 }
-                tdsSeparados[nome][td.dataset.date][td.dataset.categoria] = td
+                if (!tdsSeparados[tipoFollowUp][td.dataset.date]) {
+                    tdsSeparados[tipoFollowUp][td.dataset.date] = {}
+                }
+                if (!tdsSeparados[tipoFollowUp][td.dataset.date][td.dataset.horario]) {
+                    tdsSeparados[tipoFollowUp][td.dataset.date][td.dataset.horario] = {}
+                }
+
+                tdsSeparados[tipoFollowUp][td.dataset.date][td.dataset.horario][td.dataset.categoria] = td
             }
         })
 
-        const chaves = Object.entries(result).map((e) => e[0])
-
-        chaves.forEach((chave) => {
-            tdsSeparados[nome][chave][horarios.morning][modosAgendamento.scheduling].innerHTML = result[chave]['morning']["scheduling"]
-            tdsSeparados[nome][chave][horarios.morning][modosAgendamento.priority].innerHTML = result[chave]['morning']["priority"]
-            tdsSeparados[nome][chave][horarios.morning][modosAgendamento.total].innerHTML = result[chave]['morning']["total"]
-            tdsSeparados[nome][chave][horarios.afternoon][modosAgendamento.scheduling].innerHTML = result[chave]['afternoon']["scheduling"]
-            tdsSeparados[nome][chave][horarios.afternoon][modosAgendamento.priority].innerHTML = result[chave]['afternoon']["priority"]
-            tdsSeparados[nome][chave][horarios.afternoon][modosAgendamento.total].innerHTML = result[chave]['afternoon']["total"]
-            tdsSeparados[nome][chave][horarios.undefined][modosAgendamento.scheduling].innerHTML = result[chave]['undefined']["scheduling"]
-            tdsSeparados[nome][chave][horarios.undefined][modosAgendamento.priority].innerHTML = result[chave]['undefined']["priority"]
-            tdsSeparados[nome][chave][horarios.undefined][modosAgendamento.total].innerHTML = result[chave]['undefined']["total"]
+        const dates = Object.entries(result).map((e) => e[0])
+        
+        dates.forEach((date) => {
+            tdsSeparados[tipoFollowUp][date][horarios.morning][modosAgendamento.scheduling].innerHTML = result[date]['morning']["scheduling"]
+            tdsSeparados[tipoFollowUp][date][horarios.morning][modosAgendamento.priority].innerHTML = result[date]['morning']["priority"]
+            tdsSeparados[tipoFollowUp][date][horarios.morning][modosAgendamento.total].innerHTML = result[date]['morning']["total"]
+            tdsSeparados[tipoFollowUp][date][horarios.afternoon][modosAgendamento.scheduling].innerHTML = result[date]['afternoon']["scheduling"]
+            tdsSeparados[tipoFollowUp][date][horarios.afternoon][modosAgendamento.priority].innerHTML = result[date]['afternoon']["priority"]
+            tdsSeparados[tipoFollowUp][date][horarios.afternoon][modosAgendamento.total].innerHTML = result[date]['afternoon']["total"]
+            tdsSeparados[tipoFollowUp][date][horarios.undefined][modosAgendamento.scheduling].innerHTML = result[date]['undefined']["scheduling"]
+            tdsSeparados[tipoFollowUp][date][horarios.undefined][modosAgendamento.priority].innerHTML = result[date]['undefined']["priority"]
+            tdsSeparados[tipoFollowUp][date][horarios.undefined][modosAgendamento.total].innerHTML = result[date]['undefined']["total"]
         })
-        incrementBarFollowUps(setor)
+        incrementBarFollowUps()
     }
 
     document
         .querySelector(`#painelBTNSupFollowUps`)
         .addEventListener("click", () => {
-            showContentBarFollowUps(contentBar, setor);
+            showContentBarFollowUps(contentBar);
 
             getFollowUps(datas).then((result) => {
-                inputDadosFollowUps(result)
+                const nomes = Object.keys(result)
+                updateCountFollowUps = nomes.length
+                nomes.forEach(nome => inputDadosFollowUps(nome, result[nome]))
             })
         })
 }
 
 function generateTableFollowUps(tiposAtendimento, datas) {
-    /* 
-        <table>
-            <thead>
-                <tr>
-                    <th style="background: #CCC;" rowspan="3">Atendimento / Data</th>
-                    <th colspan="9">24/02/2025</th>
-                </tr>
-                <tr>
-                    <th colspan="9">Segunda</th>
-                </tr>
-                <tr>
-                    <th colspan="3">Manhã</th>
-                    <th colspan="3">Tarde</th>
-                    <th colspan="3">Indefinido</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th>ATENDIMENTO DR. DIEGO</th>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                </tr>
-            </tbody>
-        </table>
-    */
+    let isOddLine = false
     const semana = [
         "Domingo",
         "Segunda",
@@ -158,7 +136,7 @@ function generateTableFollowUps(tiposAtendimento, datas) {
         "Sábado"
     ]
 
-    const table = document.createElement('table')
+    const table = document.createElement("table")
     const thead = document.createElement("thead")
     const tbody = document.createElement("tbody")
 
@@ -169,75 +147,126 @@ function generateTableFollowUps(tiposAtendimento, datas) {
     const trDiasSemanaTHead = document.createElement('tr')
     const trHorariosTHead = document.createElement('tr')
 
-    trDatasTHead.innerHTML = `<th style="background: rgb(0 86 137);" rowspan="3">Atendimento / Data</th>`
+    const th = document.createElement("th")
+    th.style.background = "rgb(0 86 137)"
+    th.style.color = "#FFF"
+    th.rowSpan = 3
+    th.innerHTML = "&nbsp;"
+    trDatasTHead.appendChild(th)
 
     thead.appendChild(trDatasTHead)
     thead.appendChild(trDiasSemanaTHead)
-    thead.appendChild(trHorariosTHead)
+    thead.appendChild(trHorariosTHead)                
     
-    for (const tipo in tiposAtendimento) {
-        const trAtendimento = document.createElement("tr")
-        trAtendimento.innerHTML =  `<th data-nome="${tipo}" class="nCollumn">${tipo}</th>`
+    for (const tipo of tiposAtendimento) {
+        isOddLine = !isOddLine
+        const tr = document.createElement("tr")
+        const th = document.createElement("th")
+        th.innerHTML = tipo
+        tr.classList.add("nCollumn")
+        tr.appendChild(th)
+        /* if (isOddLine)
+            th.style.filter = "brightness(0.8)" */
+        for(const data of datas) {
+            //THead
+            if (tipo === tiposAtendimento[0]) {
+                const thData = document.createElement("th")
+                thData.colSpan = 9
+                thData.innerHTML = data.toLocaleDateString()
+                thData.dataset['date'] = data.toLocaleDateString()
+                thData.classList.add("dRow")
+                trDatasTHead.appendChild(thData)
 
-        datas.forEach(data => {
-            const thData = document.createElement("th")
-            thData.colSpan = 9
-            thData.dataset['date'] = data.toLocaleDateString()
-            thData.classList.add("dRow")
-            thData.innerHTML = semana[data.getDay()]
-            trDatasTHead.appendChild(thData)
-            
-            const thDiaSemana = document.createElement("th")
-            thDiaSemana.colSpan = 9
-            thDiaSemana.dataset['date'] = data.toLocaleDateString()
-            thDiaSemana.classList.add("dRow")
-            thDiaSemana.innerHTML = data.toLocaleDateString()
-            trDiasSemanaTHead.appendChild(thDiaSemana)
-    
-            const tdAgendamentos = document.createElement("td")
-            const tdPrioridades = document.createElement("td")
-            const tdTotal = document.createElement("td")
-    
-            for (const horario in horarios) {
-                const thHorario = document.createElement("th")
-                thHorario.colSpan = 3
-                thHorario.classList.add("dRow")
-                thHorario.innerHTML = horario
+                const thSemana = document.createElement("th")
+                thSemana.colSpan = 9
+                thSemana.innerHTML = semana[data.getDay()]
+                thSemana.dataset['date'] = data.toLocaleDateString()
+                thSemana.classList.add("dRow")
+                trDiasSemanaTHead.appendChild(thSemana)
+
+                const thMorning = document.createElement("th")
+                thMorning.innerHTML = "Manhã"
+                thMorning.colSpan = 3
+                thMorning.classList.add("dRow")
+                trHorariosTHead.appendChild(thMorning)
+
+                const thAfternoon = document.createElement("th")
+                thAfternoon.innerHTML = "Tarde"
+                thAfternoon.colSpan = 3
+                thAfternoon.classList.add("dRow")
+                trHorariosTHead.appendChild(thAfternoon)
+
+                const thUndefined = document.createElement("th")
+                thUndefined.innerHTML = "Indefinido"
+                thUndefined.colSpan = 3
+                thUndefined.classList.add("dRow")
+                trHorariosTHead.appendChild(thUndefined)
             }
-    
-            /* tdAgendamentos.dataset['original-title'] = "Agendamentos" */
-            tdAgendamentos.dataset['toggle'] = "tooltip"
-            tdAgendamentos.dataset['placement'] = "Top"
-            tdAgendamentos.dataset['categoria'] = "Agendamentos"
-            tdAgendamentos.dataset['nome'] = tipo
-            tdAgendamentos.dataset['date'] = data.toLocaleDateString()
-            tdAgendamentos.style.background = "#A5D5EF"
-            tdAgendamentos.innerHTML = '-'
-    
-            /* tdPrioridades.dataset['original-title'] = "Prioridades" */
-            tdPrioridades.dataset['toggle'] = "tooltip"
-            tdPrioridades.dataset['placement'] = "Top"
-            tdPrioridades.dataset['categoria'] = "Prioridades"
-            tdPrioridades.dataset['nome'] = tipo
-            tdPrioridades.dataset['date'] = data.toLocaleDateString()
-            tdPrioridades.style.background = "#CCC"
-            tdPrioridades.innerHTML = '-'
-    
-            /* tdPrioridades.dataset['original-title'] = "Total" */
-            tdTotal.dataset['toggle'] = "tooltip"
-            tdTotal.dataset['placement'] = "Top"
-            tdTotal.dataset['categoria'] = "Total"
-            tdTotal.dataset['nome'] = tipo
-            tdTotal.dataset['date'] = data.toLocaleDateString()
-            tdTotal.style.background = "#ADADAD"
-            tdTotal.innerHTML = '-'
-    
-            trAtendimento.appendChild(tdAgendamentos)
-            trAtendimento.appendChild(tdPrioridades)
-            trAtendimento.appendChild(tdTotal)
-        })
+            
+            //TBody
+            for (let index = 1; index <= 3; index++) {
+                const tdAgendamentos = document.createElement("td")
+                tdAgendamentos.dataset['originalTitle'] = "Agendamentos"
+                tdAgendamentos.dataset['toggle'] = "tooltip"
+                tdAgendamentos.dataset['placement'] = "Top"
+                tdAgendamentos.dataset['categoria'] = "Agendamentos"
+                tdAgendamentos.dataset['nome'] = tipo
+                tdAgendamentos.dataset['date'] = data.toLocaleDateString()
+                tdAgendamentos.style.background = "#A5D5EF"
+                tdAgendamentos.style.color = "#000"
+                tdAgendamentos.style.textAlign = "center"
+                tdAgendamentos.innerHTML = '-'
+                
+                const tdPrioridades = document.createElement("td")
+                tdPrioridades.dataset['originalTitle'] = "Prioridades"
+                tdPrioridades.dataset['toggle'] = "tooltip"
+                tdPrioridades.dataset['placement'] = "Top"
+                tdPrioridades.dataset['categoria'] = "Prioridades"
+                tdPrioridades.dataset['nome'] = tipo
+                tdPrioridades.dataset['date'] = data.toLocaleDateString()
+                tdPrioridades.style.background = "#CCC"
+                tdPrioridades.style.color = "#000"
+                tdPrioridades.style.textAlign = "center"
+                tdPrioridades.innerHTML = "-"
+                
+                const tdTotal = document.createElement("td")
+                tdPrioridades.dataset['originalTitle'] = "Total"
+                tdTotal.dataset['toggle'] = "tooltip"
+                tdTotal.dataset['placement'] = "Top"
+                tdTotal.dataset['categoria'] = "Total"
+                tdTotal.dataset['nome'] = tipo
+                tdTotal.dataset['date'] = data.toLocaleDateString()
+                tdTotal.style.background = "#ADADAD"
+                tdTotal.style.color = "#000"
+                tdTotal.style.textAlign = "center"
+                tdTotal.innerHTML = "-"
+                
+                /* if (isOddLine) {
+                    tdPrioridades.style.filter = "brightness(0.8)"
+                    tdTotal.style.filter = "brightness(0.8)"
+                    tdAgendamentos.style.filter = "brightness(0.8)"
+                } */
 
-        tbody.appendChild(trAtendimento)
+                tr.appendChild(tdAgendamentos)
+                tr.appendChild(tdPrioridades)
+                tr.appendChild(tdTotal)
+
+                if (index === 1) {
+                    tdAgendamentos.dataset.horario = horarios.morning
+                    tdPrioridades.dataset.horario = horarios.morning
+                    tdTotal.dataset.horario = horarios.morning
+                } else if (index === 2) {
+                    tdAgendamentos.dataset.horario = horarios.afternoon
+                    tdPrioridades.dataset.horario = horarios.afternoon
+                    tdTotal.dataset.horario = horarios.afternoon
+                } else {
+                    tdAgendamentos.dataset.horario = horarios.undefined
+                    tdPrioridades.dataset.horario = horarios.undefined
+                    tdTotal.dataset.horario = horarios.undefined
+                }
+            }
+        }
+        tbody.append(tr)
     }
 
     return table.innerHTML
@@ -286,9 +315,11 @@ function getArrayDateFollowUps() {
         if (indiceDiaSemana === 0) {
             IsSegundaSemana = true
         }
-        dias.push(indiceDiaSemana)
-        datas.push(date)
-
+        if (indiceDiaSemana > 0 && indiceDiaSemana < 6) {
+            dias.push(indiceDiaSemana)
+            datas.push(date)
+        }
+        
         date = new Date(date)
         date.setDate(date.getDate() + 1)
         indiceDiaSemana = date.getDay()
@@ -312,7 +343,7 @@ async function getFollowUps(datas) {
         const followUps = doc.querySelectorAll("body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr")
         
         const list = Array.from(followUps).reduce((listFollowUps, followUp) => {
-            const tipoFollowUp = followUp.querySelector("td:nth-child(6) > span").textContent
+            const tipoFollowUp = followUp.querySelector("td:nth-child(6) > span").textContent.toUpperCase()
             const dataAgendamentoElement = followUp.querySelector("td:nth-child(7)")
             const isPrioridade = dataAgendamentoElement.innerHTML.includes("fa-exclamation-triangle")
             const [ data, hora ] = dataAgendamentoElement.innerText.includes("às") ? dataAgendamentoElement.innerText.trim().split(":")[0].split(" às ") : [dataAgendamentoElement.innerText.trim().slice(0, 10), undefined ]
@@ -410,24 +441,24 @@ async function getFollowUps(datas) {
 
 // Barra de Carregamento
 function resetBarFollowUps() {
-    percent = 0
-    contIteration = 0
+    percentFollowUps = 0
+    contIterationFollowUps = 0
     const bar = document.querySelector("#barFollowUps")
-    bar.value = percent
+    bar.value = percentFollowUps
 }
 
 function finishLoadFollowUps(bar, interval) {
     interval.clearInterval()
-    bar.value = percent;
+    bar.value = percentFollowUps;
 }
 
 function incrementBarFollowUps() {
     const bar = document.querySelector("#barFollowUps")
-    const unidade = 100 / updateCountFollowUps
-    percent += unidade
-    bar.value = Math.round(percent)
-    contIteration++
-    if (updateCountFollowUps == contIteration) {
+    const unidade = maxValueProgressBar / updateCountFollowUps
+    percentFollowUps += unidade
+    bar.value = Math.round(percentFollowUps)
+    contIterationFollowUps++
+    if (updateCountFollowUps === contIterationFollowUps) {
         const contentBar = document.querySelector("#contentBarFollowUps")
         hiddeContentBarFollowUps(contentBar)
     }
@@ -480,7 +511,6 @@ function createStyleProgressBarFollowUps() {
 }
 
 function createBarFollowUps() {
-    const maxValueProgressBar = 100
     const contentBar = document.createElement("div")
     const progress = document.createElement("progress")
     const p = document.createElement("p")

@@ -397,8 +397,7 @@ function addEventoPasteProcesso (processoInput) {
     }
 }
 
-function removeCaracteresProcesso(numeroProcesso) {
-    console.log(numeroProcesso)
+function removeCaracteresProcesso(numeroProcesso) {  
     let processoFormatado = ''
 
     function isNumber(n) {
@@ -2265,12 +2264,12 @@ async function idPage(url) {
         createPainel('SAC', SAC, state.functions.supervisor.painelVisualizacaoTarefasTimeSAC)
         createPainel('FINANCEIRO', FINANCEIRO, state.functions.supervisor.painelVisualizacaoTarefasTimeFINANCEIRO)
         createPainel('INSS', INSS, state.functions.supervisor.painelVisualizacaoTarefasTimeINSS)
+        createPainelFollowUps(state.functions.todasPaginas.painelVisualizacaoFollowUps)
         contarTarefasParaHoje()
         if (pageBuscaProcessos) {
             
             const processoInput = document.querySelector("#bsAdvProcessosTexto")
             
-            console.log(state.functions.abaPesquisaProcesso.autoFormatacaoNumProcessoPesquisa)
             if (state.functions.abaPesquisaProcesso.autoFormatacaoNumProcessoPesquisa) {
                 formataNumProcesso(processoInput)
             }

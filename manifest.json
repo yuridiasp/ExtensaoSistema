@@ -33,6 +33,7 @@
                 "prazos.js",
                 "compromissos.js",
                 "painelSupervisor.js",
+                "painelFollowUps.js",
                 "recognition.js",
                 "notificacaoTarefasAdicionais.js",
                 "registerReport.js",

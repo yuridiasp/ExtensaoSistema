@@ -8,6 +8,7 @@ let state = {
             datepickerHighlighter: null,
             criarBotaoAcessoPortalJusticaProcesso: null,
             fixarMenuNavegacaoLateral: null,
+            painelVisualizacaoFollowUps: null
         },
         abaCadastroCliente: {
             criarTarefaCRM: null,
