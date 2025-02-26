@@ -8,7 +8,12 @@ const horarios = {
         priority: "Prioridades",
         scheduling: "Total"
     },
-    maxValueProgressBar = 100
+    maxValueProgressBar = 100,
+    colors = {
+        total: "#A5D5EF",
+        priority: "rgb(196 121 121)",
+        scheduling: "#ADADAD"
+    }
 
 let updateCountFollowUps,
     percentFollowUps = 0,
@@ -50,13 +55,13 @@ async function createPainelFollowUps(condiction) {
                     </li>
                     <li class="fdt-widget-lembretes" style="display: flex; justify-content: center; align-items: center; gap: 10px; padding: 10px 0;">
                         <div style="display: flex; gap: 5px; justify-content: center; align-items: center;">
-                            <span style="background: #A5D5EF; width: 10px; height: 10px;"></span>Total (Agendamentos + Prioridades)
+                            <span style="background: ${colors.total}; width: 10px; height: 10px;"></span>Total (Agendamentos + Prioridades)
                         </div>
                         <div style="display: flex; gap: 5px; justify-content: center; align-items: center;">
-                            <span style="background: #CCC; width: 10px; height: 10px;"></span>Prioridades
+                            <span style="background: ${colors.priority}; width: 10px; height: 10px;"></span>Prioridades
                         </div>
                         <div style="display: flex; gap: 5px; justify-content: center; align-items: center;">
-                            <span style="background: #ADADAD; width: 10px; height: 10px;"></span>Agendamentos
+                            <span style="background: ${colors.scheduling}; width: 10px; height: 10px;"></span>Agendamentos
                         </div>
                     </li>
                 </ul>`
@@ -212,7 +217,7 @@ function generateTableFollowUps(tiposAtendimento, datas) {
                 tdAgendamentos.dataset['categoria'] = "Agendamentos"
                 tdAgendamentos.dataset['nome'] = tipo
                 tdAgendamentos.dataset['date'] = data.toLocaleDateString()
-                tdAgendamentos.style.background = "#A5D5EF"
+                tdAgendamentos.style.background = colors.total
                 tdAgendamentos.style.color = "#000"
                 tdAgendamentos.style.textAlign = "center"
                 tdAgendamentos.innerHTML = '-'
@@ -224,7 +229,7 @@ function generateTableFollowUps(tiposAtendimento, datas) {
                 tdPrioridades.dataset['categoria'] = "Prioridades"
                 tdPrioridades.dataset['nome'] = tipo
                 tdPrioridades.dataset['date'] = data.toLocaleDateString()
-                tdPrioridades.style.background = "#CCC"
+                tdPrioridades.style.background = colors.priority
                 tdPrioridades.style.color = "#000"
                 tdPrioridades.style.textAlign = "center"
                 tdPrioridades.innerHTML = "-"
@@ -236,7 +241,7 @@ function generateTableFollowUps(tiposAtendimento, datas) {
                 tdTotal.dataset['categoria'] = "Total"
                 tdTotal.dataset['nome'] = tipo
                 tdTotal.dataset['date'] = data.toLocaleDateString()
-                tdTotal.style.background = "#ADADAD"
+                tdTotal.style.background = colors.scheduling
                 tdTotal.style.color = "#000"
                 tdTotal.style.textAlign = "center"
                 tdTotal.innerHTML = "-"

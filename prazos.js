@@ -190,13 +190,13 @@ function calculaIntervaloTarefasJudicial(dias) {
 
     const isAttorneyTask = tarefaAtualNormalizada.includes('ADVOGADO')
 
-    if (contDois.calculo.includes(tipoCompromissoNormalizado)) {
+    /* if (contDois.calculo.includes(tipoCompromissoNormalizado)) {
         if (isAttorneyTask) {
             return 0
         }
         
         return 2
-    }
+    } */
 
     if (contDois.adm.includes(tipoCompromissoNormalizado)) {
         if (isAttorneyTask) {
