@@ -871,13 +871,6 @@ function filterColaboradoresJudicial () {
             }
         ],
         aracaju = [
-            /* {
-                id: 196,
-                nome: "KAUÃ DE CARVALHO NASCIMENTO",
-                interiores: [],
-                datasViagem: [],
-                tarefas: 0
-            }, */
             {
                 id: 201,
                 nome: "MARCO AURELIO LEITE GOMES",
@@ -888,14 +881,7 @@ function filterColaboradoresJudicial () {
             {
                 id: 221,
                 nome: "LEONARDO TEIXEIRA SANTOS SILVA",
-                interiores: ["LOTEAMENTO JEOVA (BOTAFOGO)", "SANTA ROSA DE LIMA", "JAPOATÃ", "UMBAUBA", "ALAGOINHAS"],
-                datasViagem: [],
-                tarefas: 0
-            },
-            {
-                id: 199,
-                nome: "LUCAS NATHAN NOGUEIRA DA SILVA ",
-                interiores: ["ESTANCIA", "TOBIAS BARRETO"],
+                interiores: ["LOTEAMENTO JEOVA (BOTAFOGO)", "SANTA ROSA DE LIMA", "UMBAUBA"],
                 datasViagem: [],
                 tarefas: 0
             },
@@ -907,16 +893,16 @@ function filterColaboradoresJudicial () {
                 contagem: 0,
                 atrasadas: 0
             },
-            /* {
-                id: 241,
-                nome: "JEFERSON ALMEIDA SANTOS",
-                interiores: [],
+            {
+                id: 246,
+                nome: "MARQUISE ANTONIA LIMA SANTOS DA SILVA",
+                interiores: ["ESTANCIA", "TOBIAS BARRETO"],
                 datasViagem: [],
                 tarefas: 0
-            }, */
+            },
             {
-                id: 161,
-                nome: "YURI DIAS PEREIRA",
+                id: 199,
+                nome: "LUCAS NATHAN NOGUEIRA DA SILVA ",
                 interiores: [],
                 datasViagem: [],
                 tarefas: 0
@@ -924,6 +910,13 @@ function filterColaboradoresJudicial () {
             {
                 id: 239,
                 nome: "ISAC CRUZ SANTOS",
+                interiores: [],
+                datasViagem: [],
+                tarefas: 0
+            },
+            {
+                id: 161,
+                nome: "YURI DIAS PEREIRA",
                 interiores: [],
                 datasViagem: [],
                 tarefas: 0
@@ -1585,9 +1578,9 @@ async function selecionarResponsavelExecutor(option) {
 
    /*  const isTaskCalculo = removeAcentuacaoString(cliente.compromisso.tipoCompromisso).includes("CALCULO") && removeAcentuacaoString(cliente.compromisso.tarefas[0]).includes("CALCULO") */
     const isTaskCalculo = null
-    const isTaskContatar = option.children[0].children[0].innerText.toUpperCase() == "CONTATAR CLIENTE"
-    const isTaskLembrar = option.children[0].children[0].innerText.toUpperCase() == "LEMBRAR CLIENTE"
-    const isTaskWhatsapp = option.children[0].children[0].innerText.toUpperCase() == "SMS E WHATSAPP"
+    const isTaskContatar = option.innerText.toUpperCase() == "CONTATAR CLIENTE"
+    const isTaskLembrar = option.innerText.toUpperCase() == "LEMBRAR CLIENTE"
+    const isTaskWhatsapp = option.innerText.toUpperCase() == "SMS E WHATSAPP"
     const isDFOrGO = cliente.processo.estado === "DF" || cliente.processo.estado === "GO"
 
     if ((isTaskContatar || isTaskLembrar) || (isDFOrGO && (isTaskContatar || isTaskLembrar)) || !state.functions.todasPaginas.tipoIntimacaoIsJudicial && !adv || isTaskCalculo) {
@@ -1602,7 +1595,7 @@ function loadInfo () {
     }
 
     const descricaoTarefa = document.querySelector("#descricao"),
-        optionsLi = document.querySelectorAll(`#fdt-form > div:nth-child(10) > div.form-group.col-sm-8 > div > div > ul > li`),
+        select = document.querySelector('#idTipoTarefa'),
         horarioInicial = document.querySelector("#horarioInicial"),
         horarioFinal = document.querySelector("#horarioFinal"),
         local = document.querySelector("#onde"),
@@ -1615,46 +1608,45 @@ function loadInfo () {
     local.addEventListener('input', event => {
         event.target.value = event.target.value.toUpperCase()
     })
-    
-    for (const option of optionsLi) {
-        option.children[0].addEventListener('click', async () => {
 
-            const eventTargets = [horarioInicial, local, processoDependente],
-                contactdiv = document.querySelector("#contactdiv")
+    select.addEventListener("change", ({ target }) => {
+        const { selectedOptions } = target
+        const eventTargets = [horarioInicial, local, processoDependente],
+            contactdiv = document.querySelector("#contactdiv")
 
-            const arrayAudiencias = ["AUDIÊNCIA DE INSTRUÇÃO E JULGAMENTO", "AUDIÊNCIA UNA", "AUDIÊNCIA DE INSTRUÇÃO", "AUDIÊNCIA INICIAL", "AUDIÊNCIA INAUGURAL"]
+        const arrayAudiencias = ["AUDIÊNCIA DE INSTRUÇÃO E JULGAMENTO", "AUDIÊNCIA UNA", "AUDIÊNCIA DE INSTRUÇÃO", "AUDIÊNCIA INICIAL", "AUDIÊNCIA INAUGURAL"]
 
-            const ehTarefaParaAdmOuSac = ((cliente.compromisso.tarefas[0] == "CONTATAR CLIENTE") || (cliente.compromisso.tarefas[0] == "LEMBRAR CLIENTE") || (cliente.compromisso.tarefas[0] == "SMS E WHATSAPP")),
-                ehAudiencia = (arrayAudiencias.includes(cliente.compromisso.tipoCompromisso))
+        const ehTarefaParaAdmOuSac = ((cliente.compromisso.tarefas[0] == "CONTATAR CLIENTE") || (cliente.compromisso.tarefas[0] == "LEMBRAR CLIENTE") || (cliente.compromisso.tarefas[0] == "SMS E WHATSAPP")),
+            ehAudiencia = (arrayAudiencias.includes(cliente.compromisso.tipoCompromisso))
 
-            if (removeAcentuacaoString(cliente.compromisso.tipoCompromisso).search('PERICIA') == 0 && cliente.compromisso.tarefas.length === cliente.compromisso.quantidadeTarefas)
-                mostrarCamposPericia()
+        if (removeAcentuacaoString(cliente.compromisso.tipoCompromisso).search('PERICIA') == 0 && cliente.compromisso.tarefas.length === cliente.compromisso.quantidadeTarefas)
+            mostrarCamposPericia()
 
-            calcularDataTarefa(!state.functions.todasPaginas.tipoIntimacaoIsJudicial ? parametros.inss : (ehTarefaParaAdmOuSac || ehAudiencia) ? parametros.tarefaContatar : parametros.tarefaAdvogado)
+        calcularDataTarefa(!state.functions.todasPaginas.tipoIntimacaoIsJudicial ? parametros.inss : (ehTarefaParaAdmOuSac || ehAudiencia) ? parametros.tarefaContatar : parametros.tarefaAdvogado)
 
-            if ((horarioInicial.value.length == 0 || local.value.length == 0))
-                atualizaDescricao(descricaoTarefa, horarioInicial, horarioFinal, local)
+        if ((horarioInicial.value.length == 0 || local.value.length == 0))
+            atualizaDescricao(descricaoTarefa, horarioInicial, horarioFinal, local)
 
-            eventTargets.forEach(element => {
-                if (element)
-                    element.addEventListener(element == horarioInicial ? 'blur':'input', () => {
-                        atualizaDescricao(descricaoTarefa, horarioInicial, horarioFinal, local)
-                    })
-            })
-
-            if (contactdiv) {
-                contactdiv.parentNode.removeChild(contactdiv)
-            }
-
-            selecionarResponsavelExecutor(option)
-
-            submitAtualizarTarefa()
-
-            if (cliente.compromisso.tarefas.length === 1) {
-                desmarcarCaixaTarefaSequencia()
-            }
+        eventTargets.forEach(element => {
+            if (element)
+                element.addEventListener(element == horarioInicial ? 'blur':'input', () => {
+                    atualizaDescricao(descricaoTarefa, horarioInicial, horarioFinal, local)
+                })
         })
-    }
+
+        if (contactdiv) {
+            contactdiv.parentNode.removeChild(contactdiv)
+        }
+
+        selecionarResponsavelExecutor(selectedOptions[0])
+
+        submitAtualizarTarefa()
+
+        if (cliente.compromisso.tarefas.length === 1) {
+            desmarcarCaixaTarefaSequencia()
+        }
+        
+    })
 
     selectTipoIntimacao()
 }
@@ -2236,6 +2228,8 @@ async function idPage(url) {
         pageFichaTarefas = url.includes(urlTarefasFicha),
         pageListaTarefas = url.includes(urlListaTarefas),
         pageTarefasForm = url.includes(urlTarefasForm),
+        pageTarefasFormDeCompromisso = url.includes(urlTarefasForm) && url.includes("idCO"),
+        pageTarefasFormDeCliente = url.includes(urlTarefasForm) && url.includes("idCL"),
         pageVisualizacaoProcesso = url.includes(urlProcessosFicha),
         pageCompromissos = url.includes(urlCompromissos),
         pageCompromissoEscolherTipo = url.includes(urlCompromissoEscolherTipo),
@@ -2277,8 +2271,10 @@ async function idPage(url) {
             focarInputProcesso()
             limparInputProcesso()
             createButtonLinkJusticePortalForCase("listaProcesso")
-        } else if (pageTarefasForm && autoCompletar) {
+        } else if (pageTarefasFormDeCompromisso && autoCompletar) {
             preenchimentoTarefasDeCompromissos()
+        } else if (pageTarefasFormDeCliente) {
+            automaticDistributionTasksJuricial()
         } else if (pageCompromissos && autoCompletar) {
                 createDataListCompromissos()
                 addListenersCompromisso()

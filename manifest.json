@@ -28,6 +28,7 @@
                 "utils/portais/portais.js",
                 "cliente.js",
                 "tarefas.js",
+                "automaticDistributionTasksJuricial.js",
                 "content.js",
                 "gerid.js",
                 "prazos.js",

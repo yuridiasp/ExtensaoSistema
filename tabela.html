@@ -6,7 +6,7 @@
     <title>Tabela</title>
 </head>
 <body>
-    <table id="tabela"></table>
+    <!-- <table id="tabela"></table>
     <script>
         function generateTableFollowUps(tiposAtendimento, datas) {
             const semana = [
@@ -191,6 +191,139 @@
         const table = document.getElementById("tabela")
 
         tabela.innerHTML = generateTableFollowUps(tiposAtendimento, datas)
-    </script>
+    </script> -->
+    <div class="btn-group bootstrap-select show-tick form-control">
+        <button type="button" class="btn dropdown-toggle btn-default" data-toggle="dropdown" data-id="descricao" title="" aria-expanded="true">
+            <span class="filter-option pull-left"></span>
+            &nbsp;
+            <span class="bs-caret">
+                <span class="caret"></span>
+            </span>
+        </button>
+        <div class="dropdown-menu open" style="max-height: 627px; overflow: hidden; min-height: 124px;">
+            <div class="bs-searchbox">
+                <input type="text" class="form-control" autocomplete="off">
+            </div>
+            <ul class="dropdown-menu inner" role="menu" style="max-height: 583px; overflow-y: auto; min-height: 80px;">
+                <li data-original-index="0" class="selected">
+                    <a tabindex="0" class="" style="" data-tokens="null">
+                        <span class="text">LOAS</span>
+                        <span class="glyphicon glyphicon-ok check-mark"></span>
+                    </a>
+                </li>
+                <li data-original-index="1">
+                    <a tabindex="0" class="" style="" data-tokens="null">
+                        <span class="text">AUXÍLIO DOENÇA</span>
+                        <span class="glyphicon glyphicon-ok check-mark"></span>
+                    </a>
+                </li>
+                <li data-original-index="2">
+                    <a tabindex="0" class="" style="" data-tokens="null">
+                        <span class="text">AUXÍLIO ACIDENTE</span>
+                        <span class="glyphicon glyphicon-ok check-mark"></span>
+                    </a>
+                </li>
+                <li data-original-index="3">
+                    <a tabindex="0" class="" style="" data-tokens="null">
+                        <span class="text">AUXÍLIO RECLUSÃO</span>
+                        <span class="glyphicon glyphicon-ok check-mark"></span>
+                    </a>
+                </li>
+                <li data-original-index="4">
+                    <a tabindex="0" class="" style="" data-tokens="null">
+                        <span class="text">SALÁRIO MATERNIDADE</span>
+                        <span class="glyphicon glyphicon-ok check-mark"></span>
+                    </a>
+                </li>
+                <li data-original-index="5">
+                    <a tabindex="0" class="" style="" data-tokens="null">
+                        <span class="text">APOSENTADORIA POR IDADE URBANA</span>
+                        <span class="glyphicon glyphicon-ok check-mark"></span>
+                    </a>
+                </li>
+                <li data-original-index="6">
+                    <a tabindex="0" class="" style="" data-tokens="null">
+                        <span class="text">APOSENTADORIA POR IDADE RURAL</span>
+                        <span class="glyphicon glyphicon-ok check-mark"></span>
+                    </a>
+                </li>
+                <li data-original-index="7">
+                    <a tabindex="0" class="" style="" data-tokens="null">
+                        <span class="text">APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO</span>
+                        <span class="glyphicon glyphicon-ok check-mark"></span>
+                    </a>
+                </li>
+                <li data-original-index="8">
+                    <a tabindex="0" class="" style="" data-tokens="null">
+                        <span class="text">APOSENTADORIA ESPECIAL</span>
+                        <span class="glyphicon glyphicon-ok check-mark"></span>
+                    </a>
+                </li>
+                <li data-original-index="9">
+                    <a tabindex="0" class="" style="" data-tokens="null">
+                        <span class="text">APOSENTADORIA POR INVALIDEZ</span>
+                        <span class="glyphicon glyphicon-ok check-mark"></span>
+                    </a>
+                </li>
+                <li data-original-index="10">
+                    <a tabindex="0" class="" style="" data-tokens="null">
+                        <span class="text">PAB</span>
+                        <span class="glyphicon glyphicon-ok check-mark"></span>
+                    </a>
+                </li>
+                <li data-original-index="11">
+                    <a tabindex="0" class="" style="" data-tokens="null">
+                        <span class="text">PENSÃO POR MORTE</span>
+                        <span class="glyphicon glyphicon-ok check-mark"></span>
+                    </a>
+                </li>
+                <li data-original-index="12">
+                    <a tabindex="0" class="" style="" data-tokens="null">
+                        <span class="text">REVISÃO RMI</span>
+                        <span class="glyphicon glyphicon-ok check-mark"></span>
+                    </a>
+                </li>
+                <li data-original-index="13">
+                    <a tabindex="0" class="" style="" data-tokens="null">
+                        <span class="text">ADICIONAL 25%</span>
+                        <span class="glyphicon glyphicon-ok check-mark"></span>
+                    </a>
+                </li>
+                <li data-original-index="14">
+                    <a tabindex="0" class="" style="" data-tokens="null">
+                        <span class="text">APOSENTADORIA RPPS</span>
+                        <span class="glyphicon glyphicon-ok check-mark"></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <select name="descricao" id="descricao" class="form-control selectpicker" data-live-search="true" data-parsley-id="19" tabindex="-98">
+                <option value="LOAS">LOAS</option>
+                <option value="AUXÍLIO DOENÇA">AUXÍLIO DOENÇA</option>
+                <option value="AUXÍLIO ACIDENTE">AUXÍLIO ACIDENTE</option>
+                <option value="AUXÍLIO RECLUSÃO">AUXÍLIO RECLUSÃO</option>
+                <option value="SALÁRIO MATERNIDADE">SALÁRIO MATERNIDADE</option>
+                <option value="APOSENTADORIA POR IDADE URBANA">APOSENTADORIA POR IDADE URBANA</option>
+                <option value="APOSENTADORIA POR IDADE RURAL">APOSENTADORIA POR IDADE RURAL</option>
+                <option value="APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO">APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO</option>
+                <option value="APOSENTADORIA ESPECIAL">APOSENTADORIA ESPECIAL</option>
+                <option value="APOSENTADORIA POR INVALIDEZ">APOSENTADORIA POR INVALIDEZ</option>
+                <option value="PAB">PAB</option>
+                <option value="PENSÃO POR MORTE">PENSÃO POR MORTE</option>
+                <option value="REVISÃO RMI">REVISÃO RMI</option>
+                <option value="ADICIONAL 25%">ADICIONAL 25%</option>
+                <option value="APOSENTADORIA RPPS">APOSENTADORIA RPPS</option>
+        </select>
+    </div>
+    <div class="row">
+        <div class="col-sm-8">
+            <label for="descricao">*Descrição:</label>
+            <div class="form-group">
+                <textarea name="descricao" id="descricao" required="" maxlength="1000" class="form-control" data-parsley-id="19"></textarea>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <textarea name="descricao" id="descricao" required="" maxlength="1000" class="form-control" data-parsley-id="19"></textarea>
 </body>
 </html>
