@@ -272,7 +272,7 @@ function formataData (dia,mes,ano) {
     return `${dia}/${mes}/${ano}`
 }
 
-function calcularPrazo (prazo,parametro) {
+function calcularPrazo (prazo, parametro) {
     
     const dataPub = document.querySelector("#dataPublicacao"),
         tipoIntimacao = document.querySelector("#descricao"),

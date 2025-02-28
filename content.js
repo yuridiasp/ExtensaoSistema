@@ -4,7 +4,7 @@ const parametros = {
     tarefaAdvogado: 2,
     highlight: 3
 }
-
+const controllers = new Map()
 
 let cliente = {
         cliente: {
@@ -442,9 +442,10 @@ function selectRespExec (colaborador) {
     }
 }
 
-function createListaTarefas () {
-    const divtarefa = document.querySelector('#divTipoTarefaNormal'),
-        div = document.createElement('div'),
+function createListaTarefas (isTaskProtocol = false, area = null) {
+    const divtarefa = document.querySelector('#divTipoTarefaNormal')
+
+    const div = document.createElement('div'),
         h1 = document.createElement('h3'),
         h2 = document.createElement('h3'),
         p1 = document.createElement('p'),
@@ -466,12 +467,14 @@ function createListaTarefas () {
     div.style.color = 'white'
     div.setAttribute('id','contactdiv')
     
-    p1.innerHTML = `Local atendido:`
-    p3.innerHTML = `${cliente.cliente.localAtendido}`
-    p2.innerHTML = `Cidade do cliente:`
-    p4.innerHTML = `${cliente.cliente.cidade}`
-    p5.innerHTML = `Parceiro:`
-    p6.innerHTML = `${cliente.cliente.parceiro}`
+    if (!isTaskProtocol) {
+        p1.innerHTML = `Local atendido:`
+        p3.innerHTML = `${cliente.cliente.localAtendido}`
+        p2.innerHTML = `Cidade do cliente:`
+        p4.innerHTML = `${cliente.cliente.cidade}`
+        p5.innerHTML = `Parceiro:`
+        p6.innerHTML = `${cliente.cliente.parceiro}`
+    }
     
     div.appendChild(h1)
     div.appendChild(p1)
@@ -483,8 +486,8 @@ function createListaTarefas () {
     div.appendChild(h2)
     divtarefa.appendChild(div)
     
-    h1.innerHTML = 'INFO CLIENTE'
-    h2.innerHTML = 'TAREFAS ADM'
+    h1.innerHTML = isTaskProtocol? '' : 'INFO CLIENTE'
+    h2.innerHTML = `TAREFAS ${isTaskProtocol? area :'ADM'}`
 
     const titles = [h1, h2]
 
@@ -496,6 +499,16 @@ function createListaTarefas () {
         e.style.borderRadius = '5px'
         e.style.top = '0px'
         e.style.color = 'dimgray'
+    })
+}
+
+function limparListaTarefas() {
+    const pNodeList = document.querySelectorAll("#contactdiv p")
+
+    pNodeList.forEach(p => {
+        if (p.dataset.colaborador) {
+            p.remove()
+        }
     })
 }
 
@@ -592,7 +605,7 @@ async function selectExecutorContatarJudicial (colaboradores) {
     let responsavel = 'JULIANO OLIVEIRA DE SOUZA'
 
     const responsavelInterior = adm.reduce((previous, currrent) => {
-        console.log(currrent, cliente)
+        
         if (currrent.interiores.includes(removeAcentuacaoString(cliente.cliente.localAtendido))) {
             return currrent
         }
@@ -633,7 +646,16 @@ async function selectExecutorContatar(colaboradores) {
     return await selectExecutorContatarAdministrativo (colaboradores)
 }
 
-async function getTarefasColaboradores(colaborador, [ dia, mes, ano ]){
+async function getTarefasColaboradores(colaborador, [ dia, mes, ano ], isTaskProtocol = false){
+    
+    if (controllers.has(colaborador.id)) {
+        controllers.get(colaborador.id).abort()
+        controllers.delete(colaborador.id)
+    }
+
+    const controller = new AbortController()
+    const signal = controller.signal
+    controllers.set(colaborador.id, controller)
 
     const parser = new DOMParser()
 
@@ -646,19 +668,30 @@ async function getTarefasColaboradores(colaborador, [ dia, mes, ano ]){
             body: body,
             headers: new Headers({
                 'Content-Type': 'application/x-www-form-urlencoded'
-            })
+            }),
+            signal
     }).then(function (response) {
         return response.blob()
     }).then(async function (result) {
         const doc = parser.parseFromString(await result.text(),'text/html')
-
+        
         const tarefas = doc.documentElement.querySelectorAll('body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr')
             let contador = 0
             tarefas.forEach(e => {
-                if (e.children[2] != null) {
-                    const lengthProcessTJ = 12
-                    if ((e.children[2].innerText.match("[0-9]*")[0].length >= lengthProcessTJ) && !(e.children[3].innerText.search('Acompanhar') == 0)) {
-                        contador++
+                if (isTaskProtocol) {
+                    if (e.children[3] != null) {
+                        const tipoTarefa = e.children[3].innerText.toUpperCase()
+
+                        if (tipoTarefa === "DEMORA INJUSTIFICADA" || tipoTarefa === "ENVELOPE - PREV") {
+                            contador++
+                        }
+                    }
+                } else {
+                    if (e.children[2] != null) {
+                        const lengthProcessTJ = 12
+                        if ((e.children[2].innerText.match("[0-9]*")[0].length >= lengthProcessTJ) && !(e.children[3].innerText.search('Acompanhar') == 0)) {
+                            contador++
+                        }
                     }
                 }
             })
@@ -890,8 +923,7 @@ function filterColaboradoresJudicial () {
                 nome: "THIAGO SANTOS SANTANA",
                 interiores: ["CAPELA", "JAPARATUBA", "CONDE/BA"],
                 datasViagem: [],
-                contagem: 0,
-                atrasadas: 0
+                contagem: 0
             },
             {
                 id: 246,
@@ -1886,7 +1918,6 @@ function addEventToAutocomplete() {
 }
 
 function removeAcentuacaoString (string) {
-    //console.log(string)
     return string ? string.normalize('NFD').replace(/[\u0300-\u036f]/g, "") : ''
 }
 
