@@ -4,15 +4,15 @@ const horarios = {
         undefined: "Indefinido"
     },
     modosAgendamento = {
-        total: "Agendamentos",
+        total: "Total",
         priority: "Prioridades",
-        scheduling: "Total"
+        scheduling: "Agendamentos"
     },
     maxValueProgressBar = 100,
     colors = {
-        total: "#A5D5EF",
-        priority: "rgb(196 121 121)",
-        scheduling: "#ADADAD"
+        total: "#0096881a",
+        priority: "#dc35451a",
+        scheduling: "#ffc1071a"
     }
 
 let updateCountFollowUps,
@@ -30,6 +30,99 @@ async function getFollowUpTypes() {
     return followUpTypes
 }
 
+function insertStyleSheet() {
+    const cssRules = [
+        `.table-container {
+            max-width: 50vw;
+            max-height: 50vh;
+            overflow-x: auto;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: white;
+        }`,
+        `table.follow {
+            position: relative;
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }`,
+        `table.follow thead {
+            top: 0;
+            position: sticky;
+            background: #004085;
+            color: #ffffff;
+            font-weight: bold;
+            z-index: 5;
+        }`,
+        `table.follow thead th {
+            padding: 12px;
+            border: 1px solid #d1d1d1;
+            text-align: center;
+        }`,
+        `table.follow tbody th:first-child {
+            position: sticky;
+            left: 0;
+            max-width: 10vw;
+            overflow-wrap: break-word;
+            background-color: #ffffff;
+            z-index: 2;
+            font-weight: bold;
+            text-align: left;
+            padding-left: 10px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }`,
+        `table.follow tbody tr:nth-child(odd) {
+            background-color: #e9ecef;
+        }`,
+        `table.follow tbody tr:nth-child(even) {
+            background-color: #ffffff;
+        }`,
+        `table.follow td {
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #d1d1d1;
+            transition: background 0.3s ease;
+        }`,
+        `table.follow td:hover {
+            background: #007bff33;
+        }`,
+        `table.follow td[data-types-appointments="Total"] {
+            background: ${colors.total};
+        }`,
+        `table.follow td[data-types-appointments="Agendamentos"] {
+            background: ${colors.scheduling};
+        }`,
+        `table.follow td[data-types-appointments="Prioridades"] {
+            background: ${colors.priority};
+            color: #7d1919;
+            font-weight: bold;
+        }`,
+        `table.follow, table.follow th, table.follow td {
+            border-radius: 5px;
+        }`,
+        `@media (max-width: 768px) {
+            table.follow {
+                font-size: 14px;
+            }
+            table.follow td, table.follow th {
+                padding: 8px;
+            }
+        }`
+    ]
+    
+
+    const styleElement = document.querySelector("style")
+
+    cssRules.forEach(rule => {
+        styleElement.sheet.insertRule(rule, styleElement.sheet.cssRules.length)
+    })
+}
+
 async function createPainelFollowUps(condiction) {
     if (!condiction) {
         return
@@ -38,6 +131,8 @@ async function createPainelFollowUps(condiction) {
     const painelBar = document.querySelector(
         "#fdt-mt-header > ul:nth-child(1)"
     )
+
+    insertStyleSheet()
     
     const { datas, dias } = getArrayDateFollowUps()
 
@@ -48,7 +143,7 @@ async function createPainelFollowUps(condiction) {
                     <li class="fdt-dropdown-cabecalho" style="color: #005689;">Painel Geral de Follow-Ups</li>
                     <li class="fdt-widget-lembretes">
                         <ul>
-                            <li>
+                            <li class="table-container">
                                 <table class="tabela follow">${generateTableFollowUps(tiposAtendimento, datas, dias)}</table>
                             </li>
                         </ul>
@@ -78,7 +173,7 @@ async function createPainelFollowUps(condiction) {
     const panelSup = document.querySelector('#panelFollowUps')
     const contentBar = createBarFollowUps()
     panelSup.appendChild(contentBar)
-    estilizarTabelaFollowUps()
+    /* estilizarTabelaFollowUps() */
 
     const inputDadosFollowUps = (tipoFollowUp, result) => {
         
@@ -149,18 +244,14 @@ function generateTableFollowUps(tiposAtendimento, datas) {
     table.appendChild(tbody)
 
     const trDatasTHead = document.createElement('tr')
-    const trDiasSemanaTHead = document.createElement('tr')
     const trHorariosTHead = document.createElement('tr')
 
     const th = document.createElement("th")
-    th.style.background = "rgb(0 86 137)"
-    th.style.color = "#FFF"
-    th.rowSpan = 3
-    th.innerHTML = "&nbsp;"
+    th.rowSpan = 2
+    th.innerHTML = "Tipo de Atendimento"
     trDatasTHead.appendChild(th)
 
     thead.appendChild(trDatasTHead)
-    thead.appendChild(trDiasSemanaTHead)
     thead.appendChild(trHorariosTHead)                
     
     for (const tipo of tiposAtendimento) {
@@ -177,84 +268,64 @@ function generateTableFollowUps(tiposAtendimento, datas) {
             if (tipo === tiposAtendimento[0]) {
                 const thData = document.createElement("th")
                 thData.colSpan = 9
-                thData.innerHTML = data.toLocaleDateString()
+                thData.innerHTML = `${data.toLocaleDateString()} (${semana[data.getDay()]})`
                 thData.dataset['date'] = data.toLocaleDateString()
-                thData.classList.add("dRow")
                 trDatasTHead.appendChild(thData)
 
-                const thSemana = document.createElement("th")
-                thSemana.colSpan = 9
-                thSemana.innerHTML = semana[data.getDay()]
-                thSemana.dataset['date'] = data.toLocaleDateString()
-                thSemana.classList.add("dRow")
-                trDiasSemanaTHead.appendChild(thSemana)
-
                 const thMorning = document.createElement("th")
+                thMorning.dataset['period'] = "Manhã"
                 thMorning.innerHTML = "Manhã"
                 thMorning.colSpan = 3
-                thMorning.classList.add("dRow")
                 trHorariosTHead.appendChild(thMorning)
-
+                
                 const thAfternoon = document.createElement("th")
+                thAfternoon.dataset['period'] = "Tarde"
                 thAfternoon.innerHTML = "Tarde"
                 thAfternoon.colSpan = 3
-                thAfternoon.classList.add("dRow")
                 trHorariosTHead.appendChild(thAfternoon)
-
+                
                 const thUndefined = document.createElement("th")
+                thUndefined.dataset['period'] = "Indefinido"
                 thUndefined.innerHTML = "Indefinido"
                 thUndefined.colSpan = 3
-                thUndefined.classList.add("dRow")
                 trHorariosTHead.appendChild(thUndefined)
             }
             
             //TBody
             for (let index = 1; index <= 3; index++) {
                 const tdAgendamentos = document.createElement("td")
+                tdAgendamentos.dataset['typesAppointments'] = "Agendamentos"
                 tdAgendamentos.dataset['originalTitle'] = "Agendamentos"
                 tdAgendamentos.dataset['toggle'] = "tooltip"
                 tdAgendamentos.dataset['placement'] = "Top"
                 tdAgendamentos.dataset['categoria'] = "Agendamentos"
                 tdAgendamentos.dataset['nome'] = tipo
                 tdAgendamentos.dataset['date'] = data.toLocaleDateString()
-                tdAgendamentos.style.background = colors.total
-                tdAgendamentos.style.color = "#000"
-                tdAgendamentos.style.textAlign = "center"
                 tdAgendamentos.innerHTML = '-'
                 
                 const tdPrioridades = document.createElement("td")
+                tdPrioridades.dataset['typesAppointments'] = "Prioridades"
                 tdPrioridades.dataset['originalTitle'] = "Prioridades"
                 tdPrioridades.dataset['toggle'] = "tooltip"
                 tdPrioridades.dataset['placement'] = "Top"
                 tdPrioridades.dataset['categoria'] = "Prioridades"
                 tdPrioridades.dataset['nome'] = tipo
                 tdPrioridades.dataset['date'] = data.toLocaleDateString()
-                tdPrioridades.style.background = colors.priority
-                tdPrioridades.style.color = "#000"
-                tdPrioridades.style.textAlign = "center"
                 tdPrioridades.innerHTML = "-"
                 
                 const tdTotal = document.createElement("td")
-                tdPrioridades.dataset['originalTitle'] = "Total"
+                tdTotal.dataset['typesAppointments'] = "Total"
+                tdTotal.dataset['originalTitle'] = "Total"
                 tdTotal.dataset['toggle'] = "tooltip"
                 tdTotal.dataset['placement'] = "Top"
                 tdTotal.dataset['categoria'] = "Total"
                 tdTotal.dataset['nome'] = tipo
                 tdTotal.dataset['date'] = data.toLocaleDateString()
-                tdTotal.style.background = colors.scheduling
-                tdTotal.style.color = "#000"
-                tdTotal.style.textAlign = "center"
                 tdTotal.innerHTML = "-"
-                
-                /* if (isOddLine) {
-                    tdPrioridades.style.filter = "brightness(0.8)"
-                    tdTotal.style.filter = "brightness(0.8)"
-                    tdAgendamentos.style.filter = "brightness(0.8)"
-                } */
 
-                tr.appendChild(tdAgendamentos)
-                tr.appendChild(tdPrioridades)
                 tr.appendChild(tdTotal)
+                tr.appendChild(tdPrioridades)
+                tr.appendChild(tdAgendamentos)
 
                 if (index === 1) {
                     tdAgendamentos.dataset.horario = horarios.morning
@@ -537,6 +608,7 @@ function createBarFollowUps() {
     contentBar.style.left = "0"
     contentBar.style.width = "100%"
     contentBar.style.height = "100%"
+    contentBar.style.zIndex = 10
 
     progress.max = maxValueProgressBar
 

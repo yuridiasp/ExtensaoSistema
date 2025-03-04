@@ -1,4 +1,7 @@
-async function createTarefa({ idCL, idTipoTarefa = 77, dataParaFinalizacao, idResponsavel = 64, idExecutor = 64 }) {
+const idResponsavelCRM = 64
+const idTarefaRegistroCRM = 124
+
+async function createTarefa({ idCL, descricaoTarefa, dataParaFinalizacao, idTipoTarefa = idTarefaRegistroCRM, idResponsavel = idResponsavelCRM, idExecutor = idResponsavelCRM }) {
     const url = 'http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/formularioScript.asp'
     const method = 'POST'
     const contentType = 'application/x-www-form-urlencoded'
@@ -19,7 +22,7 @@ async function createTarefa({ idCL, idTipoTarefa = 77, dataParaFinalizacao, idRe
         horarioInicial: '',
         horarioFinal: '',
         dataParaFinalizacao,
-        descricao: 'Cliente primeira vez.',
+        descricao: descricaoTarefa,
         idResponsavel,
         idExecutor,
         lembreteQuandoFinalizarPara: '',

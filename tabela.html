@@ -3,327 +3,377 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tabela</title>
+    <title>Tabela de Atendimentos com Coluna Fixa</title>
+    <style>
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: auto;
+            white-space: nowrap;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: white;
+        }
+
+        table.follow {
+            position: relative;
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table.follow thead {
+            top: 0;
+            position: sticky;
+            background: #004085;
+            color: #ffffff;
+            font-weight: bold;
+            text-align: center;
+            z-index: 5;
+        }
+
+        table.follow thead th {
+            padding: 12px;
+            border: 1px solid #d1d1d1;
+        }
+
+        table.follow tbody th:first-child {
+            position: sticky;
+            left: 0;
+            background-color: #ffffff;
+            z-index: 2;
+            font-weight: bold;
+            text-align: left;
+            padding-left: 10px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        table.follow tbody tr:nth-child(odd) {
+            background-color: #e9ecef;
+        }
+
+        table.follow tbody tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+
+        table.follow td {
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #d1d1d1;
+            transition: background 0.3s ease;
+        }
+
+        table.follow td:hover {
+            background: #007bff33;
+        }
+
+        table.follow td[data-typesAppointments="Total"] {
+            background: #009687be;
+        }
+
+        table.follow td[data-typesAppointments="Agendamentos"] {
+            background: #ffc1078a;
+        }
+
+        table.follow td[data-typesAppointments="Prioridades"] {
+            background: #ff00193f;
+        }
+
+        table.follow, table.follow th, table.follow td {
+            border-radius: 5px;
+        }
+
+        @media (max-width: 768px) {
+            table.follow {
+                font-size: 14px;
+            }
+            table.follow td, table.follow th {
+                padding: 8px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- <table id="tabela"></table>
-    <script>
-        function generateTableFollowUps(tiposAtendimento, datas) {
-            const semana = [
-                "Domingo",
-                "Segunda",
-                "Terça",
-                "Quarta",
-                "Quinta",
-                "Sexta",
-                "Sábado"
-            ]
 
-            const table = document.createElement("table")
-            const thead = document.createElement("thead")
-            const tbody = document.createElement("tbody")
+    <h2 style="text-align: center; color: #004085;">Painel Geral de Follow-Ups</h2>
 
-            table.appendChild(thead)
-            table.appendChild(tbody)
-
-            const trDatasTHead = document.createElement('tr')
-            const trDiasSemanaTHead = document.createElement('tr')
-            const trHorariosTHead = document.createElement('tr')
-
-            const th = document.createElement("th")
-            th.style.background = "rgb(0 86 137)"
-            th.style.color = "#FFF"
-            th.rowSpan = 3
-            th.innerHTML = "Atendimento / Data"
-            trDatasTHead.appendChild(th)
-
-            thead.appendChild(trDatasTHead)
-            thead.appendChild(trDiasSemanaTHead)
-            thead.appendChild(trHorariosTHead)                
-            
-            for (const tipo of tiposAtendimento) {
-                const tr = document.createElement("tr")
-                const th = document.createElement("th")
-                th.innerHTML = tipo
-                tr.classList.add("nCollumn")
-                tr.appendChild(th)
-                for(const data of datas) {
-                    //THead
-                    if (tipo === tiposAtendimento[0]) {
-                        const thData = document.createElement("th")
-                        thData.colSpan = 9
-                        thData.innerHTML = data.toLocaleDateString()
-                        thData.dataset['date'] = data.toLocaleDateString()
-                        thData.classList.add("dRow")
-                        trDatasTHead.appendChild(thData)
-
-                        const thSemana = document.createElement("th")
-                        thSemana.colSpan = 9
-                        thSemana.innerHTML = semana[data.getDay()]
-                        thSemana.dataset['date'] = data.toLocaleDateString()
-                        thSemana.classList.add("dRow")
-                        trDiasSemanaTHead.appendChild(thSemana)
-
-                        const thMorning = document.createElement("th")
-                        thMorning.innerHTML = "Manhã"
-                        thMorning.colSpan = 3
-                        thMorning.classList.add("dRow")
-                        trHorariosTHead.appendChild(thMorning)
-
-                        const thAfternoon = document.createElement("th")
-                        thAfternoon.innerHTML = "Tarde"
-                        thAfternoon.colSpan = 3
-                        thAfternoon.classList.add("dRow")
-                        trHorariosTHead.appendChild(thAfternoon)
-
-                        const thUndefined = document.createElement("th")
-                        thUndefined.innerHTML = "Indefinido"
-                        thUndefined.colSpan = 3
-                        thUndefined.classList.add("dRow")
-                        trHorariosTHead.appendChild(thUndefined)
-                    }
-                    
-                    //TBody
-                    for (let index = 1; index <= 3; index++) {
-                        const tdAgendamentos = document.createElement("td")
-                        tdAgendamentos.dataset['originalTitle'] = "Agendamentos"
-                        tdAgendamentos.dataset['toggle'] = "tooltip"
-                        tdAgendamentos.dataset['placement'] = "Top"
-                        tdAgendamentos.dataset['categoria'] = "Agendamentos"
-                        tdAgendamentos.dataset['nome'] = tipo
-                        tdAgendamentos.dataset['date'] = data.toLocaleDateString()
-                        tdAgendamentos.style.background = "#A5D5EF"
-                        tdAgendamentos.innerHTML = '-'
-                        
-                        const tdPrioridades = document.createElement("td")
-                        tdPrioridades.dataset['originalTitle'] = "Prioridades"
-                        tdPrioridades.dataset['toggle'] = "tooltip"
-                        tdPrioridades.dataset['placement'] = "Top"
-                        tdPrioridades.dataset['categoria'] = "Prioridades"
-                        tdPrioridades.dataset['nome'] = tipo
-                        tdPrioridades.dataset['date'] = data.toLocaleDateString()
-                        tdPrioridades.style.background = "#CCC"
-                        tdPrioridades.innerHTML = "-"
-                        
-                        const tdTotal = document.createElement("td")
-                        tdPrioridades.dataset['originalTitle'] = "Total"
-                        tdTotal.dataset['toggle'] = "tooltip"
-                        tdTotal.dataset['placement'] = "Top"
-                        tdTotal.dataset['categoria'] = "Total"
-                        tdTotal.dataset['nome'] = tipo
-                        tdTotal.dataset['date'] = data.toLocaleDateString()
-                        tdTotal.style.background = "#ADADAD"
-                        tdTotal.innerHTML = "-"
-    
-                        tr.appendChild(tdAgendamentos)
-                        tr.appendChild(tdPrioridades)
-                        tr.appendChild(tdTotal)
-                    }
-                }
-                tbody.append(tr)
-            }
-
-            return table.innerHTML
-        }
-        const horarios = {
-            morning: "Manhã",
-            afternoon: "Tarde",
-            undefined: "Indefinido"
-            },
-            modosAgendamento = {
-                total: "Agendamentos",
-                priority: "Prioridades",
-                scheduling: "Total"
-            }
-        const { datas, dias } = {
-            "datas": [
-                new Date("2025-02-24T03:00:00.000Z"),
-                new Date("2025-02-25T03:00:00.000Z"),
-                new Date("2025-02-26T03:00:00.000Z"),
-                new Date("2025-02-27T03:00:00.000Z"),
-                new Date("2025-02-28T03:00:00.000Z"),
-                new Date("2025-03-01T03:00:00.000Z"),
-                new Date("2025-03-02T03:00:00.000Z"),
-                new Date("2025-03-03T03:00:00.000Z"),
-                new Date("2025-03-04T03:00:00.000Z"),
-                new Date("2025-03-05T03:00:00.000Z"),
-                new Date("2025-03-06T03:00:00.000Z"),
-                new Date("2025-03-07T03:00:00.000Z")
-            ],
-            "dias": [
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                0,
-                1,
-                2,
-                3,
-                4,
-                5
-            ]
-        }
-        const tiposAtendimento = [
-            "AASM - DF",
-            "ÁGUA QUENTE -DF",
-            "ATENDIMENTO ÁGUAS LINDAS",
-            "ATENDIMENTO CÍVEL",
-            "ATENDIMENTO DR. DIEGO",
-            "ATENDIMENTO DR. FABIO",
-            "ATENDIMENTO DR. MARCUS",
-            "ATENDIMENTO DRA. SARA",
-            "ATENDIMENTO ESTÂNCIA",
-            "ATENDIMENTO PLANTONISTA (TESTE)",
-            "ATENDIMENTO SANTA MARIA (FILIAL AJU)",
-            "ATENDIMENTO TAGUATINGA",
-            "ATENDIMENTO TRABALHISTA",
-            "NOVO GAMA - DF",
-            "ORIENTAÇÃO DE AUDIÊNCIA",
-            "PORTO RICO - DF",
-            "PREVIDENCIÁRIO - VIRTUAL",
-            "PREVIDENCIÁRIO QUINTA-FEIRA DE TARDE",
-            "PREVIDENCIÁRIO SEGUNDA E QUARTA-FEIRA DE MANHÃ",
-            "VALPARAÍSO - DF"
-        ]
-        
-        const table = document.getElementById("tabela")
-
-        tabela.innerHTML = generateTableFollowUps(tiposAtendimento, datas)
-    </script> -->
-    <div class="btn-group bootstrap-select show-tick form-control">
-        <button type="button" class="btn dropdown-toggle btn-default" data-toggle="dropdown" data-id="descricao" title="" aria-expanded="true">
-            <span class="filter-option pull-left"></span>
-            &nbsp;
-            <span class="bs-caret">
-                <span class="caret"></span>
-            </span>
-        </button>
-        <div class="dropdown-menu open" style="max-height: 627px; overflow: hidden; min-height: 124px;">
-            <div class="bs-searchbox">
-                <input type="text" class="form-control" autocomplete="off">
-            </div>
-            <ul class="dropdown-menu inner" role="menu" style="max-height: 583px; overflow-y: auto; min-height: 80px;">
-                <li data-original-index="0" class="selected">
-                    <a tabindex="0" class="" style="" data-tokens="null">
-                        <span class="text">LOAS</span>
-                        <span class="glyphicon glyphicon-ok check-mark"></span>
-                    </a>
-                </li>
-                <li data-original-index="1">
-                    <a tabindex="0" class="" style="" data-tokens="null">
-                        <span class="text">AUXÍLIO DOENÇA</span>
-                        <span class="glyphicon glyphicon-ok check-mark"></span>
-                    </a>
-                </li>
-                <li data-original-index="2">
-                    <a tabindex="0" class="" style="" data-tokens="null">
-                        <span class="text">AUXÍLIO ACIDENTE</span>
-                        <span class="glyphicon glyphicon-ok check-mark"></span>
-                    </a>
-                </li>
-                <li data-original-index="3">
-                    <a tabindex="0" class="" style="" data-tokens="null">
-                        <span class="text">AUXÍLIO RECLUSÃO</span>
-                        <span class="glyphicon glyphicon-ok check-mark"></span>
-                    </a>
-                </li>
-                <li data-original-index="4">
-                    <a tabindex="0" class="" style="" data-tokens="null">
-                        <span class="text">SALÁRIO MATERNIDADE</span>
-                        <span class="glyphicon glyphicon-ok check-mark"></span>
-                    </a>
-                </li>
-                <li data-original-index="5">
-                    <a tabindex="0" class="" style="" data-tokens="null">
-                        <span class="text">APOSENTADORIA POR IDADE URBANA</span>
-                        <span class="glyphicon glyphicon-ok check-mark"></span>
-                    </a>
-                </li>
-                <li data-original-index="6">
-                    <a tabindex="0" class="" style="" data-tokens="null">
-                        <span class="text">APOSENTADORIA POR IDADE RURAL</span>
-                        <span class="glyphicon glyphicon-ok check-mark"></span>
-                    </a>
-                </li>
-                <li data-original-index="7">
-                    <a tabindex="0" class="" style="" data-tokens="null">
-                        <span class="text">APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO</span>
-                        <span class="glyphicon glyphicon-ok check-mark"></span>
-                    </a>
-                </li>
-                <li data-original-index="8">
-                    <a tabindex="0" class="" style="" data-tokens="null">
-                        <span class="text">APOSENTADORIA ESPECIAL</span>
-                        <span class="glyphicon glyphicon-ok check-mark"></span>
-                    </a>
-                </li>
-                <li data-original-index="9">
-                    <a tabindex="0" class="" style="" data-tokens="null">
-                        <span class="text">APOSENTADORIA POR INVALIDEZ</span>
-                        <span class="glyphicon glyphicon-ok check-mark"></span>
-                    </a>
-                </li>
-                <li data-original-index="10">
-                    <a tabindex="0" class="" style="" data-tokens="null">
-                        <span class="text">PAB</span>
-                        <span class="glyphicon glyphicon-ok check-mark"></span>
-                    </a>
-                </li>
-                <li data-original-index="11">
-                    <a tabindex="0" class="" style="" data-tokens="null">
-                        <span class="text">PENSÃO POR MORTE</span>
-                        <span class="glyphicon glyphicon-ok check-mark"></span>
-                    </a>
-                </li>
-                <li data-original-index="12">
-                    <a tabindex="0" class="" style="" data-tokens="null">
-                        <span class="text">REVISÃO RMI</span>
-                        <span class="glyphicon glyphicon-ok check-mark"></span>
-                    </a>
-                </li>
-                <li data-original-index="13">
-                    <a tabindex="0" class="" style="" data-tokens="null">
-                        <span class="text">ADICIONAL 25%</span>
-                        <span class="glyphicon glyphicon-ok check-mark"></span>
-                    </a>
-                </li>
-                <li data-original-index="14">
-                    <a tabindex="0" class="" style="" data-tokens="null">
-                        <span class="text">APOSENTADORIA RPPS</span>
-                        <span class="glyphicon glyphicon-ok check-mark"></span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <select name="descricao" id="descricao" class="form-control selectpicker" data-live-search="true" data-parsley-id="19" tabindex="-98">
-                <option value="LOAS">LOAS</option>
-                <option value="AUXÍLIO DOENÇA">AUXÍLIO DOENÇA</option>
-                <option value="AUXÍLIO ACIDENTE">AUXÍLIO ACIDENTE</option>
-                <option value="AUXÍLIO RECLUSÃO">AUXÍLIO RECLUSÃO</option>
-                <option value="SALÁRIO MATERNIDADE">SALÁRIO MATERNIDADE</option>
-                <option value="APOSENTADORIA POR IDADE URBANA">APOSENTADORIA POR IDADE URBANA</option>
-                <option value="APOSENTADORIA POR IDADE RURAL">APOSENTADORIA POR IDADE RURAL</option>
-                <option value="APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO">APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO</option>
-                <option value="APOSENTADORIA ESPECIAL">APOSENTADORIA ESPECIAL</option>
-                <option value="APOSENTADORIA POR INVALIDEZ">APOSENTADORIA POR INVALIDEZ</option>
-                <option value="PAB">PAB</option>
-                <option value="PENSÃO POR MORTE">PENSÃO POR MORTE</option>
-                <option value="REVISÃO RMI">REVISÃO RMI</option>
-                <option value="ADICIONAL 25%">ADICIONAL 25%</option>
-                <option value="APOSENTADORIA RPPS">APOSENTADORIA RPPS</option>
-        </select>
+    <div class="table-container">
+        <table class="follow">
+            <thead>
+                <tr>
+                    <th rowspan="3">Tipo de Atendimento</th>
+                    <th colspan="9" data-date="03/03/2025">03/03/2025 (Segunda)</th>
+                    <th colspan="9" data-date="04/03/2025">04/03/2025 (Terça)</th>
+                    <th colspan="9" data-date="05/03/2025">05/03/2025 (Quarta)</th>
+                    <th colspan="9" data-date="06/03/2025">06/03/2025 (Quinta)</th>
+                    <th colspan="9" data-date="07/03/2025">07/03/2025 (Sexta)</th>
+                </tr>
+                <tr>
+                    <th colspan="3" data-period="Manhã">Manhã</th>
+                    <th colspan="3" data-period="Tarde">Tarde</th>
+                    <th colspan="3" data-period="Indefinido">Indefinido</th>
+                    <th colspan="3" data-period="Manhã">Manhã</th>
+                    <th colspan="3" data-period="Tarde">Tarde</th>
+                    <th colspan="3" data-period="Indefinido">Indefinido</th>
+                    <th colspan="3" data-period="Manhã">Manhã</th>
+                    <th colspan="3" data-period="Tarde">Tarde</th>
+                    <th colspan="3" data-period="Indefinido">Indefinido</th>
+                    <th colspan="3" data-period="Manhã">Manhã</th>
+                    <th colspan="3" data-period="Tarde">Tarde</th>
+                    <th colspan="3" data-period="Indefinido">Indefinido</th>
+                    <th colspan="3" data-period="Manhã">Manhã</th>
+                    <th colspan="3" data-period="Tarde">Tarde</th>
+                    <th colspan="3" data-period="Indefinido">Indefinido</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Atendimento Cível</th>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                </tr>
+                <tr>
+                    <th>Atendimento Trabalhista</th>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                </tr>
+                <tr>
+                    <th>Orientação de Audiência</th>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                </tr>
+                <tr>
+                    <th>Filial AAJI</th>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                </tr>
+                <tr>
+                    <th>Filial Porto Rico</th>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                    <td data-typesAppointments="Total">0</td>
+                    <td data-typesAppointments="Agendamentos">0</td>
+                    <td data-typesAppointments="Prioridades">0</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    <div class="row">
-        <div class="col-sm-8">
-            <label for="descricao">*Descrição:</label>
-            <div class="form-group">
-                <textarea name="descricao" id="descricao" required="" maxlength="1000" class="form-control" data-parsley-id="19"></textarea>
-            </div>
-        </div>
-        <div class="clearfix"></div>
-    </div>
-    <textarea name="descricao" id="descricao" required="" maxlength="1000" class="form-control" data-parsley-id="19"></textarea>
+
 </body>
 </html>

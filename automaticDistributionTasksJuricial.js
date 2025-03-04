@@ -94,7 +94,7 @@ function requererTarefasProtocolJuridico(data, area, tipoTarefa) {
     const isTaskProtocol = true
 
     return colaboradores.map(async colaborador => {
-        return await getTarefasColaboradores(colaborador, data.split("/"), isTaskProtocol)
+        return await getTarefasColaboradores(colaborador, data.toLocaleDateString().split("/"), isTaskProtocol)
     })
 }
 
@@ -121,24 +121,22 @@ async function selectRespExecJuridico(area, data, tipoTarefa) {
     selectRespExec ({ responsavel, executor: executor.nome }) 
 }
 
-function updateOption(selectedOptions, data) {
+function updateOption(selectedOptions, date) {
     if (previousOption) {
         previousOption.value = previousOption.dataset.original
         previousOption.innerHTML = previousOption.dataset.original
     }
 
     previousOption = selectedOptions
-
-    selectedOptions.innerHTML += ` - ${data}`
-    selectedOptions.value += ` - ${data}`
+    
+    selectedOptions.innerHTML += ` - P.I. ${date.toLocaleDateString()}`
+    selectedOptions.value += ` - P.I. ${date.toLocaleDateString()}`
 }
 
-function setDataTarefa(data, selectedOptions) {
+function setDataTarefa(date) {
     const dataParaFinalizacaoInput = document.querySelector("#dataParaFinalizacao")
-
-    dataParaFinalizacaoInput.value = data
-
-    updateOption(selectedOptions, data)
+    
+    dataParaFinalizacaoInput.value = date.toLocaleDateString()
 }
 
 function addEventListenerToSelect(area, isEnvelope) {
@@ -148,12 +146,35 @@ function addEventListenerToSelect(area, isEnvelope) {
         const { selectedOptions } = target
         const tipoTarefa = selectedOptions[0].innerText.toUpperCase()
         const tipoTarefaDTO = { isEnvelope, tipoTarefa }
+        
+        const date = calcularPrazoProtocoloProcesso(area, tipoTarefaDTO)
+        
+        const prazoFatal = new Date(date)
+        prazoFatal.setDate(prazoFatal.getDate() + 7)
 
-        const data = calcularPrazoProtocoloProcesso(area, tipoTarefaDTO)
+        setDataTarefa(prazoFatal, selectedOptions[0])
 
-        setDataTarefa(data, selectedOptions[0])
+        updateOption(selectedOptions[0], date)
+        
+        selectRespExecJuridico(area, date, tipoTarefa)
 
-        selectRespExecJuridico(area, data, tipoTarefa)
+        const btnGravar = document.querySelector("#btnGravar")
+
+        btnGravar.addEventListener("click", async event => {
+            event.preventDefault()
+            btnGravar.disabled = true
+            const form = document.querySelector("#fdt-form")
+
+            const idCL = document.querySelector("#fdt-form > input[type=hidden]:nth-child(4)").value
+
+            const dateCRM = new Date(date)
+
+            dateCRM.setDate(dateCRM.getDate() - 1)
+            const descricaoTarefa = `Nova oportunidade: ${isEnvelope ? `ENVELOPE ${area}` : 'DEMORA INJUSTIFICADA'} - ${selectedOptions[0].dataset.original} - P.F. ${prazoFatal.toLocaleDateString()}`
+            await createTarefa({ idCL, descricaoTarefa, dataParaFinalizacao: dateCRM.toLocaleDateString() })
+
+            form.submit()
+        })
     })
 }
 
@@ -230,7 +251,7 @@ function calcularPrazoProtocoloProcesso(area, { isEnvelope, tipoTarefa }) {
         date.setDate(date.getDate() + 1)
     }
 
-    return date.toLocaleDateString()
+    return date
 }
 
 function automaticDistributionTasksJuricial() {
