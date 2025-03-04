@@ -255,6 +255,9 @@ function calcularPrazoProtocoloProcesso(area, { isEnvelope, tipoTarefa }) {
 }
 
 function automaticDistributionTasksJuricial() {
+    if (!state.functions.cadastroTarefa.tarefasAvulsasJuridicoCRM) {
+        return
+    }
     const select = document.querySelector('#idTipoTarefa')
     const divDescription = document.querySelector("#fdt-form > div:nth-child(14) > div.col-sm-8 > div")
 

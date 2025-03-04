@@ -36,6 +36,7 @@ let state = {
         cadastroTarefa:{
             AutoPreenchimentoTarefasIntimacoes: null,
             criarHistoricoINSSDigital: null,
+            tarefasAvulsasJuridicoCRM: null,
         },
         preProcesso:{
             preenchimentoNomePasta: null,
