@@ -7,14 +7,6 @@ const ADM = [
             contagem: 0,
             atrasadas: 0
         },
-        /* {
-            id: 242,
-            nome: "BRYAN CAMPOS DE ANDRADE",
-            nomeTLC: "BRYAN",
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        }, */
         {
             id: 204,
             nome: "DIEGO DOS SANTOS SILVA",
@@ -71,22 +63,6 @@ const ADM = [
             contagem: 0,
             atrasadas: 0
         },
-        /* {
-            id: 196,
-            nome: "KAUÃ DE CARVALHO NASCIMENTO",
-            nomeTLC: "KAUÃ",
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        }, */
-        /* {
-            id: 64,
-            nome: "LEANDRO SANTOS",
-            nomeTLC: "LEANDRO",
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        }, */
         {
             id: 221,
             nome: "LEONARDO TEIXEIRA SANTOS SILVA",
@@ -156,7 +132,7 @@ const ADM = [
         {
             id: 226,
             nome: "CARLOS FERNANDES PEREIRA DA SILVA",
-            nomeTLC: "fernandes",
+            nomeTLC: "CARLOS",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -164,7 +140,7 @@ const ADM = [
         {
             id: 233,
             nome: "EMILLY STHEFANE FERREIRA DOS SANTOS PEREIRA",
-            nomeTLC: "emilly",
+            nomeTLC: "EMILLY",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -172,7 +148,7 @@ const ADM = [
         {
             id: 213,
             nome: "HELLEN VITORIA ROCHA SILVA SANTOS",
-            nomeTLC: "hellen",
+            nomeTLC: "HELLEN",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -180,7 +156,7 @@ const ADM = [
         {
             id: 205,
             nome: "HELTON FRADES BRABEC SOUZA",
-            nomeTLC: "helton",
+            nomeTLC: "HELTON",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -188,7 +164,7 @@ const ADM = [
         {
             id: 62,
             nome: "HENYR GOIS DOS SANTOS",
-            nomeTLC: "henyr",
+            nomeTLC: "HENYR",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -196,7 +172,7 @@ const ADM = [
         {
             id: 140,
             nome: "LAYNE DA SILVA GOIS",
-            nomeTLC: "layne",
+            nomeTLC: "LAYNE",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -204,7 +180,7 @@ const ADM = [
         {
             id: 193,
             nome: "LINIKER BERNARDO SOARES",
-            nomeTLC: "liniker",
+            nomeTLC: "LINIKER",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -212,7 +188,7 @@ const ADM = [
         {
             id: 232,
             nome: "SARA CRISTINA TELES LOIOLA",
-            nomeTLC: "sara",
+            nomeTLC: "SARA",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -220,7 +196,7 @@ const ADM = [
         {
             id: 153,
             nome: "TRICYA MATEUS ROLEMBERG",
-            nomeTLC: "tricya",
+            nomeTLC: "TRICYA",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -230,7 +206,7 @@ const ADM = [
         {
             id: 14,
             nome: "ALINE RIBEIRO",
-            nomeTLC: "aline",
+            nomeTLC: "ALINE",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -238,7 +214,7 @@ const ADM = [
         {
             id: 216,
             nome: "CAMILA TOJAL MACHADO SANTOS",
-            nomeTLC: "camila",
+            nomeTLC: "CAMILA",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -246,7 +222,7 @@ const ADM = [
         {
             id: 11,
             nome: "LUCIANA DOS SANTOS ARAUJO",
-            nomeTLC: "luciana araujo",
+            nomeTLC: "LUCIANA ARAUJO",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -254,7 +230,7 @@ const ADM = [
         {
             id: 127,
             nome: "LUCIANA LIMA REZENDE",
-            nomeTLC: "luciana lima",
+            nomeTLC: "LUCIANA LIMA",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -262,7 +238,7 @@ const ADM = [
         {
             id: 148,
             nome: "OVERLANDIA SANTOS MELO",
-            nomeTLC: "overlandia",
+            nomeTLC: "OVERLANDIA",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -270,7 +246,7 @@ const ADM = [
         {
             id: 207,
             nome: "SHEYLA SANTANA SANTOS",
-            nomeTLC: "sheyla",
+            nomeTLC: "SHEYLA",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -278,7 +254,7 @@ const ADM = [
         {
             id: 120,
             nome: "VICTOR MENDES DOS SANTOS",
-            nomeTLC: "victor",
+            nomeTLC: "VICTOR",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -309,14 +285,6 @@ const ADM = [
             contagem: 0,
             atrasadas: 0
         },
-        /* {
-            id: 139,
-            nome: "FLAVIO LUCAS LIMA SOUZA",
-            nomeTLC: "FLAVIO",
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        }, */
         {
             id: 115,
             nome: "GABRIEL FRANÇA VITAL",
@@ -349,38 +317,307 @@ const ADM = [
             contagem: 0,
             atrasadas: 0
         },
-        /* {
-            id: 229,
-            nome: "YAN THADEU PORTO DE OLIVEIRA SANTOS",
-            nomeTLC: "yan",
+        
+
+    ]
+    PREVIDENCIARIO = [
+        {
+            id: 134,
+            nome: "ANA CAROLINA SOARES DE MELO",
+            nomeTLC: "ANA",
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
-        }, */
-
+        },
+        {
+            id: 1,
+            nome: "DIEGO MELO SOBRINHO",
+            nomeTLC: "DIEGO",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 192,
+            nome: "EDUARDO PAIXÃO ROCHA SOBRINHO",
+            nomeTLC: "EDUARDO",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 244,
+            nome: "ELTON SILVA HONORATO",
+            nomeTLC: "ELTON",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 2,
+            nome: "FABIO RIBEIRO",
+            nomeTLC: "FABIO",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 159,
+            nome: "ITALO DE ANDRADE BEZERRA",
+            nomeTLC: "ITALO",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 230,
+            nome: "JOSÉ HENRIQUE VASCONCELOS RODRIGUES FONTES",
+            nomeTLC: "JOSÉ HENRIQUE",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 93,
+            nome: "KEVEN FARO DE CARVALHO",
+            nomeTLC: "KEVEN",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 47,
+            nome: "LAIS PEREIRA MORAES",
+            nomeTLC: "LAIS",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 28,
+            nome: "MARCUS VINICIUS DE SOUZA MORAIS",
+            nomeTLC: "MARCUS",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 23,
+            nome: "SARA GONÇALVES PINHEIRO",
+            nomeTLC: "SARA",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 206,
+            nome: "THALYSON KELSON LIMA TORRES",
+            nomeTLC: "THALYSON",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 229,
+            nome: "YAN THADEU PORTO DE OLIVEIRA SANTOS",
+            nomeTLC: "YAN",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+    ],
+    TRABALHISTA = [
+        {
+            id: 108,
+            nome: "FELIPE PANTA CARDOSO",
+            nomeTLC: "FELIPE",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 158,
+            nome: "FERNANDO HENRIQUE BARBOZA NASCIMENTO",
+            nomeTLC: "FERNANDO",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 104,
+            nome: "GLENISSON NASCIMENTO",
+            nomeTLC: "GLENISSON",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 175,
+            nome: "MATHEUS CORREIA SANTOS",
+            nomeTLC: "MATHEUS",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+    ],
+    CIVEL = [
+        {
+            id: 166,
+            nome: "ALÃ FEITOSA CARVALHO",
+            nomeTLC: "ALÃ",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 210,
+            nome: "EFRAIM SILVA CORREA DOS SANTOS",
+            nomeTLC: "EFRAIM",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 187,
+            nome: "GABRIEL DAVILA FILGUEIRAS MELLONE",
+            nomeTLC: "GABRIEL",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 164,
+            nome: "MATHEUS MATOS BARRETO",
+            nomeTLC: "MATHEUS",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 55,
+            nome: "RODRIGO AGUIAR SANTOS",
+            nomeTLC: "RODRIGO",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+    ],
+    CALCULO = [
+        {
+            id: 180,
+            nome: "ANSELMO DAVID DOS SANTOS RODRIGUES",
+            nomeTLC: "ANSELMO",
+            diasViagem: [],
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 237,
+            nome: "CARLOS EDUARDO DOS SANTOS",
+            nomeTLC: "CARLOS",
+            diasViagem: [],
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 100,
+            nome: "GUILHERME JASMIM",
+            nomeTLC: "GUILHERME",
+            diasViagem: [],
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 147,
+            nome: "WILKE RODRIGUES DE JESUS",
+            nomeTLC: "WILKE",
+            diasViagem: [],
+            contagem: 0,
+            atrasadas: 0
+        },
+    ],
+    CRM = [
+        {
+            id: 242,
+            nome: "BRYAN CAMPOS DE ANDRADE",
+            nomeTLC: "BRYAN",
+            diasViagem: [],
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 196,
+            nome: "KAUÃ DE CARVALHO NASCIMENTO",
+            nomeTLC: "KAUÃ",
+            diasViagem: [],
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 64,
+            nome: "LEANDRO SANTOS",
+            nomeTLC: "LEANDRO",
+            diasViagem: [],
+            contagem: 0,
+            atrasadas: 0
+        },
     ]
-    /* PREVIDENCIARIO = [],
-    TRABALHISTA = [],
-    CIVEL = [] */
-
-let updateCount = {
-        ADM: ADM.length * 2,
-        SAC: SAC.length * 2,
-        FINANCEIRO: FINANCEIRO.length * 2,
-        INSS: INSS.length * 2,
+const data = {
+    ADM: {
+        updateCount: ADM.length * 2,
+        percent: 0,
+        contIteration: 0,
+        cor: "azul",
     },
-    percent = {
-        ADM: 0,
-        SAC: 0,
-        FINANCEIRO: 0,
-        INSS: 0,
+    SAC: {
+        updateCount: SAC.length * 2,
+        percent: 0,
+        contIteration: 0,
+        cor: "rosa",
     },
-    contIteration = {
-        ADM: 0,
-        SAC: 0,
-        FINANCEIRO: 0,
-        INSS: 0,
-    }
+    FINANCEIRO: {
+        updateCount: FINANCEIRO.length * 2,
+        percent: 0,
+        contIteration: 0,
+        cor: "vermelho",
+    },
+    INSS: {
+        updateCount: INSS.length * 2,
+        percent: 0,
+        contIteration: 0,
+        cor: "amarelo",
+    },
+    PREVIDENCIARIO: {
+        updateCount: PREVIDENCIARIO.length * 2,
+        percent: 0,
+        contIteration: 0,
+        cor: "verde",
+    },
+    TRABALHISTA: {
+        updateCount: TRABALHISTA.length * 2,
+        percent: 0,
+        contIteration: 0,
+        cor: "magenta",
+    },
+    CIVEL: {
+        updateCount: CIVEL.length * 2,
+        percent: 0,
+        contIteration: 0,
+        cor: "roxo",
+    },
+    CALCULO: {
+        updateCount: CALCULO.length * 2,
+        percent: 0,
+        contIteration: 0,
+        cor: "marrom",
+    },
+    CRM: {
+        updateCount: CRM.length * 2,
+        percent: 0,
+        contIteration: 0,
+        cor: "cinza",
+    },
+}
 
 function createPainel (setor, colaboradores, condiction) {
     if (!condiction) {
@@ -390,14 +627,8 @@ function createPainel (setor, colaboradores, condiction) {
     const painelBar = document.querySelector("#fdt-mt-header > ul:nth-child(1)")
     const qtdDias = 8
     const { datas, dias } = getArrayDate(qtdDias)
-    const cor = {
-        ADM: "azul",
-        SAC: "verde",
-        FINANCEIRO: "vermelho",
-        INSS: "preto",
-    }
 
-    const html = `<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span data-toggle="tooltip" data-placement="bottom" title="Painel do Supervisor ${setor}" data-original-title="Painel do Supervisor ${setor}"><i class="fa fa-fw fa-table fdt-cor-${cor[setor]}"></i></span></a>
+    const html = `<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span data-toggle="tooltip" data-placement="bottom" title="Painel do Supervisor ${setor}" data-original-title="Painel do Supervisor ${setor}"><i class="fa fa-fw fa-table fdt-cor-${data[setor].cor}"></i></span></a>
                     <ul id="panelSup${setor}" class="dropdown-menu hidden-xs">
                         <li class="fdt-dropdown-cabecalho" style="color: #005689;">Painel do Supervisor</li>
                         <li class="fdt-widget-lembretes">
@@ -689,7 +920,6 @@ async function getTarefasAtrasadas (params, tarefasAtrasadas) {
         const lastTask = tarefas[tarefas.length - 1]
 
         if (lastTask) {
-            console.log(lastTask);
             const counter = lastTask.querySelector("td.text-center.fdt-counter")
             tarefasAtrasadas.atrasadas = counter ? counter.innerText : 0
         }
@@ -703,24 +933,24 @@ async function getTarefasAtrasadas (params, tarefasAtrasadas) {
 
 // Barra de Carregamento
 function resetBar(setor) {
-    percent[setor] = 0
-    contIteration[setor] = 0
+    data[setor].percent = 0
+    data[setor].contIteration = 0
     const bar = document.querySelector('#bar' + setor)
-    bar.value = percent[setor]
+    bar.value = data[setor].percent
 }
 
 function finishLoad(bar, interval, setor) {
     interval.clearInterval()
-    bar.value = percent[setor]
+    bar.value = data[setor].percent
 }
 
 function incrementBar(setor) {
     const bar = document.querySelector("#bar" + setor)
-    const unidade = 100 / updateCount[setor]
-    percent[setor] += unidade
-    bar.value = Math.round(percent[setor])
-    contIteration[setor]++
-    if (updateCount[setor] == contIteration[setor]) {
+    const unidade = 100 / data[setor].updateCount
+    data[setor].percent += unidade
+    bar.value = Math.round(data[setor].percent)
+    data[setor].contIteration++
+    if (data[setor].updateCount == data[setor].contIteration) {
         const contentBar = document.querySelector("#contentBar" + setor)
         hiddeContentBar(contentBar)
     }

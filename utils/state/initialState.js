@@ -47,6 +47,11 @@ let state = {
             painelVisualizacaoTarefasTimeSAC: null,
             painelVisualizacaoTarefasTimeFINANCEIRO: null,
             painelVisualizacaoTarefasTimeINSS: null,
+            painelVisualizacaoTarefasTimePREVIDENCIARIO: null,
+            painelVisualizacaoTarefasTimeTRABALHISTA: null,
+            painelVisualizacaoTarefasTimeCIVEL: null,
+            painelVisualizacaoTarefasTimeCALCULO: null,
+            painelVisualizacaoTarefasTimeCRM: null,
         },
         tjse: {
             botaoExportarAlvaras: null,

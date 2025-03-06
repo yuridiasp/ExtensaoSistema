@@ -2294,6 +2294,11 @@ async function idPage(url) {
         createPainel('SAC', SAC, state.functions.supervisor.painelVisualizacaoTarefasTimeSAC)
         createPainel('FINANCEIRO', FINANCEIRO, state.functions.supervisor.painelVisualizacaoTarefasTimeFINANCEIRO)
         createPainel('INSS', INSS, state.functions.supervisor.painelVisualizacaoTarefasTimeINSS)
+        createPainel('PREVIDENCIARIO', PREVIDENCIARIO, state.functions.supervisor.painelVisualizacaoTarefasTimePREVIDENCIARIO)
+        createPainel('TRABALHISTA', TRABALHISTA, state.functions.supervisor.painelVisualizacaoTarefasTimeTRABALHISTA)
+        createPainel('CIVEL', CIVEL, state.functions.supervisor.painelVisualizacaoTarefasTimeCIVEL)
+        createPainel('CALCULO', CALCULO, state.functions.supervisor.painelVisualizacaoTarefasTimeCALCULO)
+        createPainel('CRM', CRM, state.functions.supervisor.painelVisualizacaoTarefasTimeCRM)
         createPainelFollowUps(state.functions.todasPaginas.painelVisualizacaoFollowUps)
         contarTarefasParaHoje()
         if (pageBuscaProcessos) {
