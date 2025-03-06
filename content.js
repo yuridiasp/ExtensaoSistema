@@ -514,8 +514,7 @@ function limparListaTarefas() {
 
 function addListaTarefas({ nome, datasViagem, tarefas }, data) {
     const ano = new Date().getFullYear(),
-        [ diaData, mesData, anoData ] = data,
-        date = `${diaData}/${mesData}/${anoData}`,
+        date = data.toLocaleDateString(),
         div = document.querySelector('#contactdiv'),
         p1 = document.createElement('p')
     
@@ -646,7 +645,7 @@ async function selectExecutorContatar(colaboradores) {
     return await selectExecutorContatarAdministrativo (colaboradores)
 }
 
-async function getTarefasColaboradores(colaborador, [ dia, mes, ano ], isTaskProtocol = false){
+async function getTarefasColaboradores({ colaborador, dataDe, dataAte = dataDe, isTaskProtocol = false }){
     
     if (controllers.has(colaborador.id)) {
         controllers.get(colaborador.id).abort()
@@ -661,11 +660,17 @@ async function getTarefasColaboradores(colaborador, [ dia, mes, ano ], isTaskPro
 
     const urlRequest = 'http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/default.asp'
 
-    const body = `bsAdvTarefas=s&bsAdvTarefasTecnica=&bsAdvTarefasDe=${dia}%2F${mes}%2F${ano}&bsAdvTarefasAte=${dia}%2F${mes}%2F${ano}&bsAdvTarefasTitulo=&bsAdvTarefasTipo=&bsAdvTarefasStatus=p&bsAdvTarefasAgendada=&bsAdvTarefasResponsavel=&bsAdvTarefasExecutor=${colaborador.id}&bsAdvTarefasCompromisso=&bsAdvTarefasCliente=&bsAdvTarefasCpf=&filtrar=Filtrar`
+    const bodyObject = {
+        bsAdvTarefas: 's',
+        bsAdvTarefasExecutor: colaborador.id,
+        filtrar: 'Filtrar',
+        bsAdvTarefasDe: dataDe.toLocaleDateString(),
+        bsAdvTarefasAte: dataAte.toLocaleDateString()
+    }
 
     return await fetch(urlRequest, {
             method: "POST",
-            body: body,
+            body: new URLSearchParams(bodyObject),
             headers: new Headers({
                 'Content-Type': 'application/x-www-form-urlencoded'
             }),
@@ -697,7 +702,7 @@ async function getTarefasColaboradores(colaborador, [ dia, mes, ano ], isTaskPro
             })
 
         colaborador.tarefas = contador
-        addListaTarefas(colaborador, [ dia, mes, ano ])
+        addListaTarefas(colaborador, dataDe)
 
         return colaborador
     })
@@ -1010,17 +1015,17 @@ async function requererTarefasContatar(data) {
     const colaboradores = isTaskCalculo ? filterColaboradoresCalculo() : isJudicial ? filterColaboradoresJudicial() : filterColaboradoresAdministrativo()
 
     return colaboradores.map(async colaborador => {
-        return await getTarefasColaboradores(colaborador, data)
+        return await getTarefasColaboradores({ colaborador, dataDe: data })
     })
 }
 
 async function validaExecutorContatar () {
     const dataInput = document.querySelector('#dataParaFinalizacao')
-    const arrDate = dataInput.value.split('/')
-    
+    const [dia, mes, ano] = dataInput.value.split('/')
+    const date = new Date(ano, mes - 1, dia)
     createListaTarefas()
 
-    const colaboradores = await requererTarefasContatar(arrDate)
+    const colaboradores = await requererTarefasContatar(date)
     
     const executorContatar = await selectExecutorContatar(colaboradores)
 
