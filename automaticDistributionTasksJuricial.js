@@ -70,22 +70,69 @@ const { eduardo, thalyson, joseHenrique, yan, ana, italo, elton } = {
 }
 const demandas = {
     prev: {
-        "LOAS": [thalyson, joseHenrique, yan, elton],
-        "AUXÍLIO DOENÇA": [eduardo, thalyson, joseHenrique, yan],
-        "AUXÍLIO ACIDENTE": [joseHenrique, yan],
-        "AUXÍLIO RECLUSÃO": [eduardo, thalyson, yan],
-        "SALÁRIO MATERNIDADE": [eduardo, thalyson, joseHenrique, yan],
-        "APOSENTADORIA POR IDADE URBANA": [eduardo, thalyson, joseHenrique, yan],
-        "APOSENTADORIA POR IDADE RURAL": [eduardo, thalyson, joseHenrique, yan],
-        "APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO": [eduardo, thalyson, ana, italo],
-        "APOSENTADORIA ESPECIAL": [eduardo, thalyson, ana, italo],
-        "APOSENTADORIA POR INVALIDEZ": [eduardo, thalyson, joseHenrique, yan],
-        "PAB": [eduardo, thalyson, joseHenrique, yan],
-        "PENSÃO POR MORTE": [eduardo, thalyson, joseHenrique, yan],
-        "REVISÃO RMI": [eduardo, thalyson, ana, italo],
-        "ADICIONAL 25%": [thalyson, joseHenrique, yan],
-        "APOSENTADORIA RPPS": [eduardo, ana, italo],
-        "ANÁLISE": [ana, italo, eduardo, thalyson]
+        "ANÁLISE": {
+            executores: [ana, italo, eduardo, thalyson]
+        },
+        "AUXÍLIO DOENÇA": {
+            executores: [eduardo, thalyson, joseHenrique, yan],
+            isDIList: true
+        },
+        "AUXÍLIO ACIDENTE": {
+            executores: [joseHenrique, yan],
+            isDIList: true
+        },
+        "AUXÍLIO RECLUSÃO": {
+            executores: [eduardo, thalyson, yan],
+            isDIList: true
+        },
+        "AÇÃO DE COBRANÇA": {
+            executores: [eduardo, thalyson, yan]
+        },
+        "ADICIONAL 25%": {
+            executores: [thalyson, joseHenrique, yan]
+        },
+        "APOSENTADORIA ESPECIAL": {
+            executores: [eduardo, thalyson, ana, italo],
+            isDIList: true
+        },
+        "APOSENTADORIA POR IDADE URBANA": {
+            executores: [eduardo, thalyson, joseHenrique, yan],
+            isDIList: true
+        },
+        "APOSENTADORIA POR IDADE RURAL": {
+            executores: [eduardo, thalyson, joseHenrique, yan],
+            isDIList: true
+        },
+        "APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO": {
+            executores: [eduardo, thalyson, ana, italo],
+            isDIList: true
+        },
+        "APOSENTADORIA RPPS": {
+            executores: [eduardo, ana, italo]
+        },
+        "APOSENTADORIA POR INVALIDEZ": {
+            executores: [eduardo, thalyson, joseHenrique, yan],
+            isDIList: true
+        },
+        "LOAS": { 
+            executores: [thalyson, joseHenrique, yan, elton],
+            isDIList: true
+        },
+        "PAB": {
+            executores: [eduardo, thalyson, joseHenrique, yan],
+            isDIList: true
+        },
+        "PENSÃO POR MORTE": {
+            executores: [eduardo, thalyson, joseHenrique, yan],
+            isDIList: true
+        },
+        "REVISÃO RMI": {
+            executores: [eduardo, thalyson, ana, italo]
+        },
+        "SALÁRIO MATERNIDADE": {
+            executores: [eduardo, thalyson, joseHenrique, yan],
+            isDIList: true
+        },
     },
     civ: {},
     trt: {}
@@ -111,13 +158,12 @@ function obterPrimeiroEUltimoDia(data) {
 }
 
 function requererTarefasProtocolJuridico(data, area, tipoTarefa) {
-    const colaboradores = demandas[area][tipoTarefa]
-    const isTaskProtocol = true
+    const colaboradores = demandas[area][tipoTarefa].executores
 
     const { primeiroDia, ultimoDia } = obterPrimeiroEUltimoDia(data)
 
     return colaboradores.map(async colaborador => {
-        return getTarefasColaboradores({ colaborador, dataDe: primeiroDia, dataAte: ultimoDia, isTaskProtocol })
+        return getTarefasColaboradores({ colaborador, dataDe: primeiroDia, dataAte: ultimoDia, isTaskProtocol: true })
     })
 }
 
@@ -195,44 +241,19 @@ function addEventListenerToSelect(area, isEnvelope) {
 }
 
 function getOptionsSelectInput(area, isEnvelope) {
-    switch(area) {
-        case areas.previdenciaria:
-            if (!isEnvelope) {
-                return `<option data-original="LOAS" value="LOAS">LOAS</option>
-                        <option data-original="APOSENTADORIA POR IDADE URBANA" value="APOSENTADORIA POR IDADE URBANA">APOSENTADORIA POR IDADE URBANA</option>
-                        <option data-original="APOSENTADORIA POR IDADE RURAL" value="APOSENTADORIA POR IDADE RURAL">APOSENTADORIA POR IDADE RURAL</option>
-                        <option data-original="APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO" value="APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO">APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO</option>
-                        <option data-original="APOSENTADORIA ESPECIAL" value="APOSENTADORIA ESPECIAL">APOSENTADORIA ESPECIAL</option>
-                        <option data-original="APOSENTADORIA POR INVALIDEZ" value="APOSENTADORIA POR INVALIDEZ">APOSENTADORIA POR INVALIDEZ</option>
-                        <option data-original="AUXÍLIO DOENÇA" value="AUXÍLIO DOENÇA">AUXÍLIO DOENÇA</option>
-                        <option data-original="SALÁRIO MATERNIDADE" value="SALÁRIO MATERNIDADE">SALÁRIO MATERNIDADE</option>
-                        <option data-original="PENSÃO POR MORTE" value="PENSÃO POR MORTE">PENSÃO POR MORTE</option>
-                        <option data-original="AUXÍLIO RECLUSÃO" value="AUXÍLIO RECLUSÃO">AUXÍLIO RECLUSÃO</option>
-                        <option data-original="AUXÍLIO ACIDENTE" value="AUXÍLIO ACIDENTE">AUXÍLIO ACIDENTE</option>
-                        <option data-original="PAB" value="PAB">PAB</option>
-                        `;
-            }
-            return `
-                    <option data-original="ANÁLISE" value="ANÁLISE">ANÁLISE</option>
-                    <option data-original="APOSENTADORIA POR IDADE URBANA" value="APOSENTADORIA POR IDADE URBANA">APOSENTADORIA POR IDADE URBANA</option>
-                    <option data-original="APOSENTADORIA POR IDADE RURAL" value="APOSENTADORIA POR IDADE RURAL">APOSENTADORIA POR IDADE RURAL</option>
-                    <option data-original="APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO" value="APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO">APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO</option>
-                    <option data-original="APOSENTADORIA ESPECIAL" value="APOSENTADORIA ESPECIAL">APOSENTADORIA ESPECIAL</option>
-                    <option data-original="APOSENTADORIA POR INVALIDEZ" value="APOSENTADORIA POR INVALIDEZ">APOSENTADORIA POR INVALIDEZ</option>
-                    <option data-original="APOSENTADORIA RPPS" value="APOSENTADORIA RPPS">APOSENTADORIA RPPS</option>
-                    <option data-original="AUXÍLIO DOENÇA" value="AUXÍLIO DOENÇA">AUXÍLIO DOENÇA</option>
-                    <option data-original="AUXÍLIO ACIDENTE" value="AUXÍLIO ACIDENTE">AUXÍLIO ACIDENTE</option>
-                    <option data-original="AUXÍLIO RECLUSÃO" value="AUXÍLIO RECLUSÃO">AUXÍLIO RECLUSÃO</option>
-                    <option data-original="LOAS" value="LOAS">LOAS</option>
-                    <option data-original="SALÁRIO MATERNIDADE" value="SALÁRIO MATERNIDADE">SALÁRIO MATERNIDADE</option>
-                    <option data-original="PAB" value="PAB">PAB</option>
-                    <option data-original="PENSÃO POR MORTE" value="PENSÃO POR MORTE">PENSÃO POR MORTE</option>
-                    <option data-original="REVISÃO RMI" value="REVISÃO RMI">REVISÃO RMI</option>
-                    <option data-original="ADICIONAL 25%" value="ADICIONAL 25%">ADICIONAL 25%</option>`;
-        case areas.civel: return '';
-        case areas.trabalhista: return '';
-        default: return;
-    }
+    const tiposTarefas = Object.keys(demandas[area])
+
+    const textHTML = tiposTarefas.reduce((previous, current) => {
+        if (!isEnvelope && !demandas[area][current].isDIList) {
+            return previous
+        }
+
+        previous += `<option data-original="${current}" value="${current}">${current}</option>`
+
+        return previous
+    }, '')
+
+    return textHTML
 }
 
 function createInputSelect({ isEnvelope, area, divDescription }) {
