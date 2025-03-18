@@ -146,6 +146,14 @@ const ADM = [
             atrasadas: 0
         },
         {
+            id: 225,
+            nome: "ERINALDO FARO SANTOS",
+            nomeTLC: "ERINALDO",
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
             id: 213,
             nome: "HELLEN VITORIA ROCHA SILVA SANTOS",
             nomeTLC: "HELLEN",

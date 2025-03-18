@@ -374,6 +374,11 @@ function FeriadosFixos (ano, parametro) {
         }
         
         const cidades = Object.entries(datas.interiores)
+
+        if (cliente.processo.cidade === 'ARACAJU') {
+            datas.ARACAJU.forEach(date => dataFactory(date, resultados))
+        }
+
         for (const [cidade, dates] of cidades) {
             if (cidade === cliente.processo.cidade || isHighlight) {
                 dates.forEach(date => dataFactory(date, resultados))

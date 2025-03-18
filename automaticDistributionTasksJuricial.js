@@ -17,7 +17,7 @@ const prazosProtocolosProcessos = {
     civ: {},
     trt: {}
 }
-const { eduardo, thalyson, joseHenrique, yan, ana, italo, elton } = {
+const { eduardo, thalyson, joseHenrique, yan, ana, italo, elton, saulo } = {
     eduardo: {
         id: 192,
         nome: "EDUARDO PAIXÃO ROCHA SOBRINHO",
@@ -67,6 +67,13 @@ const { eduardo, thalyson, joseHenrique, yan, ana, italo, elton } = {
         diasViagem: [],
         tarefas: 0
     },
+    saulo: {
+        id: 248,
+        nome: "SAULO MATHEUS ARAUJO DE SANTANA",
+        nomeTLC: "SAULO MATHEUS",
+        diasViagem: [],
+        tarefas: 0
+    }
 }
 const demandas = {
     prev: {
@@ -115,7 +122,11 @@ const demandas = {
             isDIList: true
         },
         "LOAS": { 
-            executores: [thalyson, joseHenrique, yan, elton],
+            executores: [thalyson, joseHenrique, yan, elton, saulo],
+            isDIList: true
+        },
+        "MANDADO DE SEGURANÇA": {
+            executores: [elton, saulo],
             isDIList: true
         },
         "PAB": {
