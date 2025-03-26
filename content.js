@@ -931,13 +931,6 @@ function filterColaboradoresJudicial () {
                 contagem: 0
             },
             {
-                id: 246,
-                nome: "MARQUISE ANTONIA LIMA SANTOS DA SILVA",
-                interiores: ["ESTANCIA", "TOBIAS BARRETO"],
-                datasViagem: [],
-                tarefas: 0
-            },
-            {
                 id: 199,
                 nome: "LUCAS NATHAN NOGUEIRA DA SILVA ",
                 interiores: [],

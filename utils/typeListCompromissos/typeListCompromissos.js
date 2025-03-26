@@ -88,6 +88,7 @@ const typeListCompromissos = {
         'PROMOVER EXECUÇÃO',
         'PROSSEGUIR EXECUÇÃO',
         'PROVAS',
+        'RÉPLICA',
         'QUESITOS',
         'QUESITOS + INDICAR TÉCNICOS',
         'RAZÕES FINAIS',
