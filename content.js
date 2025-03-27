@@ -442,7 +442,7 @@ function selectRespExec (colaborador) {
     }
 }
 
-function createListaTarefas (isTaskProtocol = false, area = null) {
+function createListaTarefas (typeOfTask = typeOfTaskSearch.geral, area = null) {
     const divtarefa = document.querySelector('#divTipoTarefaNormal')
 
     const div = document.createElement('div'),
@@ -467,7 +467,7 @@ function createListaTarefas (isTaskProtocol = false, area = null) {
     div.style.color = 'white'
     div.setAttribute('id','contactdiv')
     
-    if (!isTaskProtocol) {
+    if (!typeOfTask) {
         p1.innerHTML = `Local atendido:`
         p3.innerHTML = `${cliente.cliente.localAtendido}`
         p2.innerHTML = `Cidade do cliente:`
@@ -486,8 +486,8 @@ function createListaTarefas (isTaskProtocol = false, area = null) {
     div.appendChild(h2)
     divtarefa.appendChild(div)
     
-    h1.innerHTML = isTaskProtocol? '' : 'INFO CLIENTE'
-    h2.innerHTML = `TAREFAS ${isTaskProtocol? area :'ADM'}`
+    h1.innerHTML = typeOfTask? '' : 'INFO CLIENTE'
+    h2.innerHTML = `TAREFAS ${typeOfTask? area :'ADM'}`
 
     const titles = [h1, h2]
 
@@ -645,7 +645,7 @@ async function selectExecutorContatar(colaboradores) {
     return await selectExecutorContatarAdministrativo (colaboradores)
 }
 
-async function getTarefasColaboradores({ colaborador, dataDe, dataAte = dataDe, isTaskProtocol = false }){
+async function getTarefasColaboradores({ colaborador, dataDe, dataAte = dataDe, typeOfTask = typeOfTaskSearch.geral }){
     
     if (controllers.has(colaborador.id)) {
         controllers.get(colaborador.id).abort()
@@ -683,11 +683,19 @@ async function getTarefasColaboradores({ colaborador, dataDe, dataAte = dataDe, 
         const tarefas = doc.documentElement.querySelectorAll('body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr')
             let contador = 0
             tarefas.forEach(e => {
-                if (isTaskProtocol) {
+                if (typeOfTask === typeOfTaskSearch.protocolo) {
                     if (e.children[3] != null) {
                         const tipoTarefa = e.children[3].innerText.toUpperCase()
 
-                        if (tipoTarefa === "DEMORA INJUSTIFICADA" || tipoTarefa === "ENVELOPE - PREV") {
+                        if (typeListTasksProtocol.includes(tipoTarefa)) {
+                            contador++
+                        }
+                    }
+                } if (typeOfTask === typeOfTaskSearch.prorrogacao) {
+                    if (e.children[3] != null) {
+                        const tipoTarefa = e.children[3].innerText.toUpperCase()
+
+                        if (tipoTarefa === "PEDIDO DE PRORROGAÇÃO AUXÍLIO DOENÇA - ADM") {
                             contador++
                         }
                     }
@@ -1763,6 +1771,7 @@ function extrairDadosRequisicaoClienteHtml(response) {
     const dataClient = {
         nome: response.documentElement.querySelector("#apelido").value.toUpperCase(),
         cpf: response.documentElement.querySelector("#cpf").value.toUpperCase(),
+        dcb: response.documentElement.querySelector("#dcbData").value.toUpperCase()
     }
     
     const selectParceiro = response.documentElement.querySelector("#idFornecedor")
@@ -1784,7 +1793,7 @@ function extrairDadosRequisicaoClienteHtml(response) {
     const selectSituacao = response.documentElement.querySelector("#idSituacao")
     const indexSituacao = selectSituacao.selectedIndex
     dataClient.situacao = indexSituacao === -1 ? "" : selectSituacao.options[indexSituacao].innerText.toUpperCase()
-
+    
     return dataClient
 
 }
@@ -2095,7 +2104,7 @@ async function buscarDadosClienteProcessos(url) {
         gravarBtn
     })
 
-    const { nome, cpf, estado, cidade, localAtendido, parceiro } = await requestDataCliente({
+    const { nome, cpf, estado, cidade, localAtendido, parceiro, dcb } = await requestDataCliente({
         id: idCliente,
         module: "cliente",
         gravarBtn
@@ -2108,6 +2117,7 @@ async function buscarDadosClienteProcessos(url) {
     cliente.cliente.cidade = cidade
     cliente.cliente.localAtendido = localAtendido
     cliente.cliente.parceiro = parceiro
+    cliente.cliente.dcb = dcb
 
     if (state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
         cliente.processo.id = idProcesso

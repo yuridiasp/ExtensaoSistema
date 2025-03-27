@@ -404,15 +404,6 @@ const ADM = [
             atrasadas: 0
         },
         {
-            id: 159,
-            nome: "ITALO DE ANDRADE BEZERRA",
-            nomeTLC: "ITALO",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
             id: 230,
             nome: "JOSÉ HENRIQUE VASCONCELOS RODRIGUES FONTES",
             nomeTLC: "JOSÉ HENRIQUE",

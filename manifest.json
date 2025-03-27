@@ -23,6 +23,7 @@
             ],
             "js": [
                 "chromeUtils.js",
+                "painelSupervisor.js",
                 "utils/state/initialState.js",
                 "utils/typeListCompromissos/typeListCompromissos.js",
                 "utils/portais/portais.js",
@@ -33,7 +34,6 @@
                 "gerid.js",
                 "prazos.js",
                 "compromissos.js",
-                "painelSupervisor.js",
                 "painelFollowUps.js",
                 "recognition.js",
                 "notificacaoTarefasAdicionais.js",
