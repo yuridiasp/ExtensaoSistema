@@ -23,7 +23,7 @@ const prazosTarefasAvulsas = {
     civ: {},
     trt: {},
     inss: {
-        "PEDIDO DE PRORROGAÇÃO AUXÍLIO DOENÇA - ADM": (-15),
+        "PEDIDO DE PRORROGAÇÃO AUXÍLIO DOENÇA - ADM": (-14),
     }
 }
 const { eduardo, thalyson, joseHenrique, yan, ana, elton, saulo } = {
@@ -206,7 +206,7 @@ async function selectRespExecJuridico(area, data, tipoTarefa) {
         return previous
     }, listaColaboradores[0])
 
-    const responsavel = area === areas.inssDigital ? executor.nome : "KEVEN FARO DE CARVALHO"
+    const responsavel = area === areas.inssDigital ? "GABRIEL FRANÇA VITAL" : "KEVEN FARO DE CARVALHO"
 
     selectRespExec ({ responsavel, executor: executor.nome }) 
 }
@@ -303,7 +303,7 @@ function calcularPrazoProrrogacao(dataDCB, area, tipoTarefa) {
         return getDiaUtil(prazoTarefa)
     }
 
-    return getDiaUtil(prazoTarefa, area)
+    return getDiaUtil(prazoTarefa)
 }
 
 async function getDCB (idCliente, gravarBtn) {
@@ -360,11 +360,11 @@ async function createInputTextArea(divDescription, area, tipoTarefa) {
     divDescription.innerHTML = htmlDescriptionTextArea
 }
 
-function getDiaUtil(date, area) {
+function getDiaUtil(date) {
     const newDate = new Date(date)
 
     while((newDate.getDay() === 0) || (newDate.getDay() === 6) || isFeriado(newDate, parametros.tarefaContatar).isHoliday) {
-        const ascrecimoOrDescrescimo = area === areas.inssDigital ? (-1) : 1
+        const ascrecimoOrDescrescimo = 1
         newDate.setDate(newDate.getDate() + ascrecimoOrDescrescimo)
     }
 
@@ -379,15 +379,15 @@ function calcularPrazoProtocoloProcesso(area, { isEnvelope, tipoTarefa }) {
     
     const datePrazoFatal = new Date()
     datePrazoFatal.setDate(datePrazoFatal.getDate() + prazoProtocolo + prazoJuridico + acrescimo)
-    const prazoFatal = getDiaUtil(datePrazoFatal, area)
+    const prazoFatal = getDiaUtil(datePrazoFatal)
 
     const datePrazoInterno = new Date()
     datePrazoInterno.setDate(datePrazoInterno.getDate() + (isEnvelope ? 0 : prazoProtocolo) + acrescimo)
-    const prazoInterno = getDiaUtil(datePrazoInterno, area)
+    const prazoInterno = getDiaUtil(datePrazoInterno)
 
     const datePrazoCRM = isEnvelope ? new Date() : new Date(prazoInterno)
     datePrazoCRM.setDate(datePrazoCRM.getDate() + 1)
-    const prazoCRM = getDiaUtil(datePrazoCRM, area)
+    const prazoCRM = getDiaUtil(datePrazoCRM)
 
     return { prazoInterno, prazoFatal, prazoCRM }
 }
