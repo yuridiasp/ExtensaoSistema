@@ -1,4 +1,23 @@
-const typeListTasksProtocol = ["DEMORA INJUSTIFICADA", "ENVELOPE - PREV"]
+const typeListTasksProtocol = [
+    "ANÁLISE",
+    "AUXÍLIO DOENÇA",
+    "AUXÍLIO ACIDENTE",
+    "AUXÍLIO RECLUSÃO",
+    "AÇÃO DE COBRANÇA",
+    "ADICIONAL 25",
+    "APOSENTADORIA ESPECIAL",
+    "APOSENTADORIA POR IDADE URBANA",
+    "APOSENTADORIA POR IDADE RURAL",
+    "APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO",
+    "APOSENTADORIA RPPS",
+    "APOSENTADORIA POR INVALIDEZ",
+    "LOAS",
+    "MANDADO DE SEGURANÇA",
+    "PAB",
+    "PENSÃO POR MORTE",
+    "REVISÃO RMI",
+    "SALÁRIO MATERNIDADE",
+]
 const typeOfTaskSearch = {
     geral: 0,
     protocolo: 1,
@@ -23,7 +42,7 @@ const prazosTarefasAvulsas = {
     civ: {},
     trt: {},
     inss: {
-        "PEDIDO DE PRORROGAÇÃO AUXÍLIO DOENÇA - ADM": (-15),
+        "PEDIDO DE PRORROGAÇÃO AUXÍLIO DOENÇA - ADM": (-14),
     }
 }
 const { eduardo, thalyson, joseHenrique, yan, ana, elton, saulo } = {
@@ -163,33 +182,34 @@ const areas = {
 }
 let previousOption = null
 
-function obterPrimeiroEUltimoDia(data, tipoTarefa) {
+function obterPrimeiroEUltimoDia(prazoInterno, prazoFatal, tipoTarefa) {
     const tiposTarefasMesmoDia = ["PEDIDO DE PRORROGAÇÃO AUXÍLIO DOENÇA - ADM"]
     const isTipoTarefasMesmoDia = tiposTarefasMesmoDia.includes(tipoTarefa)
-    const ano = data.getFullYear()
-    const mes = data.getMonth()
-
+    const anoFatal = prazoFatal.getFullYear()
+    const mesFatal = prazoFatal.getMonth()
+    
     // Primeiro dia do mês
-    const primeiroDia = isTipoTarefasMesmoDia  ? data : new Date(ano, mes, 1)
+    const primeiroDia = isTipoTarefasMesmoDia  ? prazoInterno : new Date(anoFatal, mesFatal, 1)
 
     // Último dia do mês
-    const ultimoDia = isTipoTarefasMesmoDia ? data : new Date(ano, mes + 1, 0)
+    const ultimoDia = isTipoTarefasMesmoDia ? prazoInterno : new Date(anoFatal, mesFatal + 1, 0)
 
     return { primeiroDia, ultimoDia }
 }
 
-function requererTarefasProtocolJuridico(data, area, tipoTarefa) {
+function requererTarefasProtocolJuridico(prazoInterno, prazoFatal, area, tipoTarefa) {
+    
     const colaboradores = demandas[area][tipoTarefa].executores
-    const typeOfTask = typeListTasksProtocol.includes(tipoTarefa) ? typeOfTaskSearch.protocolo : typeOfTaskSearch.prorrogacao
-
-    const { primeiroDia, ultimoDia } = obterPrimeiroEUltimoDia(data, tipoTarefa)
-
+    const typeOfTask = typeListTasksProtocol.includes(tipoTarefa.toUpperCase()) ? typeOfTaskSearch.protocolo : typeOfTaskSearch.prorrogacao
+    
+    const { primeiroDia, ultimoDia } = obterPrimeiroEUltimoDia(prazoInterno, prazoFatal, tipoTarefa)
+    
     return colaboradores.map(async colaborador => {
         return getTarefasColaboradores({ colaborador, dataDe: primeiroDia, dataAte: ultimoDia, typeOfTask })
     })
 }
 
-async function selectRespExecJuridico(area, data, tipoTarefa) {
+async function selectRespExecJuridico({ area, prazoInterno, prazoFatal, tipoTarefa }) {
     const typeOfTask = typeListTasksProtocol.includes(tipoTarefa) ? typeOfTaskSearch.protocolo : typeOfTaskSearch.prorrogacao
     const contactDiv = document.querySelector('#contactdiv')
     if (!contactDiv)
@@ -197,16 +217,17 @@ async function selectRespExecJuridico(area, data, tipoTarefa) {
     else
         limparListaTarefas()
 
-    const listaColaboradores = await Promise.all(requererTarefasProtocolJuridico(data, area, tipoTarefa))
+    const listaColaboradores = await Promise.all(requererTarefasProtocolJuridico(prazoInterno, prazoFatal, area, tipoTarefa))
     
     const executor = listaColaboradores.reduce((previous, currrent) => {
+        
         if (previous.tarefas > currrent.tarefas) {
             return currrent
         }
         return previous
-    }, listaColaboradores[0])
+    })
 
-    const responsavel = area === areas.inssDigital ? executor.nome : "KEVEN FARO DE CARVALHO"
+    const responsavel = area === areas.inssDigital ? "GABRIEL FRANÇA VITAL" : "KEVEN FARO DE CARVALHO"
 
     selectRespExec ({ responsavel, executor: executor.nome }) 
 }
@@ -238,12 +259,12 @@ function addEventListenerToSelect(area, isEnvelope) {
         const tipoTarefaDTO = { isEnvelope, tipoTarefa }
         
         const { prazoInterno, prazoFatal, prazoCRM } = calcularPrazoProtocoloProcesso(area, tipoTarefaDTO)
-
+        
         setDataTarefa(prazoFatal)
 
         updateOption(selectedOptions[0], prazoInterno)
         
-        selectRespExecJuridico(area, prazoInterno, tipoTarefa)
+        selectRespExecJuridico({ area, prazoInterno, prazoFatal, tipoTarefa })
 
         const btnGravar = document.querySelector("#btnGravar")
 
@@ -303,7 +324,7 @@ function calcularPrazoProrrogacao(dataDCB, area, tipoTarefa) {
         return getDiaUtil(prazoTarefa)
     }
 
-    return getDiaUtil(prazoTarefa, area)
+    return getDiaUtil(prazoTarefa)
 }
 
 async function getDCB (idCliente, gravarBtn) {
@@ -351,7 +372,7 @@ async function createInputTextArea(divDescription, area, tipoTarefa) {
             value = `Realizar Pedido de Prorrogação - DCB ${dcb.toLocaleDateString()}`
             const prazoTarefa = calcularPrazoProrrogacao(dcb, area, tipoTarefa)
             setDataTarefa(prazoTarefa)
-            selectRespExecJuridico(area, prazoTarefa, tipoTarefa)
+            selectRespExecJuridico({ area, prazoInterno: prazoTarefa, prazoFatal: prazoTarefa, tipoTarefa })
         }
     }
 
@@ -360,11 +381,11 @@ async function createInputTextArea(divDescription, area, tipoTarefa) {
     divDescription.innerHTML = htmlDescriptionTextArea
 }
 
-function getDiaUtil(date, area) {
+function getDiaUtil(date) {
     const newDate = new Date(date)
 
     while((newDate.getDay() === 0) || (newDate.getDay() === 6) || isFeriado(newDate, parametros.tarefaContatar).isHoliday) {
-        const ascrecimoOrDescrescimo = area === areas.inssDigital ? (-1) : 1
+        const ascrecimoOrDescrescimo = 1
         newDate.setDate(newDate.getDate() + ascrecimoOrDescrescimo)
     }
 
@@ -379,15 +400,15 @@ function calcularPrazoProtocoloProcesso(area, { isEnvelope, tipoTarefa }) {
     
     const datePrazoFatal = new Date()
     datePrazoFatal.setDate(datePrazoFatal.getDate() + prazoProtocolo + prazoJuridico + acrescimo)
-    const prazoFatal = getDiaUtil(datePrazoFatal, area)
+    const prazoFatal = getDiaUtil(datePrazoFatal)
 
     const datePrazoInterno = new Date()
     datePrazoInterno.setDate(datePrazoInterno.getDate() + (isEnvelope ? 0 : prazoProtocolo) + acrescimo)
-    const prazoInterno = getDiaUtil(datePrazoInterno, area)
+    const prazoInterno = getDiaUtil(datePrazoInterno)
 
     const datePrazoCRM = isEnvelope ? new Date() : new Date(prazoInterno)
     datePrazoCRM.setDate(datePrazoCRM.getDate() + 1)
-    const prazoCRM = getDiaUtil(datePrazoCRM, area)
+    const prazoCRM = getDiaUtil(datePrazoCRM)
 
     return { prazoInterno, prazoFatal, prazoCRM }
 }
@@ -409,7 +430,7 @@ function automaticDistributionTasksJuricial() {
         if (tipoTarefa === "DEMORA INJUSTIFICADA") {
             return createInputSelect({ isEnvelope: false, area: areas.previdenciaria, divDescription })
         }
-
+        
         return createInputTextArea(divDescription, areas.inssDigital, tipoTarefa)
     })
 }

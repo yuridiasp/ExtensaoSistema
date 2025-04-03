@@ -1,6 +1,70 @@
+const dataProcessosRegisterReport = {
+    creta: {
+        buttonSelector: 'a[href^="javascript:doConsulta"]',
+        processoSelector: 'a[href^="javascript:doConsulta"]',
+        nomeSelector: 'td:nth-child(1)',
+        expedienteSelector: 'td:nth-child(2) > table > tbody > tr:nth-child(4) > td:nth-child(2)',
+        rowsSelector: 'body > table > tbody > tr:nth-child(3) > td > form > table.grid > tbody > tr',
+        registers: (portalType) => onloadToApplyRegisterReport(() => addEventToRegisterReport(portalType)),
+    },
+    trf5: {
+        buttonSelector: {
+            'Intimações': 'a[id^="formExpedientesPendentesAdvogadoProcurador"]',
+            'Intimações de RPV/PRC': 'a[id^="formExpedientesPendentesRpvAdvogadoProcurador"]',
+            'Intimações de Pauta de Julgamento': 'a[id^="formPendentesEletronico"]'
+        },
+        processoSelector: {
+            'Intimações': 'td:nth-child(3)',
+            'Intimações de RPV/PRC': 'td:nth-child(4)',
+            'Intimações de Pauta de Julgamento': 'td:nth-child(3)'
+        },
+        nomeSelector: {
+            'Intimações': {
+                polo_ativo: 'td:nth-child(9)',
+                polo_passivo: 'td:nth-child(10)'
+            },
+            'Intimações de RPV/PRC': {
+                polo_ativo: 'td:nth-child(8)',
+                polo_passivo: null
+            },
+            'Intimações de Pauta de Julgamento': {
+                polo_ativo: 'td:nth-child(10)',
+                polo_passivo: 'td:nth-child(3)'
+            }
+        },
+        expedienteSelector: {
+            'Intimações': 'td:nth-child(8)',
+            'Intimações de RPV/PRC': 'td:nth-child(9)',
+            'Intimações de Pauta de Julgamento': 'td:nth-child(8)'
+        },
+        rowsSelector: {
+            'Intimações': '#formExpedientesPendentesAdvogadoProcurador\\:expedientesPendentesAdvogadoProcuradorDataTable  > tbody > tr',
+            'Intimações de RPV/PRC': '#formExpedientesPendentesRpvAdvogadoProcurador\\:expedientesPendentesRpvAdvogadoProcuradorDataTable > tbody > tr',
+            'Intimações de Pauta de Julgamento': '#formPendentesEletronico\\:sessaoPautaProcessoTrfInimacoesList > tbody > tr'
+        },
+        registers: (portalType) => observerLoaderToApplyRegisterReport(() => addEventToRegisterReport(portalType)),
+    },
+    pje: {
+        buttonSelector: 'a.btn-danger',
+        processoSelector: 'a[title="Autos Digitais"]',
+        nomeSelector: 'span[title="Destinatário"]',
+        expedienteSelector: 'span[title="Data de criação do expediente"]',
+        rowsSelector: '#formExpedientes\\:tbExpedientes\\:tb > tr',
+        registers: (portalType) => observerLoaderToApplyRegisterReport(() => addEventToRegisterReport(portalType)),
+    },
+    pjeTRF1: {
+        buttonSelector: 'a.btn-danger',
+        processoSelector: 'a[title="Autos Digitais"]',
+        nomeSelector: 'span[title="Destinatrio"]',
+        expedienteSelector: 'span[title="Data de criação do expediente"]',
+        rowsSelector: '#formExpedientes\\:tbExpedientes\\:tb > tr',
+        registers: (portalType) => observerLoaderToApplyRegisterReport(() => addEventToRegisterReport(portalType)),
+    },
+}
+
 function extrairNumeroProcesso(elementProcesso, portalType) {
     let textProcess = elementProcesso.innerText.trim()
-    if (portalType === 'pje') {
+    if (portalType === 'pje' || portalType === 'pjeTRF1') {
         textProcess = elementProcesso.innerText.trim().split(' ')[1]
     }
     return removeCaracteresProcesso(textProcess)
@@ -48,7 +112,7 @@ async function registerToExportSummons(report) {
 
 async function captureClickConfirmAndRegister(event = null, portalType, report) {
     if (event) {
-        if (portalType === 'pje')
+        if (portalType === 'pje' || portalType === 'pjeTRF1')
             await markSummonsButton(event)
         await registerToExportSummons(report)
     }
@@ -74,101 +138,56 @@ function getAbaAtiva() {
 }
 
 function getButtonReport(row, portalType) {
-    const buttonSelector = {
-        creta: 'a[href^="javascript:doConsulta"]',
-        trf5: {
-            'Intimações': 'a[id^="formExpedientesPendentesAdvogadoProcurador"]',
-            'Intimações de RPV/PRC': 'a[id^="formExpedientesPendentesRpvAdvogadoProcurador"]',
-            'Intimações de Pauta de Julgamento': 'a[id^="formPendentesEletronico"]'
-        },
-        pje: 'a.btn-danger'
-    }
 
-    let selector = buttonSelector[portalType]
+    let selector = dataProcessosRegisterReport[portalType].buttonSelector
 
     const abaAtiva = getAbaAtiva()
 
     if (portalType === "trf5") {
-        selector = buttonSelector.trf5[abaAtiva]
+        selector = dataProcessosRegisterReport.trf5[abaAtiva]
     }
 
     return row.querySelector(selector)
 }
 
 function getProcessReport(row, portalType) {
-    const processoSelector = {
-        creta: 'a[href^="javascript:doConsulta"]',
-        trf5: {
-            'Intimações': 'td:nth-child(3)',
-            'Intimações de RPV/PRC': 'td:nth-child(4)',
-            'Intimações de Pauta de Julgamento': 'td:nth-child(3)'
-        },
-        pje: 'a[title="Autos Digitais"]'
-    }
 
-    let selector = processoSelector[portalType]
+    let selector = dataProcessosRegisterReport[portalType].processoSelector
 
     const abaAtiva = getAbaAtiva()
 
     if (portalType === "trf5") {
-        selector = processoSelector.trf5[abaAtiva]
+        selector = dataProcessosRegisterReport.trf5[abaAtiva].processoSelector
     }
     
     return extrairNumeroProcesso(row.querySelector(selector), portalType)
 }
 
 function getNameReport(row, portalType) {
-    const nomeSelector = {
-        creta: 'td:nth-child(1)',
-        trf5: {
-            'Intimações': {
-                polo_ativo: 'td:nth-child(9)',
-                polo_passivo: 'td:nth-child(10)'
-            },
-            'Intimações de RPV/PRC': {
-                polo_ativo: 'td:nth-child(8)',
-                polo_passivo: null
-            },
-            'Intimações de Pauta de Julgamento': {
-                polo_ativo: 'td:nth-child(10)',
-                polo_passivo: 'td:nth-child(3)'
-            }
-        },
-        pje: 'span[title="Destinatário"]'
-    }
 
     const abaAtiva = getAbaAtiva()
 
     if (portalType === "trf5") {
         if (abaAtiva === 'Intimações de RPV/PRC') {
-            return row.querySelector(nomeSelector.trf5[abaAtiva].polo_ativo).innerText
+            return row.querySelector(dataProcessosRegisterReport.trf5[abaAtiva].nomeSelector.polo_ativo).innerText
         } else {
-            return `${row.querySelector(nomeSelector.trf5[abaAtiva].polo_ativo).innerText} - ${row.querySelector(nomeSelector.trf5[abaAtiva].polo_passivo).innerText}`
+            return `${row.querySelector(dataProcessosRegisterReport.trf5[abaAtiva].nomeSelector.polo_ativo).innerText} - ${row.querySelector(dataProcessosRegisterReport.trf5[abaAtiva].nomeSelector.polo_passivo).innerText}`
         }
     } else if (portalType === "creta") {
-        return row.querySelector(nomeSelector[portalType]).innerText.split("\n\n")[3].split('>>>')[0].replace('(','')
+        return row.querySelector(dataProcessosRegisterReport[portalType].nomeSelector).innerText.split("\n\n")[3].split('>>>')[0].replace('(','')
     }
 
-    return row.querySelector(nomeSelector[portalType]).innerText
+    return row.querySelector(dataProcessosRegisterReport[portalType].nomeSelector).innerText
 }
 
 function getExpedienteReport(row, portalType) {
-    const expedienteSelector = {
-        creta: 'td:nth-child(2) > table > tbody > tr:nth-child(4) > td:nth-child(2)',
-        trf5: {
-            'Intimações': 'td:nth-child(8)',
-            'Intimações de RPV/PRC': 'td:nth-child(9)',
-            'Intimações de Pauta de Julgamento': 'td:nth-child(8)'
-        },
-        pje: 'span[title="Data de criação do expediente"]'
-    }
 
-    let selector = expedienteSelector[portalType]
+    let selector = dataProcessosRegisterReport[portalType].expedienteSelector
 
     const abaAtiva = getAbaAtiva()
 
     if (portalType === "trf5") {
-        selector = expedienteSelector.trf5[abaAtiva]
+        selector = dataProcessosRegisterReport.trf5[abaAtiva].expedienteSelector
     }
 
     return row.querySelector(selector).innerText
@@ -181,23 +200,13 @@ function getCurrentTime() {
 }
 
 function addEventToRegisterReport(portalType) {
-    
-    const rowsSelector = {
-        creta: 'body > table > tbody > tr:nth-child(3) > td > form > table.grid > tbody > tr',
-        trf5: {
-            'Intimações': '#formExpedientesPendentesAdvogadoProcurador\\:expedientesPendentesAdvogadoProcuradorDataTable  > tbody > tr',
-            'Intimações de RPV/PRC': '#formExpedientesPendentesRpvAdvogadoProcurador\\:expedientesPendentesRpvAdvogadoProcuradorDataTable > tbody > tr',
-            'Intimações de Pauta de Julgamento': '#formPendentesEletronico\\:sessaoPautaProcessoTrfInimacoesList > tbody > tr'
-        },
-        pje: '#formExpedientes\\:tbExpedientes\\:tb > tr'
-    }
 
-    let selector = rowsSelector[portalType]
+    let selector = dataProcessosRegisterReport[portalType].rowsSelector
 
     if (portalType === 'trf5') {
         const abaAtiva = getAbaAtiva()
 
-        selector = rowsSelector[portalType][abaAtiva]
+        selector = dataProcessosRegisterReport[portalType][abaAtiva].rowsSelector
     }
 
     let rowsSummon = document.querySelectorAll(selector)
@@ -277,16 +286,11 @@ async function observerLoaderToApplyRegisterReport(functionEventPJE) {
 }
 
 async function registerReportSummons(portalType) {
-    const registers = {
-        creta: () => onloadToApplyRegisterReport(() => addEventToRegisterReport(portalType)),
-        trf5: () => observerLoaderToApplyRegisterReport(() => addEventToRegisterReport(portalType)),
-        pje: () => observerLoaderToApplyRegisterReport(() => addEventToRegisterReport(portalType))
-    }
 
-    registers[portalType]()
+    dataProcessosRegisterReport[portalType].registers(portalType)
 }
 
-async function activateReportSummons({ isPJE, isCRETA, isTRF5 }) {
+async function activateReportSummons({ isTRF1, isCRETA, isTRF5 }) {
     
     const getPortalType = () => {
         if (isCRETA) {
@@ -295,6 +299,8 @@ async function activateReportSummons({ isPJE, isCRETA, isTRF5 }) {
         }
         if (isTRF5)
             return 'trf5'
+        if (isTRF1)
+            return 'pjeTRF1'
         return 'pje'
     }
 
