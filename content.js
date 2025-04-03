@@ -682,7 +682,7 @@ async function getTarefasColaboradores({ colaborador, dataDe, dataAte = dataDe, 
         
         const tarefas = doc.documentElement.querySelectorAll('body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr')
             let contador = 0
-            console.log(tarefas)
+            
             tarefas.forEach(e => {
                 if (typeOfTask === typeOfTaskSearch.protocolo) {
                     if (e.children[3] != null) {
