@@ -9,6 +9,15 @@ const ADM = [
             atrasadas: 0
         },
         {
+            id: 256,
+            nome: "CHRISTYAN RANGELL SILVA DAMASCENO XAVIER",
+            nomeTLC: "CHRISTYAN",
+            assignments: [],
+            diasViagem: [],
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
             id: 204,
             nome: "DIEGO DOS SANTOS SILVA",
             nomeTLC: "DIEGO SANTOS",
@@ -36,6 +45,15 @@ const ADM = [
             atrasadas: 0
         },
         {
+            id: 205,
+            nome: "HELTON FRADES BRABEC SOUZA",
+            nomeTLC: "HELTON",
+            assignments: [],
+            diasViagem: null,
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
             id: 239,
             nome: "ISAC CRUZ SANTOS",
             nomeTLC: "ISAC",
@@ -56,7 +74,16 @@ const ADM = [
         {
             id: 197,
             nome: "JHONATHAN DA FONSECA ALMEIDA FLOR",
-            nomeTLC: "JHONATHAN",
+            nomeTLC: "JHONATHAN FONSECA",
+            assignments: [],
+            diasViagem: [],
+            contagem: 0,
+            atrasadas: 0
+        },
+        {
+            id: 247,
+            nome: "JHONATAN NASCIMENTO TAVARES",
+            nomeTLC: "JHONATHAN NASCIMENTO",
             assignments: [],
             diasViagem: [],
             contagem: 0,
@@ -167,15 +194,6 @@ const ADM = [
             id: 213,
             nome: "HELLEN VITORIA ROCHA SILVA SANTOS",
             nomeTLC: "HELLEN",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 205,
-            nome: "HELTON FRADES BRABEC SOUZA",
-            nomeTLC: "HELTON",
             assignments: [],
             diasViagem: null,
             contagem: 0,

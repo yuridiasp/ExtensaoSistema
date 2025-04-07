@@ -2185,6 +2185,17 @@ function datepickerHighlighter () {
     })
 }
 
+function removerNewButtons() {
+    if (!state.functions.todasPaginas.removerNewButtons) {
+        return
+    }
+    const buttonWhatsapp = document.querySelector("body > section > aside > div:nth-child(7)")
+    const buttonChamados = document.querySelector("body > section > aside > div:nth-child(8)")
+
+    buttonWhatsapp.remove()
+    buttonChamados.remove()
+}
+
 function pinSideMenu() {
     
     if (!state.functions.todasPaginas.fixarMenuNavegacaoLateral) {
@@ -2293,6 +2304,7 @@ async function idPage(url) {
     digitacaoPorVoz()
     datepickerHighlighter()
     pinSideMenu()
+    removerNewButtons()
     
     if (isSistema) {
         createStyleProgressBar()

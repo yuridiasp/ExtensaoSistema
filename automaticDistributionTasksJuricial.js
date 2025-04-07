@@ -45,7 +45,7 @@ const prazosTarefasAvulsas = {
         "PEDIDO DE PRORROGAÇÃO AUXÍLIO DOENÇA - ADM": (-14),
     }
 }
-const { eduardo, thalyson, joseHenrique, yan, ana, elton, saulo } = {
+const colaboradoresPrev = {
     eduardo: {
         id: 192,
         nome: "EDUARDO PAIXÃO ROCHA SOBRINHO",
@@ -58,7 +58,8 @@ const { eduardo, thalyson, joseHenrique, yan, ana, elton, saulo } = {
         nome: "THALYSON KELSON LIMA TORRES",
         nomeTLC: "THALYSON",
         diasViagem: [],
-        tarefas: 0
+        tarefas: 0,
+        isBSB: true
     },
     joseHenrique: {
         id: 230,
@@ -93,76 +94,213 @@ const { eduardo, thalyson, joseHenrique, yan, ana, elton, saulo } = {
         nome: "SAULO MATHEUS ARAUJO DE SANTANA",
         nomeTLC: "SAULO MATHEUS",
         diasViagem: [],
+        tarefas: 0,
+        isBSB: true
+    },
+    joaoVitor: {
+        id: 252,
+        nome: "JOÃO VITOR FARIAS DOS SANTOS",
+        nomeTLC: "JOÃO VITOR",
+        diasViagem: [],
         tarefas: 0
-    }
+    },
+    arthur: {
+        id: 251,
+        nome: "ARTHUR PISISTRATO DE AMORIM REBELO",
+        nomeTLC: "ARTHUR PISISTRATO",
+        diasViagem: [],
+        tarefas: 0
+    },
+    leandro: {
+        id: 254,
+        nome: "LEANDRO GABRIEL DOS SANTOS NUNES",
+        nomeTLC: "LEANDRO GABRIEL",
+        diasViagem: [],
+        tarefas: 0
+    },
 }
 const demandas = {
     prev: {
         "ANÁLISE": {
-            executores: [ana, eduardo, thalyson]
+            executores: [
+                colaboradoresPrev.ana,
+                colaboradoresPrev.eduardo,
+                colaboradoresPrev.thalyson,
+            ]
         },
         "AUXÍLIO DOENÇA": {
-            executores: [eduardo, thalyson, joseHenrique, yan],
+            executores: [
+                colaboradoresPrev.joseHenrique,
+                colaboradoresPrev.yan,
+                colaboradoresPrev.elton,
+                colaboradoresPrev.joaoVitor,
+                colaboradoresPrev.arthur,
+                colaboradoresPrev.saulo,
+            ],
             isDIList: true
         },
         "AUXÍLIO ACIDENTE": {
-            executores: [joseHenrique, yan],
+            executores: [
+                colaboradoresPrev.joseHenrique,
+                colaboradoresPrev.yan,
+                colaboradoresPrev.elton,
+                colaboradoresPrev.joaoVitor,
+                colaboradoresPrev.arthur,
+                colaboradoresPrev.saulo,
+            ],
             isDIList: true
         },
         "AUXÍLIO RECLUSÃO": {
-            executores: [eduardo, thalyson, yan],
+            executores: [
+                colaboradoresPrev.eduardo,
+                colaboradoresPrev.thalyson,
+                colaboradoresPrev.yan,
+                colaboradoresPrev.joseHenrique,
+                colaboradoresPrev.elton,
+                colaboradoresPrev.joaoVitor,
+                colaboradoresPrev.arthur,
+                colaboradoresPrev.saulo,
+            ],
             isDIList: true
         },
         "AÇÃO DE COBRANÇA": {
-            executores: [eduardo, thalyson, yan]
+            executores: [
+                colaboradoresPrev.eduardo,
+                colaboradoresPrev.thalyson,
+                colaboradoresPrev.yan,
+
+            ]
         },
         "ADICIONAL 25%": {
-            executores: [thalyson, joseHenrique, yan]
+            executores: [
+                colaboradoresPrev.thalyson,
+                colaboradoresPrev.joseHenrique,
+                colaboradoresPrev.yan,
+                colaboradoresPrev.elton,
+                colaboradoresPrev.joaoVitor,
+                colaboradoresPrev.arthur,
+                colaboradoresPrev.saulo,
+            ]
         },
         "APOSENTADORIA ESPECIAL": {
-            executores: [eduardo, thalyson, ana],
+            executores: [
+                colaboradoresPrev.eduardo,
+                colaboradoresPrev.thalyson,
+                colaboradoresPrev.ana,
+                colaboradoresPrev.leandro,
+            ],
             isDIList: true
         },
         "APOSENTADORIA POR IDADE URBANA": {
-            executores: [eduardo, thalyson, joseHenrique, yan],
+            executores: [
+                colaboradoresPrev.eduardo,
+                colaboradoresPrev.thalyson,
+                colaboradoresPrev.joseHenrique,
+                colaboradoresPrev.yan,
+            ],
             isDIList: true
         },
         "APOSENTADORIA POR IDADE RURAL": {
-            executores: [eduardo, thalyson, joseHenrique, yan],
+            executores: [
+                colaboradoresPrev.eduardo,
+                colaboradoresPrev.thalyson,
+                colaboradoresPrev.joseHenrique,
+                colaboradoresPrev.yan,
+                colaboradoresPrev.elton,
+                colaboradoresPrev.saulo,
+            ],
             isDIList: true
         },
         "APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO": {
-            executores: [eduardo, thalyson, ana],
+            executores: [
+                colaboradoresPrev.eduardo,
+                colaboradoresPrev.thalyson,
+                colaboradoresPrev.ana,
+                colaboradoresPrev.leandro,
+            ],
             isDIList: true
         },
         "APOSENTADORIA RPPS": {
-            executores: [eduardo, ana]
+            executores: [
+                colaboradoresPrev.eduardo,
+                colaboradoresPrev.ana,
+                colaboradoresPrev.leandro
+            ]
         },
         "APOSENTADORIA POR INVALIDEZ": {
-            executores: [eduardo, thalyson, joseHenrique, yan],
+            executores: [
+                colaboradoresPrev.joseHenrique,
+                colaboradoresPrev.yan,
+                colaboradoresPrev.elton,
+                colaboradoresPrev.joaoVitor,
+                colaboradoresPrev.arthur,
+                colaboradoresPrev.saulo,
+            ],
             isDIList: true
         },
         "LOAS": { 
-            executores: [thalyson, joseHenrique, yan, elton, saulo],
+            executores: [
+                colaboradoresPrev.joseHenrique,
+                colaboradoresPrev.yan,
+                colaboradoresPrev.elton,
+                colaboradoresPrev.saulo,
+                colaboradoresPrev.arthur,
+                colaboradoresPrev.joaoVitor,
+            ],
             isDIList: true
         },
         "MANDADO DE SEGURANÇA": {
-            executores: [elton, saulo],
+            executores: [
+                colaboradoresPrev.joaoVitor,
+                colaboradoresPrev.arthur,
+            ],
             isDIList: true
         },
         "PAB": {
-            executores: [eduardo, thalyson, joseHenrique, yan],
+            executores: [
+                colaboradoresPrev.eduardo,
+                colaboradoresPrev.thalyson,
+                colaboradoresPrev.joseHenrique,
+                colaboradoresPrev.yan,
+                colaboradoresPrev.elton,
+                colaboradoresPrev.joaoVitor,
+                colaboradoresPrev.arthur,
+                colaboradoresPrev.saulo,
+            ],
             isDIList: true
         },
         "PENSÃO POR MORTE": {
-            executores: [eduardo, thalyson, joseHenrique, yan],
+            executores: [
+                colaboradoresPrev.eduardo,
+                colaboradoresPrev.thalyson,
+                colaboradoresPrev.joseHenrique,
+                colaboradoresPrev.yan,
+                colaboradoresPrev.elton,
+                colaboradoresPrev.joaoVitor,
+                colaboradoresPrev.arthur,
+                colaboradoresPrev.saulo,
+            ],
             isDIList: true
         },
         "REVISÃO RMI": {
-            executores: [eduardo, thalyson, ana]
+            executores: [
+                colaboradoresPrev.eduardo,
+                colaboradoresPrev.thalyson,
+                colaboradoresPrev.ana,
+                colaboradoresPrev.leandro,
+            ]
         },
         "SALÁRIO MATERNIDADE": {
-            executores: [eduardo, thalyson, joseHenrique, yan],
+            executores: [
+                colaboradoresPrev.eduardo,
+                colaboradoresPrev.thalyson,
+                colaboradoresPrev.joseHenrique,
+                colaboradoresPrev.yan,
+                colaboradoresPrev.elton,
+                colaboradoresPrev.joaoVitor,
+                colaboradoresPrev.arthur,
+                colaboradoresPrev.saulo,
+            ],
             isDIList: true
         },
     },
@@ -197,9 +335,9 @@ function obterPrimeiroEUltimoDia(prazoInterno, prazoFatal, tipoTarefa) {
     return { primeiroDia, ultimoDia }
 }
 
-function requererTarefasProtocolJuridico(prazoInterno, prazoFatal, area, tipoTarefa) {
+function requererTarefasProtocolJuridico(prazoInterno, prazoFatal, area, tipoTarefa, isBSB) {
     
-    const colaboradores = demandas[area][tipoTarefa].executores
+    const colaboradores = isBSB ? Object.values(colaboradoresPrev).filter(colaborador => colaborador.isBSB) : demandas[area][tipoTarefa].executores
     const typeOfTask = typeListTasksProtocol.includes(tipoTarefa.toUpperCase()) ? typeOfTaskSearch.protocolo : typeOfTaskSearch.prorrogacao
     
     const { primeiroDia, ultimoDia } = obterPrimeiroEUltimoDia(prazoInterno, prazoFatal, tipoTarefa)
@@ -209,7 +347,7 @@ function requererTarefasProtocolJuridico(prazoInterno, prazoFatal, area, tipoTar
     })
 }
 
-async function selectRespExecJuridico({ area, prazoInterno, prazoFatal, tipoTarefa }) {
+async function selectRespExecJuridico({ area, prazoInterno, prazoFatal, tipoTarefa, isBSB = false }) {
     const typeOfTask = typeListTasksProtocol.includes(tipoTarefa) ? typeOfTaskSearch.protocolo : typeOfTaskSearch.prorrogacao
     const contactDiv = document.querySelector('#contactdiv')
     if (!contactDiv)
@@ -217,7 +355,7 @@ async function selectRespExecJuridico({ area, prazoInterno, prazoFatal, tipoTare
     else
         limparListaTarefas()
 
-    const listaColaboradores = await Promise.all(requererTarefasProtocolJuridico(prazoInterno, prazoFatal, area, tipoTarefa))
+    const listaColaboradores = await Promise.all(requererTarefasProtocolJuridico(prazoInterno, prazoFatal, area, tipoTarefa, isBSB))
     
     const executor = listaColaboradores.reduce((previous, currrent) => {
         
@@ -253,7 +391,8 @@ function setDataTarefa(date) {
 function addEventListenerToSelect(area, isEnvelope) {
     const selectDescription = document.querySelector("#descricao")
 
-    selectDescription.addEventListener("change", ({ target }) => {
+    selectDescription.addEventListener("change", async ({ target }) => {
+        const idCL = document.querySelector("#fdt-form > input[type=hidden]:nth-child(4)").value
         const { selectedOptions } = target
         const tipoTarefa = selectedOptions[0].innerText.toUpperCase()
         const tipoTarefaDTO = { isEnvelope, tipoTarefa }
@@ -263,17 +402,23 @@ function addEventListenerToSelect(area, isEnvelope) {
         setDataTarefa(prazoFatal)
 
         updateOption(selectedOptions[0], prazoInterno)
-        
-        selectRespExecJuridico({ area, prazoInterno, prazoFatal, tipoTarefa })
 
         const btnGravar = document.querySelector("#btnGravar")
+
+        const { estado } = await requestDataCliente({
+            id: idCL,
+            module: "cliente",
+            gravarBtn: btnGravar
+        })
+
+        const isBSB = estado === 'DF' || estado === 'GO'
+        
+        selectRespExecJuridico({ area, prazoInterno, prazoFatal, tipoTarefa, isBSB })
 
         btnGravar.addEventListener("click", async event => {
             event.preventDefault()
             btnGravar.disabled = true
             const form = document.querySelector("#fdt-form")
-
-            const idCL = document.querySelector("#fdt-form > input[type=hidden]:nth-child(4)").value
 
             const descricaoTarefa = `Nova oportunidade: ${isEnvelope ? `ENVELOPE ${area.toUpperCase()}` : 'DEMORA INJUSTIFICADA'} - ${selectedOptions[0].dataset.original} - P.F. ${prazoFatal.toLocaleDateString()}`
             await createTarefa({ idCL, descricaoTarefa, dataParaFinalizacao: prazoCRM.toLocaleDateString() })
@@ -365,7 +510,9 @@ async function createInputTextArea(divDescription, area, tipoTarefa) {
     if (tipoTarefa === "PEDIDO DE PRORROGAÇÃO AUXÍLIO DOENÇA - ADM") {
         const btnGravar = document.querySelector("#btnGravar")
         const idCL = document.querySelector("#fdt-form > input[type=hidden]:nth-child(4)").value
-        const { dcb, errorMessage } = await getDCB(idCL, btnGravar)
+
+        const { dcb, errorMessage } = getDCB(idCL, btnGravar)
+
         if (!dcb) {
             alert(errorMessage)
         } else {
