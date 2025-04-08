@@ -415,9 +415,12 @@ function addEventListenerToSelect(area, isEnvelope) {
         
         selectRespExecJuridico({ area, prazoInterno, prazoFatal, tipoTarefa, isBSB })
 
-        btnGravar.addEventListener("click", async event => {
+        btnGravar.replaceWith(btnGravar.cloneNode(true))
+        const newBtnGravar = document.querySelector("#btnGravar")
+
+        newBtnGravar.addEventListener("click", async event => {
             event.preventDefault()
-            btnGravar.disabled = true
+            newBtnGravar.disabled = true
             const form = document.querySelector("#fdt-form")
 
             const descricaoTarefa = `Nova oportunidade: ${isEnvelope ? `ENVELOPE ${area.toUpperCase()}` : 'DEMORA INJUSTIFICADA'} - ${selectedOptions[0].dataset.original} - P.F. ${prazoFatal.toLocaleDateString()}`

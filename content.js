@@ -543,9 +543,18 @@ function addListaTarefas({ nome, datasViagem, tarefas }, data) {
     })
 
     p1.addEventListener('click', event => {
-        const responsaveisAdministrativos = ['SILVANIA PINHEIRO DE LEMOS']
+        const responsaveisINSS = ['SILVANIA PINHEIRO DE LEMOS']
+        const responsaveisAdministrativo = ['SANDOVAL FILHO CORREIA LIMA FILHO']
         const executor = event.target.dataset.colaborador
-        const responsavel = !state.functions.todasPaginas.tipoIntimacaoIsJudicial && responsaveisAdministrativos.includes(executor) ? executor : document.querySelector("#idResponsavel").selectedOptions[0].innerText
+        const responsavel = (() => {
+            if (!state.functions.todasPaginas.tipoIntimacaoIsJudicial && responsaveisINSS.includes(executor) || responsaveisAdministrativo.includes(executor)) {
+                return executor
+            } else if (state.functions.todasPaginas.tipoIntimacaoIsJudicial && !responsaveisAdministrativo.includes(executor)) {
+                return 'JULIANO OLIVEIRA DE SOUZA'
+            } else {
+                return document.querySelector("#idResponsavel").selectedOptions[0].innerText
+            }
+        })()
 
         const respExec = { responsavel, executor }
 
