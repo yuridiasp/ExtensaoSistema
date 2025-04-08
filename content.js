@@ -2311,11 +2311,11 @@ async function idPage(url) {
         isGerid = url.includes(urlGeridINSS)
         
     digitacaoPorVoz()
-    datepickerHighlighter()
-    pinSideMenu()
-    removerNewButtons()
     
     if (isSistema) {
+        datepickerHighlighter()
+        pinSideMenu()
+        removerNewButtons()
         createStyleProgressBar()
         createPainel('ADM', ADM, state.functions.supervisor.painelVisualizacaoTarefasTimeADM)
         createPainel('SAC', SAC, state.functions.supervisor.painelVisualizacaoTarefasTimeSAC)
