@@ -514,7 +514,7 @@ async function createInputTextArea(divDescription, area, tipoTarefa) {
         const btnGravar = document.querySelector("#btnGravar")
         const idCL = document.querySelector("#fdt-form > input[type=hidden]:nth-child(4)").value
 
-        const { dcb, errorMessage } = getDCB(idCL, btnGravar)
+        const { dcb, errorMessage } = await getDCB(idCL, btnGravar)
 
         if (!dcb) {
             alert(errorMessage)

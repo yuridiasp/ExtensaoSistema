@@ -112,6 +112,9 @@ function FeriadosFixos (ano, parametro) {
                     {data: [9,28], feriado: "DIA DO FUNCIONÁRIO PÚBLICO - JUSTIÇA"},
                     {data: [10,1], feriado: "LEI FEDERAL Nº 5.010/66 - JUSTIÇA"},
                     {data: [11,8], feriado: "DIA DA JUSTIÇA - JUSTIÇA"},
+                    {data: [3,16], feriado: "QUARTA-FEIRA SANTA - PONTO FACULTATIVO JUSTIÇA"}, //ADICIONADO EM 16/04/2025
+                    {data: [3,17], feriado: "QUINTA-FEIRA SANTA - PONTO FACULTATIVO JUSTIÇA"}, //ADICIONADO EM 16/04/2025
+                    //{data: [3,22], feriado: "Data de ciência"},
                 ],
                 justicaEstadual: [],
                 TRF1: [],
@@ -348,6 +351,7 @@ function FeriadosFixos (ano, parametro) {
 
     if (tarefaAdvogado || isHighlight) {
         datas.justicaNacional.forEach(date => dataFactory(date, resultados))
+        console.log(resultados)
 
         datas.feriasAdvogados.forEach(date => {
             const month = date.data[0]
