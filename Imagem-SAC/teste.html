@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div style="display: flex; background: #f5f5f5; max-width: 1100px; padding: 5px; border-radius: 10px;">
+        <div id="capture" style="position: relative;">
+            <div style="display: flex; font-family: 'Arial Black', sans-serif; font-size: 16px; color: #BF800B;text-shadow:  -2px -2px 0 #ffffff,   2px -2px 0 #ffffff, -2px 2px 0 #ffffff, 2px 2px 0 #ffffff; text-align: center; padding: 5px 0; line-height: 1.2; flex-direction: column; position: absolute; top: 40%; width: 100%; background: #0a1a3f; justify-content: center; align-items: center; border-top: #B38A12 5px solid; border-bottom: #B38A12 5px solid;">
+                <h1 id="titulo" style="top: 0;"></h1>
+                <div>
+                    <p style="color: #C69608; text-shadow: none;">AGENDAMENTO: <span id="agendamento" style="color: #ffffff;"></span></p>
+                    <p style="color: #C69608; text-shadow: none;">ADVOGADO: <span style="color: #FFF;">Dr(a). </span><span id="advogado" style="color: #ffffff;"></span></p>
+                </div>
+            </div>
+            <figure style="margin: 0; padding: 0;">
+                <img id="image-background" width="800" src="" alt="" srcset="">
+            </figure>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px; margin: 10px; text-align: center;">
+            <h2>Dados do Agendamento</h2>
+            <fieldset>
+                <label for="atendimentos">Local Atendimento:</label>
+                <select name="atendimentos" id="atendimentos">
+                    <option value="ARACAJU">ARACAJU</option>
+                    <option value="CAPELA - MIRANDA">CAPELA - MIRANDA</option>
+                    <option value="CAPELA - PIRUNGA">CAPELA - PIRUNGA</option>
+                    <option value="CONDE">CONDE</option>
+                    <option value="ESTÂNCIA">ESTÂNCIA</option>
+                    <option value="JAPARATUBA">JAPARATUBA</option>
+                    <option value="LOT. JEOVÁ">LOT. JEOVÁ</option>
+                    <option value="PEDRINHAS">PEDRINHAS</option>
+                    <option value="SANTA MARIA">SANTA MARIA</option>
+                    <option value="TOBIAS BARRETO">TOBIAS BARRETO</option>
+                </select>
+            </fieldset>
+            <fieldset>
+                <label for="dataAgendamento">Data do Agendamento:</label>
+                <input id="dataAgendamento" type="date">
+            </fieldset>
+            <fieldset>
+                <label for="horarioAgendamento">Horário do Agendamento:</label>
+                <input id="horarioAgendamento" type="time">
+            </fieldset>
+            <fieldset>
+                <label for="advogadoAgendamento">Advogado:</label>
+                <input type="text" name="advogadoAgendamento" id="advogadoAgendamento">
+            </fieldset>
+            <button onclick="gerarImagem()">Salvar Imagem</button>
+        </div>
+    </div>
+    <div id="resultado"></div>    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        const imageBackground = document.querySelector("#image-background")
+
+        const atendimentosSelect = document.querySelector("#atendimentos")
+        const horarioAgendamento = document.querySelector("#horarioAgendamento")
+        const dataAgendamento = document.querySelector("#dataAgendamento")
+        const advogadoAgendamento = document.querySelector("#advogadoAgendamento")
+        
+        const agendamentoElement = document.querySelector("#agendamento")
+        const advogadoElement = document.querySelector("#advogado")
+        const tituloElement = document.querySelector("#titulo")
+
+        const setStyleLabel = () => {
+            const local = atendimentosSelect.value
+            const locais = {
+                "ARACAJU": "ATENDIMENTO ARACAJU (SEDE)",
+                "CAPELA - MIRANDA": "ATENDIMENTO MIRANDA",
+                "CAPELA - PIRUNGA": "ATENDIMENTO PIRUNGA",
+                "CONDE": "ATENDIMENTO CONDE",
+                "ESTÂNCIA": "ATENDIMENTO ESTÂNCIA",
+                "JAPARATUBA": "ATENDIMENTO JAPARATUBA",
+                "LOT. JEOVÁ": "ATENDIMENTO LOT. JEOVÁ",
+                "PEDRINHAS": "ATENDIMENTO PEDRINHAS",
+                "SANTA MARIA": "ATENDIMENTO SANTA MARIA",
+                "TOBIAS BARRETO": "ATENDIMENTO TOBIAS BARRETO",
+            }
+        }
+
+        const setAgendamentoImage = () => {
+            const [ ano, mes, dia ] = dataAgendamento.value.split("-")
+            const date = new Date(ano, mes - 1, dia)
+            const horario = horarioAgendamento.value
+            const text = `${date.toLocaleDateString()} NO BLOCO DAS ${horario} (ORDEM DE CHEGADA)`
+
+            agendamentoElement.innerHTML = text
+        }
+
+        const setAdvogadoImage = () => {
+            const advogadoName = advogadoAgendamento.value
+
+            advogadoElement.innerHTML = advogadoName
+        }
+
+        function setLocalImage() {
+            const local = atendimentosSelect.value
+            const locais = {
+                "ARACAJU": "ATENDIMENTO ARACAJU (SEDE)",
+                "CAPELA - MIRANDA": "ATENDIMENTO MIRANDA",
+                "CAPELA - PIRUNGA": "ATENDIMENTO PIRUNGA",
+                "CONDE": "ATENDIMENTO CONDE",
+                "ESTÂNCIA": "ATENDIMENTO ESTÂNCIA",
+                "JAPARATUBA": "ATENDIMENTO JAPARATUBA",
+                "LOT. JEOVÁ": "ATENDIMENTO LOT. JEOVÁ",
+                "PEDRINHAS": "ATENDIMENTO PEDRINHAS",
+                "SANTA MARIA": "ATENDIMENTO SANTA MARIA",
+                "TOBIAS BARRETO": "ATENDIMENTO TOBIAS BARRETO",
+            }
+
+            tituloElement.innerHTML = locais[local]
+        }
+
+        const setImageBackground = () => {
+            const local = atendimentosSelect.value
+
+            imageBackground.src = `images/${local}.png`
+        }
+
+        function changeDataImage() {
+            setImageBackground()
+            setLocalImage()
+        }
+
+        function gerarImagem() {
+            const elemento = document.getElementById('capture')
+            html2canvas(elemento).then((canvas) => {
+                const imagem = canvas.toDataURL("image/png")
+                const link = document.createElement("a")
+                link.href = imagem
+                link.download = "imagem.png"
+
+                link.click()
+
+                document.getElementById('resultado').innerHTML = ""
+            })
+        }
+
+        horarioAgendamento.addEventListener("input", () => setAgendamentoImage())
+        dataAgendamento.addEventListener("input", () => setAgendamentoImage())
+        advogadoAgendamento.addEventListener("input", () => setAdvogadoImage())
+        atendimentosSelect.addEventListener("input", () => changeDataImage())
+
+        function initDataImageDefaut(local, horario, data, advogado) {
+            const localDefaut = local ?? "ARACAJU"
+            const horarioDefaut = horario ?? "09:00"
+            const date = new Date()
+            const dataDefaut = data ?? date.toISOString().split("T")[0]
+            const advogadoDefatul = advogado ?? "Diego"
+
+            atendimentosSelect.value = localDefaut
+            horarioAgendamento.value = horarioDefaut
+            dataAgendamento.value = dataDefaut
+            advogadoAgendamento.value = advogadoDefatul
+
+            setImageBackground()
+            setLocalImage()
+            setAgendamentoImage()
+            setAdvogadoImage()
+        }
+
+        initDataImageDefaut()
+    </script>
+</body>
+</html>
