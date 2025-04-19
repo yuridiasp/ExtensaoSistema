@@ -40,6 +40,9 @@ let state = {
             tarefasAvulsasJuridicoCRM: null,
             tarefasProrrogacaoDCB: null,
         },
+        abaFollowUps: {
+            photoGenerator: null,
+        },
         preProcesso:{
             preenchimentoNomePasta: null,
             preenchimentoFormularioPreProcesso: null,

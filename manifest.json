@@ -44,15 +44,28 @@
                 "historico.js",
                 "portaisJustica.js",
                 "utils/pdf-exporter/pdfmake.min.js",
-                "utils/pdf-exporter/vfs_fonts.js"
+                "utils/pdf-exporter/vfs_fonts.js",
+                "utils/html2canvas/index.js",
+                "photoGeneratorService.js"
             ]
         }
+    ],
+    "web_accessible_resources": [
+      {
+        "resources": ["atendimentos/images/*.png", "atendimentos/images/*.jpg"],
+        "matches": ["<all_urls>"]
+      }
     ],
     "permissions": [
 	    "webNavigation",
         "tabs",
         "storage",
-        "webRequest"
+        "webRequest",
+        "clipboardRead",
+        "clipboardWrite",
+        "scripting",
+        "activeTab"
     ],
+    "host_permissions": ["<all_urls>"],
     "manifest_version": 3
 }

@@ -149,6 +149,13 @@
                 </div>
             </div>
             <div class="section-config">
+                <h5>Lista de Follow-Ups</h5>
+                <div>
+                    <input id="photoGenerator" data-nome="photoGenerator" data-aba="abaFollowUps" type="checkbox">
+                    <label for="photoGenerator">Habilitar botão para gerar imagem de agendamento dos atendimentos</label>
+                </div>
+            </div>
+            <!-- <div class="section-config">
                 <h5>Pré-processo</h5>
                 <div>
                     <input id="preenchimentoNomePasta" data-nome="preenchimentoNomePasta" data-aba="preProcesso" type="checkbox">
@@ -158,7 +165,7 @@
                     <input id="preenchimentoFormularioPreProcesso" data-nome="preenchimentoFormularioPreProcesso" data-aba="preProcesso" type="checkbox">
                     <label for="preenchimentoFormularioPreProcesso">Autopreenchimento Formulário Pré-processo</label>
                 </div>
-            </div>
+            </div> -->
             <div class="section-config">
                 <h5>Supervisor</h5>
                 <div>
@@ -215,6 +222,8 @@
         </section>
         <hr />
         <button id="genReport">Gerar Relatório PJE</button>
+        <hr>
+        <button id="copyImage">Copiar Imagem Follow-Up</button>
         <div id="mensagem"></div>
         <script src="../utils/state/initialState.js"></script>
         <script src="../chromeUtils.js" defer></script>

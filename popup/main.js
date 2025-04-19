@@ -6,6 +6,49 @@ const genReport = document.querySelector('#genReport')
 
 let initialState
 
+function dataURLToBlob(dataURL) {
+    const parts = dataURL.split(',');
+    const mime = parts[0].match(/:(.*?);/)[1];
+    const bstr = atob(parts[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+  
+    return new Blob([u8arr], { type: mime });
+}
+
+document.querySelector("#copyImage").addEventListener("click", () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, { action: "captureDom" }, function (response) {
+            if (chrome.runtime.lastError) {
+                console.error("Erro de comunicação:", chrome.runtime.lastError.message)
+                return
+            }
+        
+            if (!response || !response.image) {
+                console.error("Resposta inválida ou sem imagem:", response)
+                alert(response.error)
+                return
+            }
+
+            fetch(response.image)
+                .then(res => res.blob())
+                .then(blob => {
+                const item = new ClipboardItem({ 'image/png': blob })
+                navigator.clipboard.write([item])
+                    .then(() => {
+                        console.log("Imagem copiada com sucesso")
+                        alert("Imagem copiada com sucesso")
+                    })
+                    .catch(err => console.error("Erro ao copiar:", err))
+            })
+        })
+    })
+})
+
 async function clearReportSaved() {
     await setReport(null)
 }
@@ -183,5 +226,5 @@ async function getInitialState() {
     initialState = { ...state }
     stateBtn()
     //await distanceMatrix()
-    exportToExcel()
+    //exportToExcel()
 })()

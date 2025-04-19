@@ -78,7 +78,7 @@ hr {
     color: darkgray;
 }
 
-#genReport {
+#genReport, #copyImage {
     padding: 1em;
     border-radius: 0.3rem;
     background: forestgreen;
@@ -87,10 +87,14 @@ hr {
     margin-bottom: 1rem;
 }
 
-#genReport:hover {
+#copyImage {
+    background: #2ab8e7;
+}
+
+#genReport:hover, #copyImage:hover {
     filter: brightness(0.8);
 }
 
-#genReport:active {
+#genReport:active, #copyImage:active {
     filter: contrast(1.2);
 }

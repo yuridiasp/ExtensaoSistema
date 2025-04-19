@@ -2277,6 +2277,7 @@ async function idPage(url) {
         urlCadastroPreProcesso = "http://fabioribeiro.eastus.cloudapp.azure.com/pre/preProcessos/formulario",
         urlCadastroPreProcessoPasta = "http://fabioribeiro.eastus.cloudapp.azure.com/pre/preProcessos/formularioCria",
         urlSistemaFR = "http://fabioribeiro.eastus.cloudapp.azure.com",
+        urlListaFollowUps = "http://fabioribeiro.eastus.cloudapp.azure.com/flw/followups/default.asp",
         urlPortalDoAdvogadoTJSE = "https://www.tjse.jus.br/tjnet/portaladv/index.wsp",
         urlPJE = "/pje/",
         urlTRF1 = 'trf1.jus.br/',
@@ -2286,23 +2287,23 @@ async function idPage(url) {
         urlGeridINSS = "https://atendimento.inss.gov.br/",
         autoCompletar = await getAutoComplete(),
         pageBuscaProcessos = url.includes(urlProcessos),
-        pageFichaTarefas = url.includes(urlTarefasFicha),
-        pageListaTarefas = url.includes(urlListaTarefas),
-        pageTarefasForm = url.includes(urlTarefasForm),
-        pageTarefasFormDeCompromisso = url.includes(urlTarefasForm) && url.includes("idCO"),
-        pageTarefasFormDeCliente = url.includes(urlTarefasForm) && url.includes("idCL"),
-        pageVisualizacaoProcesso = url.includes(urlProcessosFicha),
-        pageCompromissos = url.includes(urlCompromissos),
-        pageCompromissoEscolherTipo = url.includes(urlCompromissoEscolherTipo),
-        pageFichaCliente = url.includes(urlClienteFicha),
-        pageCadastroCliente = url.includes(urlClienteCadastro),
-        pageCadastroProcesso = url.includes(urlProcessosCadastro),
-        pageVisualizacaoAbaCompromissos = url.includes(urlCompromissoDefault),
-        pageVisualizacaoCompromisso = url.includes(urlCompromissoFicha),
-        pageFormularioAddTarefaSemCompromisso = url.includes(urlClienteAddtarefa),
-        pagePreProcessoPasta = url.includes(urlCadastroPreProcessoPasta),
-        pagePreProcessoFormulario = url.includes(urlCadastroPreProcesso),
+        isPageFichaTarefas = url.includes(urlTarefasFicha),
+        isPageListaTarefas = url.includes(urlListaTarefas),
+        isPageTarefasFormDeCompromisso = url.includes(urlTarefasForm) && url.includes("idCO"),
+        isPageTarefasFormDeCliente = url.includes(urlTarefasForm) && url.includes("idCL"),
+        isPageVisualizacaoProcesso = url.includes(urlProcessosFicha),
+        isPageCompromissos = url.includes(urlCompromissos),
+        isPageCompromissoEscolherTipo = url.includes(urlCompromissoEscolherTipo),
+        isPageFichaCliente = url.includes(urlClienteFicha),
+        isPageCadastroCliente = url.includes(urlClienteCadastro),
+        isPageCadastroProcesso = url.includes(urlProcessosCadastro),
+        isPageVisualizacaoAbaCompromissos = url.includes(urlCompromissoDefault),
+        isPageVisualizacaoCompromisso = url.includes(urlCompromissoFicha),
+        isPageFormularioAddTarefaSemCompromisso = url.includes(urlClienteAddtarefa),
+        isPagePreProcessoPasta = url.includes(urlCadastroPreProcessoPasta),
+        isPagePreProcessoFormulario = url.includes(urlCadastroPreProcesso),
         pagePortalDoAdvogado = url.includes(urlPortalDoAdvogadoTJSE),
+        isPageListaFollowUps = url.includes(urlListaFollowUps),
         isSistema = url.includes(urlSistemaFR),
         isPJE = url.includes(urlPJE),
         isTRF1 = url.includes(urlTRF1),
@@ -2328,6 +2329,7 @@ async function idPage(url) {
         createPainel('CRM', CRM, state.functions.supervisor.painelVisualizacaoTarefasTimeCRM)
         createPainelFollowUps(state.functions.todasPaginas.painelVisualizacaoFollowUps)
         contarTarefasParaHoje()
+        createButtonPhotoGenerator(isPageListaFollowUps)
         if (pageBuscaProcessos) {
             
             const processoInput = document.querySelector("#bsAdvProcessosTexto")
@@ -2339,46 +2341,45 @@ async function idPage(url) {
             focarInputProcesso()
             limparInputProcesso()
             createButtonLinkJusticePortalForCase("listaProcesso")
-        } else if (pageTarefasFormDeCompromisso && autoCompletar) {
+        } else if (isPageTarefasFormDeCompromisso && autoCompletar) {
             preenchimentoTarefasDeCompromissos()
-        } else if (pageTarefasFormDeCliente) {
+        } else if (isPageTarefasFormDeCliente) {
             automaticDistributionTasksJuricial()
-        } else if (pageCompromissos && autoCompletar) {
+        } else if (isPageCompromissos && autoCompletar) {
                 createDataListCompromissos()
                 addListenersCompromisso()
                 createButtonPrazo()
                 buscarDadosClienteProcessos(url)
-        } else if (pageFichaTarefas) {
+        } else if (isPageFichaTarefas) {
             createButtonLinkJusticePortalForCase("fichaTarefa")
-        } else if (pageCadastroProcesso) {
+        } else if (isPageCadastroProcesso) {
             if (state.functions.abaCadastrodeProcesso.autoFormatNumProcesso) {
                 const processoInputCad = document.querySelector("#numero")
                 formataNumProcesso(processoInputCad)
             }
             habilitarEdicaoNumeroProcesso()
-        } else if (pageVisualizacaoAbaCompromissos) {
+        } else if (isPageVisualizacaoAbaCompromissos) {
             createButtonRolagem()
             setValidacaoFunctionOn()
-        } else if (pageVisualizacaoCompromisso || pageFormularioAddTarefaSemCompromisso) {
+        } else if (isPageVisualizacaoCompromisso || isPageFormularioAddTarefaSemCompromisso) {
             setValidacaoFunctionOff()
-        } else if (pageListaTarefas) {
+        } else if (isPageListaTarefas) {
             addEventToAutocomplete()
             createButtonLinkJusticePortalForCase("tarefas")
-        } else if (pagePreProcessoPasta) {
+        }/*  else if (isPagePreProcessoPasta) {
             await setIdClientPreProcesso()
             prenchimentoNomePasta()
-        } else if (pagePreProcessoFormulario) {
+        } else if (isPagePreProcessoFormulario) {
             preenchimentoFormularioPreProcesso()
-        } else if (pageCompromissoEscolherTipo) {
+        } */ else if (isPageCompromissoEscolherTipo) {
             await setAutoComplete(true)
-        } else if (pageCadastroCliente) {
+        } else if (isPageCadastroCliente) {
             //criarTarefaClientePrimeiraVez()
-        } else if (pageVisualizacaoProcesso) {
+        } else if (isPageVisualizacaoProcesso) {
             createButtonLinkJusticePortalForCase("processo")
-        } else if (pageFichaCliente) {
+        } else if (isPageFichaCliente) {
             createButtonLinkJusticePortalForCase("cliente")
         }
-        
     } else if (pagePortalDoAdvogado) {
         filtroAlvaraTJSE()
     } else if (isTRF5 || isCRETA || isPJE) {

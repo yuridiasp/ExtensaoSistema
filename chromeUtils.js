@@ -5,12 +5,14 @@ function chromeRuntimeOnInstalledAddListener(listener) {
 }
 
 function enviarResposta() {
-    chrome.runtime.onMessage.addListener(
-        function(request, sender, sendResponse) {
-            activate()
-            sendResponse({validation: "Atualizado"})
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        if (message.action === "captureDom") {
+            copiarImagem(message.action, sendResponse)
+            return true 
         }
-    )
+        sendResponse({ validation: "Atualizado" })
+        return false
+    })
 }
 
 function enviarMensagem () {
