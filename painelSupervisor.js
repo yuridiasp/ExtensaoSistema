@@ -731,18 +731,34 @@ function createPainel (setor, colaboradores, condiction) {
         })
     }
 
+    const activeBTNTable = (id, tabelas) => {
+        const btnProximo = document.querySelector(`#${id}-button-table-follow-proximo`)
+        const btnAnterior = document.querySelector(`#${id}-button-table-follow-anterior`)
+        console.log(currentTable)
+        btnProximo.disabled = false
+        btnAnterior.disabled = false
+
+        if (currentTable === tabelas.length - 1)
+            btnProximo.disabled = true
+
+        if (currentTable === 0)
+            btnAnterior.disabled = true
+    }
+
     const nextTable = (id) => {
         const tabelas = document.querySelectorAll(`.${id}-table`)
         /* tabelas[currentTable].classList.add("slide-out-table-follow") */
         currentTable = (currentTable + 1) % tabelas.length
         showTable(currentTable)
+        activeBTNTable(id, tabelas)
     }
 
-    const prevTable = (id) => {
+    const prevTable = (id, btn) => {
         const tabelas = document.querySelectorAll(`.${id}-table`)
         /* tabelas[currentTable].classList.add("slide-out-table-follow") */
         currentTable = (currentTable - 1 + tabelas.length) % tabelas.length
         showTable(currentTable)
+        activeBTNTable(id, tabelas)
     }
 
     addStyleAnimationTable()
@@ -767,7 +783,7 @@ function createPainel (setor, colaboradores, condiction) {
                             ${
                                 qtdViews > 1 ? `
                                     <div class="button-container-table-follow">
-                                        <button class="${id}-button-table-follow btn fdt-btn-azul">Anterior</button>
+                                        <button id="${id}-button-table-follow-anterior" class="${id}-button-table-follow btn fdt-btn-azul">Anterior</button>
                                     </div>
                                 ` : ''
                             }
@@ -786,7 +802,7 @@ function createPainel (setor, colaboradores, condiction) {
                             ${
                                 qtdViews > 1 ? `
                                     <div class="button-container-table-follow">
-                                        <button class="${id}-button-table-follow btn fdt-btn-azul">Próximo</button>
+                                        <button id="${id}-button-table-follow-proximo" class="${id}-button-table-follow btn fdt-btn-azul">Próximo</button>
                                     </div>
                                 ` : ''
                             }
