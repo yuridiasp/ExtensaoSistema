@@ -1,3 +1,5 @@
+let currentTable = 0;
+
 const ADM = [
         {
             id: 219,
@@ -694,26 +696,81 @@ const data = {
     },
 }
 
+
 function createPainel (setor, colaboradores, condiction) {
     if (!condiction) {
         return
     }
+    
+    const getActiveIndex = (parametrosCalculoDias) => {
+        return parametrosCalculoDias.findIndex(parametro => parametro === 0)
+    }
 
+    const addStyleAnimationTable = () => {
+        const sheet = document.styleSheets[0]
+        sheet.insertRule('.hidden-table-follow { display: none ;}', sheet.cssRules.length)
+        /* sheet.insertRule('.active-table-follow { display: table-row; animation: slide-in-table-follow 0.4s ease-in-out; }', sheet.cssRules.length) */
+        sheet.insertRule('.active-table-follow { display: table-row; }', sheet.cssRules.length)
+        /* sheet.insertRule('.slide-out-table-follow { animation: slide-out-table-follow 0.4s ease-in-out; }', sheet.cssRules.length) */
+        sheet.insertRule('@keyframes slide-in-table-follow { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }', sheet.cssRules.length)
+        sheet.insertRule('@keyframes slide-out-table-follow { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-100%); opacity: 0; } }', sheet.cssRules.length)
+        sheet.insertRule('.button-container-table-follow { margin: 10px; text-align: center; }', sheet.cssRules.length)
+        sheet.insertRule('.button-table-follow { margin: 5px; padding: 5px 10px; background-color: #004085; color: white; border: none; border-radius: 5px; cursor: pointer; }', sheet.cssRules.length)
+        sheet.insertRule('.button-table-follow:hover { background-color: #0056b3; }', sheet.cssRules.length)
+    }
+
+    function showTable(index) {
+        const tabelas = document.querySelectorAll(`.${id}-table`)
+        tabelas.forEach((tabela, i) => {
+            tabela.classList.remove("active-table-follow", "slide-out-table-follow")
+            tabela.classList.add("hidden-table-follow")
+            if (i === index) {
+                tabela.classList.remove("hidden-table-follow")
+                tabela.classList.add("active-table-follow")
+            }
+        })
+    }
+
+    const nextTable = (id) => {
+        const tabelas = document.querySelectorAll(`.${id}-table`)
+        /* tabelas[currentTable].classList.add("slide-out-table-follow") */
+        currentTable = (currentTable + 1) % tabelas.length
+        showTable(currentTable)
+    }
+
+    const prevTable = (id) => {
+        const tabelas = document.querySelectorAll(`.${id}-table`)
+        /* tabelas[currentTable].classList.add("slide-out-table-follow") */
+        currentTable = (currentTable - 1 + tabelas.length) % tabelas.length
+        showTable(currentTable)
+    }
+
+    addStyleAnimationTable()
     const painelBar = document.querySelector("#fdt-mt-header > ul:nth-child(1)")
+    const qtdViews = 3
     const qtdDias = 8
-    const { datas, dias } = getArrayDate(qtdDias)
-
-    const html = `<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span data-toggle="tooltip" data-placement="bottom" title="Painel do Supervisor ${setor}" data-original-title="Painel do Supervisor ${setor}"><i class="fa fa-fw fa-table fdt-cor-${data[setor].cor}"></i></span></a>
+    const parametrosCalculoDias = getOffsetDays(qtdDias, qtdViews)
+    const activeIndex = getActiveIndex(parametrosCalculoDias)
+    const viewsArrayDate = getArrayDatePanelSupervisor(qtdDias, qtdViews, parametrosCalculoDias)
+    const id = `painelBTNSup${setor}`
+    let currentTable = activeIndex
+    
+    const tables = viewsArrayDate.reduce((previous, { datas, dias }, index) => {
+        previous += generateTable(colaboradores, datas, dias, index, id, activeIndex)
+        return previous
+    }, '')
+    
+    const html = `<a href="" class="dropdown-toggle" data-toggle="personalizedDropdown" role="button" aria-haspopup="true" aria-expanded="false"><span data-toggle="tooltip" data-placement="bottom" title="Painel do Supervisor ${setor}" data-original-title="Painel do Supervisor ${setor}"><i class="fa fa-fw fa-table fdt-cor-${data[setor].cor}"></i></span></a>
                     <ul id="panelSup${setor}" class="dropdown-menu hidden-xs">
                         <li class="fdt-dropdown-cabecalho" style="color: #005689;">Painel do Supervisor</li>
-                        <li class="fdt-widget-lembretes">
-                            <ul>
-                                <li>
-                                    ${generateTable(colaboradores, datas, dias)}
-                                </li>
-                            </ul>
-                        </li>
                         <li class="fdt-widget-lembretes" style="display: flex; justify-content: center; align-items: center; gap: 10px; padding: 10px 0;">
+                            ${
+                                qtdViews > 1 ? `
+                                    <div class="button-container-table-follow">
+                                        <button class="${id}-button-table-follow btn fdt-btn-azul">Anterior</button>
+                                    </div>
+                                ` : ''
+                            }
                             <div style="display: flex; gap: 5px; justify-content: center; align-items: center;">
                                 <span style="background: #34454E; width: 10px; height: 10px;"></span>Tarefas Atrasadas
                             </div>
@@ -726,6 +783,20 @@ function createPainel (setor, colaboradores, condiction) {
                             <div style="display: flex; gap: 5px; justify-content: center; align-items: center;">
                                 <span style="background: #ADADAD; width: 10px; height: 10px;"></span>Total de Tarefas
                             </div>
+                            ${
+                                qtdViews > 1 ? `
+                                    <div class="button-container-table-follow">
+                                        <button class="${id}-button-table-follow btn fdt-btn-azul">Próximo</button>
+                                    </div>
+                                ` : ''
+                            }
+                        </li>
+                        <li class="fdt-widget-lembretes">
+                            <ul>
+                                <li>
+                                    ${tables}
+                                </li>
+                            </ul>
                         </li>
                     </ul>`
                     /* <li class="fdt-dropdown-rodape">
@@ -736,13 +807,13 @@ function createPainel (setor, colaboradores, condiction) {
     const li = document.createElement("li")
     li.innerHTML = html
     li.setAttribute('class', 'dropdown mensagens hidden-xs')
-    li.setAttribute('id', `painelBTNSup${setor}`)
+    li.setAttribute('id', id)
     painelBar.appendChild(li)
+    
     const panelSup = document.querySelector(`#panelSup${setor}`)
     const contentBar = createBar(setor)
     panelSup.append(contentBar)
     estilizarTabela()
-
     
     const inputDados = (nome, result) => {
 
@@ -763,8 +834,8 @@ function createPainel (setor, colaboradores, condiction) {
         chaves = chaves.filter(chave => (chave != "idTarefas"))
 
         chaves.forEach(chave => {
-            if (chave == 'atrasadas') {
-                tdsSeparados[nome]['atrasadas']['atrasadas'].innerHTML = result['atrasadas']
+            if (chave.includes('atrasadas')) {
+                tdsSeparados[nome][chave][chave].innerHTML = result[chave]
             } else if (result[chave] == 0) {
                 tdsSeparados[nome][chave].innerHTML = 0
             } else {
@@ -776,30 +847,55 @@ function createPainel (setor, colaboradores, condiction) {
         incrementBar(setor)
     }
     
-    document.querySelector(`#painelBTNSup${setor}`).addEventListener('click', () => {
-        showContentBar(contentBar, setor)
+    li.addEventListener('click', event => {
+        event.preventDefault()
 
-        colaboradores.forEach(({ id, nomeTLC }) => {
+        if (!li.classList.contains("open")) {
+                li.classList.add("open")
+            
+            createBackgroundFollowUp(li)
 
-            const params = `&bsAdvTarefasExecutor=${id}`
+            showContentBar(contentBar, setor)
 
-            const tarefasAtrasadas = { atrasadas: 0 }
+            colaboradores.forEach(({ id, nomeTLC }) => {
 
-            getTarefasAtrasadas(params, tarefasAtrasadas).then(result => {
-                inputDados(nomeTLC, result)
+                const params = `&bsAdvTarefasExecutor=${id}`
+                const tarefasAtrasadas = {}
+                const start = viewsArrayDate[0]['datas'][1]
+                const end = viewsArrayDate[viewsArrayDate.length - 1]['datas'][viewsArrayDate[viewsArrayDate.length - 1]['datas'].length - 1]
+                
+                const datas = []
+                
+                viewsArrayDate.forEach((value, index) => {
+                    tarefasAtrasadas[`atrasadas${index}`] = 0
+                    datas.push(...value.datas)
+                })
+                
+                getTarefasSemanal(id, start, end, datas).then(result => {
+                    inputDados(nomeTLC, result)
+                })
+
+                getTarefasAtrasadas(params, tarefasAtrasadas, qtdViews).then(result => {
+                    inputDados(nomeTLC, result)
+                })
             })
+        }
+    })
 
-            getTarefasSemanal(id, datas).then(result => {
-                inputDados(nomeTLC, result)
-            })
+    document.querySelectorAll(`.${id}-button-table-follow`).forEach(btn => {
+        btn.addEventListener('click', event => {
+            if (event.target.innerHTML === "Anterior") {
+                prevTable(id)
+            } else {
+                nextTable(id)
+            }
         })
     })
 }
 
-function generateTable(colaboradores, datas, dias) {
-    
+function generateTable(colaboradores, datas, dias, index = null, id = null, activeIndex = null) {
     const semana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
-    let table = `<table class="tabela">`
+    let table = `<table class="tabela ${ id ? `${id}-table` : '' } ${ index === activeIndex ? 'active-table-follow' : 'hidden-table-follow' }" id="${ id ? `${id}-table${ index ?? '' }` : '' }">`
 
     for (c = 0; c <= colaboradores.length; c++) {
         table += `<tr>`
@@ -817,7 +913,7 @@ function generateTable(colaboradores, datas, dias) {
                 if (j > 1)
                     table += `<th colspan="3" data-date="${(datas[j-1].toISOString().split('T'))[0]}" class="dRow">${datas[j-1].toLocaleDateString()}<br>${semana[dias[j-1]]}</th>`
                 else
-                    table += `<th data-date="${datas[j-1]}" class="dRow">Tarefas ${datas[j-1]}</th>`
+                    table += `<th data-date="${datas[j-1]}" class="dRow">Tarefas atrasadas</th>`
             } else if ((j == 0) && (c > 0)) {
                 table += `<th data-nome="${nome}" class="nCollumn">${nome.toUpperCase()}</th>`
             } else if (c > 0) {
@@ -826,7 +922,7 @@ function generateTable(colaboradores, datas, dias) {
                     <td data-toggle="tooltip" data-original-title="Encerradas" data-placement="Top" style="background: #CCC;" data-categoria="Encerradas" data-nome="${nome}" data-date="${(datas[j-1].toISOString().split('T'))[0]}">-</td>
                     <td data-toggle="tooltip" data-original-title="Total" data-placement="Top" style="background: #ADADAD;" data-categoria="Total" data-nome="${nome}" data-date="${(datas[j-1].toISOString().split('T'))[0]}">-</td>`
                 else
-                    table += `<td style="background: #34454E; color: #FFF;" data-categoria="atrasadas" data-nome="${nome}" data-date="${datas[j-1]}">-</td>`
+                    table += `<td style="background: #34454E; color: #FFF;" data-categoria="atrasadas${index ?? ""}" data-nome="${nome}" data-date="${datas[j-1]}">-</td>`
             }
         }
         table += `</tr>`
@@ -864,36 +960,77 @@ function estilizarTabela() {
     })
 }
 
-function getArrayDate (qtdDias) {
-    let datas = ['atrasadas'], dias = ['atrasadas']
-    let date = new Date()
-    cont = 0
+function getOffsetDays(qtdDias, qtdViews) {
+    const parametrosCalculoDias = []
 
-    for (c = 1; c <= qtdDias; c++) {
+    for (let diasOffsetIndice = 0; diasOffsetIndice <= ((qtdViews - 1) / 2); diasOffsetIndice++) {
+        const parametro = qtdDias * diasOffsetIndice
+        
+        parametrosCalculoDias.push(parametro)
+        
+        if (diasOffsetIndice > 0)
+            parametrosCalculoDias.push(parametro * (-1))
+    }
+
+    parametrosCalculoDias.sort((a, b) => a - b)
+
+    return parametrosCalculoDias
+}
+
+function getArrayDatePanelSupervisor (qtdDias, qtdViews, parametrosCalculoDias) {
+    const views = []
+    
+
+    for (let contagemView = 0; contagemView < qtdViews; contagemView++) {
+        let date = new Date()
+        date.setDate(date.getDate() + parametrosCalculoDias[contagemView])
+        const datas = [`atrasadas${contagemView}`]
+        const dias = [`atrasadas${contagemView}`]
+
+        for (let contagemDias = 1; contagemDias <= qtdDias; contagemDias++) {
+            date.setHours(0,0,0,0)
+            let indiceDiaSemana = date.getDay()
+            dias.push(indiceDiaSemana)
+            datas.push(date)
+            date = new Date(date)
+            date.setDate(date.getDate()+1)
+        }
+
+        views.push({ datas, dias })
+    }
+    
+
+    return views
+}
+
+function getArrayDate (qtdDias) {
+    let date = new Date()
+    const datas = ['atrasadas']
+    const dias = ['atrasadas']
+
+    for (let contagemDias = 1; contagemDias <= qtdDias; contagemDias++) {
         date.setHours(0,0,0,0)
         let indiceDiaSemana = date.getDay()
         dias.push(indiceDiaSemana)
         datas.push(date)
         date = new Date(date)
         date.setDate(date.getDate()+1)
-        cont++
     }
 
     return { datas, dias }
 }
 
-function getTarefasSemanal (id, datas) {
-    
+function getTarefasSemanal (id, start, end, datas) {
     const url = 'http://fabioribeiro.eastus.cloudapp.azure.com/adv/ajax/jsonAgendaTarefas.asp'
-
+    const endIso = end.toISOString().split('T')[0]
     const data = {
         idTI: '',
         idST: '',
         idRE: '',
         idEX: id,
         idAG: '',
-        start: datas[1].toISOString().split('T')[0],
-        end: datas[datas.length-2].toISOString().split('T')[0],
+        start: start.toISOString().split('T')[0],
+        end: endIso,
     }
 
     const body = JSON.stringify(data).replaceAll('"','').replaceAll(':','=').replaceAll('{','').replaceAll('}','').replaceAll(',','&')
@@ -925,27 +1062,30 @@ function getTarefasSemanal (id, datas) {
         }
 
         for (c = 0; c < datas.length; c++) {
-            if (c > 0)
+            if (typeof datas[c] != "string") {
                 contagem[(datas[c].toISOString().split("T"))[0]] = {
                     Total: 0,
                     Ativas: 0,
                     Encerradas: 0
+                }
             }
         }
         
-        resp.forEach(e => {
+        resp.forEach((e) => {
             const data = e['start'].replace(/T\d\d:\d\d:\d\d/, "")
             
-            try {
-                contagem[data]['Total']++
-                if (e.color == "#A5D5EF")
-                    contagem[data]['Ativas']++
-                if (e.color == "#CCC")
-                    contagem[data]['Encerradas']++
-                if (data == (datas[1].toISOString().split("T"))[0])
-                    contagem['idTarefas'].push(e['id'])
-            } catch (error) {
-                console.log(contagem, data, e, error)
+            if (data <= endIso) {
+                try {
+                    contagem[data]['Total']++
+                    if (e.color == "#A5D5EF")
+                        contagem[data]['Ativas']++
+                    if (e.color == "#CCC")
+                        contagem[data]['Encerradas']++
+                    if (data == (datas[1].toISOString().split("T"))[0])
+                        contagem['idTarefas'].push(e['id'])
+                } catch (error) {
+                    console.log(contagem, data, e, error)
+                }
             }
         })
         return contagem
@@ -996,7 +1136,11 @@ async function getTarefasAtrasadas (params, tarefasAtrasadas) {
 
         if (lastTask) {
             const counter = lastTask.querySelector("td.text-center.fdt-counter")
-            tarefasAtrasadas.atrasadas = counter ? counter.innerText : 0
+            const keys = Object.keys(tarefasAtrasadas)
+
+            keys.forEach(key => {
+                tarefasAtrasadas[key] = counter ? counter.innerText : 0
+            })
         }
 
         return tarefasAtrasadas
@@ -1104,4 +1248,21 @@ function createBar(setor) {
     progress.max = maxValueProgressBar
     
     return contentBar
+}
+
+function createBackgroundFollowUp(panel) {
+    const background = document.createElement("div")
+
+    background.style.position = "absolute"
+    background.style.width = "100%"
+    background.style.height = "100%"
+    background.style.zIndex = "15"
+    background.style.top = "0"
+
+    document.body.append(background)
+
+    background.addEventListener("click", () => {
+        background.remove()
+        panel.classList.toggle("open")
+    })
 }

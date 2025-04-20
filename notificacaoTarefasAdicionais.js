@@ -21,7 +21,9 @@ async function contarTarefasParaHoje() {
             const qtdDias = 2
             const { datas } = getArrayDate(qtdDias)
             date = datas[1].toLocaleDateString()
-            const tarefas = await getTarefasSemanal(id, datas)
+            const start = datas[1]
+            const end = datas[datas.length - 1]
+            const tarefas = await getTarefasSemanal(id, start, end, datas)
             const key = (datas[1].toISOString().split('T'))[0]
             novoTotalTarefas = tarefas[key].Total
             novoArrayIdTarefas = tarefas.idTarefas
