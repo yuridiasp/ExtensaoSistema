@@ -279,7 +279,7 @@ const ADM = [
             id: 127,
             nome: "LUCIANA LIMA REZENDE",
             nomeTLC: "LUCIANA LIMA",
-            assignments: [],
+            assignments: ["rpv"],
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -306,7 +306,7 @@ const ADM = [
             id: 120,
             nome: "VICTOR MENDES DOS SANTOS",
             nomeTLC: "VICTOR",
-            assignments: [],
+            assignments: ["alvará"],
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
@@ -388,6 +388,14 @@ const ADM = [
             atrasadas: 0
         },
         {
+            id: 251,
+            nome: "ARTHUR PISISTRATO DE AMORIM REBELO",
+            nomeTLC: "ARTHUR PISISTRATO",
+            diasViagem: [],
+            contagem: 0,
+            tarefas: 0
+        },
+        {
             id: 1,
             nome: "DIEGO MELO SOBRINHO",
             nomeTLC: "DIEGO",
@@ -424,6 +432,14 @@ const ADM = [
             atrasadas: 0
         },
         {
+            id: 252,
+            nome: "JOÃO VITOR FARIAS DOS SANTOS",
+            nomeTLC: "JOÃO VITOR",
+            diasViagem: [],
+            contagem: 0,
+            tarefas: 0
+        },
+        {
             id: 230,
             nome: "JOSÉ HENRIQUE VASCONCELOS RODRIGUES FONTES",
             nomeTLC: "JOSÉ HENRIQUE",
@@ -451,6 +467,14 @@ const ADM = [
             atrasadas: 0
         },
         {
+            id: 254,
+            nome: "LEANDRO GABRIEL DOS SANTOS NUNES",
+            nomeTLC: "LEANDRO GABRIEL",
+            diasViagem: [],
+            contagem: 0,
+            tarefas: 0
+        },
+        {
             id: 28,
             nome: "MARCUS VINICIUS DE SOUZA MORAIS",
             nomeTLC: "MARCUS",
@@ -467,6 +491,14 @@ const ADM = [
             diasViagem: null,
             contagem: 0,
             atrasadas: 0
+        },
+        {
+            id: 248,
+            nome: "SAULO MATHEUS ARAUJO DE SANTANA",
+            nomeTLC: "SAULO MATHEUS",
+            diasViagem: [],
+            contagem: 0,
+            tarefas: 0
         },
         {
             id: 206,

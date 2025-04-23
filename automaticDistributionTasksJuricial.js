@@ -168,7 +168,6 @@ const demandas = {
                 colaboradoresPrev.eduardo,
                 colaboradoresPrev.thalyson,
                 colaboradoresPrev.yan,
-
             ]
         },
         "ADICIONAL 25%": {

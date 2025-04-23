@@ -114,7 +114,6 @@ function FeriadosFixos (ano, parametro) {
                     {data: [11,8], feriado: "DIA DA JUSTIÇA - JUSTIÇA"},
                     {data: [3,16], feriado: "QUARTA-FEIRA SANTA - PONTO FACULTATIVO JUSTIÇA"}, //ADICIONADO EM 16/04/2025
                     {data: [3,17], feriado: "QUINTA-FEIRA SANTA - PONTO FACULTATIVO JUSTIÇA"}, //ADICIONADO EM 16/04/2025
-                    {data: [3,22], feriado: "Data de ciência"},
                 ],
                 justicaEstadual: [],
                 TRF1: [],

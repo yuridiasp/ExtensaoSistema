@@ -1074,9 +1074,7 @@ async function validaResponsavelTj (num) {
     }
 
     if (financeiro.includes(tarefaAtualNormalizada.split("-")[0].trim()) && tarefaAtualNormalizada.includes("FINANCEIRO")) {
-        //let ehMateusFinanceiro = await getFinanceiro()
-        //setFinanceiro(!ehMateusFinanceiro)
-        return {responsavel: "LUCIANA LIMA REZENDE",executor: "LUCIANA LIMA REZENDE"} //ehMateusFinanceiro ? "MATEUS DOS SANTOS SILVA":"OVERLANDIA SANTOS MELO"
+        return {responsavel: "LUCIANA LIMA REZENDE",executor: "LUCIANA LIMA REZENDE"}
     }
 
     if (tarefasAdm.includes(tarefaAtualNormalizada)) {
