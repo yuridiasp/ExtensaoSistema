@@ -350,7 +350,6 @@ function FeriadosFixos (ano, parametro) {
 
     if (tarefaAdvogado || isHighlight) {
         datas.justicaNacional.forEach(date => dataFactory(date, resultados))
-        console.log(resultados)
 
         datas.feriasAdvogados.forEach(date => {
             const month = date.data[0]

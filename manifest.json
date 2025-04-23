@@ -46,7 +46,9 @@
                 "utils/pdf-exporter/pdfmake.min.js",
                 "utils/pdf-exporter/vfs_fonts.js",
                 "utils/html2canvas/index.js",
-                "photoGeneratorService.js"
+                "utils/copyAndPaste/index.js",
+                "photoGeneratorService.js",
+                "scriptGenerator.js"
             ]
         }
     ],
