@@ -43,6 +43,9 @@ let state = {
         abaFollowUps: {
             photoGenerator: null,
         },
+        fichaTarefa: {
+            criarBotaoScriptGenerator: null,
+        },
         preProcesso:{
             preenchimentoNomePasta: null,
             preenchimentoFormularioPreProcesso: null,

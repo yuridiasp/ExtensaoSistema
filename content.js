@@ -1402,13 +1402,22 @@ function atualizaHora (horarioInicial) {
     return `${hora}:${horarioInicial.value.slice(3)}`
 }
 
-function atualizaDescricao (descricaoTarefa, horarioInicial, horarioFinal, local) {
+function atualizaDescricao(descricaoTarefa, horarioInicial, horarioFinal, local, inputObservation) {
+
+    const getInputObservationValue = (input) => {
+        if (input && input.value.length) {
+                return ` [${input.value.toUpperCase()}]`
+        }
+        return ''
+    }
+
     const isJudicial = state.functions.todasPaginas.tipoIntimacaoIsJudicial
     const fistWordInTarefa = removeAcentuacaoString(cliente.compromisso.tarefas[0].split(" ")[0]),
         localText = getEndereço(local),
         numero = isJudicial ? existeOrigem() : cliente.requerimento.protocolo,
         tipoTarefaNormalizado = removeAcentuacaoString(cliente.compromisso.tarefas[0]),
-        tipoCompromissoNormalizado = removeAcentuacaoString(cliente.compromisso.tipoCompromisso)
+        tipoCompromissoNormalizado = removeAcentuacaoString(cliente.compromisso.tipoCompromisso),
+        observation = getInputObservationValue(inputObservation)
         
     horarioFinal.value = atualizaHora(horarioInicial)
 
@@ -1421,7 +1430,7 @@ function atualizaDescricao (descricaoTarefa, horarioInicial, horarioFinal, local
         if (state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
             const perito = document.querySelector('#inputPerito')
     
-            descricaoTarefa.value = `${numero} - ${cliente.compromisso.descricaoCompromisso} DE ${cliente.cliente.nome} (${cliente.cliente.cpf}), NO DIA ${cliente.compromisso.prazoInterno} ÀS ${horarioInicial.value}, PERITO: ${perito ? perito.value : ''}, LOCAL: ${localText}`
+            descricaoTarefa.value = `${numero} - ${cliente.compromisso.descricaoCompromisso} DE ${cliente.cliente.nome} (${cliente.cliente.cpf}), NO DIA ${cliente.compromisso.prazoInterno} ÀS ${horarioInicial.value}, PERITO: ${perito ? perito.value : ''}, LOCAL: ${localText}${observation}`
         } else {
             const inputEndereco = document.querySelector('#inputEndereco')
 
@@ -1432,7 +1441,7 @@ function atualizaDescricao (descricaoTarefa, horarioInicial, horarioFinal, local
 
         if (fistWordInTarefa == "AUDIENCIA" && cliente.compromisso.quantidadeTarefas === cliente.compromisso.tarefas.length) {
 
-            descricaoTarefa.value = `${numero} - ${cliente.compromisso.descricaoCompromisso} DE ${cliente.cliente.nome} (${cliente.cliente.cpf}) X ${cliente.processo.reu.length > 0 ? cliente.processo.reu : ''}, NO DIA ${cliente.compromisso.prazoInterno} ÀS ${horarioInicial.value}, LOCAL: ${localText}`
+            descricaoTarefa.value = `${numero} - ${cliente.compromisso.descricaoCompromisso} DE ${cliente.cliente.nome} (${cliente.cliente.cpf}) X ${cliente.processo.reu.length > 0 ? cliente.processo.reu : ''}, NO DIA ${cliente.compromisso.prazoInterno} ÀS ${horarioInicial.value}, LOCAL: ${localText}${observation}`
 
         }
         else if (tipoTarefaNormalizado === "ATO ORDINATORIO" && tipoCompromissoNormalizado.includes('PERICIA')) {
@@ -1523,6 +1532,10 @@ function selectTipoIntimacao() {
 }
 
 function createInputDependente() {
+    if (!state.functions.cadastroTarefa.AutoPreenchimentoTarefasIntimacoes || !cliente.compromisso.tarefas.length) {
+        return
+    }
+
     const txtDependente = document.createElement('b'),
         input = document.createElement('input'),
         divConteudo = document.querySelector(".alert-info")
@@ -1543,7 +1556,25 @@ function createInputDependente() {
     })
 }
 
-function mostrarCamposPericia () {
+function createInputObservation() {
+    const inputContainer = document.createElement("div")
+    inputContainer.id = "inputObservation"
+    inputContainer.classList.add("row")
+    inputContainer.innerHTML = `<div class="form-group col-sm-8">
+                            <label for="idTipoTarefa">Observação:</label>
+                            <input class="form-control" id="observationForTask" type="text"></input>
+                        </div>
+                        <div class="clearfix"></div>`
+
+    const referenceElement = document.querySelector("#fdt-form > div:nth-child(14)")
+    const parentElement = document.querySelector("#fdt-form")
+
+    parentElement.insertBefore(inputContainer, referenceElement)
+
+    return inputContainer.querySelector("#observationForTask")
+}
+
+function mostrarCamposPericia(inputObservation) {
     const idInputSecundario = state.functions.todasPaginas.tipoIntimacaoIsJudicial ? 'inputPerito' : 'inputEndereco'
     const tarefaNormal = document.querySelector('#divTipoTarefaNormal'),
         dataInput = document.querySelector('#divTipoTarefaNormal > div:nth-child(1) > div.col-sm-8'),
@@ -1586,7 +1617,7 @@ function mostrarCamposPericia () {
     
     inputLocal.addEventListener('input', async () => {
         inputLocal.value = inputLocal.value.toUpperCase()
-        atualizaDescricao(descricaoTarefa, inputHorarioInicial,horarioFinal, inputLocal)
+        atualizaDescricao(descricaoTarefa, inputHorarioInicial,horarioFinal, inputLocal, inputObservation)
         cliente.compromisso.local = inputLocal.value
         await setCliente(cliente)
     })
@@ -1597,7 +1628,7 @@ function mostrarCamposPericia () {
     inputHorarioInicial.value = '00:00'
     inputHorarioInicial.addEventListener('input', async () => {
         inputHorarioInicial.value = inputHorarioInicial.value.toUpperCase()
-        atualizaDescricao(descricaoTarefa, inputHorarioInicial,horarioFinal, inputLocal)
+        atualizaDescricao(descricaoTarefa, inputHorarioInicial,horarioFinal, inputLocal, inputObservation)
         cliente.compromisso.horario = inputHorarioInicial.value
         await setCliente(cliente)
     })
@@ -1607,7 +1638,7 @@ function mostrarCamposPericia () {
     divSecundario.appendChild(inputSecundario)
     inputSecundario.addEventListener('input', async () => {
         inputSecundario.value = inputSecundario.value.toUpperCase()
-        atualizaDescricao(descricaoTarefa, inputHorarioInicial, horarioFinal, inputLocal)
+        atualizaDescricao(descricaoTarefa, inputHorarioInicial, horarioFinal, inputLocal, inputObservation)
         if (state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
             cliente.compromisso.perito = inputSecundario.value
         } else {
@@ -1661,24 +1692,34 @@ function loadInfo () {
         const { selectedOptions } = target
         const eventTargets = [horarioInicial, local, processoDependente],
             contactdiv = document.querySelector("#contactdiv")
+        let inputObservation = null
 
         const arrayAudiencias = ["AUDIÊNCIA DE INSTRUÇÃO E JULGAMENTO", "AUDIÊNCIA UNA", "AUDIÊNCIA DE INSTRUÇÃO", "AUDIÊNCIA INICIAL", "AUDIÊNCIA INAUGURAL"]
 
         const ehTarefaParaAdmOuSac = ((cliente.compromisso.tarefas[0] == "CONTATAR CLIENTE") || (cliente.compromisso.tarefas[0] == "LEMBRAR CLIENTE") || (cliente.compromisso.tarefas[0] == "SMS E WHATSAPP")),
-            ehAudiencia = (arrayAudiencias.includes(cliente.compromisso.tipoCompromisso))
+            isAudienciaComTestemunha = arrayAudiencias.includes(cliente.compromisso.tipoCompromisso),
+            isPericia = removeAcentuacaoString(cliente.compromisso.tipoCompromisso).search('PERICIA') == 0,
+            isAudienciaOrPericia = cliente.compromisso.tipoCompromisso.search("AUDIÊNCIA") === 0 || isPericia,
+            isFirstTask = cliente.compromisso.tarefas.length === cliente.compromisso.quantidadeTarefas,
+            isLastTask = cliente.compromisso.tarefas.length === 1
+            
+        if(isAudienciaOrPericia && isFirstTask) {
+            inputObservation = createInputObservation()
+            eventTargets.push(inputObservation)
+        }
 
-        if (removeAcentuacaoString(cliente.compromisso.tipoCompromisso).search('PERICIA') == 0 && cliente.compromisso.tarefas.length === cliente.compromisso.quantidadeTarefas)
-            mostrarCamposPericia()
+        if (isPericia && isFirstTask)
+            mostrarCamposPericia(inputObservation)
 
-        calcularDataTarefa(!state.functions.todasPaginas.tipoIntimacaoIsJudicial ? parametros.inss : (ehTarefaParaAdmOuSac || ehAudiencia) ? parametros.tarefaContatar : parametros.tarefaAdvogado)
+        calcularDataTarefa(!state.functions.todasPaginas.tipoIntimacaoIsJudicial ? parametros.inss : (ehTarefaParaAdmOuSac || isAudienciaComTestemunha) ? parametros.tarefaContatar : parametros.tarefaAdvogado)
 
         if ((horarioInicial.value.length == 0 || local.value.length == 0))
-            atualizaDescricao(descricaoTarefa, horarioInicial, horarioFinal, local)
+            atualizaDescricao(descricaoTarefa, horarioInicial, horarioFinal, local, inputObservation)
 
         eventTargets.forEach(element => {
             if (element)
                 element.addEventListener(element == horarioInicial ? 'blur':'input', () => {
-                    atualizaDescricao(descricaoTarefa, horarioInicial, horarioFinal, local)
+                    atualizaDescricao(descricaoTarefa, horarioInicial, horarioFinal, local, inputObservation)
                 })
         })
 
@@ -1690,7 +1731,7 @@ function loadInfo () {
 
         submitAtualizarTarefa()
 
-        if (cliente.compromisso.tarefas.length === 1) {
+        if (isLastTask) {
             desmarcarCaixaTarefaSequencia()
         }
         
@@ -2351,6 +2392,7 @@ async function idPage(url) {
                 createButtonPrazo()
                 buscarDadosClienteProcessos(url)
         } else if (isPageFichaTarefas) {
+            createButtonScriptForTask()
             createButtonLinkJusticePortalForCase("fichaTarefa")
         } else if (isPageCadastroProcesso) {
             if (state.functions.abaCadastrodeProcesso.autoFormatNumProcesso) {
