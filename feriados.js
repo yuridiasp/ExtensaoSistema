@@ -108,6 +108,7 @@ function FeriadosFixos (ano, parametro) {
                 recessoForense : forense,
                 feriasAdvogados: advogados,
                 justicaNacional: [
+                    {data: [4,2], feriado: "SEXTA IMPRENSSADA REFERENTE AO FERIADO DE DIA DO TRABALHO - PONTO FACULTADO DA JUSTIÇA"},
                     {data: [7,11], feriado: "DIA DO MAGISTRADO - JUSTIÇA"},
                     {data: [9,28], feriado: "DIA DO FUNCIONÁRIO PÚBLICO - JUSTIÇA"},
                     {data: [10,1], feriado: "LEI FEDERAL Nº 5.010/66 - JUSTIÇA"},

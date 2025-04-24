@@ -189,7 +189,7 @@ const setLocalImage = (atendimentosSelect, tituloElement) => {
 }
 
 const verifyFollowUpRegister = (local) => {
-    const placesAppointmentsList = ["ARACAJU"]
+    const placesAppointmentsList = []
 
     return placesAppointmentsList.includes(local)
 }

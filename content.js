@@ -431,11 +431,11 @@ function habilitarEdicaoNumeroProcesso() {
 }
 
 function selectRespExec (colaborador) {
-    const responsavelSelect = document.querySelectorAll("#fdt-form > div:nth-child(15) > div:nth-child(1) > div > div > ul li"),
-        executorSelect = document.querySelectorAll("#fdt-form > div:nth-child(15) > div:nth-child(2) > div > div > ul li")
+    const responsavelSelect = document.querySelector('button[data-id="idResponsavel"]').parentElement.querySelectorAll("div > div > ul > li"),
+        executorSelect = document.querySelector('button[data-id="idExecutor"]').parentElement.querySelectorAll("div > div > ul > li")
     
     for (let index = 0; index < responsavelSelect.length; index++) {
-        if (responsavelSelect[index].innerText.trim() == colaborador.responsavel.trim()) 
+        if (responsavelSelect[index].innerText.trim() == colaborador.responsavel.trim())
             responsavelSelect[index].children[0].click()
         if (responsavelSelect[index].innerText.trim() == colaborador.executor.trim())
             executorSelect[index].children[0].click()
@@ -513,48 +513,58 @@ function limparListaTarefas() {
 }
 
 function addListaTarefas({ nome, datasViagem, tarefas }, data) {
-    const ano = new Date().getFullYear(),
-        date = data.toLocaleDateString(),
-        div = document.querySelector('#contactdiv'),
-        p1 = document.createElement('p')
-    
-    p1.innerHTML = `${nome.slice(0,nome.search(' '))}: ${tarefas}`
-    p1.style.color = 'white'
-    p1.dataset.colaborador = nome
-    p1.style.cursor = 'pointer'
 
-    if (datasViagem) {
-        for (const dataViagem of datasViagem) {
-            if (date == `${dataViagem}/${ano}`) 
-                p1.style.color = 'yellow'
+    const createRowTaskList = (name, tasks, travelDates) => {
+        const ano = new Date().getFullYear()
+        const p = document.createElement('p')
+
+        p.innerHTML = `${name.slice(0,name.search(' '))}: ${tasks}`
+        p.style.color = 'white'
+        p.dataset.colaborador = name
+        p.style.cursor = 'pointer'
+
+        if (travelDates) {
+            for (const dataViagem of travelDates) {
+                if (date == `${dataViagem}/${ano}`)
+                    p.style.color = 'yellow'
+            }
         }
+
+        const defaultColor = p.style.color
+
+        p.addEventListener('mouseenter', event => {
+            event.target.style.color = 'gray'
+        })
+    
+        p.addEventListener('mouseleave', event => {
+            event.target.style.color = defaultColor
+        })
+
+        return p
     }
 
-    const defaultColor = p1.style.color
+    const date = data.toLocaleDateString(),
+        div = document.querySelector('#contactdiv'),
+        p1 = createRowTaskList(nome, tarefas, datasViagem)
+ 
 
     div.appendChild(p1)
-
-    p1.addEventListener('mouseenter', event => {
-        event.target.style.color = 'gray'
-    })
-
-    p1.addEventListener('mouseleave', event => {
-        event.target.style.color = defaultColor
-    })
 
     p1.addEventListener('click', event => {
         const responsaveisINSS = ['SILVANIA PINHEIRO DE LEMOS']
         const responsaveisAdministrativo = ['SANDOVAL FILHO CORREIA LIMA FILHO']
-        const executor = event.target.dataset.colaborador
+        const executor = event.target.dataset.colaborador;
         const responsavel = (() => {
             if (!state.functions.todasPaginas.tipoIntimacaoIsJudicial && responsaveisINSS.includes(executor) || responsaveisAdministrativo.includes(executor)) {
                 return executor
+            } else if(cliente.cliente.estado === "DF" || cliente.cliente.estado === "GO") {
+                return "HENYR GOIS DOS SANTOS"
             } else if (state.functions.todasPaginas.tipoIntimacaoIsJudicial && !responsaveisAdministrativo.includes(executor)) {
                 return 'JULIANO OLIVEIRA DE SOUZA'
             } else {
                 return document.querySelector("#idResponsavel").selectedOptions[0].innerText
             }
-        })()
+        })();
 
         const respExec = { responsavel, executor }
 
@@ -589,7 +599,6 @@ async function selectExecutorContatarAdministrativo (colaboradores) {
     const getResponsavelAdministrativo = () => {
         const brasilia = [
             "DAVI ALVES DOS SANTOS",
-            "JÚLIA ROBERTA DE FÁTIMA SOUSA ARAÚJO",
             "MATHEUS CAMPELO DA SILVA",
             "STEFANNY MORAIS DO NASCIMENTO"
         ]
@@ -755,7 +764,7 @@ function filterColaboradoresCalculo () {
 }
 
 function filterColaboradoresAdministrativo () {
-    const colaboradores = []
+    let colaboradores = []
     const tarefasAdm = ["CONTATAR CLIENTE","LEMBRAR CLIENTE"]
     const tarefaAtualNormalizada = removeAcentuacaoString(cliente.compromisso.tarefas[0])
     const tipoCompromissoNormalizado = removeAcentuacaoString(cliente.compromisso.tipoCompromisso)
@@ -845,13 +854,6 @@ function filterColaboradoresAdministrativo () {
         {
             id: 234,
             nome: "DAVI ALVES DOS SANTOS",
-            interiores: [],
-            datasViagem: [],
-            tarefas: 0
-        },
-        {
-            id: 215,
-            nome: "JÚLIA ROBERTA DE FÁTIMA SOUSA ARAÚJO",
             interiores: [],
             datasViagem: [],
             tarefas: 0
@@ -974,13 +976,6 @@ function filterColaboradoresJudicial () {
             {
                 id: 234,
                 nome: "DAVI ALVES DOS SANTOS",
-                interiores: [],
-                datasViagem: [],
-                tarefas: 0
-            },
-            {
-                id: 215,
-                nome: "JÚLIA ROBERTA DE FÁTIMA SOUSA ARAÚJO",
                 interiores: [],
                 datasViagem: [],
                 tarefas: 0
@@ -1400,23 +1395,24 @@ function atualizaHora (horarioInicial) {
     return `${hora}:${horarioInicial.value.slice(3)}`
 }
 
-function atualizaDescricao(descricaoTarefa, horarioInicial, horarioFinal, local, inputObservation) {
+function atualizaDescricao({ descricaoTarefa, horarioInicial, horarioFinal, local, inputEndereco, inputObservation, inputPerito = null }) {
 
     const getInputObservationValue = (input) => {
         if (input && input.value.length) {
-                return ` [${input.value.toUpperCase()}]`
+                return `[${input.value.toUpperCase()}]`
         }
         return ''
     }
 
-    const isJudicial = state.functions.todasPaginas.tipoIntimacaoIsJudicial
+    const { tipoIntimacaoIsJudicial } = state.functions.todasPaginas
     const fistWordInTarefa = removeAcentuacaoString(cliente.compromisso.tarefas[0].split(" ")[0]),
-        localText = getEndereço(local),
-        numero = isJudicial ? existeOrigem() : cliente.requerimento.protocolo,
+        [ localText, endereco ] = getEndereço(local, inputEndereco),
+        numero = tipoIntimacaoIsJudicial ? existeOrigem() : cliente.requerimento.protocolo,
         tipoTarefaNormalizado = removeAcentuacaoString(cliente.compromisso.tarefas[0]),
         tipoCompromissoNormalizado = removeAcentuacaoString(cliente.compromisso.tipoCompromisso),
         observation = getInputObservationValue(inputObservation)
         
+    inputEndereco.value = endereco
     horarioFinal.value = atualizaHora(horarioInicial)
 
     
@@ -1425,24 +1421,22 @@ function atualizaDescricao(descricaoTarefa, horarioInicial, horarioFinal, local,
         descricaoTarefa.value = cliente.compromisso.descricao
 
     } else if (tipoCompromissoNormalizado.search('PERICIA') === 0 && cliente.compromisso.quantidadeTarefas === cliente.compromisso.tarefas.length) {
-        if (state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
-            const perito = document.querySelector('#inputPerito')
-    
-            descricaoTarefa.value = `${numero} - ${cliente.compromisso.descricaoCompromisso} DE ${cliente.cliente.nome} (${cliente.cliente.cpf}), NO DIA ${cliente.compromisso.prazoInterno} ÀS ${horarioInicial.value}, PERITO: ${perito ? perito.value : ''}, LOCAL: ${localText}${observation}`
+        if (tipoIntimacaoIsJudicial) {
+
+            descricaoTarefa.value = `${numero} - ${cliente.compromisso.descricaoCompromisso} DE ${cliente.cliente.nome} (${cliente.cliente.cpf}), NO DIA ${cliente.compromisso.prazoInterno} ÀS ${horarioInicial.value}, PERITO: ${inputPerito.value}, LOCAL: ${localText}, ENDEREÇO: ${inputEndereco.value} ${observation}`
+
         } else {
-            const inputEndereco = document.querySelector('#inputEndereco')
 
-            descricaoTarefa.value = `${numero} - ${cliente.compromisso.descricaoCompromisso}: DATA E HORA: ${cliente.compromisso.prazoInterno} ÀS ${horarioInicial.value}, LOCAL: ${localText}, ENDEREÇO: ${inputEndereco ? inputEndereco.value : ''}. ORIENTAR A LEVAR O AGENDAMENTO, RELATÓRIOS MÉDICOS E DOCUMENTOS PERTINENTES A ATIVIDADE RURAL / PESCADO (CASO EXERÇA). CHEGAR COM 30 MINUTOS DE ANTECEDÊNCIA`
+            descricaoTarefa.value = `${numero} - ${cliente.compromisso.descricaoCompromisso}: DATA E HORA: ${cliente.compromisso.prazoInterno} ÀS ${horarioInicial.value}, LOCAL: ${localText}, ENDEREÇO: ${inputEndereco.value}. ORIENTAR A LEVAR O AGENDAMENTO, RELATÓRIOS MÉDICOS E DOCUMENTOS PERTINENTES A ATIVIDADE RURAL / PESCADO (CASO EXERÇA). CHEGAR COM 30 MINUTOS DE ANTECEDÊNCIA`
+
         }
-
-    } else if (isJudicial) {
+    } else if (tipoIntimacaoIsJudicial) {
 
         if (fistWordInTarefa == "AUDIENCIA" && cliente.compromisso.quantidadeTarefas === cliente.compromisso.tarefas.length) {
 
-            descricaoTarefa.value = `${numero} - ${cliente.compromisso.descricaoCompromisso} DE ${cliente.cliente.nome} (${cliente.cliente.cpf}) X ${cliente.processo.reu.length > 0 ? cliente.processo.reu : ''}, NO DIA ${cliente.compromisso.prazoInterno} ÀS ${horarioInicial.value}, LOCAL: ${localText}${observation}`
+            descricaoTarefa.value = `${numero} - ${cliente.compromisso.descricaoCompromisso} DE ${cliente.cliente.nome} (${cliente.cliente.cpf}) X ${cliente.processo.reu.length > 0 ? cliente.processo.reu : ''}, NO DIA ${cliente.compromisso.prazoInterno} ÀS ${horarioInicial.value}, LOCAL: ${localText}, ENDEREÇO: ${inputEndereco.value} ${observation}`
 
-        }
-        else if (tipoTarefaNormalizado === "ATO ORDINATORIO" && tipoCompromissoNormalizado.includes('PERICIA')) {
+        } else if (tipoTarefaNormalizado === "ATO ORDINATORIO" && tipoCompromissoNormalizado.includes('PERICIA')) {
 
             descricaoTarefa.value = `${numero} - ATO ORDINATÓRIO (PERÍCIA DESIGNADA)`
 
@@ -1455,7 +1449,9 @@ function atualizaDescricao(descricaoTarefa, horarioInicial, horarioFinal, local,
             descricaoTarefa.value = `${numero} - `
 
         } else if (tipoTarefaNormalizado.includes('ACOMPANHAR')  && tipoCompromissoNormalizado.includes('DECISAO ANTECIPACAO PERICIA')) {
+
             descricaoTarefa.value = `${numero} - ACOMPANHAR ANTECIPAÇÃO DA PERÍCIA ADMINISTRATIVA`
+
         } else {
 
             descricaoTarefa.value = `${numero} - ${cliente.compromisso.descricaoCompromisso}`
@@ -1556,11 +1552,10 @@ function createInputDependente() {
 
 function createInputObservation() {
     const inputContainer = document.createElement("div")
-    inputContainer.id = "inputObservation"
     inputContainer.classList.add("row")
     inputContainer.innerHTML = `<div class="form-group col-sm-8">
-                            <label for="idTipoTarefa">Observação:</label>
-                            <input class="form-control" id="observationForTask" type="text"></input>
+                            <label for="observationForTask">Observação:</label>
+                            <input class="form-control" id="observationForTask" type="text">
                         </div>
                         <div class="clearfix"></div>`
 
@@ -1573,77 +1568,119 @@ function createInputObservation() {
 }
 
 function mostrarCamposPericia(inputObservation) {
-    const idInputSecundario = state.functions.todasPaginas.tipoIntimacaoIsJudicial ? 'inputPerito' : 'inputEndereco'
+    
+    const updateDescriptionForExpertise = async (input, key, { descricaoTarefa, inputHorario, horarioFinal, inputLocal, inputObservation, inputPerito, inputEndereco }) => {
+        input.value = input.value.toUpperCase()
+        atualizaDescricao({ descricaoTarefa, horarioInicial: inputHorario, horarioFinal, local: inputLocal, inputObservation, inputEndereco, inputPerito })
+        cliente.compromisso[key] = input.value
+        await setCliente(cliente)
+    }
+
+    const createInputForExpertise = (typeForInput, parentElement) => {
+
+        if (!state.functions.todasPaginas.tipoIntimacaoIsJudicial && typeForInput === "perito") {
+            return []
+        }
+
+        const insertInputBefore = (container) => parentElement.before(container)
+        const insertInputAfter = (container) => parentElement.after(container)
+        const appendInput = (container) => parentElement.append(container)
+        const typesForInput = {
+            perito: {
+                id: 'inputPerito',
+                divClass: ['form-group', 'col-sm-4'],
+                label: 'Perito',
+                inputType: 'text',
+                insertMethod: appendInput
+            },
+            horario: {
+                id: 'inputHorario',
+                divClass: ['form-group', 'datepicker-hora', 'col-sm-4'],
+                label: 'Horário',
+                inputType: 'time',
+                insertMethod: appendInput
+            },
+            local: {
+                id: 'inputLocal',
+                divClass: ['form-group', 'col-sm-4'],
+                label: 'Local',
+                inputType: 'text',
+                insertMethod: insertInputAfter
+            },
+            endereco: {
+                id: 'inputEndereco',
+                divClass: ['form-group', 'col-sm-8'],
+                label: 'Endereço',
+                inputType: 'text',
+                insertMethod: insertInputBefore
+            },
+        }
+        
+        const inputContainer = document.createElement("div")
+        typesForInput[typeForInput].insertMethod(inputContainer)
+
+        const isHorario = typeForInput === "horario"
+        const isPerito = typeForInput === "perito"
+        const isLocal = typeForInput === "local"
+        const isHorarioOrPeritoOrLocal = isHorario || isPerito || isLocal
+
+        if(!isHorarioOrPeritoOrLocal) {
+            inputContainer.classList.add("row")
+
+            
+            const inputDiv = document.createElement("div")
+            inputDiv.classList.add(...typesForInput[typeForInput].divClass)
+            inputDiv.innerHTML = `<label for="${typesForInput[typeForInput].id}">${typesForInput[typeForInput].label}:</label>
+                                <input class="form-control" id="${typesForInput[typeForInput].id}" type="${typesForInput[typeForInput].inputType}" value="${isHorario ? "00:00" : ""}">`
+            
+            const clearfixDiv = document.createElement("div")
+
+            inputContainer.append(inputDiv)
+            inputContainer.append(clearfixDiv)
+        } else {
+            inputContainer.classList.add(...typesForInput[typeForInput].divClass)
+            inputContainer.innerHTML = `<label for="${typesForInput[typeForInput].id}">${typesForInput[typeForInput].label}:</label>
+                                        <input class="form-control" id="${typesForInput[typeForInput].id}" type="${typesForInput[typeForInput].inputType}" value="${isHorario ? "00:00" : ""}">`
+        }
+
+        const input = document.querySelector(`#${typesForInput[typeForInput].id}`)
+        
+        return [ input, inputContainer ]
+    }
+
     const tarefaNormal = document.querySelector('#divTipoTarefaNormal'),
-        dataInput = document.querySelector('#divTipoTarefaNormal > div:nth-child(1) > div.col-sm-8'),
+        divData = document.querySelector('#divTipoTarefaNormal > div:nth-child(1) > div.col-sm-8'),
         horarioFinal = document.querySelector("#horarioFinal"),
         descricaoTarefa = document.querySelector("#descricao"),
-        divRow2 = document.createElement('div'),
-        divSecundario = document.createElement('div'),
-        labelSecundario = document.createElement('label'),
-        inputSecundario = document.createElement('input'),
-        divLocal = document.createElement('div'),
-        labelLocal = document.createElement('label'),
-        inputLocal = document.createElement('input'),
-        divHorarioInicial = document.createElement('div'),
-        labelHorarioInicial = document.createElement('label'),
-        inputHorarioInicial = document.createElement('input')
+        containerDadosPericia = document.createElement('div')  
+    
+    divData.setAttribute('class','form-group col-sm-4')
+    containerDadosPericia.setAttribute('class','row')
+    tarefaNormal.append(containerDadosPericia)
     
     
-    dataInput.setAttribute('class','form-group col-sm-4')
-    divRow2.setAttribute('class','row')
-    tarefaNormal.appendChild(divRow2)
-    
-    labelSecundario.innerHTML = state.functions.todasPaginas.tipoIntimacaoIsJudicial ? 'Perito(a): ' : 'Endereço: '
-    divSecundario.setAttribute('class','form-group col-sm-4')
-    inputSecundario.setAttribute('class','form-control')
-    inputSecundario.setAttribute('id', idInputSecundario)
-    
-    labelLocal.innerHTML = 'Local: '
-    divLocal.setAttribute('class','form-group col-sm-4')
-    inputLocal.setAttribute('class','form-control')
-    
-    labelHorarioInicial.innerHTML = 'Horário: '
-    divHorarioInicial.setAttribute('class','form-group datepicker-hora col-sm-4')
-    inputHorarioInicial.setAttribute('class','form-control')
-    inputHorarioInicial.setAttribute('type','time')
-    inputHorarioInicial.setAttribute('id','horarioInicial')
+    const [inputHorario, containerHorario] = createInputForExpertise('horario', containerDadosPericia)
+    const [inputPerito] = createInputForExpertise('perito', containerDadosPericia)
+    const [inputLocal] = createInputForExpertise('local', divData)
+    const [inputEndereco, containerEndereco] = createInputForExpertise('endereco', containerDadosPericia, document.querySelector("#divTipoTarefaNormal > div:nth-child(1)"))
 
-    dataInput.after(divLocal)
-    divLocal.appendChild(labelLocal)
-    divLocal.appendChild(inputLocal)
+    const dataDescription = { descricaoTarefa, inputHorario, horarioFinal, inputLocal, inputObservation, inputPerito, inputEndereco }
     
-    inputLocal.addEventListener('input', async () => {
-        inputLocal.value = inputLocal.value.toUpperCase()
-        atualizaDescricao(descricaoTarefa, inputHorarioInicial,horarioFinal, inputLocal, inputObservation)
-        cliente.compromisso.local = inputLocal.value
-        await setCliente(cliente)
-    })
+    inputHorario.addEventListener('input', event => updateDescriptionForExpertise(event.target, 'horario', dataDescription))
+    inputLocal.addEventListener('input', event => updateDescriptionForExpertise(event.target, 'local', dataDescription))
+    inputEndereco.addEventListener('input', event => updateDescriptionForExpertise(event.target, 'endereco', dataDescription))
 
-    divRow2.appendChild(divHorarioInicial)
-    divHorarioInicial.appendChild(labelHorarioInicial)
-    divHorarioInicial.appendChild(inputHorarioInicial)
-    inputHorarioInicial.value = '00:00'
-    inputHorarioInicial.addEventListener('input', async () => {
-        inputHorarioInicial.value = inputHorarioInicial.value.toUpperCase()
-        atualizaDescricao(descricaoTarefa, inputHorarioInicial,horarioFinal, inputLocal, inputObservation)
-        cliente.compromisso.horario = inputHorarioInicial.value
-        await setCliente(cliente)
-    })
+    if (state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
+        inputPerito.addEventListener('input', event => updateDescriptionForExpertise(event.target, 'perito', dataDescription))
+    }
 
-    divRow2.appendChild(divSecundario)
-    divSecundario.appendChild(labelSecundario)
-    divSecundario.appendChild(inputSecundario)
-    inputSecundario.addEventListener('input', async () => {
-        inputSecundario.value = inputSecundario.value.toUpperCase()
-        atualizaDescricao(descricaoTarefa, inputHorarioInicial, horarioFinal, inputLocal, inputObservation)
-        if (state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
-            cliente.compromisso.perito = inputSecundario.value
-        } else {
-            cliente.compromisso.endereco = inputSecundario.value
-        }
-        await setCliente(cliente)
-    })
+    if(!state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
+        const div = containerEndereco.children[0]
+        containerHorario.after(div)
+        div.setAttribute("class", "form-group col-sm-4")
+    }
+
+    return { inputLocal, inputPerito, inputEndereco, inputHorario }
 }
 
 async function selecionarResponsavelExecutor(option) {
@@ -1673,10 +1710,13 @@ function loadInfo () {
 
     const descricaoTarefa = document.querySelector("#descricao"),
         select = document.querySelector('#idTipoTarefa'),
-        horarioInicial = document.querySelector("#horarioInicial"),
         horarioFinal = document.querySelector("#horarioFinal"),
-        local = document.querySelector("#onde"),
         processoDependente = document.querySelector("#input_dependente")
+
+    let local = document.querySelector("#onde"),
+        perito = { value: "" },
+        endereco = { value: "" },
+        horarioInicial = document.querySelector("#horarioInicial")
 
     descricaoTarefa.addEventListener('change', event => {
         event.target.value = event.target.value.toUpperCase()
@@ -1701,23 +1741,28 @@ function loadInfo () {
             isFirstTask = cliente.compromisso.tarefas.length === cliente.compromisso.quantidadeTarefas,
             isLastTask = cliente.compromisso.tarefas.length === 1
             
-        if(isAudienciaOrPericia && isFirstTask) {
+        if(isAudienciaOrPericia && isFirstTask && state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
             inputObservation = createInputObservation()
             eventTargets.push(inputObservation)
         }
 
-        if (isPericia && isFirstTask)
-            mostrarCamposPericia(inputObservation)
+        if (isPericia && isFirstTask) {
+            const { inputLocal, inputPerito, inputEndereco, inputHorario } = mostrarCamposPericia(inputObservation)
+            horarioInicial = inputHorario
+            local = inputLocal
+            endereco = inputEndereco
+            perito = inputPerito
+        }
 
         calcularDataTarefa(!state.functions.todasPaginas.tipoIntimacaoIsJudicial ? parametros.inss : (ehTarefaParaAdmOuSac || isAudienciaComTestemunha) ? parametros.tarefaContatar : parametros.tarefaAdvogado)
 
         if ((horarioInicial.value.length == 0 || local.value.length == 0))
-            atualizaDescricao(descricaoTarefa, horarioInicial, horarioFinal, local, inputObservation)
+            atualizaDescricao({ descricaoTarefa, horarioInicial, horarioFinal, local, inputObservation, inputEndereco: endereco, inputPerito: perito })
 
         eventTargets.forEach(element => {
             if (element)
                 element.addEventListener(element == horarioInicial ? 'blur':'input', () => {
-                    atualizaDescricao(descricaoTarefa, horarioInicial, horarioFinal, local, inputObservation)
+                    atualizaDescricao({ descricaoTarefa, horarioInicial, horarioFinal, local, inputObservation, inputEndereco: endereco, inputPerito: perito })
                 })
         })
 
@@ -1961,7 +2006,7 @@ function setValidacaoFunctionOn() {
 function addEventToAutocomplete() {
     const editTarefaBtn = document.querySelectorAll('body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr')
     
-    if (editTarefaBtn) {
+    if (editTarefaBtn && editTarefaBtn.length > 1 && !editTarefaBtn[0].innerText.includes("Nenhum registro até o momento.")) {
         editTarefaBtn.forEach(element => {
             const button = element.children[1].children[0].children[1].children[1]
             if (button) {

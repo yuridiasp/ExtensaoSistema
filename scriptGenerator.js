@@ -1,20 +1,22 @@
 function getSaudacao() {
     const date = new Date()
+    const meiaNoite = 0
+    const meioDia = 12
+    const fimDaTarde = 18
 
     const horaAtual = date.getHours()
 
-    if(horaAtual > '00:00' && horaAtual < '12:00') {
+    if(horaAtual >= meiaNoite && horaAtual < meioDia) {
         return 'bom dia'
-    } else if (horaAtual < '18:00') {
+    } else if (horaAtual < fimDaTarde) {
         return 'boa tarde'
     } else {
         return 'boa noite'
     }
 }
 
-function getScript({ username, tipoAudiencia, tipoPericia, nomeCliente, perito, reu, data, horario, local }) {
+function getScript({ username, tipoAudiencia, tipoPericia, nomeCliente, perito, reu, data, horario, local, endereco }) {
     const saudacao = getSaudacao()
-    const [ localEvento, endereco ] = local.split(":")
     const scripts = {
         pericia: `	Olá, ${saudacao}! Espero que esta mensagem lhe encontre bem. Meu nome é *${username}* e faço parte da equipe Fábio Ribeiro Advogados.<br>
         <br>
@@ -22,8 +24,8 @@ function getScript({ username, tipoAudiencia, tipoPericia, nomeCliente, perito, 
         <br>
         (*${tipoPericia}*)<br>
         * Data e Horário: ${data} às ${horario}<br>
-        * Local: ${localEvento ?? ''}<br>
-        * Endereço: ${endereco ?? ''}<br>
+        * Local: ${local}<br>
+        * Endereço: ${endereco}<br>
         * Perito(a): ${perito}<br>
         <br>
         *ATENÇÃO: Caso a perícia não seja realizada, por qualquer motivo alegado, orientamos que solicite um comprovante ou declaração de comparecimento, a fim de comprovar a sua presença no dia e horário marcado.*<br>
@@ -44,8 +46,8 @@ function getScript({ username, tipoAudiencia, tipoPericia, nomeCliente, perito, 
         <br>
         (*${tipoAudiencia}*)<br>
         * Data e Horário: ${data} às ${horario}<br>
-        * Local: ${localEvento ?? ''}<br>
-        * Endereço: ${endereco ?? ''}<br>
+        * Local: ${local}<br>
+        * Endereço: ${endereco}<br>
         * Testemunhas: Necessário 02 (duas) testemunhas.<br>
         <br>
         É de extrema importância que você compareça à audiência designada no mínimo 01 (uma) hora de antecedência, portando RG/CPF, usando roupas adequadas (camisa/blusa de manga e calça).<br>
@@ -105,7 +107,10 @@ function getDataPericia(texto) {
     const perito = texto.match(/PERITO:\s+(.*?),\s+LOCAL/i)[1].trim()
 
     // Local
-    const local = texto.match(/LOCAL:\s+(.+?)(?:\[|$)/i)[1].trim()  
+    const local = texto.match(/LOCAL:\s+(.*?)(?:,\s+ENDEREÇO|$)/i)[1].trim()
+
+    // Endereço
+    const endereco = texto.match(/ENDEREÇO:\s+(.+?)(?:\[|$)/i) ? texto.match(/ENDEREÇO:\s+(.+?)(?:\[|$)/i)[1].trim() : ''
 
     // Consolidado
     const dados = {
@@ -117,10 +122,8 @@ function getDataPericia(texto) {
         horario,
         perito,
         local,
+        endereco,
     }
-
-    console.log(dados)
-
 
     return dados
 }
@@ -149,7 +152,10 @@ function getDataAudiencia(texto) {
     const horario = texto.match(/ÀS\s+(\d{2}:\d{2})/i)[1]
 
     // Local
-    const local = texto.match(/LOCAL:\s+(.+?)(?:\[|$)/i)[1].trim()
+    const local = texto.match(/LOCAL:\s+(.*?)(?:,\s+ENDEREÇO|$)/i)[1].trim()
+
+    // Endereço
+    const endereco = texto.match(/ENDEREÇO:\s+(.+?)(?:\[|$)/i) ? texto.match(/ENDEREÇO:\s+(.+?)(?:\[|$)/i)[1].trim() : ''
 
     // Agrupado
     const dados = {
@@ -161,6 +167,7 @@ function getDataAudiencia(texto) {
         data,
         horario,
         local,
+        endereco,
     }
 
     return dados
@@ -171,22 +178,21 @@ function matchTask(event) {
     event.preventDefault()
     const taskDescription = document.querySelector("body > section > section > div.fdt-espaco > div > div:nth-child(1) > h4").textContent
     
-    //'Ficha da tarefa: 202471101895 - AUDIÊNCIA DE CONCILIAÇÃO DE JUVENAL BARBOSA DE OLIVEIRA (038.351.454-10) X BANCO BRADESCO, NO DIA 16/04/2025 ÀS 12:00, LOCAL: VIDEOCONFERÊNCIA'
     const audienciaRE = /Ficha da tarefa: \d{12,20} - AUDI[ÊE]NCIA/
     const periciaRE = /Ficha da tarefa: \d{12,20} - PER[ÍI]CIA/
 
     const username = getUserName()
 
     if (audienciaRE.test(taskDescription)) {
-        const { tipoAudiencia, nomeCliente, reu, data, horario, local } = getDataAudiencia(taskDescription)
-        const script = getScript({ username, tipoAudiencia, nomeCliente, reu, data, horario, local }).audiencia
+        const { tipoAudiencia, nomeCliente, reu, data, horario, local, endereco } = getDataAudiencia(taskDescription)
+        const script = getScript({ username, tipoAudiencia, nomeCliente, reu, data, horario, local, endereco }).audiencia
 
         return copyAndPaste(script)
     }
 
     if (periciaRE.test(taskDescription)) {
-        const { tipoPericia, nomeCliente, data, horario, perito, local } = getDataPericia(taskDescription)
-        const script = getScript({ username, tipoPericia, nomeCliente, perito, data, horario, local }).pericia
+        const { tipoPericia, nomeCliente, data, horario, perito, local, endereco } = getDataPericia(taskDescription)
+        const script = getScript({ username, tipoPericia, nomeCliente, perito, data, horario, local, endereco }).pericia
 
         return copyAndPaste(script)
     }
