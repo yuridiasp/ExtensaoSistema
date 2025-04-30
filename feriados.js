@@ -90,8 +90,10 @@ function FeriadosFixos (ano, parametro) {
         isTRT = cliente.processo.natureza === "TRABALHISTA",
         mesFimFeriasAdvogados = 0,
         isIS = isTJ || isTRT,
+        isTRF1 = !isTJ && !isHighlight && cliente.processo.origem?.slice(13,16) === "401",
         forense = setIntervaloFeriadosJudiciario(diaInicioForense, mesInicioForense, diaFimForense, mesFimForense, "RECESSO FORENSE: 20/12 A 06/01"),
         advogados = setIntervaloFeriadosJudiciario(diaInicioFeriasAdvogados, mesInicioFeriasAdvogados, diaFimFeriasAdvogados, mesFimFeriasAdvogados, "RECESSO DOS ADVOGADOS (ART. 220 NCPC): 20/12 a 20/01")
+        
         const resultados = {},
             datas = { // [mes, dia] (indice do mes de 0 a 11)
                 nacional: [
@@ -108,7 +110,6 @@ function FeriadosFixos (ano, parametro) {
                 recessoForense : forense,
                 feriasAdvogados: advogados,
                 justicaNacional: [
-                    {data: [4,2], feriado: "SEXTA IMPRENSSADA REFERENTE AO FERIADO DE DIA DO TRABALHO - PONTO FACULTADO DA JUSTIÇA"},
                     {data: [7,11], feriado: "DIA DO MAGISTRADO - JUSTIÇA"},
                     {data: [9,28], feriado: "DIA DO FUNCIONÁRIO PÚBLICO - JUSTIÇA"},
                     {data: [10,1], feriado: "LEI FEDERAL Nº 5.010/66 - JUSTIÇA"},
@@ -117,7 +118,9 @@ function FeriadosFixos (ano, parametro) {
                     {data: [3,17], feriado: "QUINTA-FEIRA SANTA - PONTO FACULTATIVO JUSTIÇA"}, //ADICIONADO EM 16/04/2025
                 ],
                 justicaEstadual: [],
-                TRF1: [],
+                TRF1: [
+                    {data: [4,2], feriado: "SEXTA IMPRENSSADA REFERENTE AO FERIADO DE DIA DO TRABALHO - PONTO FACULTADO DA JUSTIÇA"},
+                ],
                 'SE': [
                     {data: [5,24], feriado: "SÃO JOÃO - SERGIPE"},
                     {data: [6,8], feriado: "EMANCIPAÇÃO POLÍTICA DE SERGIPE - SERGIPE"},
@@ -372,7 +375,7 @@ function FeriadosFixos (ano, parametro) {
             datas.SE.forEach(date => dataFactory(date, resultados))
         }
 
-        if (cliente.processo.estado == 'DF' || cliente.processo.estado == 'GO' || isHighlight) {
+        if (isTRF1 || isHighlight) {
             datas.TRF1.forEach(date => dataFactory(date, resultados))
         }
         

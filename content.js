@@ -551,18 +551,20 @@ function addListaTarefas({ nome, datasViagem, tarefas }, data) {
     div.appendChild(p1)
 
     p1.addEventListener('click', event => {
+        const responsavelSelecionado = document.querySelector("#idResponsavel").selectedOptions[0].innerText
         const responsaveisINSS = ['SILVANIA PINHEIRO DE LEMOS']
         const responsaveisAdministrativo = ['SANDOVAL FILHO CORREIA LIMA FILHO']
+        const responsaveisPrevidenciario = ['KEVEN FARO DE CARVALHO']
         const executor = event.target.dataset.colaborador;
         const responsavel = (() => {
             if (!state.functions.todasPaginas.tipoIntimacaoIsJudicial && responsaveisINSS.includes(executor) || responsaveisAdministrativo.includes(executor)) {
                 return executor
             } else if(cliente.cliente.estado === "DF" || cliente.cliente.estado === "GO") {
                 return "HENYR GOIS DOS SANTOS"
-            } else if (state.functions.todasPaginas.tipoIntimacaoIsJudicial && !responsaveisAdministrativo.includes(executor)) {
+            } else if (state.functions.todasPaginas.tipoIntimacaoIsJudicial && !responsaveisAdministrativo.includes(executor) && !responsaveisPrevidenciario.includes(responsavelSelecionado)) {
                 return 'JULIANO OLIVEIRA DE SOUZA'
             } else {
-                return document.querySelector("#idResponsavel").selectedOptions[0].innerText
+                return responsavelSelecionado
             }
         })();
 
@@ -939,7 +941,7 @@ function filterColaboradoresJudicial () {
             {
                 id: 221,
                 nome: "LEONARDO TEIXEIRA SANTOS SILVA",
-                interiores: ["LOTEAMENTO JEOVA (BOTAFOGO)", "SANTA ROSA DE LIMA", "UMBAUBA"],
+                interiores: ["LOTEAMENTO JEOVA", "SANTA ROSA DE LIMA", "UMBAUBA"],
                 datasViagem: [],
                 tarefas: 0
             },
@@ -1159,7 +1161,31 @@ async function validaResponsavelFederal (num) {
     }
     
     if (digitoVerificador === "401" || digitoVerificador === "807" || secaoDFGO.includes(secao)) { // Processos do TRF1
-        const varasDF = ["21º VARA FEDERAL","23ª VARA FEDERAL BRASÍLIA", "24ª VARA FEDERAL DE BRASÍLIA", "25ª VARA FEDERAL DE BRASÍLIA", "26ª VARA FEDERAL DE BRASÍLIA", "27ª VARA FEDERAL DE BRASÍLIA", "23ª VARA FEDERAL", "24ª VARA FEDERAL", "25ª VARA FEDERAL", "26ª VARA FEDERAL", "27ª VARA FEDERAL", "BRASILIA", "1ª VARA FEDERAL CÍVEL SJGO", "TJ GOIÁS", "VARA FEDERAL DA SSJ LUZIÂNIA-GO", "VARA DE ÁGUAS LINDAS DE GOIÁS", "VARA FEDERAL DE RIO VERDE-GO", "VARA FEDERAL SJDF", "VARA DE AÇÕES PREVIDENCIÁRIAS DO DF", "20ª VARA FEDERAL DA SJDF", "2ª VARA FEDERAL DE ANÁPOLIS"]
+        const varasDF = [
+            "1ª VARA FEDERAL CÍVEL SJGO",
+            "1ª VARA FEDERAL DE ANÁPOLIS",
+            "2ª VARA FEDERAL DE ANÁPOLIS",
+            "20ª VARA FEDERAL DA SJDF",
+            "21º VARA FEDERAL",
+            "23ª VARA FEDERAL",
+            "23ª VARA FEDERAL BRASÍLIA",
+            "24ª VARA FEDERAL",
+            "24ª VARA FEDERAL DE BRASÍLIA",
+            "25ª VARA FEDERAL",
+            "25ª VARA FEDERAL DE BRASÍLIA",
+            "26ª VARA FEDERAL",
+            "26ª VARA FEDERAL DE BRASÍLIA",
+            "27ª VARA FEDERAL",
+            "27ª VARA FEDERAL DE BRASÍLIA",
+            "BRASILIA",
+            "JUIZADO ESPECIAL FEDERAL DE ANÁPOLIS",
+            "VARA DE AÇÕES PREVIDENCIÁRIAS DO DF",
+            "VARA DE ÁGUAS LINDAS DE GOIÁS",
+            "VARA FEDERAL DA SSJ LUZIÂNIA-GO",
+            "VARA FEDERAL DE RIO VERDE-GO",
+            "VARA FEDERAL SJDF",
+            "TJ GOIÁS",
+        ]
         
         if ((cliente.processo.estado === "DF" || cliente.processo.estado === "GO")) {
             if (!varasDF.includes(cliente.processo.vara)) {

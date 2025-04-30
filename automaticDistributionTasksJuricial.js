@@ -11,6 +11,7 @@ const typeListTasksProtocol = [
     "APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO",
     "APOSENTADORIA RPPS",
     "APOSENTADORIA POR INVALIDEZ",
+    "INEXISTÊNCIA DE DÉBITO",
     "LOAS",
     "MANDADO DE SEGURANÇA",
     "PAB",
@@ -236,6 +237,16 @@ const demandas = {
                 colaboradoresPrev.saulo,
             ],
             isDIList: true
+        },
+        "INEXISTÊNCIA DE DÉBITO": { //Mesmos executores de aposentadoria
+            executores: [
+                colaboradoresPrev.eduardo,
+                colaboradoresPrev.thalyson,
+                colaboradoresPrev.joseHenrique,
+                colaboradoresPrev.yan,
+                colaboradoresPrev.elton,
+                colaboradoresPrev.saulo,
+            ]
         },
         "LOAS": { 
             executores: [
