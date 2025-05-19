@@ -18,6 +18,7 @@ const typeListTasksProtocol = [
     "PENSÃO POR MORTE",
     "REVISÃO RMI",
     "SALÁRIO MATERNIDADE",
+    "SEGURO DEFESO",
 ]
 const typeOfTaskSearch = {
     geral: 0,
@@ -119,6 +120,14 @@ const colaboradoresPrev = {
         diasViagem: [],
         tarefas: 0
     },
+    keven: {
+        id: 93,
+        nome: "KEVEN FARO DE CARVALHO",
+        nomeTLC: "KEVEN",
+        assignments: [],
+        diasViagem: [],
+        diasViagem: 0
+    }
 }
 const demandas = {
     prev: {
@@ -313,12 +322,17 @@ const demandas = {
             ],
             isDIList: true
         },
+        "SEGURO DEFESO": {
+            executores: [
+                colaboradoresPrev.keven,
+            ],
+        },
     },
     civ: {},
     trt: {},
     inss: {
         "PEDIDO DE PRORROGAÇÃO AUXÍLIO DOENÇA - ADM": {
-            executores: INSS.filter(colaborador => colaborador.assignments.includes("prorrogação"))
+            executores: INSS.filter(colaborador => colaborador.assignments.includes(assignments.inssDigital.prorrogacao))
         }
     }
 }

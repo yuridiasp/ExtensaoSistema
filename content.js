@@ -599,11 +599,7 @@ async function selectExecutorContatarAdministrativo (colaboradores) {
     }, adm[0])
 
     const getResponsavelAdministrativo = () => {
-        const brasilia = [
-            "DAVI ALVES DOS SANTOS",
-            "MATHEUS CAMPELO DA SILVA",
-            "STEFANNY MORAIS DO NASCIMENTO"
-        ]
+        const brasilia = ADM.filter(colaborador => colaborador.assignments.includes(assignments.contatar.BSB)).map(colaborador => colaborador.nome)
 
         if (brasilia.includes(executor.nome)) {
             return "HENYR GOIS DOS SANTOS"
@@ -738,31 +734,8 @@ async function getTarefasColaboradores({ colaborador, dataDe, dataAte = dataDe, 
 }
 
 function filterColaboradoresCalculo () {
-    const calculo = [
-        {
-            id: 180,
-            nome: "ANSELMO DAVID DOS SANTOS RODRIGUES",
-            interiores: [],
-            datasViagem: [],
-            tarefas: 0
-        },
-        {
-            id: 100,
-            nome: "GUILHERME JASMIM",
-            interiores: [],
-            datasViagem: [],
-            tarefas: 0
-        },
-        {
-            id: 147,
-            nome: "WILKE RODRIGUES DE JESUS",
-            interiores: [],
-            datasViagem: [],
-            tarefas: 0
-        },
-    ]
     
-    return calculo
+    return CALCULO
 }
 
 function filterColaboradoresAdministrativo () {
@@ -790,96 +763,12 @@ function filterColaboradoresAdministrativo () {
         "AG. VALPARAISO DE GOIAS",
     ]
 
-    const INSS = [
-        /* {
-            id: 235,
-            nome: "ANDRÉ LEVY BATISTA DA SILVA",
-            interiores: [],
-            datasViagem: [],
-            tarefas: 0
-        }, */
-        {
-            id: 132,
-            nome: "DANIEL CABRAL PEREIRA SANTOS",
-            interiores: [],
-            datasViagem: [],
-            tarefas: 0
-        },
-        /* {
-            id: 139,
-            nome: "FLAVIO LUCAS LIMA SOUZA",
-            interiores: [],
-            datasViagem: [],
-            tarefas: 0
-        }, */
-        {
-            id: 115,
-            nome: "GABRIEL FRANÇA VITAL",
-            interiores: [],
-            datasViagem: [],
-            tarefas: 0
-        },
-        {
-            id: 162,
-            nome: "MIQUEAS CAMPOS DA SILVA",
-            nomeTLC: "miqueas",
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        /* {
-            id: 212,
-            nome: "LUIZ CARLOS LOPES DOS SANTOS",
-            nomeTLC: "luiz carlos",
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 229,
-            nome: "YAN THADEU PORTO DE OLIVEIRA SANTOS",
-            nomeTLC: "yan",
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        }, */
-        {
-            id: 24,
-            nome: "SILVANIA PINHEIRO DE LEMOS",
-            nomeTLC: "silvania",
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        }
-    ],
-    brasilia = [
-        {
-            id: 234,
-            nome: "DAVI ALVES DOS SANTOS",
-            interiores: [],
-            datasViagem: [],
-            tarefas: 0
-        },
-        {
-            id: 223,
-            nome: "MATHEUS CAMPELO DA SILVA",
-            interiores: [],
-            datasViagem: [],
-            tarefas: 0
-        },
-        {
-            id: 222,
-            nome: "STEFANNY MORAIS DO NASCIMENTO",
-            interiores: [],
-            datasViagem: [],
-            tarefas: 0
-        },
-    ]
+    const inssDigital = INSS.filter(colaborador => colaborador.assignments.includes(assignments.inssDigital.exigencia))
 
     if (postosDFGO.includes(cliente.requerimento.postoINSS.toUpperCase()) && tarefasAdm.includes(tarefaAtualNormalizada)) {
-        colaboradores.push(...brasilia)
+        colaboradores.push(...ADM.filter(colaborador => colaborador.assignments.includes(assignments.contatar.BSB)))
     } else {
-        colaboradores = INSS.filter(({ nome }) => {
+        colaboradores = inssDigital.filter(({ nome }) => {
     
             const nomeNormalizado = removeAcentuacaoString(nome)
     
@@ -917,98 +806,20 @@ function filterColaboradoresAdministrativo () {
 function filterColaboradoresJudicial () {
     const colaboradores = []
 
-    //Última atualização: 24/05/2024
-    // Padrão para data das viagens: ['DD/MM']
     const parceiros = ['ELIZEU ( PARCEIRO)','MARIA DO POV. PREGUIÇA','AGENOR (PARCEIRO)','ELIZANGELA ( PARCEIRA)','ERMINIO','AUGUSTO ( PARCEIRO)'],
-        varaEstancia = ['7ª VARA FEDERAL', '1ª VARA CIVEL DE ESTÂNCIA', '2ª VARA CIVEL DE ESTÂNCIA', 'JUIZADO ESPECIAL CÍVEL E CRIMINAL DE ESTÂNCIA', 'VARA DE ESTÂNCIA', 'VARA DO TRABALHO DE ESTÂNCIA'],
-        estancia = [
-            {
-                id: 22,
-                nome: "SANDOVAL FILHO CORREIA LIMA FILHO",
-                interiores: [],
-                datasViagem: [],
-                tarefas: 0
-            }
-        ],
-        aracaju = [
-            {
-                id: 201,
-                nome: "MARCO AURELIO LEITE GOMES",
-                interiores: ["CARMOPOLIS", "PEDRINHAS"],
-                datasViagem: [],
-                tarefas: 0
-            },
-            {
-                id: 221,
-                nome: "LEONARDO TEIXEIRA SANTOS SILVA",
-                interiores: ["LOTEAMENTO JEOVA", "SANTA ROSA DE LIMA", "UMBAUBA"],
-                datasViagem: [],
-                tarefas: 0
-            },
-            {
-                id: 217,
-                nome: "THIAGO SANTOS SANTANA",
-                interiores: ["CAPELA", "JAPARATUBA", "CONDE/BA"],
-                datasViagem: [],
-                contagem: 0
-            },
-            {
-                id: 199,
-                nome: "LUCAS NATHAN NOGUEIRA DA SILVA ",
-                interiores: [],
-                datasViagem: [],
-                tarefas: 0
-            },
-            {
-                id: 239,
-                nome: "ISAC CRUZ SANTOS",
-                interiores: [],
-                datasViagem: [],
-                tarefas: 0
-            },
-            {
-                id: 161,
-                nome: "YURI DIAS PEREIRA",
-                interiores: [],
-                datasViagem: [],
-                tarefas: 0
-            },
-        ],
-        brasilia = [
-            {
-                id: 234,
-                nome: "DAVI ALVES DOS SANTOS",
-                interiores: [],
-                datasViagem: [],
-                tarefas: 0
-            },
-            {
-                id: 223,
-                nome: "MATHEUS CAMPELO DA SILVA",
-                interiores: [],
-                datasViagem: [],
-                tarefas: 0
-            },
-            {
-                id: 222,
-                nome: "STEFANNY MORAIS DO NASCIMENTO",
-                interiores: [],
-                datasViagem: [],
-                tarefas: 0
-            },
-        ]
+        varaEstancia = ['7ª VARA FEDERAL', '1ª VARA CIVEL DE ESTÂNCIA', '2ª VARA CIVEL DE ESTÂNCIA', 'JUIZADO ESPECIAL CÍVEL E CRIMINAL DE ESTÂNCIA', 'VARA DE ESTÂNCIA', 'VARA DO TRABALHO DE ESTÂNCIA']
 
     if (cliente.processo.estado === 'GO' || cliente.processo.estado === 'DF') {
-        colaboradores.push(...brasilia)
+        colaboradores.push(...ADM.filter(colaborador => colaborador.assignments.includes(assignments.contatar.BSB)))
     } else if (((cliente.cliente.cidade == "ESTANCIA" && cliente.cliente.localAtendido == "ESTANCIA")) || ((parceiros.includes(cliente.cliente.parceiro)) && varaEstancia.includes(cliente.processo.vara))) {
-        colaboradores.push(...estancia)
+        colaboradores.push(...ADM.filter(colaborador => colaborador.assignments.includes(assignments.contatar.estancia)))
     } else {
         if (varaEstancia.includes(cliente.processo.vara)) {
-            colaboradores.push(...aracaju)
-            colaboradores.push(...estancia)
+            colaboradores.push(...ADM.filter(colaborador => colaborador.assignments.includes(assignments.contatar.geral)))
+            colaboradores.push(...ADM.filter(colaborador => colaborador.assignments.includes(assignments.contatar.estancia)))
             alert("Verificar executor manualmente!")
         } else {
-            colaboradores.push(...aracaju)
+            colaboradores.push(...ADM.filter(colaborador => colaborador.assignments.includes(assignments.contatar.geral)))
         }
     }
 
@@ -1198,7 +1009,7 @@ async function validaResponsavelFederal (num) {
         }
         
         if (cliente.processo.estado === "BA") {
-            return {responsavel: "LAIS PEREIRA MORAES",executor: "LAIS PEREIRA MORAES"}
+            return {responsavel: "ANA CAROLINA SOARES DE MELO",executor: "ANA CAROLINA SOARES DE MELO"}
         }
 
         return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
@@ -1260,7 +1071,7 @@ async function validaResponsavelFederal (num) {
                 return {responsavel: "MARCUS VINICIUS DE SOUZA MORAIS",executor: "MARCUS VINICIUS DE SOUZA MORAIS"}
             }
             if (secao === "8501") //Processos da seção de Itabaiana
-                return {responsavel: "LAIS PEREIRA MORAES",executor: "LAIS PEREIRA MORAES"}
+                return {responsavel: "ANA CAROLINA SOARES DE MELO",executor: "ANA CAROLINA SOARES DE MELO"}
             if (secao === "8502") { //Processos da seção de Estância
                 if (setimoDigito < 3)
                     return {responsavel: "KEVEN FARO DE CARVALHO",executor: "KEVEN FARO DE CARVALHO"}
@@ -1269,7 +1080,7 @@ async function validaResponsavelFederal (num) {
             if (secao === "8503") //Processos da seção de Lagarto
                 return {responsavel: "SARA GONÇALVES PINHEIRO",executor: "SARA GONÇALVES PINHEIRO"}
             if (secao === "8504")//Processos da seção de Propriá
-                return {responsavel: "LAIS PEREIRA MORAES",executor: "LAIS PEREIRA MORAES"}
+                return {responsavel: "ANA CAROLINA SOARES DE MELO",executor: "ANA CAROLINA SOARES DE MELO"}
             //return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
                 
         }
@@ -1325,7 +1136,7 @@ function validaTipoCompromisso(descriptionCompromisso) {
     const pauta = ["PAUTA", "RETIRADO DE PAUTA"]
     const emendar = ["DADOS PERICIA SOCIAL", "DADOS COMPLEMENTARES", "DADOS COMPLEMENTARES PARA PERÍCIA", "DADOS COMPLEMENTARES PARA PERÍCIA SOCIAL", "EMENDA", "EMENDA A INICIAL", "EMENDAR A INICIAL", "EMENDAR"]
     const pedidoVistas = ["PEDIDO DE VISTAS", "PEDIDO DE VISTA"]
-
+    
     if (descriptionCompromissoNormalizado === "RPV") {
         if (cidade === "ESTANCIA")
             return "RPV TRF5 ESTÂNCIA"
@@ -1441,7 +1252,6 @@ function atualizaDescricao({ descricaoTarefa, horarioInicial, horarioFinal, loca
     inputEndereco.value = endereco
     horarioFinal.value = atualizaHora(horarioInicial)
 
-    
     if (cliente.compromisso.descricao && removeAcentuacaoString(fistWordInTarefa) !== "ANALISE" && tipoTarefaNormalizado !== "ATO ORDINATORIO" && tipoCompromissoNormalizado !== "EMENDAR"  && !tipoCompromissoNormalizado.includes('DECISAO ANTECIPACAO PERICIA') && !tipoCompromissoNormalizado.includes("EXIGENCIA")) {
 
         descricaoTarefa.value = cliente.compromisso.descricao
@@ -1470,7 +1280,9 @@ function atualizaDescricao({ descricaoTarefa, horarioInicial, horarioFinal, loca
 
             descricaoTarefa.value = `${numero} - VERIFICAR NECESSIDADE DE TESTEMUNHAS`
 
-        } else if ((cliente.compromisso.tipoCompromisso === "EMENDAR") && (cliente.compromisso.tarefas[0] === "CONTATAR CLIENTE")) {
+        } else if (cliente.compromisso.descricaoCompromisso.includes('DADOS COMPLEMENTARES') && cliente.compromisso.tarefas[0] === "CONTATAR CLIENTE") {
+            descricaoTarefa.value = `${numero} - SOLICITAR DADOS COMPLEMENTARES PARA PERÍCIA SOCIAL (APELIDO, ENDEREÇO ATUALIZADO, PONTO DE REFERÊNCIA E CONTATO TELEFÔNICO)`
+        } else if ((tipoCompromissoNormalizado === "EMENDAR") && (cliente.compromisso.tarefas[0] === "CONTATAR CLIENTE")) {
 
             descricaoTarefa.value = `${numero} - `
 
@@ -1479,9 +1291,7 @@ function atualizaDescricao({ descricaoTarefa, horarioInicial, horarioFinal, loca
             descricaoTarefa.value = `${numero} - ACOMPANHAR ANTECIPAÇÃO DA PERÍCIA ADMINISTRATIVA`
 
         } else {
-
             descricaoTarefa.value = `${numero} - ${cliente.compromisso.descricaoCompromisso}`
-
         }
     } else {
         if (tipoTarefaNormalizado === "ANALISE DE EXIGENCIA INSS DIGITAL") {
@@ -1510,11 +1320,16 @@ function searchTipoIntimacao(selectTipoIntimacaoInput) {
     for (const option of selectTipoIntimacaoInput) {
         const optionToUpperNormalized = removeAcentuacaoString(option.innerText.toUpperCase().trim())
         const isManifestacao = optionToUpperNormalized.includes("MANIFESTACAO")
+        const isJugamentoAntecipado = tipoIntimacaoToUpperNormalized.includes("JULGAMENTO") && tipoIntimacaoToUpperNormalized.includes("ANTECIPADO")
         const isTask = optionToUpperNormalized === tipoIntimacaoToUpperNormalized
         const fistWordIncluded = optionToUpperNormalized.split(" ").includes(tipoIntimacaoToUpperNormalized.split(" ")[0])
         
         if (isManifestacao) {
             inputManifestacao = option.children[0]
+        }
+
+        if (isJugamentoAntecipado) {
+            return inputManifestacao
         }
 
         if (isTask) {
@@ -2369,6 +2184,37 @@ function criarTarefaClientePrimeiraVez() {
     })
 }
 
+function fixCollumnTRT20() {
+    const observer = new MutationObserver((mutationList, observer) => {
+        for (const mutation of mutationList) {
+            if (mutation.type === "childList") {
+                const section = document.querySelector("#timeline")
+                
+                if (section) {
+                    section.style.gridTemplateColumns = "1fr 2fr"
+                    observer.disconnect()  
+                }              
+            }
+        }
+    })
+
+    observer.observe(document.body, { childList: true })
+}
+
+function fixProcessRegistrationButton() {
+    if (!state.functions.abaFichaCliente.fixButtonNewProcess) {
+        return
+    }
+    const regex = /(?<=idPK=)\d+/
+    const url = document.URL
+    const id = regex.exec(url)
+    const link = `http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/formulario.asp?idCL=${id}`
+
+    const button = document.querySelector("body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > a")
+    button.href = link
+    button.innerHTML = "Novo Processo"
+}
+
 async function idPage(url) {
     
     const urlClienteCadastro = 'http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/formulario.asp?org=',
@@ -2384,8 +2230,8 @@ async function idPage(url) {
         urlTarefasFicha = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/ficha",
         urlClienteFicha = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/ficha",
         urlClienteAddtarefa = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/default",
-        urlCadastroPreProcesso = "http://fabioribeiro.eastus.cloudapp.azure.com/pre/preProcessos/formulario",
-        urlCadastroPreProcessoPasta = "http://fabioribeiro.eastus.cloudapp.azure.com/pre/preProcessos/formularioCria",
+       /*  urlCadastroPreProcesso = "http://fabioribeiro.eastus.cloudapp.azure.com/pre/preProcessos/formulario",
+        urlCadastroPreProcessoPasta = "http://fabioribeiro.eastus.cloudapp.azure.com/pre/preProcessos/formularioCria", */
         urlSistemaFR = "http://fabioribeiro.eastus.cloudapp.azure.com",
         urlListaFollowUps = "http://fabioribeiro.eastus.cloudapp.azure.com/flw/followups/default.asp",
         urlPortalDoAdvogadoTJSE = "https://www.tjse.jus.br/tjnet/portaladv/index.wsp",
@@ -2395,6 +2241,7 @@ async function idPage(url) {
         urlTRF51G = 'https://pje.jfse.jus.br/',
         urlTRF52G = 'https://pje.trf5.jus.br/',
         urlGeridINSS = "https://atendimento.inss.gov.br/",
+        urlTRT20 = "https://pje.trt20.jus.br/",
         autoCompletar = await getAutoComplete(),
         pageBuscaProcessos = url.includes(urlProcessos),
         isPageFichaTarefas = url.includes(urlTarefasFicha),
@@ -2410,8 +2257,8 @@ async function idPage(url) {
         isPageVisualizacaoAbaCompromissos = url.includes(urlCompromissoDefault),
         isPageVisualizacaoCompromisso = url.includes(urlCompromissoFicha),
         isPageFormularioAddTarefaSemCompromisso = url.includes(urlClienteAddtarefa),
-        isPagePreProcessoPasta = url.includes(urlCadastroPreProcessoPasta),
-        isPagePreProcessoFormulario = url.includes(urlCadastroPreProcesso),
+        /* isPagePreProcessoPasta = url.includes(urlCadastroPreProcessoPasta),
+        isPagePreProcessoFormulario = url.includes(urlCadastroPreProcesso), */
         pagePortalDoAdvogado = url.includes(urlPortalDoAdvogadoTJSE),
         isPageListaFollowUps = url.includes(urlListaFollowUps),
         isSistema = url.includes(urlSistemaFR),
@@ -2419,6 +2266,7 @@ async function idPage(url) {
         isTRF1 = url.includes(urlTRF1),
         isCRETA = url.includes(urlCRETA),
         isTRF5 = url.includes(urlTRF51G) || url.includes(urlTRF52G),
+        isTRT20 = url.includes(urlTRT20),
         isGerid = url.includes(urlGeridINSS)
         
     digitacaoPorVoz()
@@ -2490,6 +2338,7 @@ async function idPage(url) {
             createButtonLinkJusticePortalForCase("processo")
         } else if (isPageFichaCliente) {
             createButtonLinkJusticePortalForCase("cliente")
+            fixProcessRegistrationButton()
         }
     } else if (pagePortalDoAdvogado) {
         filtroAlvaraTJSE()
@@ -2497,6 +2346,8 @@ async function idPage(url) {
         activateReportSummons({ isPJE, isCRETA, isTRF5, isTRF1 })
     } else if (isGerid) {
         createExportButtonGeridListNotifications()
+    } else if (isTRT20) {
+        fixCollumnTRT20()
     }
 }
 

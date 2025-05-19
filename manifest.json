@@ -19,17 +19,16 @@
                 "https://maps.googleapis.com/*",
                 "https://*/pje/*",
                 "https://creta.jfse.jus.br/*",
+                "https://pje.trt20.jus.br/*",
                 "https://www.tjse.jus.br/*"
             ],
             "js": [
                 "chromeUtils.js",
-                "painelSupervisor.js",
                 "utils/state/initialState.js",
                 "utils/typeListCompromissos/typeListCompromissos.js",
                 "utils/portais/portais.js",
                 "cliente.js",
                 "tarefas.js",
-                "automaticDistributionTasksJuricial.js",
                 "content.js",
                 "gerid.js",
                 "prazos.js",
@@ -47,6 +46,10 @@
                 "utils/pdf-exporter/vfs_fonts.js",
                 "utils/html2canvas/index.js",
                 "utils/copyAndPaste/index.js",
+                "utils/assignments/index.js",
+                "utils/setores/index.js",
+                "painelSupervisor.js",
+                "automaticDistributionTasksJuricial.js",
                 "photoGeneratorService.js",
                 "scriptGenerator.js"
             ]

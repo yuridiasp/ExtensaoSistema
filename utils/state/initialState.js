@@ -11,6 +11,9 @@ let state = {
             painelVisualizacaoFollowUps: null,
             removerNewButtons: null,
         },
+        abaFichaCliente: {
+            fixButtonNewProcess: null,
+        },
         abaCadastroCliente: {
             criarTarefaCRM: null,
         },

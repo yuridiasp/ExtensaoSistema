@@ -1,677 +1,32 @@
 let currentTable = 0;
 
-const ADM = [
-        {
-            id: 219,
-            nome: "ARTHUR PORTO ROSENDO",
-            nomeTLC: "ARTHUR",
-            assignments: [],
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 256,
-            nome: "CHRISTYAN RANGELL SILVA DAMASCENO XAVIER",
-            nomeTLC: "CHRISTYAN",
-            assignments: [],
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 204,
-            nome: "DIEGO DOS SANTOS SILVA",
-            nomeTLC: "DIEGO SANTOS",
-            assignments: [],
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 238,
-            nome: "ERICK RODRIGUES DE JEUS",
-            nomeTLC: "ERICK",
-            assignments: [],
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 139,
-            nome: "FLAVIO LUCAS LIMA SOUZA",
-            nomeTLC: "FLAVIO",
-            assignments: [],
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 205,
-            nome: "HELTON FRADES BRABEC SOUZA",
-            nomeTLC: "HELTON",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 239,
-            nome: "ISAC CRUZ SANTOS",
-            nomeTLC: "ISAC",
-            assignments: [],
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 241,
-            nome: "JEFERSON ALMEIDA SANTOS",
-            nomeTLC: "JEFERSON",
-            assignments: [],
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 197,
-            nome: "JHONATHAN DA FONSECA ALMEIDA FLOR",
-            nomeTLC: "JHONATHAN FONSECA",
-            assignments: [],
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 247,
-            nome: "JHONATAN NASCIMENTO TAVARES",
-            nomeTLC: "JHONATHAN NASCIMENTO",
-            assignments: [],
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 51,
-            nome: "JULIANO OLIVEIRA DE SOUZA",
-            nomeTLC: "JULIANO",
-            assignments: [],
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 221,
-            nome: "LEONARDO TEIXEIRA SANTOS SILVA",
-            nomeTLC: "LEONARDO",
-            assignments: [],
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 199,
-            nome: "LUCAS NATHAN NOGUEIRA DA SILVA",
-            nomeTLC: "LUCAS",
-            assignments: [],
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 201,
-            nome: "MARCO AURELIO LEITE GOMES",
-            nomeTLC: "MARCO AURELIO",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 198,
-            nome: "MURILLO VICTOR SANTOS ROCHA",
-            nomeTLC: "MURILLO",
-            assignments: [],
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 203,
-            nome: "RENATA DE JESUS SANTOS",
-            nomeTLC: "RENATA",
-            assignments: [],
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 217,
-            nome: "THIAGO SANTOS SANTANA",
-            nomeTLC: "THIAGO",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 161,
-            nome: "YURI DIAS PEREIRA",
-            nomeTLC: "YURI",
-            assignments: [],
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        },
-    ],
-    SAC = [
-        {
-            id: 226,
-            nome: "CARLOS FERNANDES PEREIRA DA SILVA",
-            nomeTLC: "CARLOS FERNANDES",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 233,
-            nome: "EMILLY STHEFANE FERREIRA DOS SANTOS PEREIRA",
-            nomeTLC: "EMILLY",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 225,
-            nome: "ERINALDO FARO SANTOS",
-            nomeTLC: "ERINALDO",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 213,
-            nome: "HELLEN VITORIA ROCHA SILVA SANTOS",
-            nomeTLC: "HELLEN",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 62,
-            nome: "HENYR GOIS DOS SANTOS",
-            nomeTLC: "HENYR",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 140,
-            nome: "LAYNE DA SILVA GOIS",
-            nomeTLC: "LAYNE",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 193,
-            nome: "LINIKER BERNARDO SOARES",
-            nomeTLC: "LINIKER",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 232,
-            nome: "SARA CRISTINA TELES LOIOLA",
-            nomeTLC: "SARA CRISTINA",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 153,
-            nome: "TRICYA MATEUS ROLEMBERG",
-            nomeTLC: "TRICYA",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-    ],
-    FINANCEIRO = [
-        {
-            id: 14,
-            nome: "ALINE RIBEIRO",
-            nomeTLC: "ALINE",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 216,
-            nome: "CAMILA TOJAL MACHADO SANTOS",
-            nomeTLC: "CAMILA",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 11,
-            nome: "LUCIANA DOS SANTOS ARAUJO",
-            nomeTLC: "LUCIANA ARAUJO",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 127,
-            nome: "LUCIANA LIMA REZENDE",
-            nomeTLC: "LUCIANA LIMA",
-            assignments: ["rpv"],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 148,
-            nome: "OVERLANDIA SANTOS MELO",
-            nomeTLC: "OVERLANDIA",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 207,
-            nome: "SHEYLA SANTANA SANTOS",
-            nomeTLC: "SHEYLA",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 120,
-            nome: "VICTOR MENDES DOS SANTOS",
-            nomeTLC: "VICTOR",
-            assignments: ["alvará"],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-    ],
-    INSS = [
-        {
-            id: 235,
-            nome: "ANDRÉ LEVY BATISTA DA SILVA",
-            nomeTLC: "ANDRÉ",
-            assignments: ["prorrogação"],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 240,
-            nome: "BRUNO PEREIRA LIMA VASCONCELOS",
-            nomeTLC: "BRUNO",
-            assignments: ["prorrogação"],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 132,
-            nome: "DANIEL CABRAL PEREIRA SANTOS",
-            nomeTLC: "DANIEL",
-            assignments: ["prorrogação"],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 115,
-            nome: "GABRIEL FRANÇA VITAL",
-            nomeTLC: "GABRIEL FRANÇA",
-            assignments: ["prorrogação"],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 212,
-            nome: "LUIZ CARLOS LOPES DOS SANTOS",
-            nomeTLC: "LUIZ CARLOS",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 162,
-            nome: "MIQUEAS CAMPOS DA SILVA",
-            nomeTLC: "MIQUEAS",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 24,
-            nome: "SILVANIA PINHEIRO DE LEMOS",
-            nomeTLC: "SILVANIA",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-    ]
-    PREVIDENCIARIO = [
-        {
-            id: 134,
-            nome: "ANA CAROLINA SOARES DE MELO",
-            nomeTLC: "ANA",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 251,
-            nome: "ARTHUR PISISTRATO DE AMORIM REBELO",
-            nomeTLC: "ARTHUR PISISTRATO",
-            diasViagem: [],
-            contagem: 0,
-            tarefas: 0
-        },
-        {
-            id: 1,
-            nome: "DIEGO MELO SOBRINHO",
-            nomeTLC: "DIEGO",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 192,
-            nome: "EDUARDO PAIXÃO ROCHA SOBRINHO",
-            nomeTLC: "EDUARDO",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 244,
-            nome: "ELTON SILVA HONORATO",
-            nomeTLC: "ELTON",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 2,
-            nome: "FABIO RIBEIRO",
-            nomeTLC: "FABIO",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 252,
-            nome: "JOÃO VITOR FARIAS DOS SANTOS",
-            nomeTLC: "JOÃO VITOR",
-            diasViagem: [],
-            contagem: 0,
-            tarefas: 0
-        },
-        {
-            id: 230,
-            nome: "JOSÉ HENRIQUE VASCONCELOS RODRIGUES FONTES",
-            nomeTLC: "JOSÉ HENRIQUE",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 93,
-            nome: "KEVEN FARO DE CARVALHO",
-            nomeTLC: "KEVEN",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 47,
-            nome: "LAIS PEREIRA MORAES",
-            nomeTLC: "LAIS",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 254,
-            nome: "LEANDRO GABRIEL DOS SANTOS NUNES",
-            nomeTLC: "LEANDRO GABRIEL",
-            diasViagem: [],
-            contagem: 0,
-            tarefas: 0
-        },
-        {
-            id: 28,
-            nome: "MARCUS VINICIUS DE SOUZA MORAIS",
-            nomeTLC: "MARCUS",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 23,
-            nome: "SARA GONÇALVES PINHEIRO",
-            nomeTLC: "SARA",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 248,
-            nome: "SAULO MATHEUS ARAUJO DE SANTANA",
-            nomeTLC: "SAULO MATHEUS",
-            diasViagem: [],
-            contagem: 0,
-            tarefas: 0
-        },
-        {
-            id: 206,
-            nome: "THALYSON KELSON LIMA TORRES",
-            nomeTLC: "THALYSON",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 229,
-            nome: "YAN THADEU PORTO DE OLIVEIRA SANTOS",
-            nomeTLC: "YAN",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-    ],
-    TRABALHISTA = [
-        {
-            id: 108,
-            nome: "FELIPE PANTA CARDOSO",
-            nomeTLC: "FELIPE",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 158,
-            nome: "FERNANDO HENRIQUE BARBOZA NASCIMENTO",
-            nomeTLC: "FERNANDO",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 104,
-            nome: "GLENISSON NASCIMENTO",
-            nomeTLC: "GLENISSON",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 175,
-            nome: "MATHEUS CORREIA SANTOS",
-            nomeTLC: "MATHEUS CORREIA",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-    ],
-    CIVEL = [
-        {
-            id: 166,
-            nome: "ALÃ FEITOSA CARVALHO",
-            nomeTLC: "ALÃ",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 210,
-            nome: "EFRAIM SILVA CORREA DOS SANTOS",
-            nomeTLC: "EFRAIM",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 187,
-            nome: "GABRIEL DAVILA FILGUEIRAS MELLONE",
-            nomeTLC: "GABRIEL",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 164,
-            nome: "MATHEUS MATOS BARRETO",
-            nomeTLC: "MATHEUS MATOS",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 55,
-            nome: "RODRIGO AGUIAR SANTOS",
-            nomeTLC: "RODRIGO",
-            assignments: [],
-            diasViagem: null,
-            contagem: 0,
-            atrasadas: 0
-        },
-    ],
-    CALCULO = [
-        {
-            id: 180,
-            nome: "ANSELMO DAVID DOS SANTOS RODRIGUES",
-            nomeTLC: "ANSELMO",
-            assignments: [],
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 237,
-            nome: "CARLOS EDUARDO DOS SANTOS",
-            nomeTLC: "CARLOS",
-            assignments: [],
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 100,
-            nome: "GUILHERME JASMIM",
-            nomeTLC: "GUILHERME",
-            assignments: [],
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 147,
-            nome: "WILKE RODRIGUES DE JESUS",
-            nomeTLC: "WILKE",
-            assignments: [],
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        },
-    ],
-    CRM = [
-        {
-            id: 242,
-            nome: "BRYAN CAMPOS DE ANDRADE",
-            nomeTLC: "BRYAN",
-            assignments: [],
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 196,
-            nome: "KAUÃ DE CARVALHO NASCIMENTO",
-            nomeTLC: "KAUÃ",
-            assignments: [],
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        },
-        {
-            id: 64,
-            nome: "LEANDRO SANTOS",
-            nomeTLC: "LEANDRO",
-            assignments: [],
-            diasViagem: [],
-            contagem: 0,
-            atrasadas: 0
-        },
-    ]
 const data = {
+    geral: {
+        colors: {
+            background: {
+                topTable: "#005689",
+                columns: {
+                    ativas: "#A5D5EF",
+                    encerradas: "#CCC",
+                    total: "#ADADAD",
+                    atrasadas: "#34454E",
+                },
+            },
+            fontColor: {
+                columns: {
+                    atrasadas: "#FFF",
+                },
+                rows: {
+                    cabecalho: "#005689",
+                },
+            },
+            button: {
+                hoverColor: "#0056b3",
+                background: "#004085",
+                color: "#FFFFFF",
+            },
+        },
+    },
     ADM: {
         updateCount: ADM.length * 2,
         percent: 0,
@@ -747,8 +102,8 @@ function createPainel (setor, colaboradores, condiction) {
         sheet.insertRule('@keyframes slide-in-table-follow { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }', sheet.cssRules.length)
         sheet.insertRule('@keyframes slide-out-table-follow { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-100%); opacity: 0; } }', sheet.cssRules.length)
         sheet.insertRule('.button-container-table-follow { margin: 10px; text-align: center; }', sheet.cssRules.length)
-        sheet.insertRule('.button-table-follow { margin: 5px; padding: 5px 10px; background-color: #004085; color: white; border: none; border-radius: 5px; cursor: pointer; }', sheet.cssRules.length)
-        sheet.insertRule('.button-table-follow:hover { background-color: #0056b3; }', sheet.cssRules.length)
+        sheet.insertRule(`.button-table-follow { margin: 5px; padding: 5px 10px; background-color: ${data.geral.colors.button.background}; color: ${data.geral.colors.button.color}; border: none; border-radius: 5px; cursor: pointer; }`, sheet.cssRules.length)
+        sheet.insertRule(`.button-table-follow:hover { background-color: ${data.geral.colors.button.hoverColor}; }`, sheet.cssRules.length)
     }
 
     function showTable(index) {
@@ -810,7 +165,7 @@ function createPainel (setor, colaboradores, condiction) {
     
     const html = `<a href="" class="dropdown-toggle" data-toggle="personalizedDropdown" role="button" aria-haspopup="true" aria-expanded="false"><span data-toggle="tooltip" data-placement="bottom" title="Painel do Supervisor ${setor}" data-original-title="Painel do Supervisor ${setor}"><i class="fa fa-fw fa-table fdt-cor-${data[setor].cor}"></i></span></a>
                     <ul id="panelSup${setor}" class="dropdown-menu hidden-xs">
-                        <li class="fdt-dropdown-cabecalho" style="color: #005689;">Painel do Supervisor</li>
+                        <li class="fdt-dropdown-cabecalho" style="color: ${data.geral.colors.fontColor.rows.cabecalho};">Painel do Supervisor</li>
                         <li class="fdt-widget-lembretes" style="display: flex; justify-content: center; align-items: center; gap: 10px; padding: 10px 0;">
                             ${
                                 qtdViews > 1 ? `
@@ -820,16 +175,16 @@ function createPainel (setor, colaboradores, condiction) {
                                 ` : ''
                             }
                             <div style="display: flex; gap: 5px; justify-content: center; align-items: center;">
-                                <span style="background: #34454E; width: 10px; height: 10px;"></span>Tarefas Atrasadas
+                                <span style="background: ${data.geral.colors.background.columns.atrasadas}; width: 10px; height: 10px;"></span>Tarefas Atrasadas
                             </div>
                             <div style="display: flex; gap: 5px; justify-content: center; align-items: center;">
-                                <span style="background: #A5D5EF; width: 10px; height: 10px;"></span>Tarefas Ativas
+                                <span style="background: ${data.geral.colors.background.columns.ativas}; width: 10px; height: 10px;"></span>Tarefas Ativas
                             </div>
                             <div style="display: flex; gap: 5px; justify-content: center; align-items: center;">
-                                <span style="background: #CCC; width: 10px; height: 10px;"></span>Tarefas Encerradas
+                                <span style="background: ${data.geral.colors.background.columns.encerradas}; width: 10px; height: 10px;"></span>Tarefas Encerradas
                             </div>
                             <div style="display: flex; gap: 5px; justify-content: center; align-items: center;">
-                                <span style="background: #ADADAD; width: 10px; height: 10px;"></span>Total de Tarefas
+                                <span style="background: ${data.geral.colors.background.columns.total}; width: 10px; height: 10px;"></span>Total de Tarefas
                             </div>
                             ${
                                 qtdViews > 1 ? `
@@ -956,7 +311,7 @@ function generateTable(colaboradores, datas, dias, index = null, id = null, acti
 
         for (let j = 0; j <= datas.length; j++) {
             if ((j == 0) && (c == 0)) {
-                table += `<th style="background: rgb(0 86 137);">&nbsp;</th>`
+                table += `<th style="background: ${data.geral.colors.background.topTable};">&nbsp;</th>`
             } else if ((j != 0) && (c == 0)) {
                 if (j > 1)
                     table += `<th colspan="3" data-date="${(datas[j-1].toISOString().split('T'))[0]}" class="dRow">${datas[j-1].toLocaleDateString()}<br>${semana[dias[j-1]]}</th>`
@@ -966,11 +321,11 @@ function generateTable(colaboradores, datas, dias, index = null, id = null, acti
                 table += `<th data-nome="${nome}" class="nCollumn">${nome.toUpperCase()}</th>`
             } else if (c > 0) {
                 if (j > 1)
-                    table += `<td data-toggle="tooltip" data-original-title="Ativas" data-placement="Top" style="background: #A5D5EF;" data-categoria="Ativas" data-nome="${nome}" data-date="${(datas[j-1].toISOString().split('T'))[0]}">-</td>
-                    <td data-toggle="tooltip" data-original-title="Encerradas" data-placement="Top" style="background: #CCC;" data-categoria="Encerradas" data-nome="${nome}" data-date="${(datas[j-1].toISOString().split('T'))[0]}">-</td>
-                    <td data-toggle="tooltip" data-original-title="Total" data-placement="Top" style="background: #ADADAD;" data-categoria="Total" data-nome="${nome}" data-date="${(datas[j-1].toISOString().split('T'))[0]}">-</td>`
+                    table += `<td data-toggle="tooltip" data-original-title="Ativas" data-placement="Top" style="background: ${data.geral.colors.background.columns.ativas};" data-categoria="Ativas" data-nome="${nome}" data-date="${(datas[j-1].toISOString().split('T'))[0]}">-</td>
+                    <td data-toggle="tooltip" data-original-title="Encerradas" data-placement="Top" style="background: ${data.geral.colors.background.columns.encerradas};" data-categoria="Encerradas" data-nome="${nome}" data-date="${(datas[j-1].toISOString().split('T'))[0]}">-</td>
+                    <td data-toggle="tooltip" data-original-title="Total" data-placement="Top" style="background: ${data.geral.colors.background.columns.total};" data-categoria="Total" data-nome="${nome}" data-date="${(datas[j-1].toISOString().split('T'))[0]}">-</td>`
                 else
-                    table += `<td style="background: #34454E; color: #FFF;" data-categoria="atrasadas${index ?? ""}" data-nome="${nome}" data-date="${datas[j-1]}">-</td>`
+                    table += `<td style="background: ${data.geral.colors.background.columns.atrasadas}; color: ${data.geral.colors.fontColor.columns.atrasadas};" data-categoria="atrasadas${index ?? ""}" data-nome="${nome}" data-date="${datas[j-1]}">-</td>`
             }
         }
         table += `</tr>`
