@@ -20,13 +20,15 @@
                 "https://*/pje/*",
                 "https://creta.jfse.jus.br/*",
                 "https://pje.trt20.jus.br/*",
-                "https://www.tjse.jus.br/*"
+                "https://www.tjse.jus.br/*",
+                "https://fabioribeiroadvogados.atenderbem.com/*"
             ],
             "js": [
                 "chromeUtils.js",
                 "utils/state/initialState.js",
                 "utils/typeListCompromissos/typeListCompromissos.js",
                 "utils/portais/portais.js",
+                "kentro.js",
                 "cliente.js",
                 "tarefas.js",
                 "content.js",
