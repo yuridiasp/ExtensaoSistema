@@ -69,6 +69,9 @@ let state = {
         },
         gerid: {
             botaoExportarNotificacoes: null,
+        },
+        kentro: {
+            contagemTarefasVencimento: null,
         }
     }
 }

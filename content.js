@@ -2215,6 +2215,55 @@ function fixProcessRegistrationButton() {
     button.innerHTML = "Novo Processo"
 }
 
+function addListaAuxiliares() {
+    const list = document.querySelector("body > section > aside > nav > ul")
+    const li = document.createElement("li")
+    list.append(li)
+    li.classList.add("fdt_ml-menu-item")
+    
+    const a = document.createElement("a")
+    a.classList.add("fdt_ml-menu-toggle")
+    a.innerHTML = `<i class="fa fa-list"></i>
+            <span class="fdt_ml-menu-titulo" style="width: auto;">Listas auxiliares</span>
+            <span class="fdt_ml-menu-seta"><i class="fa fa-angle-left"></i></span>`
+
+    const ul = document.createElement("ul")
+    ul.classList.add("fdt_ml-menu-dropdown")
+    ul.innerHTML = `<li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstCliCargos/default.asp"><i class="fa fa-list"></i> Cargos</a></li>
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstCliGrupos/default.asp"><i class="fa fa-list"></i> Grupos</a></li>
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstCliPostosINSS/default.asp"><i class="fa fa-list"></i> Postos do INSS</a></li>
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstCliSituacoes/default.asp"><i class="fa fa-list"></i> Situações</a></li>
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstCliTiposArquivos/default.asp"><i class="fa fa-list"></i> Tipos de arquivos</a></li>
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstCliTiposHistoricos/default.asp"><i class="fa fa-list"></i> Tipos de históricos</a></li>
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstCliLocalAtendido/default.asp"><i class="fa fa-list"></i> Locais de atendimento</a></li>
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstCliComoChegou/default.asp"><i class="fa fa-list"></i> Como chegou</a></li>
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstINSSStatus/default.asp"><i class="fa fa-list"></i> Status do INSS</a></li>
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstCliPrioridades/default.asp"><i class="fa fa-list"></i> Prioridades de clientes</a></li>
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstModelos/default.asp"><i class="fa fa-print"></i> Modelos de documentos</a></li>
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstCliBairros/default.asp"><i class="fa fa-list"></i> Bairros</a></li>
+            
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstProEscritorios/default.asp"><i class="fa fa-list"></i> Escritórios</a></li>
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstProFases/default.asp"><i class="fa fa-list"></i> Fases do processo</a></li>
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstProInstancias/default.asp"><i class="fa fa-list"></i> Instâncias</a></li>
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstProMeritos/default.asp"><i class="fa fa-list"></i> Méritos da causa</a></li>
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstProNaturezas/default.asp"><i class="fa fa-list"></i> Naturezas de ação</a></li>
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstProOrgaos/default.asp"><i class="fa fa-list"></i> Órgãos</a></li>
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstProProbabilidades/default.asp"><i class="fa fa-list"></i> Probabilidades de êxito</a></li>
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstProRelevancias/default.asp"><i class="fa fa-list"></i> Relev. do processo</a></li>
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstProSentencas/default.asp"><i class="fa fa-list"></i> Sentenças</a></li>
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstProStatus/default.asp"><i class="fa fa-list"></i> Status</a></li>
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstProTipos/default.asp"><i class="fa fa-list"></i> Tipos de processos</a></li>
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstProVaras/default.asp"><i class="fa fa-list"></i> Varas</a></li>
+            
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstAgeTiposCompromissos/default.asp"><i class="fa fa-list"></i> Tipos de compromissos</a></li>
+                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstAgeTiposTarefas/default.asp"><i class="fa fa-list"></i> Tipos de tarefas</a></li>`
+    
+    li.append(a)
+    li.append(ul)
+
+    a.addEventListener("click", () => li.classList.toggle("aberto"))
+}
+
 async function idPage(url) {
     
     const urlClienteCadastro = 'http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/formulario.asp?org=',
@@ -2235,6 +2284,7 @@ async function idPage(url) {
         urlSistemaFR = "http://fabioribeiro.eastus.cloudapp.azure.com",
         urlListaFollowUps = "http://fabioribeiro.eastus.cloudapp.azure.com/flw/followups/default.asp",
         urlPortalDoAdvogadoTJSE = "https://www.tjse.jus.br/tjnet/portaladv/index.wsp",
+        urlKentro = "fabioribeiroadvogados.atenderbem.com/",
         urlPJE = "/pje/",
         urlTRF1 = 'trf1.jus.br/',
         urlCRETA = 'https://creta.jfse.jus.br/',
@@ -2267,11 +2317,18 @@ async function idPage(url) {
         isCRETA = url.includes(urlCRETA),
         isTRF5 = url.includes(urlTRF51G) || url.includes(urlTRF52G),
         isTRT20 = url.includes(urlTRT20),
-        isGerid = url.includes(urlGeridINSS)
+        isGerid = url.includes(urlGeridINSS),
+        isKentro = url.includes(urlKentro)
         
     digitacaoPorVoz()
     
     if (isSistema) {
+        const isYuri = document.querySelector("#fdt-mt-header > ul.nav.navbar-nav.navbar-right.hidden-xs > li > a").innerText.trim() === "YURI DIAS"
+
+        if(isYuri) {
+            addListaAuxiliares()
+        }
+
         datepickerHighlighter()
         pinSideMenu()
         removerNewButtons()
@@ -2348,6 +2405,8 @@ async function idPage(url) {
         createExportButtonGeridListNotifications()
     } else if (isTRT20) {
         fixCollumnTRT20()
+    } else if (isKentro) {
+        Kentro()
     }
 }
 
