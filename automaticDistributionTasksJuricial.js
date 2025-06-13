@@ -63,13 +63,6 @@ const colaboradoresPrev = {
         tarefas: 0,
         isBSB: true
     },
-    joseHenrique: {
-        id: 230,
-        nome: "JOSÉ HENRIQUE VASCONCELOS RODRIGUES FONTES",
-        nomeTLC: "JOSÉ HENRIQUE",
-        diasViagem: [],
-        tarefas: 0
-    },
     yan: {
         id: 229,
         nome: "YAN THADEU PORTO DE OLIVEIRA SANTOS",
@@ -140,7 +133,6 @@ const demandas = {
         },
         "AUXÍLIO DOENÇA": {
             executores: [
-                colaboradoresPrev.joseHenrique,
                 colaboradoresPrev.yan,
                 colaboradoresPrev.elton,
                 colaboradoresPrev.joaoVitor,
@@ -151,7 +143,6 @@ const demandas = {
         },
         "AUXÍLIO ACIDENTE": {
             executores: [
-                colaboradoresPrev.joseHenrique,
                 colaboradoresPrev.yan,
                 colaboradoresPrev.elton,
                 colaboradoresPrev.joaoVitor,
@@ -165,7 +156,6 @@ const demandas = {
                 colaboradoresPrev.eduardo,
                 colaboradoresPrev.thalyson,
                 colaboradoresPrev.yan,
-                colaboradoresPrev.joseHenrique,
                 colaboradoresPrev.elton,
                 colaboradoresPrev.joaoVitor,
                 colaboradoresPrev.arthur,
@@ -183,7 +173,6 @@ const demandas = {
         "ADICIONAL 25%": {
             executores: [
                 colaboradoresPrev.thalyson,
-                colaboradoresPrev.joseHenrique,
                 colaboradoresPrev.yan,
                 colaboradoresPrev.elton,
                 colaboradoresPrev.joaoVitor,
@@ -204,7 +193,6 @@ const demandas = {
             executores: [
                 colaboradoresPrev.eduardo,
                 colaboradoresPrev.thalyson,
-                colaboradoresPrev.joseHenrique,
                 colaboradoresPrev.yan,
             ],
             isDIList: true
@@ -213,7 +201,6 @@ const demandas = {
             executores: [
                 colaboradoresPrev.eduardo,
                 colaboradoresPrev.thalyson,
-                colaboradoresPrev.joseHenrique,
                 colaboradoresPrev.yan,
                 colaboradoresPrev.elton,
                 colaboradoresPrev.saulo,
@@ -238,7 +225,6 @@ const demandas = {
         },
         "APOSENTADORIA POR INVALIDEZ": {
             executores: [
-                colaboradoresPrev.joseHenrique,
                 colaboradoresPrev.yan,
                 colaboradoresPrev.elton,
                 colaboradoresPrev.joaoVitor,
@@ -251,7 +237,6 @@ const demandas = {
             executores: [
                 colaboradoresPrev.eduardo,
                 colaboradoresPrev.thalyson,
-                colaboradoresPrev.joseHenrique,
                 colaboradoresPrev.yan,
                 colaboradoresPrev.elton,
                 colaboradoresPrev.saulo,
@@ -259,7 +244,6 @@ const demandas = {
         },
         "LOAS": { 
             executores: [
-                colaboradoresPrev.joseHenrique,
                 colaboradoresPrev.yan,
                 colaboradoresPrev.elton,
                 colaboradoresPrev.saulo,
@@ -279,7 +263,6 @@ const demandas = {
             executores: [
                 colaboradoresPrev.eduardo,
                 colaboradoresPrev.thalyson,
-                colaboradoresPrev.joseHenrique,
                 colaboradoresPrev.yan,
                 colaboradoresPrev.elton,
                 colaboradoresPrev.joaoVitor,
@@ -292,7 +275,6 @@ const demandas = {
             executores: [
                 colaboradoresPrev.eduardo,
                 colaboradoresPrev.thalyson,
-                colaboradoresPrev.joseHenrique,
                 colaboradoresPrev.yan,
                 colaboradoresPrev.elton,
                 colaboradoresPrev.joaoVitor,
@@ -313,7 +295,6 @@ const demandas = {
             executores: [
                 colaboradoresPrev.eduardo,
                 colaboradoresPrev.thalyson,
-                colaboradoresPrev.joseHenrique,
                 colaboradoresPrev.yan,
                 colaboradoresPrev.elton,
                 colaboradoresPrev.joaoVitor,

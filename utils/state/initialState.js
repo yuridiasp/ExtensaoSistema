@@ -14,6 +14,9 @@ let state = {
         abaFichaCliente: {
             fixButtonNewProcess: null,
         },
+        abaRegistroHistorico: {
+            historicoRegistroIntimacao: null
+        },
         abaCadastroCliente: {
             criarTarefaCRM: null,
         },

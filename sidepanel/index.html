@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="style.css">
+    <title>IS Generator</title>
+</head>
+
+<body>
+    <div id="travessao"></div>
+    <div id="acaoBTN">
+        <input id="restore" type="button" value="RESTAURAR ÚLTIMO">
+        <input id="reset" type="button" value="LIMPAR">
+    </div>
+    <h3>EXTENSÃO PARA ANÁLISE DE IS</h3>
+    <div>
+        <form id="configuration" action="">
+            <div id="fileFormatIS">
+                <label for="">Formato de arquivo da IS:</label>
+                <input type="radio" name="fileFormatIS" id="fileFormatISExcel" value="excel" checked>
+                <label for="fileFormatISExcel">Excel</label>
+                <input type="radio" name="fileFormatIS" id="fileFormatISWord" value="word">
+                <label for="fileFormatISWord">Word</label>
+            </div>
+            <div id="datapub">
+                <label for="publicacao">Data da Publicação: </label>
+                <input type="date" name="publicacao" id="publicacao">
+            </div>
+            <section id="processoCampos">
+                <div>
+                    <div>
+                        <div>
+                            <div>
+                                <label for="processo">PROCESSO: </label>
+                            </div>
+                            <input class="textbox reset seletor focar" type="text" name="processo" id="processo">
+                            <i id="iconCheckVerify" class="fa fa-refresh"></i>
+                        </div>
+                        <div>
+                            <div>
+                                <label for="origem">ORIGEM: </label>
+                            </div>
+                            <input class="textbox reset seletor focar" type="text" name="origem" id="origem">
+                            <i id="iconCheckVerifyOrigem" class="fa fa-refresh"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <label for="tipoIntimacao">Tipo de Intimacao: </label>
+                        </div>
+                        <input class="textbox reset seletor focar campo" type="text" name="tipoIntimacao" id="tipoIntimacao">
+                        <div id="sugestoes" class="sugestoes"></div>
+                    </div>
+                </div>
+                <div class="oculto" id="divPericia">
+                    <h4>INFORMAÇÕES DA PERÍCIA</h4>
+                    <div>
+                        <div>
+                            <label for="perito">PERITO: </label>
+                        </div>
+                        <input class="textbox reset seletor" type="text" name="perito" id="perito">
+                    </div>
+                    <div>
+                        <div>
+                            <label for="localPericia">LOCAL: </label>
+                        </div>
+                        <input class="textbox reset seletor" type="text" name="localPericia" id="localPericia">
+                    </div>
+                </div>
+                <div class="oculto" id="divAudiencia">
+                    <h4>INFORMAÇÕES DA AUDIÊNCIA</h4>
+                    <div>
+                        <div>
+                            <label for="reu">RÉU: </label>
+                        </div>
+                        <input class="textbox reset seletor" type="text" name="reu" id="reu">
+                    </div>
+                    <div>
+                        <div>
+                            <label for="localAudiencia">LOCAL: </label>
+                        </div>
+                        <input class="textbox reset seletor" type="text" name="localAudiencia" id="localAudiencia">
+                        <div id="sugestoes-audiencia" class="sugestoes"></div>
+                    </div>
+                </div>
+            </section>
+            <h4>PRAZO EM DIAS: </h4>
+            <div id="divPrazo">
+                <input class="prazo" type="button" value="5">
+                <input class="prazo" type="button" value="8">
+                <input class="prazo" type="button" value="10">
+                <input class="prazo" type="button" value="15">
+                <input class="prazo" type="button" value="20">
+                <input class="prazo" type="button" value="30">
+                <input class="prazo" type="button" value="45">
+                <input class="prazo" type="button" value="60">
+            </div>
+            <div style="margin-bottom: 5px;">
+                <input style="width: 90%;" class="prazo" type="button" value="Contatar Cliente">
+            </div>
+            <div>
+                <label for="prazoInicial">Prazo Inicial: </label>
+                <input class="seletor reset" type="date" name="prazoInicial" id="prazoInicial">
+            </div>
+            <div>
+                <label for="prazoFinal">Prazo Final: </label>
+                <input class="seletor reset" type="date" name="prazoFinal" id="prazoFinal">
+            </div>
+            <div>
+                <label for="horario">Horário: </label>
+                <input class="seletor reset" type="time" name="horario" id="horario">
+            </div>
+            <div>
+                <label for="tarefaAvulsa">Tarefa Avulsa: </label>
+                <input class="seletor reset" type="checkbox" name="tarefaAvulsa" id="tarefaAvulsa">
+            </div>
+            <div>
+                <h4 id="tituloExc">ÁREA: </h4>
+                <div id="divBTN">
+                    <div>
+                        <!-- <div>
+                            <input class="btn-exc" type="button" value="BANCÁRIO" id="bancario">
+                        </div> -->
+                        <div>
+                            <input class="btn-exc" type="button" value="CÍVEL" id="civel">
+                        </div>
+                        <div>
+                            <input class="btn-exc" type="button" value="PREVIDENCIÁRIA" id="previdenciario">
+                        </div>
+                        <div>
+                            <input class="btn-exc" type="button" value="ADM" id="adm">
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <input class="btn-exc" type="button" value="TRABALHISTA" id="trabalhista">
+                        </div>
+                        <div>
+                            <input class="btn-exc" type="button" value="FINANCEIRA" id="financeiro">
+                        </div>
+                        <div>
+                            <input class="btn-exc" type="button" value="OK" id="OK">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="reset" id="genTXT" style="resize: none" disabled></div>
+            </div>
+            <div>
+                <div class="dataProcess" id="dataProcess">
+                    <h4>Dados principais: <strong id="processNumber"></strong></h4>
+                    <p>ID: <strong id="processId"></strong></p>
+                    <p>Réu: <strong id="processDefendant"></strong></p>
+                    <p>Responsável: <strong id="processPesponsible"></strong></p>
+                    <p>Natureza: <strong id="processNature"></strong></p>
+                    <p>Mérito: <strong id="processMerit"></strong></p>
+                    <p>Cidade: <strong id="processCity"></strong></p>
+                    <p>Estado: <strong id="processState"></strong></p>
+                    <p>Vara: <strong id="processDistrict"></strong></p>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script src="clipboard.js"></script>
+    <script src="../chromeUtils.js"></script>
+    <script src="../background/background.js"></script>
+    <script src="locaisAudiencias.js" defer></script>
+    <script src="main.js" defer></script>
+</body>
+
+</html>

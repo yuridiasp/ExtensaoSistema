@@ -5,8 +5,6 @@ async function createHistorico() {
         return
     }
 
-    debugger
-
     const weekDay = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"]
     const date = new Date()
     const [dia, mes, ano] = cliente.compromisso.prazoFatal.split("/")
@@ -56,4 +54,22 @@ async function createHistorico() {
     }).then(function (response) {
         return response.blob()
     }).then(async (result) => parser.parseFromString(await result.text(),'text/html'))
+}
+
+function completeHistoricoRegistroIntimacao() {
+    if(!state.functions.abaRegistroHistorico.historicoRegistroIntimacao) {
+        return
+    }
+    
+    const idRegistroIntimacao = 124
+    const text = `Registrado compromisso de intimação conforme solicitação:\nNúmero do Processo: [Número do Processo]\nDescrição da Intimação: [Descrição resumida e objetiva da intimação]\nNome do Solicitante: [Nome e segundo nome do colaborador que solicitou]\nMeio de Comunicação: [Mensagem via Contact Board, Grupo Geral no Whatsapp, Tarefa, etc.]\nData da Solicitação: [Data da solicitação]`
+
+    const textArea = document.querySelector("#ocorrencia")
+    const selectTipoHistorico = document.querySelector("#idTipoHistorico")
+
+    selectTipoHistorico.addEventListener("change", () => {
+        if (selectTipoHistorico.value == idRegistroIntimacao) {
+            textArea.innerHTML = text
+        }
+    })
 }

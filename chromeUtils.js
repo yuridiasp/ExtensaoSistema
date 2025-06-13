@@ -1,5 +1,3 @@
-
-
 function chromeRuntimeOnInstalledAddListener(listener) {
     chrome.runtime.onInstalled.addListener(listener)
 }
@@ -73,6 +71,26 @@ function getReport() {
 
 function setReport(reportValue) {
     return chromeStorageLocalSet({report: reportValue})
+}
+
+function setPanel() {
+    chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true })
+}
+
+function getAnalise() {
+    return chromeStorageLocalGet('is')
+}
+
+function setAnalise(processoValue) {
+    return chromeStorageLocalSet({ is: processoValue })
+}
+
+function getAnaliseOld() {
+    return chromeStorageLocalGet('isOld')
+}
+
+function setAnaliseOld(processoValue) {
+    return chromeStorageLocalSet({ isOld: processoValue })
 }
 
 function chromeStorageLocalGet(key) {

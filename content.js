@@ -2276,6 +2276,7 @@ async function idPage(url) {
         urlCompromissoEscolherTipo= "http://fabioribeiro.eastus.cloudapp.azure.com/adv/compromissos/incluirEscolhe",
         urlListaTarefas = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/default",
         urlTarefasForm = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/formulario",
+        urlHistoricoForm = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientesHistorico/formulario",
         urlTarefasFicha = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/ficha",
         urlClienteFicha = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/ficha",
         urlClienteAddtarefa = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/default",
@@ -2298,6 +2299,7 @@ async function idPage(url) {
         isPageListaTarefas = url.includes(urlListaTarefas),
         isPageTarefasFormDeCompromisso = url.includes(urlTarefasForm) && url.includes("idCO"),
         isPageTarefasFormDeCliente = url.includes(urlTarefasForm) && url.includes("idCL"),
+        isPageHistoricoForm = url.includes(urlHistoricoForm),
         isPageVisualizacaoProcesso = url.includes(urlProcessosFicha),
         isPageCompromissos = url.includes(urlCompromissos),
         isPageCompromissoEscolherTipo = url.includes(urlCompromissoEscolherTipo),
@@ -2396,6 +2398,8 @@ async function idPage(url) {
         } else if (isPageFichaCliente) {
             createButtonLinkJusticePortalForCase("cliente")
             fixProcessRegistrationButton()
+        } else if (isPageHistoricoForm) {
+            completeHistoricoRegistroIntimacao()
         }
     } else if (pagePortalDoAdvogado) {
         filtroAlvaraTJSE()

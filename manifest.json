@@ -5,12 +5,15 @@
         "180": "assets/icon.png"
     },
     "background": {
-        "service_work": "background/background.html"
+        "service_work": "background/background.js"
     },
     "description": "Utilitários para o sistema Fábio Ribeiro Advogados.",
     "action": {
         "default_title": "System FR Extension",
         "default_popup": "popup/index.html"
+    },
+    "side_panel": {
+        "default_path": "sidepanel/index.html"
     },
     "content_scripts": [
         {
@@ -32,6 +35,7 @@
                 "cliente.js",
                 "tarefas.js",
                 "content.js",
+                "contentIS.js",
                 "gerid.js",
                 "prazos.js",
                 "compromissos.js",
@@ -59,7 +63,7 @@
     ],
     "web_accessible_resources": [
       {
-        "resources": ["atendimentos/images/*.png", "atendimentos/images/*.jpg"],
+        "resources": ["atendimentos/images/*.png", "atendimentos/images/*.jpg", "assets/*.png"],
         "matches": ["<all_urls>"]
       }
     ],
@@ -71,7 +75,8 @@
         "clipboardRead",
         "clipboardWrite",
         "scripting",
-        "activeTab"
+        "activeTab",
+        "sidePanel"
     ],
     "host_permissions": ["<all_urls>"],
     "manifest_version": 3

@@ -451,7 +451,7 @@ function calculaFeriados(parametro, year = null) {
             {data: quintaSanta, feriado: "QUINTA-FEIRA MAIOR - PONTO FACULTATIVO"},
             {data: paixao, feriado: "SEXTA-FEIRA DA PAIXÃO - NACIONAL", isNacional: true},
             {data: pascoa, feriado: "PÁSCOA - NACIONAL", isNacional: true},
-            {data: corpus, feriado: "CORPUS CHRISTI - PONTO FACULTATIVO"}
+            {data: corpus, feriado: "CORPUS CHRISTI - PONTO FACULTATIVO", isNacional: true}
         ],
         feriados = { ...fixos }
         
