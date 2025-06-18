@@ -10,7 +10,7 @@ function contarDias([ dia, mes, ano], final, parametro) {
 
     while (date < final) {
         date.setDate(date.getDate() + 1)
-        const { isHoliday } = isFeriado(date, parametro)
+        const { isHoliday } = isFeriado({ date, parametro, cliente })
         i = date.getDay()
 
         if (i == 0) {
@@ -41,7 +41,7 @@ function dataContato(intervalo, dataInterno, parametro) {
         date = new Date(dataInterno)
         while (c < fimIntervalo) {
             date.setDate(date.getDate() -1)
-            const { isHoliday } = isFeriado(date, parametro)
+            const { isHoliday } = isFeriado({ date, parametro, cliente })
             i = date.getDay()
             if ((i > 0) && (i < 6) && !isHoliday) {
                 ++c
@@ -264,14 +264,6 @@ function calcularDataTarefa(parametro) {
     dataFinalizacao.addEventListener('blur', verifyContactTask)
 }
 
-function formataData (dia,mes,ano) {
-    if (mes < 10)
-        mes = `0${mes}`
-    if (dia < 10)
-        dia = `0${dia}`
-    return `${dia}/${mes}/${ano}`
-}
-
 function calcularPrazo (prazo, parametro) {
     
     const dataPub = document.querySelector("#dataPublicacao"),
@@ -291,8 +283,11 @@ function calcularPrazo (prazo, parametro) {
 
     let dateFinal = new Date(),
         dateInicial = new Date(),
-        cont = 1,
+        contagemDias = 1,
         diasInterno
+
+    dateInicial.setHours(0,0,0,0)
+    dateFinal.setHours(0,0,0,0)
 
 
     if (isProcessoCivel || isProcessoTrabalhista || !state.functions.todasPaginas.tipoIntimacaoIsJudicial) {
@@ -308,23 +303,17 @@ function calcularPrazo (prazo, parametro) {
         }
     }
 
-    while (diasFatal >= cont) {
+    while (diasFatal >= contagemDias) {
         dateFinal.setDate(dateFinal.getDate() + 1)
 
         const weekDay = dateFinal.getDay()
 
-        const { isHoliday } = isFeriado(dateFinal,parametro)
+        const { isHoliday } = isFeriado({ date: dateFinal, parametro, cliente })
 
         if (weekDay > sunday && weekDay < saturday && !isHoliday) {
-            cont += 1
+            contagemDias += 1
         }
     }
-
-    let ano = dateFinal.getFullYear(),
-        mes = dateFinal.getMonth() + 1,
-        dia =  dateFinal.getDate()
-
-    const final = formataData(dia, mes, ano)
     
     if (isSentenca || isDecisao || isAcordao) {
         if (isProcessoCivel || isProcessoTrabalhista) {
@@ -348,20 +337,20 @@ function calcularPrazo (prazo, parametro) {
         }
     }
     
-    cont = 1
+    contagemDias = 1
 
     const isDFOrGo = estado === 'GO' || estado === 'DF'
 
     if (isDFOrGo && !(isSentenca || isDecisao || isAcordao)) {
-        dateInicial = new Date (dateFinal.getFullYear(), dateFinal.getMonth(), dateFinal.getDate()-1)
-        while (cont <= 3) {
+        dateInicial = new Date (dateFinal.getTime())
+        while (contagemDias <= 3) {
             const weekDay = dateInicial.getDay()
-            const { isHoliday } = isFeriado(dateInicial,parametro)
+            const { isHoliday } = isFeriado({ date: dateInicial, parametro, cliente })
             
             if (isHoliday) {
                 dateInicial.setDate(dateInicial.getDate() - 1)
             } else {
-                if (cont === 3) {
+                if (contagemDias === 3) {
                     if (weekDay === sunday) {
                         dateInicial.setDate(dateInicial.getDate() - 2)
                     }
@@ -371,29 +360,29 @@ function calcularPrazo (prazo, parametro) {
                     break
                 } else {
                     dateInicial.setDate(dateInicial.getDate() - 1)
-                    cont++
+                    contagemDias++
                 }
             }
         }
     } else {
-        while (diasInterno >= cont) {
+        while (diasInterno >= contagemDias) {
             dateInicial.setDate(dateInicial.getDate() + 1)
             const weekDay = dateInicial.getDay()
-            const { isHoliday } = isFeriado(dateInicial,parametro)
-            
-            if (diasInterno >= cont) {
+            const { isHoliday } = isFeriado({ date: dateInicial, parametro, cliente })
+            console.log(isHoliday)
+            if (diasInterno >= contagemDias) {
                 if (weekDay > sunday && weekDay < saturday && !isHoliday) {
-                    cont = cont + 1
+                    contagemDias = contagemDias + 1
                 }
             }
             else {
                 if (isHoliday && weekDay > sunday && weekDay < saturday) {
                     dateInicial.setDate(dateInicial.getDate() - 1)
-                    cont = cont + 1
+                    contagemDias = contagemDias + 1
                 }
                 else
                     if (weekDay > sunday && weekDay < saturday)
-                        cont = cont + 1
+                        contagemDias = contagemDias + 1
             }
         }
     }
@@ -405,13 +394,7 @@ function calcularPrazo (prazo, parametro) {
         dateInicial = hoje
     }
 
-    ano = dateInicial.getFullYear()
-    mes = dateInicial.getMonth()+1
-    dia = dateInicial.getDate()
-
-    const inicial = formataData(dia, mes, ano)
-
-    return [inicial, final]
+    return [ dateInicial.toLocaleDateString(), dateFinal.toLocaleDateString() ]
 }
 
 function calcularProximoDiaUtil (parametro) {
@@ -419,7 +402,7 @@ function calcularProximoDiaUtil (parametro) {
 
     do {
         date.setDate(date.getDate() + 1)
-    } while(isFeriado(date, parametro) && (date.getDay() === 0 || date.getDay() === 6))
+    } while(isFeriado({ date, parametro, cliente }) && (date.getDay() === 0 || date.getDay() === 6))
 
     return date.toLocaleDateString()
 }

@@ -48,6 +48,7 @@
                 "feriados.js",
                 "historico.js",
                 "portaisJustica.js",
+                "utils/parametros/parametros.js",
                 "utils/pdf-exporter/pdfmake.min.js",
                 "utils/pdf-exporter/vfs_fonts.js",
                 "utils/html2canvas/index.js",

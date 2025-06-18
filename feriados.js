@@ -40,14 +40,18 @@ function calculaPascoa(ano) {
     return new Date(ano, MES, DIA)
 }
 
-function FeriadosFixos (ano, parametro) {
-
+function getFeriadosFixos ({ ano, parametro, competencia = null, cliente }) {
+    
     const indexJaneiro = 0
+
+    const competenciaNormalizada = competencia?.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase()
     
     const dataFactory = (date, resultados, increment = null) => {
         const { data: [mes, dia], feriado, isNacional } = date
-        const yearCalculated = increment === null ? ano : (increment == true ? ano + 1 :  ano - 1)
-        const dateString = (new Date(yearCalculated, mes, dia)).toDateString()
+        const yearCalculated = increment ? (ano + 1 ): (increment === false ? (ano - 1) :  ano)
+        const holidayDate = new Date(yearCalculated, mes, dia)
+        holidayDate.setHours(0,0,0,0)
+        const dateString = holidayDate.toISOString()
         
         resultados[dateString] ? resultados[dateString].push({ feriado, isNacional: isNacional ? isNacional : false }) : resultados[dateString] = [ { feriado, isNacional: isNacional ? isNacional : false } ]
     }
@@ -79,7 +83,7 @@ function FeriadosFixos (ano, parametro) {
         tarefaAdvogado = parametro === parametros.tarefaAdvogado,
         tarefaINSSDigital = parametro === parametros.inss,
         isHighlight = parametro === parametros.highlight,
-        isTJ = cliente.processo.origem ? cliente.processo.origem.length === 12 : false,
+        isTJ = cliente?.processo?.origem?.length === 12,
         diaInicioForense = 20,
         mesInicioForense = 11,
         diaFimForense = 6,
@@ -87,10 +91,10 @@ function FeriadosFixos (ano, parametro) {
         diaInicioFeriasAdvogados = 20,
         mesInicioFeriasAdvogados = 11,
         diaFimFeriasAdvogados = isTJ ? 20 : 21,
-        isTRT = cliente.processo.natureza === "TRABALHISTA",
+        isTRT = cliente?.processo?.natureza === "TRABALHISTA",
         mesFimFeriasAdvogados = 0,
-        isIS = isTJ || isTRT,
-        isTRF1 = !isTJ && !isHighlight && cliente.processo.origem?.slice(13,16) === "401",
+        isIS = competenciaNormalizada || isTJ || isTRT,
+        isTRF1 = !isTJ && !isHighlight && cliente?.processo?.origem?.slice(13,16) === "401",
         forense = setIntervaloFeriadosJudiciario(diaInicioForense, mesInicioForense, diaFimForense, mesFimForense, "RECESSO FORENSE: 20/12 A 06/01"),
         advogados = setIntervaloFeriadosJudiciario(diaInicioFeriasAdvogados, mesInicioFeriasAdvogados, diaFimFeriasAdvogados, mesFimFeriasAdvogados, "RECESSO DOS ADVOGADOS (ART. 220 NCPC): 20/12 a 20/01")
         
@@ -117,7 +121,10 @@ function FeriadosFixos (ano, parametro) {
                     {data: [3,16], feriado: "QUARTA-FEIRA SANTA - PONTO FACULTATIVO JUSTIÇA"}, //ADICIONADO EM 16/04/2025
                     {data: [3,17], feriado: "QUINTA-FEIRA SANTA - PONTO FACULTATIVO JUSTIÇA"}, //ADICIONADO EM 16/04/2025
                 ],
-                justicaEstadual: [],
+                justicaEstadual: [
+                    {data: [5,20], feriado: "PÓS CORPUS CHRISTI - PONTO FACULTATIVO"},
+                    {data: [5,23], feriado: "VÉSPERA SÃO JOÃO - PONTO FACULTATIVO"},
+                ],
                 TRF1: [
                     {data: [4,2], feriado: "SEXTA IMPRENSSADA REFERENTE AO FERIADO DE DIA DO TRABALHO - PONTO FACULTADO DA JUSTIÇA"},
                 ],
@@ -371,7 +378,7 @@ function FeriadosFixos (ano, parametro) {
             dataFactory(date, resultados)
         })
         
-        if (cliente.processo.estado == 'SE') {
+        if (competenciaNormalizada || cliente?.processo?.estado == 'SE') {
             datas.SE.forEach(date => dataFactory(date, resultados))
         }
 
@@ -381,13 +388,13 @@ function FeriadosFixos (ano, parametro) {
         
         const cidades = Object.entries(datas.interiores)
 
-        if (cliente.processo.cidade === 'ARACAJU') {
+        if (cliente?.processo?.cidade === 'ARACAJU') {
             datas.ARACAJU.forEach(date => dataFactory(date, resultados))
         }
 
-        for (const [cidade, dates] of cidades) {
-            if (cidade === cliente.processo.cidade || isHighlight) {
-                dates.forEach(date => dataFactory(date, resultados))
+        for (const [jurisdicao, feriados] of cidades) {
+            if (competenciaNormalizada?.includes(jurisdicao) || jurisdicao === cliente?.processo?.cidade || isHighlight) {
+                feriados.forEach(date => dataFactory(date, resultados))
             }
         }
     }
@@ -415,50 +422,44 @@ function FeriadosFixos (ano, parametro) {
     return resultados
 }
 
-function calculaFeriados(parametro, year = null) {
-    const interDiasPascoaQuartaSanta = 4,
-        interDiasPascoaQuintaSanta = 3,
-        interDiasPascoaSextaPaixao = 2,
-        interDiasPascoaSegundaCarnaval = 48,
-        interDiasPascoaTercaCarnaval = 47,
-        interDiasPascoaQuartaCinzas = 46,
-        interDiasPascoaCorpus = 60
+function calculaFeriadosDerivadosPascoa(pascoa) {
+    const pascoaTimestamp = pascoa.getTime()
+    
+    const feriadosDerivados = [
+        { nome: "SEGUNDA DE CARNAVAL - PONTO FACULTATIVO", offset: -48 },
+        { nome: "TERÇA DE CARNAVAL - PONTO FACULTATIVO", offset: -47 },
+        { nome: "QUARTA DE CINZAS - PONTO FACULTATIVO ATÉ AS 14H", offset: -46 },
+        { nome: "QUARTA-FEIRA SANTA - PONTO FACULTATIVO", offset: -4 },
+        { nome: "QUINTA-FEIRA MAIOR - PONTO FACULTATIVO", offset: -3 },
+        { nome: "SEXTA-FEIRA DA PAIXÃO - NACIONAL", offset: -2 },
+        { nome: "CORPUS CHRISTI - NACIONAL", offset: 60 }
+    ]
 
-    const date = new Date(),
-        ano = year || date.getFullYear(),
-        fixos = FeriadosFixos(ano,parametro),
+    return [ {data: pascoa, feriado: "PÁSCOA - NACIONAL", isNacional: true},
+        ...feriadosDerivados.map(({ nome, offset }) => {
+            const data = new Date(pascoaTimestamp)
+            data.setHours(0,0,0,0)
+            data.setDate(data.getDate() + offset)
+
+            return { data, feriado: nome, isNacional: nome.endsWith("NACIONAL") }
+        })
+    ]
+}
+
+function calculaFeriados({ parametro, year, competencia, cliente }) {
+    const date = new Date()
+    
+    const ano = year || date.getFullYear(),
+        fixos = getFeriadosFixos({ parametro, ano, competencia, cliente }),
         pascoa = calculaPascoa(ano),
-        pascoaMilleseconds = pascoa.valueOf(),
-        datePascoa1 = new Date(pascoaMilleseconds),
-        datePascoa2 = new Date(pascoaMilleseconds),
-        datePascoa3 = new Date(pascoaMilleseconds),
-        datePascoa4 = new Date(pascoaMilleseconds),
-        datePascoa5 = new Date(pascoaMilleseconds),
-        datePascoa6 = new Date(pascoaMilleseconds),
-        datePascoa7 = new Date(pascoaMilleseconds),
-        quartaSanta = new Date(datePascoa1.setDate(pascoa.getDate() - interDiasPascoaQuartaSanta)),
-        quintaSanta = new Date(datePascoa2.setDate(pascoa.getDate() - interDiasPascoaQuintaSanta)),
-        paixao = new Date(datePascoa3.setDate(pascoa.getDate() - interDiasPascoaSextaPaixao)),
-        segundaCarnaval = new Date(datePascoa4.setDate(pascoa.getDate() - interDiasPascoaSegundaCarnaval)),
-        tercaCarnaval = new Date(datePascoa5.setDate(pascoa.getDate() - interDiasPascoaTercaCarnaval)),
-        quartaCinzas = new Date(datePascoa6.setDate(pascoa.getDate() - interDiasPascoaQuartaCinzas)),
-        corpus = new Date (datePascoa7.setDate(pascoa.getDate() + interDiasPascoaCorpus)),
-        variaveis = [
-            {data: segundaCarnaval, feriado: "SEGUNDA DE CARNAVAL - PONTO FACULTATIVO"},
-            {data: tercaCarnaval, feriado: "TERÇA DE CARNAVAL - PONTO FACULTATIVO"},
-            {data: quartaCinzas, feriado: "QUARTA DE CINZAS - PONTO FACULTATIVO ATÉ AS 14H"},
-            {data: quartaSanta, feriado: "QUARTA-FEIRA SANTA - PONTO FACULTATIVO"},
-            {data: quintaSanta, feriado: "QUINTA-FEIRA MAIOR - PONTO FACULTATIVO"},
-            {data: paixao, feriado: "SEXTA-FEIRA DA PAIXÃO - NACIONAL", isNacional: true},
-            {data: pascoa, feriado: "PÁSCOA - NACIONAL", isNacional: true},
-            {data: corpus, feriado: "CORPUS CHRISTI - PONTO FACULTATIVO", isNacional: true}
-        ],
         feriados = { ...fixos }
-        
-    variaveis.forEach(feriadoVariavel => {
+    
+    const feriadosDerivadosPascoa = calculaFeriadosDerivadosPascoa(pascoa)
+    
+    feriadosDerivadosPascoa.forEach(feriadoVariavel => {
         const { data, feriado, isNacional } = feriadoVariavel
 
-        const dateString = (data).toDateString()
+        const dateString = data.toISOString()
 
         feriados[dateString] ? feriados[dateString].push({ feriado, isNacional: isNacional ? isNacional : false }) : feriados[dateString] = [ { feriado, isNacional: isNacional ? isNacional : false } ]
     })
@@ -466,11 +467,12 @@ function calculaFeriados(parametro, year = null) {
     return feriados
 }
 
-function isFeriado (date, parametro, year = null) {
-    const feriados = calculaFeriados(parametro, year)
+function isFeriado ({ date, parametro, year = null, competencia = null, cliente = null }) {
     
-    const dateString = date.toDateString()
-
+    const feriados = calculaFeriados({ parametro, year, competencia, cliente })
+    
+    const dateString = date.toISOString()
+    
     if (feriados[dateString]) {
         let holiday = ''
 

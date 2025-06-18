@@ -8,6 +8,18 @@ function enviarResposta() {
             copiarImagem(message.action, sendResponse)
             return true 
         }
+
+        if(message.action === "getCompetencia") {
+            let resultado = getCompetencia()
+            sendResponse(resultado)
+            return true 
+        }
+
+        if (message.action === "copyText") {
+            copyText(message.texto, sendResponse)
+            return true 
+        }
+
         sendResponse({ validation: "Atualizado" })
         return false
     })
@@ -15,7 +27,7 @@ function enviarResposta() {
 
 function enviarMensagem () {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {status: status}, function(response) {
+        chrome.tabs.sendMessage(tabs[0].id, { status: status }, function(response) {
             console.log(response.validation)
         })
     })

@@ -20,71 +20,56 @@ function getCompetencia() {
 
 }
 
-function updateEvent() {
-    chrome.runtime.onMessage.addListener(
-        function(request, sender, sendResponse) {
-            
-            if (request.texto) {
-                
-                const tempInput = document.createElement("h2")
-                let body = document.querySelector("body")
-                
-                if (!body) {
-                    body = document.createElement('body')
-                    document.querySelector("html").appendChild(body)
-                }
-                
-                tempInput.innerHTML = request.texto.replaceAll("&lt;","<").replaceAll("&gt;",">")
-                
-                const stylizer = () => {
-                    tempInput.style.position = 'fixed'
-                    tempInput.style.opacity = 0
-                    tempInput.style.textAlign = "center"
-                    document.querySelector("*").style.setProperty("font-family",  "Times New Roman, serif", "important")
-                    tempInput.style.fontSize = "16px"
-                    tempInput.style.fontFamily = "Times New Roman, serif"
-                    tempInput.style.color = "red"
-                    tempInput.style.background = "none"
-                    tempInput.style.fontWeight = "normal"
-                    tempInput.style.border = "none"
-                }
+function copyText(texto, sendResponse) {
+    const tempInput = document.createElement("h2")
+    let body = document.querySelector("body")
+    
+    if (!body) {
+        body = document.createElement('body')
+        document.querySelector("html").appendChild(body)
+    }
+    
+    tempInput.innerHTML = texto.replaceAll("&lt;","<").replaceAll("&gt;",">")
+    
+    const stylizer = () => {
+        tempInput.style.position = 'fixed'
+        tempInput.style.opacity = 0
+        tempInput.style.textAlign = "center"
+        document.querySelector("*").style.setProperty("font-family",  "Times New Roman, serif", "important")
+        tempInput.style.fontSize = "16px"
+        tempInput.style.fontFamily = "Times New Roman, serif"
+        tempInput.style.color = "red"
+        tempInput.style.background = "none"
+        tempInput.style.fontWeight = "normal"
+        tempInput.style.border = "none"
+    }
 
-                const listenerBody = async (records, observer) => {
-                    
-                    stylizer()
+    const listenerBody = async (records, observer) => {
+        
+        stylizer()
 
-                    let range = document.createRange()
+        let range = document.createRange()
 
-                    range.selectNodeContents(tempInput)
-                    
-                    let selection = window.getSelection()
-                    selection.addRange(range)
-                    
-                    document.execCommand('copy')
-                    
-                    selection.removeAllRanges()
+        range.selectNodeContents(tempInput)
+        
+        let selection = window.getSelection()
+        selection.addRange(range)
+        
+        document.execCommand('copy')
+        
+        selection.removeAllRanges()
 
-                    body.removeChild(tempInput)
+        body.removeChild(tempInput)
 
-                    sendResponse({resposta: request.texto})
+        sendResponse({resposta: texto})
 
-                    observer.disconnect()
-                }
+        observer.disconnect()
+    }
 
-                const observer = new MutationObserver(listenerBody)
-                observer.observe(body, { childList: true })
+    const observer = new MutationObserver(listenerBody)
+    observer.observe(body, { childList: true })
 
-                body.appendChild(tempInput)
-            } else {
-                if (request.get) {
-                    let resultado = getCompetencia()
-                    sendResponse(resultado)
-                } else {
-                    
-                }
-            }
-        }
-    )
+    body.appendChild(tempInput)
 }
 
 function autoSearchProcess(processo) {

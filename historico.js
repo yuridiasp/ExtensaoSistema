@@ -39,8 +39,8 @@ async function createHistorico() {
         btnGravar: 'Gravar informações'
     }
 
-    const urlEncodedData = new URLSearchParams(body).toString();
-    console.log(urlEncodedData)
+    const urlEncodedData = new URLSearchParams(body).toString()
+
     const parser = new DOMParser()
 
     const urlRequest = 'http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientesHistorico/formularioScript.asp'

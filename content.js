@@ -1,9 +1,3 @@
-const parametros = {
-    inss: 0,
-    tarefaContatar: 1,
-    tarefaAdvogado: 2,
-    highlight: 3
-}
 const controllers = new Map()
 
 let cliente = {
@@ -2099,7 +2093,7 @@ function datepickerHighlighter () {
                             if (td.dataset.day) {
                                 const [dia, mes, ano] = td.dataset.day.split("/")
                                 const date = new Date(`${mes}/${dia}/${ano}`)
-                                const { isHoliday, holiday, isNacional } = isFeriado(date, parametros.highlight, ano)
+                                const { isHoliday, holiday, isNacional } = isFeriado({ date, parametro: parametros.highlight, year: ano, cliente })
                                 
                                 if (isHoliday) {
                                     td.style.backgroundColor = isNacional ? '#fce3e4' : '#CCC'
