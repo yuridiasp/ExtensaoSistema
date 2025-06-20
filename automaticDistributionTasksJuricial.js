@@ -539,7 +539,7 @@ async function createInputTextArea(divDescription, area, tipoTarefa) {
 function getDiaUtil(date) {
     const newDate = new Date(date)
 
-    while((newDate.getDay() === 0) || (newDate.getDay() === 6) || isFeriado(newDate, parametros.tarefaContatar).isHoliday) {
+    while((newDate.getDay() === 0) || (newDate.getDay() === 6) || isFeriado({ date: newDate, parametro: parametros.tarefaContatar }).isHoliday) {
         const ascrecimoOrDescrescimo = 1
         newDate.setDate(newDate.getDate() + ascrecimoOrDescrescimo)
     }
