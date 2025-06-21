@@ -55,6 +55,7 @@
                 "utils/copyAndPaste/index.js",
                 "utils/assignments/index.js",
                 "utils/setores/index.js",
+                "utils/selectors/selectors.js",
                 "painelSupervisor.js",
                 "automaticDistributionTasksJuricial.js",
                 "photoGeneratorService.js",

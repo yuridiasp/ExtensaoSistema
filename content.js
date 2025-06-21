@@ -71,67 +71,6 @@ function desativarAtualizacao() {
     cliente.compromisso.atualizar = false
 }
 
-function addEventListenerCheckboxTaskList() {
-    const listaTarefas = document.querySelector("#listagem")
-    const taskCheckbox = listaTarefas.taskCheckbox
-
-    taskCheckbox.forEach(checkbox => {
-        checkbox.addEventListener('change', () => {
-            cliente.compromisso.tarefas = Array.from(listaTarefas.taskCheckbox).filter(check => check.checked).map(checked => checked.value)
-        })
-    })
-}
-
-function getListagemTarefas() {
-    const html = cliente.compromisso.tarefas.reduce((prev, cur, index) => {
-        const tarefaNormalizada = removeAcentuacaoString(cur)
-        const id = tarefaNormalizada.trim().replaceAll(" ", "")
-
-        const isAudienciaOuEmenda = removeAcentuacaoString(cur).search("AUDIENCIA") === 0 || removeAcentuacaoString(cur).search("EMENDAR") === 0
-        prev += `
-                <div>
-                    <input ${isAudienciaOuEmenda ? "disabled" : ""} value="${cur}" name="taskCheckbox" class="taskCheckbox" id="${id}" type="checkbox" checked>
-                    <label for="${id}">${cur}</label>
-                </div>
-            `
-        return prev
-    }, "")
-
-    return html
-}
-
-function createListaTarefasAbaCompromissos () {
-    const listaTarefas = document.querySelector("#listaTarefas")
-      
-    if (!listaTarefas) {
-        const footer = document.querySelector("footer")
-        const content = `
-            <h4>Tarefas do Compromisso</h4>
-            <form id="listagem"></form>
-        `
-        footer.innerHTML = `<div id="listaTarefas">${content}</div><div>${footer.innerHTML}</div>`
-        footer.style.display = "flex"
-        footer.style.justifyContent = "space-between"
-
-        return document.querySelector("#listaTarefas")
-    }
-
-    return listaTarefas
-}
-
-function atualizarListaTarefasAbaCompromissos() {
-    if (cliente.compromisso.tarefas.length < 2 || !state.functions.cadastroCompromisso.exibirListaTarefas) {
-        return
-    }
-    const listagem = createListaTarefasAbaCompromissos()
-
-    const listaTarefas = listagem.querySelector("#listagem")
-
-    listaTarefas.innerHTML = getListagemTarefas()
-
-    addEventListenerCheckboxTaskList()
-}
-
 function getListaTarefasCompromissoAdministrativo(tipoCompromisso = cliente.compromisso.tipoCompromisso) {
     const inputPrazoInterno = document.querySelector("#dataPrazoInterno")
     const inputPrazoFatal = document.querySelector("#dataPrazoFatal")

@@ -1,0 +1,3 @@
+const SELECTORS = {
+    taskListContainer: "#listagem",
+}

@@ -369,7 +369,7 @@ function calcularPrazo (prazo, parametro) {
             dateInicial.setDate(dateInicial.getDate() + 1)
             const weekDay = dateInicial.getDay()
             const { isHoliday } = isFeriado({ date: dateInicial, parametro, cliente })
-            console.log(isHoliday)
+            
             if (diasInterno >= contagemDias) {
                 if (weekDay > sunday && weekDay < saturday && !isHoliday) {
                     contagemDias = contagemDias + 1
