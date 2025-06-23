@@ -106,13 +106,6 @@ const colaboradoresPrev = {
         diasViagem: [],
         tarefas: 0
     },
-    leandro: {
-        id: 254,
-        nome: "LEANDRO GABRIEL DOS SANTOS NUNES",
-        nomeTLC: "LEANDRO GABRIEL",
-        diasViagem: [],
-        tarefas: 0
-    },
     keven: {
         id: 93,
         nome: "KEVEN FARO DE CARVALHO",
@@ -185,7 +178,6 @@ const demandas = {
                 colaboradoresPrev.eduardo,
                 colaboradoresPrev.thalyson,
                 colaboradoresPrev.ana,
-                colaboradoresPrev.leandro,
             ],
             isDIList: true
         },
@@ -212,7 +204,6 @@ const demandas = {
                 colaboradoresPrev.eduardo,
                 colaboradoresPrev.thalyson,
                 colaboradoresPrev.ana,
-                colaboradoresPrev.leandro,
             ],
             isDIList: true
         },
@@ -288,7 +279,6 @@ const demandas = {
                 colaboradoresPrev.eduardo,
                 colaboradoresPrev.thalyson,
                 colaboradoresPrev.ana,
-                colaboradoresPrev.leandro,
             ]
         },
         "SALÁRIO MATERNIDADE": {
