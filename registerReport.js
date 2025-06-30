@@ -137,6 +137,41 @@ function getAbaAtiva() {
     return null
 }
 
+function createButtonReport(row, portalType) {
+
+    const getIdExpediente = (aProcesso) => {
+        return aProcesso.id.match(/tbExpedientes:(\d+)/)[1]
+    }
+
+    const getIdPRocesso = (aProcesso) => {
+        return aProcesso.outerHTML.toString().match(/id=(\d+)/)[1]
+    }
+
+    const td = row.querySelector("td")
+    const aProcesso = row.children[1].querySelector("a")
+
+    const idExpediente = getIdExpediente(aProcesso)
+    const idPRocesso = getIdPRocesso(aProcesso)
+
+    td.innerHTML = `<td class="rich-table-cell">
+            <div class="btn-group btn-group-sm vcenter">
+                <div class="col-sm-10">
+                    <span
+                        ><a
+                            class="btn btn-danger btn-sm"
+                            href="#"
+                            onclick="if (confirm('Você está prestes a tomar ciência deste expediente, ao fazer isso o sistema começará a contar o prazo para a resposta. Deseja continuar?')) abrePopup('/pje/Painel/painel_usuario/popup/visualizarExpediente.seam?idProcessoParteExpediente=${idExpediente}&amp;idProcesso=${idPRocesso}', '', '');return false;"
+                            title="Tomar ciência"
+                            ><i class="fa fa-search"></i> Tomar ciência</a
+                        ></span
+                    ><span></span>
+                </div>
+            </div>
+        </td>`
+
+    return td.querySelector('.btn-danger')
+}
+
 function getButtonReport(row, portalType) {
 
     let selector = dataProcessosRegisterReport[portalType].buttonSelector
@@ -218,7 +253,7 @@ function addEventToRegisterReport(portalType) {
     if (rowsSummon.length) {
         rowsSummon.forEach(row => {
             
-            const buttonAccept = getButtonReport(row, portalType)
+            const buttonAccept = getButtonReport(row, portalType) || createButtonReport(row, portalType)
 
             if (buttonAccept) {
                 const report = {

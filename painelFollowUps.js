@@ -207,8 +207,8 @@ async function createPainelFollowUps(condiction) {
             tdsSeparados[tipoFollowUp][date][horarios.undefined][modosAgendamento.scheduling].innerHTML = result[date]['undefined']["scheduling"]
             tdsSeparados[tipoFollowUp][date][horarios.undefined][modosAgendamento.priority].innerHTML = result[date]['undefined']["priority"]
             tdsSeparados[tipoFollowUp][date][horarios.undefined][modosAgendamento.total].innerHTML = result[date]['undefined']["total"]
+            incrementBarFollowUps()
         })
-        incrementBarFollowUps()
     }
 
     document
@@ -533,6 +533,7 @@ function incrementBarFollowUps() {
     const unidade = maxValueProgressBar / updateCountFollowUps
     percentFollowUps += unidade
     bar.value = Math.round(percentFollowUps)
+    console.log(bar.value)
     contIterationFollowUps++
     if (updateCountFollowUps === contIterationFollowUps) {
         const contentBar = document.querySelector("#contentBarFollowUps")

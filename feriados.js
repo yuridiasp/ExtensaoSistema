@@ -124,6 +124,7 @@ function getFeriadosFixos ({ ano, parametro, competencia = null, cliente }) {
                 justicaEstadual: [
                     {data: [5,20], feriado: "PÓS CORPUS CHRISTI - PONTO FACULTATIVO"},
                     {data: [5,23], feriado: "VÉSPERA SÃO JOÃO - PONTO FACULTATIVO"},
+                    {data: [6,7], feriado: "SEGUNDA IMPRENSSADA REFERENTE AO FERIADO DE DIA DO TRABALHO - PONTO FACULTADO DA JUSTIÇA"},
                 ],
                 TRF1: [
                     {data: [4,2], feriado: "SEXTA IMPRENSSADA REFERENTE AO FERIADO DE DIA DO TRABALHO - PONTO FACULTADO DA JUSTIÇA"},

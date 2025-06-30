@@ -195,7 +195,7 @@ function addEventListenerCheckboxTaskList() {
     const taskCheckbox = listaTarefas.querySelectorAll(".taskCheckbox")
 
     taskCheckbox.forEach(checkbox => {
-        checkbox.addEventListener('change', () => updateTarefasFromCheckboxes)
+        checkbox.addEventListener('change', updateTarefasFromCheckboxes)
     })
 }
 

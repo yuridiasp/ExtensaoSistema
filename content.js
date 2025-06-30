@@ -267,31 +267,31 @@ function handleCompromisso() {
         return
     }
     
-    const descricaoTarefa = document.querySelector("#descricao")
+    const descricaoCompromissoInput = document.querySelector("#descricao")
 
     const typeOptions = document.querySelectorAll("#fdt-form > div:nth-child(6) > div:nth-child(1) > div > div > ul > li")
 
     const listener = () => {
-        if (descricaoTarefa) {
+        if (descricaoCompromissoInput) {
             const typeOptions = document.querySelectorAll("#fdt-form > div:nth-child(6) > div:nth-child(1) > div > div > ul > li")
 
             const selectCompromisso = async () => {
-                descricaoTarefa.value = descricaoTarefa.value.toUpperCase().trim()
-                cliente.compromisso.descricaoCompromisso = descricaoTarefa.value
-                selectTipoCompromisso(descricaoTarefa, typeOptions)
-                cliente.compromisso.tipoCompromisso = validaTipoCompromisso(descricaoTarefa.value)
+                descricaoCompromissoInput.value = descricaoCompromissoInput.value.toUpperCase().trim()
+                cliente.compromisso.descricaoCompromisso = descricaoCompromissoInput.value
+                selectTipoCompromisso(descricaoCompromissoInput, typeOptions)
+                cliente.compromisso.tipoCompromisso = validaTipoCompromisso(descricaoCompromissoInput.value)
                 cliente.compromisso.tarefas = state.functions.todasPaginas.tipoIntimacaoIsJudicial ? getListaTarefasCompromissoJudicial() : getListaTarefasCompromissoAdministrativo()
                 atualizarListaTarefasAbaCompromissos()
                 await setCliente(cliente)
             }
 
-            if (descricaoTarefa.length) {
+            if (descricaoCompromissoInput.length) {
                 selectCompromisso()
             }
 
-            descricaoTarefa.focus()
+            descricaoCompromissoInput.focus()
 
-            descricaoTarefa.addEventListener('change', selectCompromisso)
+            descricaoCompromissoInput.addEventListener('change', selectCompromisso)
         }
     }
 
@@ -897,6 +897,9 @@ async function validaResponsavelFederal (num) {
     }
 
     if (tarefaSac === tarefaAtualNormalizada) { //Tarefas para o SAC
+        if (cliente.processo.estado === "DF" || cliente.processo.estado === "GO") {
+            return {responsavel: "HENYR GOIS DOS SANTOS",executor: "TRICYA MATEUS ROLEMBERG"}
+        }
         return {responsavel: "HENYR GOIS DOS SANTOS",executor: "LAYNE DA SILVA GOIS"}
     }
 
@@ -2006,8 +2009,10 @@ async function buscarDadosClienteProcessos(url) {
         cliente.requerimento.data = requerimento.data
         cliente.requerimento.postoINSS = requerimento.postoINSS
     }
-
-    setCliente(cliente)
+    cliente.compromisso.tipoCompromisso = validaTipoCompromisso(cliente.compromisso.descricaoCompromisso)
+    cliente.compromisso.tarefas = state.functions.todasPaginas.tipoIntimacaoIsJudicial ? getListaTarefasCompromissoJudicial() : getListaTarefasCompromissoAdministrativo()
+    atualizarListaTarefasAbaCompromissos()
+    await setCliente(cliente)
 }
 
 function datepickerHighlighter () {

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        `<td class="rich-table-cell">
+            <div class="btn-group btn-group-sm vcenter">
+                <div class="col-sm-10">
+                    <span
+                        ><a
+                            class="btn btn-danger btn-sm"
+                            href="#"
+                            onclick="if (confirm('Você está prestes a tomar ciência deste expediente, ao fazer isso o sistema começará a contar o prazo para a resposta. Deseja continuar?')) abrePopup('/pje/Painel/painel_usuario/popup/visualizarExpediente.seam?idProcessoParteExpediente=${idExpediente}&amp;idProcesso=${idPRocesso}', '', '');return false;"
+                            title="Tomar ciência"
+                            ><i class="fa fa-search"></i> Tomar ciência</a
+                        ></span
+                    ><span></span>
+                </div>
+            </div>
+        </td>`
+        <a
+            class="numero-processo-expediente"
+            href="#"
+            id="formExpedientes:tbExpedientes:17230912:j_id581"
+            name="formExpedientes:tbExpedientes:17230912:j_id581"
+            onclick="window.open('/pje/Processo/ConsultaProcesso/Detalhe/listProcessoCompletoAdvogado.seam?id=1214987&amp;ca=c00a0abfe2d02e3bf7c979869766cbdfce5b1694eb4a4ace72a74a224163bb1e3678414242f1781e1d9b35c833ad596dc95cfc6d14a0d231','blank_', 'location=0,status=0,scrollbars=1,width=1000,height=650');;A4J.AJAX.Submit('formExpedientes',event,{'similarityGroupingId':'formExpedientes:tbExpedientes:17230912:j_id581','containerId':'conteudoAbaExpedientes','parameters':{'formExpedientes:tbExpedientes:17230912:j_id581':'formExpedientes:tbExpedientes:17230912:j_id581'} } );return false;"
+            title="Autos Digitais"
+            >PJEC 0000879-87.2024.4.05.8504</a
+        >
+        <script>
+            if (
+                confirm(
+                    "Você está prestes a tomar ciência deste expediente, ao fazer isso o sistema começará a contar o prazo para a resposta. Deseja continuar?"
+                )
+            )
+                abrePopup(
+                    "/pje/Painel/painel_usuario/popup/visualizarExpediente.seam?idProcessoParteExpediente=17205155&amp;idProcesso=2048374",
+                    "",
+                    ""
+                );
+            A4J.AJAX.Submit("formExpedientes", event, {
+                similarityGroupingId:
+                    "formExpedientes:tbExpedientes:17205155:j_id542",
+                containerId: "conteudoAbaExpedientes",
+                parameters: {
+                    "formExpedientes:tbExpedientes:17205155:j_id542":
+                        "formExpedientes:tbExpedientes:17205155:j_id542",
+                },
+            });
+            return false;
+        </script>
+    </body>
+</html>
