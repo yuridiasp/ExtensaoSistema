@@ -210,8 +210,7 @@ const demandas = {
         "APOSENTADORIA RPPS": {
             executores: [
                 colaboradoresPrev.eduardo,
-                colaboradoresPrev.ana,
-                colaboradoresPrev.leandro
+                colaboradoresPrev.ana
             ]
         },
         "APOSENTADORIA POR INVALIDEZ": {
@@ -248,7 +247,7 @@ const demandas = {
                 colaboradoresPrev.joaoVitor,
                 colaboradoresPrev.arthur,
             ],
-            isDIList: true
+            isDIList: false
         },
         "PAB": {
             executores: [
@@ -313,7 +312,7 @@ const areas = {
     trabalhista: "trt",
     inssDigital: "inss"
 }
-let previousOption = null
+let previousOption = null, estadoCliente = null, dataParaFinalizacaoCRM = null, isEventAdded = false, prazoFatalTarefaProtocolo = null
 
 function obterPrimeiroEUltimoDia(prazoInterno, prazoFatal, tipoTarefa) {
     const tiposTarefasMesmoDia = ["PEDIDO DE PRORROGAÇÃO AUXÍLIO DOENÇA - ADM"]
@@ -373,8 +372,8 @@ function updateOption(selectedOptions, date) {
 
     previousOption = selectedOptions
     
-    selectedOptions.innerHTML += ` - P.I. ${date.toLocaleDateString()}`
-    selectedOptions.value += ` - P.I. ${date.toLocaleDateString()}`
+    selectedOptions.innerHTML += ` - D.I. ${date.toLocaleDateString()}`
+    selectedOptions.value += ` - D.I. ${date.toLocaleDateString()}`
 }
 
 function setDataTarefa(date) {
@@ -386,6 +385,18 @@ function setDataTarefa(date) {
 function addEventListenerToSelect(area, isEnvelope) {
     const selectDescription = document.querySelector("#descricao")
 
+    const createTaskCRM = async event => {
+        event.preventDefault()
+        event.target.disabled = true
+        const form = document.querySelector("#fdt-form")
+        const idCL = document.querySelector("#fdt-form > input[type=hidden]:nth-child(4)").value
+
+        const descricaoTarefa = `Nova oportunidade: ${isEnvelope ? `ENVELOPE ${area.toUpperCase()}` : 'DEMORA INJUSTIFICADA'} - ${selectDescription.selectedOptions[0].dataset.original} - P.F. ${prazoFatalTarefaProtocolo.toLocaleDateString()}`
+        await createTarefa({ idCL, descricaoTarefa, dataParaFinalizacao: dataParaFinalizacaoCRM.toLocaleDateString() })
+
+        form.submit()
+    }
+
     selectDescription.addEventListener("change", async ({ target }) => {
         const idCL = document.querySelector("#fdt-form > input[type=hidden]:nth-child(4)").value
         const { selectedOptions } = target
@@ -393,6 +404,9 @@ function addEventListenerToSelect(area, isEnvelope) {
         const tipoTarefaDTO = { isEnvelope, tipoTarefa }
         
         const { prazoInterno, prazoFatal, prazoCRM } = calcularPrazoProtocoloProcesso(area, tipoTarefaDTO)
+
+        dataParaFinalizacaoCRM = prazoCRM
+        prazoFatalTarefaProtocolo = prazoFatal
         
         setDataTarefa(prazoFatal)
 
@@ -400,29 +414,24 @@ function addEventListenerToSelect(area, isEnvelope) {
 
         const btnGravar = document.querySelector("#btnGravar")
 
-        const { estado } = await requestDataCliente({
+        const { estado } = estadoCliente || await requestDataCliente({
             id: idCL,
             module: "cliente",
             gravarBtn: btnGravar
         })
 
+        estadoCliente = estado
+
         const isBSB = estado === 'DF' || estado === 'GO'
         
         selectRespExecJuridico({ area, prazoInterno, prazoFatal, tipoTarefa, isBSB })
 
-        btnGravar.replaceWith(btnGravar.cloneNode(true))
-        const newBtnGravar = document.querySelector("#btnGravar")
+        if (isEventAdded)
+            btnGravar.removeEventListener("click", createTaskCRM)
 
-        newBtnGravar.addEventListener("click", async event => {
-            event.preventDefault()
-            newBtnGravar.disabled = true
-            const form = document.querySelector("#fdt-form")
+        btnGravar.addEventListener("click", createTaskCRM)
 
-            const descricaoTarefa = `Nova oportunidade: ${isEnvelope ? `ENVELOPE ${area.toUpperCase()}` : 'DEMORA INJUSTIFICADA'} - ${selectedOptions[0].dataset.original} - P.F. ${prazoFatal.toLocaleDateString()}`
-            await createTarefa({ idCL, descricaoTarefa, dataParaFinalizacao: prazoCRM.toLocaleDateString() })
-
-            form.submit()
-        })
+        isEventAdded = true
     })
 }
 
@@ -538,9 +547,10 @@ function getDiaUtil(date) {
 }
 
 function calcularPrazoProtocoloProcesso(area, { isEnvelope, tipoTarefa }) {
+    // 04/07/2025: Dr Keven solicita, via whatasapp, que as tarefas de D.I. sejam criadas com prazo fatal no dia da D.I.
     const tipoDemanda = isEnvelope ? "ENVELOPE" : tipoTarefa
-    const acrescimo = isEnvelope ? 0 : 1
-    const prazoJuridico = isEnvelope ? 0 : 7
+    const acrescimo = 0 //isEnvelope ? 0 : 1
+    const prazoJuridico = 0 //isEnvelope ? 0 : 7
     const prazoProtocolo = prazosTarefasAvulsas[area][tipoDemanda]
     
     const datePrazoFatal = new Date()

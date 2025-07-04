@@ -596,13 +596,26 @@ async function selectExecutorContatar(colaboradores) {
 
 async function getTarefasColaboradores({ colaborador, dataDe, dataAte = dataDe, typeOfTask = typeOfTaskSearch.geral }){
     
+    // Se já houver um controller para o colaborador, e a requisição não foi abortada, vamos abortar a requisição anterior
     if (controllers.has(colaborador.id)) {
-        controllers.get(colaborador.id).abort()
-        controllers.delete(colaborador.id)
+        const currentController = controllers.get(colaborador.id)
+
+        // Verifica se a requisição já foi abortada
+        if (currentController.signal.aborted) {
+            console.log(`A requisição já foi abortada para o colaborador ${colaborador.id}`)
+        } else {
+            currentController.abort() // Abortando a requisição anterior
+            console.log(`Abortando requisição anterior para o colaborador ${colaborador.id}`)
+        }
+
+        controllers.delete(colaborador.id) // Remover o controller da lista
     }
 
+    // Criando um novo controller para a requisição atual
     const controller = new AbortController()
     const signal = controller.signal
+
+    // Adicionando o novo controller ao Map
     controllers.set(colaborador.id, controller)
 
     const parser = new DOMParser()
@@ -617,53 +630,67 @@ async function getTarefasColaboradores({ colaborador, dataDe, dataAte = dataDe, 
         bsAdvTarefasAte: dataAte.toLocaleDateString()
     }
 
-    return await fetch(urlRequest, {
+    try {
+        const response = await fetch(urlRequest, {
             method: "POST",
             body: new URLSearchParams(bodyObject),
             headers: new Headers({
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/x-www-form-urlencoded',
             }),
-            signal
-    }).then(function (response) {
-        return response.blob()
-    }).then(async function (result) {
-        const doc = parser.parseFromString(await result.text(),'text/html')
-        
-        const tarefas = doc.documentElement.querySelectorAll('body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr')
-            let contador = 0
-            
-            tarefas.forEach(e => {
-                if (typeOfTask === typeOfTaskSearch.protocolo) {
-                    if (e.children[3] != null) {
-                        const tipoTarefa = e.children[3].innerText.toUpperCase()
+            signal,
+        });
 
-                        if (typeListTasksProtocol.includes(tipoTarefa)) {
-                            contador++
-                        }
-                    }
-                } if (typeOfTask === typeOfTaskSearch.prorrogacao) {
-                    if (e.children[3] != null) {
-                        const tipoTarefa = e.children[3].innerText.toUpperCase()
+        // Verifica se a requisição foi abortada
+        if (signal.aborted) {
+            console.log(`A requisição foi abortada para o colaborador ${colaborador.id}`);
+            return; // Retorna sem processar se a requisição foi abortada
+        }
 
-                        if (tipoTarefa === "PEDIDO DE PRORROGAÇÃO AUXÍLIO DOENÇA - ADM") {
-                            contador++
-                        }
-                    }
-                } else {
-                    if (e.children[2] != null) {
-                        const lengthProcessTJ = 12
-                        if ((e.children[2].innerText.match("[0-9]*")[0].length >= lengthProcessTJ) && !(e.children[3].innerText.search('Acompanhar') == 0)) {
-                            contador++
-                        }
+        const result = await response.blob();
+        const doc = parser.parseFromString(await result.text(), 'text/html');
+
+        const tarefasHTML = doc.documentElement.querySelectorAll('body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr');
+        let contador = 0;
+
+        tarefasHTML.forEach(tarefaHTMLElement => {
+            if (typeOfTask === typeOfTaskSearch.protocolo) {
+                if (tarefaHTMLElement.children[3] != null) {
+                    const tipoTarefa = tarefaHTMLElement.children[3].innerText.toUpperCase();
+
+                    if (typeListTasksProtocol.includes(tipoTarefa)) {
+                        contador++;
                     }
                 }
-            })
+            } else if (typeOfTask === typeOfTaskSearch.prorrogacao) {
+                if (tarefaHTMLElement.children[3] != null) {
+                    const tipoTarefa = tarefaHTMLElement.children[3].innerText.toUpperCase();
 
-        colaborador.tarefas = contador
-        addListaTarefas(colaborador, dataDe)
+                    if (tipoTarefa === "PEDIDO DE PRORROGAÇÃO AUXÍLIO DOENÇA - ADM") {
+                        contador++;
+                    }
+                }
+            } else {
+                if (tarefaHTMLElement.children[2] != null) {
+                    const lengthProcessTJ = 12;
+                    if ((tarefaHTMLElement.children[2].innerText.match("[0-9]*")[0].length >= lengthProcessTJ) && !(tarefaHTMLElement.children[3].innerText.search('Acompanhar') == 0)) {
+                        contador++;
+                    }
+                }
+            }
+        });
 
-        return colaborador
-    })
+        colaborador.tarefas = contador;
+        addListaTarefas(colaborador, dataDe);
+
+        return colaborador;
+
+    } catch (error) {
+        if (error.name === 'AbortError') {
+            console.log(`A requisição foi abortada para o colaborador ${colaborador.id}`);
+        } else {
+            console.error('Outro erro ocorreu: ', error);
+        }
+    }
 }
 
 function filterColaboradoresCalculo () {
