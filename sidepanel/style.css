@@ -270,3 +270,7 @@ input[type=number] {
     font-style: normal;
     color: #fff;
 }
+
+.yellow {
+    color: rgb(255, 208, 0);
+}

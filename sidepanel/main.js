@@ -27,6 +27,8 @@ const {
     iconOrigem = document.querySelector('#iconCheckVerifyOrigem'),
     processNumber = document.querySelector("#processNumber"),
     processId = document.querySelector("#processId"),
+    customer = document.querySelector("#customer"),
+    customerValidate = document.querySelector("#customerValidate"),
     processDefendant = document.querySelector("#processDefendant"),
     processPesponsible = document.querySelector("#processPesponsible"),
     processNature = document.querySelector("#processNature"),
@@ -38,11 +40,16 @@ const {
 
 let portal = null
 
+const actions = {
+    getCompetencia: 'getCompetenciaProcesso',
+    getPartes: 'getPartesProcesso'
+}
+
 async function sendMessageInnerTabs (message, callback, queryOptions = {}) {
 
     chrome.tabs.query(queryOptions, tabs => {
         if(tabs.length > 1) {
-            alert("Favor, manter aberto somente a página do portal da justiça que esteja analisando intimações no momento. Caso contrário, não será possível realizar o cálculo de datas.")
+            alert("Mais de uma aba do portal da justiça aberta no momento. Favor, manter aberto somente a página do portal da justiça que esteja analisando intimações no momento.")
         } else {
             chrome.tabs.sendMessage(tabs[0].id, message, callback)
         }
@@ -85,6 +92,7 @@ function sendMessageCheck(element, icon) {
     const onMessageCallback = (msg) => {
         atualizarDataProcessList(msg.result)
         atualizarIconCheck(msg.checked, icon, element)
+        getPartesProcesso()
     }
 
     connectOnPortForSendMessage({ message, queryOptions, connectInfo, onMessageCallback })
@@ -95,6 +103,7 @@ function limpartDataProcessList() {
     dataProcessDiv.style.display = "none"
     processNumber.innerHTML = ""
     processId.innerHTML = ""
+    customer.innerHTML = ""
     processDefendant.innerHTML = ""
     processPesponsible.innerHTML = ""
     processNature.innerHTML = ""
@@ -110,6 +119,7 @@ function atualizarDataProcessList(dataProcess) {
         dataProcessDiv.style.display = "block"
         processNumber.innerHTML = dataProcess.processo.origem
         processId.innerHTML = dataProcess.processo.id
+        customer.innerHTML = dataProcess.nomeCliente
         processDefendant.innerHTML = dataProcess.processo.reu
         processPesponsible.innerHTML = dataProcess.processo.responsavel
         processNature.innerHTML = dataProcess.processo.natureza
@@ -137,13 +147,15 @@ function removeCaracteresProcesso(value) {
     return value.replace(/[^\d]/g, '')
 }
 
-async function sendMessage(prazo, parametro) {
-    const message = { action: 'getCompetencia' }
+async function getLocalProcesso(prazo, parametro) {
+    const message = { action: actions.getCompetencia }
+
     const callback = async (response) => {
         portal = response.portal
         calcularPrazo(prazo, response.competencia, parametro)
         setAnalise(saveInfoAnalise())
     }
+    
     const queryOptions = {
         url: [
             "https://www.tjse.jus.br/tjnet/portaladv/*",
@@ -152,11 +164,33 @@ async function sendMessage(prazo, parametro) {
         ]
     }
 
-    sendMessageInnerTabs(message, callback, queryOptions)
+    return sendMessageInnerTabs(message, callback, queryOptions)
 }
 
-function getLocalProcesso(prazo, parametro) {
-    return sendMessage(prazo, parametro)
+async function getPartesProcesso() {
+    const message = { action: actions.getPartes }
+
+    const callback = async (partesProcesso) => {
+        const name = customer.innerText.trim().toUpperCase()
+        console.log(partesProcesso)
+        const isParteProcesso = partesProcesso?.includes(removeAcentuacaoString(name))
+        
+        if(!isParteProcesso) {
+            customerValidate.classList.add('fa', 'fa-exclamation-triangle', 'yellow')
+        } else {
+            customerValidate.classList.remove('fa', 'fa-exclamation-triangle', 'yellow')
+        }
+    }
+
+    const queryOptions = {
+        url: [
+            "https://www.tjse.jus.br/tjnet/portaladv/*",
+            "https://pje.trt20.jus.br/pjekz/processo/*",
+            "https://pje.trt15.jus.br/pjekz/processo/*",
+        ]
+    }
+
+    return await sendMessageInnerTabs(message, callback, queryOptions)
 }
 
 async function copiar() {
@@ -645,7 +679,7 @@ function addListeners () {
     let indice = -1
     const sugestoesTipoIntimacao = document.querySelector("#sugestoes"),
         sugestoesAudiencia = document.querySelector("#sugestoes-audiencia"),
-        termosTiposIntimacao = ['MANIFESTAÇÃO','MANIFESTAÇÃO SOBRE DOCUMENTOS','MANIFESTAÇÃO SOBRE PERÍCIA','MANIFESTAÇÃO SOBRE ACORDO','MANIFESTAÇÃO SOBRE CÁLCULOS','MANIFESTAÇÃO SOBRE LAUDO', 'MANIFESTAÇÃO SOBRE LAUDO COMPLEMENTAR','AUDIÊNCIA DE CONCILIAÇÃO','AUDIÊNCIA INICIAL','AUDIÊNCIA DE INSTRUÇÃO','AUDIÊNCIA DE INSTRUÇÃO E JULGAMENTO','AUDIÊNCIA UNA','EMENDAR','DECISÃO','DECISÃO SUSPENSÃO','DECISÃO INCOMPETÊNCIA','DECISÃO + RECOLHER CUSTAS','PERÍCIA MÉDICA','PERÍCIA TÉCNICA','PERÍCIA GRAFOTÉCNICA','PERÍCIA PAPILOSCÓPICA','PERÍCIA PSIQUIÁTRICA','PERÍCIA PSICOLÓGICA','ACÓRDÃO','SENTENÇA','PAUTA','CONTRARRAZÕES','DESPACHO','ARQUIVO','INDICAR BENS','DADOS BANCÁRIOS','ALVARÁ','DESPACHO ALVARÁ','RPV','PROVAS','RÉPLICA','REMESSA','DESCIDA DOS AUTOS','TERMO DE AUDIÊNCIA','JULGAMENTO ANTECIPADO','MANIFESTAÇÃO SOBRE DEPÓSITO','QUESITOS + INDICAR TÉCNICOS','QUESITOS','MANIFESTAÇÃO SOBRE HONORÁRIOS','MANIFESTAÇÃO SOBRE ALVARÁ','PLANILHA','MANIFESTAÇÃO SOBRE SISBAJUD','RETIRADO DE PAUTA','RAZÕES FINAIS','MANIFESTAÇÃO SOBRE INFOJUD','DILAÇÃO','ATO ORDINATÓRIO','REMESSA CEJUSC','RECOLHER CUSTAS','AUDIÊNCIA DE INTERROGATÓRIO','MANIFESTAÇÃO SOBRE CERTIDÃO', 'MANIFESTAÇÃO SOBRE OFÍCIO', 'ANÁLISE CUMPRIMENTO', 'MANIFESTAÇÃO SOBRE CUMPRIMENTO', 'MANIFESTAÇÃO SOBRE CONCILIAÇÃO + PROVAS','MANIFESTAÇÃO SOBRE RENAJUD', 'MANIFESTAÇÃO SOBRE CNIB', 'MANIFESTAÇÃO SOBRE PERITO + INDICAR TÉCNICOS + QUESITOS', 'CONTRARRAZÕES + CONTRAMINUTA', 'ANÁLISE DE SENTENÇA', 'RECURSO DE REVISTA', 'RECURSO ORDINÁRIO', 'AGRAVO INTERNO', 'EMBARGOS À EXECUÇÃO', 'AGRAVO DE PETIÇÃO', 'RESPOSTA À EXCEÇÃO DE INCOMPETÊNCIA', 'MANIFESTAÇÃO SOBRE EMBARGOS', 'AGRAVO DE INSTRUMENTO', 'ANÁLISE DE ACÓRDÃO', 'ANÁLISE DE DESPACHO', 'INDICAR ENDEREÇO', 'PROMOVER EXECUÇÃO', 'PROSSEGUIR EXECUÇÃO', 'ACOMPANHAR CUMPRIMENTO', 'MANIFESTAÇÃO SOBRE PREVJUD', 'MANIFESTAÇÃO SOBRE SNIPER', 'MANIFESTAÇÃO SOBRE QUITAÇÃO', 'MANIFESTAÇÃO SOBRE PAGAMENTO', 'MANIFESTAÇÃO SOBRE LITISPENDÊNCIA', 'MANIFESTAÇÃO SOBRE AR', 'MANIFESTAÇÃO SOBRE MANDADO', 'MANIFESTAÇÃO SOBRE IMPUGNAÇÃO', 'MANIFESTAÇÃO SOBRE PENHORA', 'MANIFESTAÇÃO SOBRE REALIZAÇÃO DA PERÍCIA', 'MANIFESTAÇÃO SOBRE EXCEÇÃO DE PRÉ-EXECUTIVIDADE', 'PERÍCIA SOCIAL', 'MANIFESTAÇÃO SOBRE PRESCRIÇÃO', 'DECISÃO + QUESITOS', 'MANIFESTAÇÃO SOBRE BACENJUD', 'CONTRAMINUTA', 'DECISÃO + CONTRARRAZÕES'],
+        termosTiposIntimacao = ['MANIFESTAÇÃO','MANIFESTAÇÃO SOBRE DOCUMENTOS','MANIFESTAÇÃO SOBRE PERÍCIA','MANIFESTAÇÃO SOBRE ACORDO','MANIFESTAÇÃO SOBRE CÁLCULOS','MANIFESTAÇÃO SOBRE LAUDO', 'MANIFESTAÇÃO SOBRE LAUDO COMPLEMENTAR','AUDIÊNCIA DE CONCILIAÇÃO','AUDIÊNCIA INICIAL','AUDIÊNCIA DE INSTRUÇÃO','AUDIÊNCIA DE INSTRUÇÃO E JULGAMENTO','AUDIÊNCIA UNA','EMENDAR','DECISÃO','DECISÃO SUSPENSÃO','DECISÃO INCOMPETÊNCIA','DECISÃO + RECOLHER CUSTAS','PERÍCIA MÉDICA','PERÍCIA TÉCNICA','PERÍCIA GRAFOTÉCNICA','PERÍCIA PAPILOSCÓPICA','PERÍCIA PSIQUIÁTRICA','PERÍCIA PSICOLÓGICA','ACÓRDÃO','SENTENÇA','PAUTA','CONTRARRAZÕES','DESPACHO','ARQUIVO','INDICAR BENS','DADOS BANCÁRIOS','ALVARÁ','DESPACHO ALVARÁ','RPV','PROVAS','RÉPLICA','REMESSA','DESCIDA DOS AUTOS','TERMO DE AUDIÊNCIA','JULGAMENTO ANTECIPADO','MANIFESTAÇÃO SOBRE DEPÓSITO','QUESITOS + INDICAR TÉCNICOS','QUESITOS','MANIFESTAÇÃO SOBRE HONORÁRIOS','MANIFESTAÇÃO SOBRE ALVARÁ','PLANILHA','MANIFESTAÇÃO SOBRE SISBAJUD','RETIRADO DE PAUTA','RAZÕES FINAIS','MANIFESTAÇÃO SOBRE INFOJUD','DILAÇÃO','ATO ORDINATÓRIO','REMESSA CEJUSC','RECOLHER CUSTAS','AUDIÊNCIA DE INTERROGATÓRIO','MANIFESTAÇÃO SOBRE CERTIDÃO', 'MANIFESTAÇÃO SOBRE OFÍCIO', 'ANÁLISE CUMPRIMENTO', 'MANIFESTAÇÃO SOBRE CUMPRIMENTO', 'MANIFESTAÇÃO SOBRE CONCILIAÇÃO + PROVAS','MANIFESTAÇÃO SOBRE RENAJUD', 'MANIFESTAÇÃO SOBRE CNIB', 'MANIFESTAÇÃO SOBRE PERITO + INDICAR TÉCNICOS + QUESITOS', 'CONTRARRAZÕES + CONTRAMINUTA', 'ANÁLISE DE SENTENÇA', 'RECURSO DE REVISTA', 'RECURSO ORDINÁRIO', 'AGRAVO INTERNO', 'EMBARGOS À EXECUÇÃO', 'AGRAVO DE PETIÇÃO', 'RESPOSTA À EXCEÇÃO DE INCOMPETÊNCIA', 'MANIFESTAÇÃO SOBRE EMBARGOS', 'AGRAVO DE INSTRUMENTO', 'ANÁLISE DE ACÓRDÃO', 'ANÁLISE DE DESPACHO', 'INDICAR ENDEREÇO', 'PROMOVER EXECUÇÃO', 'PROSSEGUIR EXECUÇÃO', 'ACOMPANHAR CUMPRIMENTO', 'MANIFESTAÇÃO SOBRE PREVJUD', 'MANIFESTAÇÃO SOBRE SNIPER', 'MANIFESTAÇÃO SOBRE QUITAÇÃO', 'MANIFESTAÇÃO SOBRE PAGAMENTO', 'MANIFESTAÇÃO SOBRE LITISPENDÊNCIA', 'MANIFESTAÇÃO SOBRE AR', 'MANIFESTAÇÃO SOBRE MANDADO', 'MANIFESTAÇÃO SOBRE IMPUGNAÇÃO', 'MANIFESTAÇÃO SOBRE PENHORA', 'MANIFESTAÇÃO SOBRE REALIZAÇÃO DA PERÍCIA', 'MANIFESTAÇÃO SOBRE EXCEÇÃO DE PRÉ-EXECUTIVIDADE', 'PERÍCIA SOCIAL', 'MANIFESTAÇÃO SOBRE PRESCRIÇÃO', 'DECISÃO + QUESITOS', 'MANIFESTAÇÃO SOBRE BACENJUD', 'CONTRAMINUTA', 'DECISÃO + CONTRARRAZÕES', 'RESPOSTA À EXCEÇÃO DE PRÉ-EXECUTIVIDADE'],
         termosLocaisAudiencias = Object.keys(locaisAudienciasPericias)
 
     const resetIndex = () => {

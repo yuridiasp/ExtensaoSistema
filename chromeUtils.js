@@ -10,13 +10,17 @@ function enviarResposta() {
         }
 
         if(message.action === "getCompetencia") {
-            let resultado = getCompetencia()
-            sendResponse(resultado)
+            sendResponse(getCompetencia())
             return true 
         }
 
         if (message.action === "copyText") {
             copyText(message.texto, sendResponse)
+            return true 
+        }
+
+        if(message.action === 'getPartesProcesso') {
+            sendResponse(getPartesProcesso())
             return true 
         }
 

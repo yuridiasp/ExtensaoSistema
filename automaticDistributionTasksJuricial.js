@@ -392,7 +392,14 @@ function addEventListenerToSelect(area, isEnvelope) {
         const idCL = document.querySelector("#fdt-form > input[type=hidden]:nth-child(4)").value
 
         const descricaoTarefa = `Nova oportunidade: ${isEnvelope ? `ENVELOPE ${area.toUpperCase()}` : 'DEMORA INJUSTIFICADA'} - ${selectDescription.selectedOptions[0].dataset.original} - P.F. ${prazoFatalTarefaProtocolo.toLocaleDateString()}`
-        await createTarefa({ idCL, descricaoTarefa, dataParaFinalizacao: dataParaFinalizacaoCRM.toLocaleDateString() })
+
+        const bodyTask = { idCL, descricaoTarefa, dataParaFinalizacao: dataParaFinalizacaoCRM.toLocaleDateString() }
+        if (!isEnvelope) {
+            bodyTask.idResponsavel = 196
+            bodyTask.idExecutor = 196
+        }
+        
+        await createTarefa(bodyTask)
 
         form.submit()
     }

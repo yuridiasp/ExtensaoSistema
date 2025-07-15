@@ -493,7 +493,7 @@ function addListaTarefas({ nome, datasViagem, tarefas }, data) {
             if (!state.functions.todasPaginas.tipoIntimacaoIsJudicial && responsaveisINSS.includes(executor) || responsaveisAdministrativo.includes(executor)) {
                 return executor
             } else if(cliente.cliente.estado === "DF" || cliente.cliente.estado === "GO") {
-                return "HENYR GOIS DOS SANTOS"
+                return "FLAVIO LUCAS LIMA SOUZA"
             } else if (state.functions.todasPaginas.tipoIntimacaoIsJudicial && !responsaveisAdministrativo.includes(executor) && !responsaveisPrevidenciario.includes(responsavelSelecionado)) {
                 return 'JULIANO OLIVEIRA DE SOUZA'
             } else {
@@ -535,7 +535,7 @@ async function selectExecutorContatarAdministrativo (colaboradores) {
         const brasilia = ADM.filter(colaborador => colaborador.assignments.includes(assignments.contatar.BSB)).map(colaborador => colaborador.nome)
 
         if (brasilia.includes(executor.nome)) {
-            return "HENYR GOIS DOS SANTOS"
+            return "FLAVIO LUCAS LIMA SOUZA"
         }
 
         if (tipoCompromissoNormalizado.includes("PERICIA") || (tipoCompromissoNormalizado.includes("EXIGENCIA INSS") && cliente.compromisso.tarefas.length === 3)) {
@@ -574,7 +574,7 @@ async function selectExecutorContatarJudicial (colaboradores) {
     if (executor.nome.includes("SANDOVAL"))
         responsavel =  'SANDOVAL FILHO CORREIA LIMA FILHO'
     else if (cliente.processo.estado === 'GO' || cliente.processo.estado === 'DF') {
-        responsavel = 'HENYR GOIS DOS SANTOS'
+        responsavel = 'FLAVIO LUCAS LIMA SOUZA'
     }
 
     return { responsavel, executor: executor.nome }
@@ -852,7 +852,7 @@ async function validaResponsavelTj (num) {
     }
 
     if (sac === tarefaAtualNormalizada)
-        return {responsavel: "HENYR GOIS DOS SANTOS",executor: "LAYNE DA SILVA GOIS"}
+        return {responsavel: "FLAVIO LUCAS LIMA SOUZA",executor: "FLAVIO LUCAS LIMA SOUZA"}
 
     if (tipoCompromissoNormalizado === "MANIFESTACAO SOBRE CALCULOS" && tarefaAtualNormalizada.includes("ANALISE")) {
         return {responsavel: "GUILHERME JASMIM", executor: "GUILHERME JASMIM"}
@@ -911,7 +911,7 @@ async function validaResponsavelFederal (num) {
     if (tarefasAdm.includes(tarefaAtualNormalizada)) {
         //Tarefa contatar para BSB
         if (cliente.processo.estado === "DF" || cliente.processo.estado === "GO") {
-            return {responsavel: "HENYR GOIS DOS SANTOS", executor: "HENYR GOIS DOS SANTOS"}
+            return {responsavel: "FLAVIO LUCAS LIMA SOUZA", executor: "FLAVIO LUCAS LIMA SOUZA"}
         }
 
         //Tarefa contatar para escritório de Estância
@@ -925,9 +925,9 @@ async function validaResponsavelFederal (num) {
 
     if (tarefaSac === tarefaAtualNormalizada) { //Tarefas para o SAC
         if (cliente.processo.estado === "DF" || cliente.processo.estado === "GO") {
-            return {responsavel: "HENYR GOIS DOS SANTOS",executor: "TRICYA MATEUS ROLEMBERG"}
+            return {responsavel: "FLAVIO LUCAS LIMA SOUZA",executor: "TRICYA MATEUS ROLEMBERG"}
         }
-        return {responsavel: "HENYR GOIS DOS SANTOS",executor: "LAYNE DA SILVA GOIS"}
+        return {responsavel: "FLAVIO LUCAS LIMA SOUZA",executor: "FLAVIO LUCAS LIMA SOUZA"}
     }
 
     if ((digitoVerificador === "520" || natureza === "TRABALHISTA") || (natureza === "SERVIDOR PÚBLICO" && cliente.processo.responsavel === "VICTOR HUGO SOUSA ANDRADE")) {  //Processos Trabalhistas TRT20
@@ -1063,7 +1063,7 @@ function validaResponsavelAdministrativo() {
         
 
         if (tarefaSac === tarefa) {
-            return {responsavel: "HENYR GOIS DOS SANTOS", executor: "LAYNE DA SILVA GOIS"}
+            return {responsavel: "FLAVIO LUCAS LIMA SOUZA", executor: "FLAVIO LUCAS LIMA SOUZA"}
         }
 
         return null
@@ -1633,28 +1633,28 @@ async function requestIdClientFromProtocol(protocolo) {
     return urlFichaCliente.split("idPK=")[1]
 }
 
-async function extrairDadosRequisicaoRequerimentoHtml(response) {
+async function extrairDadosRequisicaoRequerimentoHtml(doc) {
     const dataClient = {
         requerimento: {
-            id: response.documentElement.querySelector("#fdt-form > input[type=hidden]:nth-child(1)").value.toUpperCase(),
-            protocolo: response.documentElement.querySelector("#inssProtocolo").value.toUpperCase(),
-            data: response.documentElement.querySelector("#inssData").value.toUpperCase()
+            id: doc.documentElement.querySelector("#fdt-form > input[type=hidden]:nth-child(1)").value.toUpperCase(),
+            protocolo: doc.documentElement.querySelector("#inssProtocolo").value.toUpperCase(),
+            data: doc.documentElement.querySelector("#inssData").value.toUpperCase()
         }
     }
 
-    const selectResponsavelRequerimento = response.documentElement.querySelector("#inssResponsavel")
+    const selectResponsavelRequerimento = doc.documentElement.querySelector("#inssResponsavel")
     const indexResponsavelRequerimento = selectResponsavelRequerimento.selectedIndex
     dataClient.requerimento.responsavel = indexResponsavelRequerimento === -1 ? "" : selectResponsavelRequerimento.options[indexResponsavelRequerimento].innerText.toUpperCase()
 
-    const selectTipoBeneficioRequerimento = response.documentElement.querySelector("#inssIdTipoBeneficio")
+    const selectTipoBeneficioRequerimento = doc.documentElement.querySelector("#inssIdTipoBeneficio")
     const indexTipoBeneficioRequerimento = selectTipoBeneficioRequerimento.selectedIndex
     dataClient.requerimento.tipoBeneficio = indexTipoBeneficioRequerimento === -1 ? "" : selectTipoBeneficioRequerimento.options[indexTipoBeneficioRequerimento].innerText.toUpperCase()
 
-    const selectPostoINSSRequerimento = response.documentElement.querySelector("#inssIdPosto")
+    const selectPostoINSSRequerimento = doc.documentElement.querySelector("#inssIdPosto")
     const indexPostoINSSRequerimento = selectPostoINSSRequerimento.selectedIndex
     dataClient.requerimento.postoINSS = indexPostoINSSRequerimento === -1 ? "" : selectPostoINSSRequerimento.options[indexPostoINSSRequerimento].innerText.toUpperCase()
 
-    const selectStatusRequerimento = response.documentElement.querySelector("#idStatus")
+    const selectStatusRequerimento = doc.documentElement.querySelector("#idStatus")
     const indexStatusRequerimento = selectStatusRequerimento.selectedIndex
     dataClient.requerimento.status = indexStatusRequerimento === -1 ? "" : selectStatusRequerimento.options[indexStatusRequerimento].innerText.toUpperCase()
 
@@ -1664,31 +1664,31 @@ async function extrairDadosRequisicaoRequerimentoHtml(response) {
 
 }
 
-function extrairDadosRequisicaoClienteHtml(response) {
+function extrairDadosRequisicaoClienteHtml(doc) {
     
     const dataClient = {
-        nome: response.documentElement.querySelector("#apelido").value.toUpperCase(),
-        cpf: response.documentElement.querySelector("#cpf").value.toUpperCase(),
-        dcb: response.documentElement.querySelector("#dcbData").value.toUpperCase()
+        nome: doc.documentElement.querySelector("#apelido").value.toUpperCase(),
+        cpf: doc.documentElement.querySelector("#cpf").value.toUpperCase(),
+        dcb: doc.documentElement.querySelector("#dcbData").value.toUpperCase()
     }
     
-    const selectParceiro = response.documentElement.querySelector("#idFornecedor")
+    const selectParceiro = doc.documentElement.querySelector("#idFornecedor")
     const indexParceiro = selectParceiro.selectedIndex
     dataClient.parceiro = indexParceiro === -1 ? "" : selectParceiro.options[indexParceiro].innerText.toUpperCase()
 
-    const selectLocalAtendido = response.documentElement.querySelector("#idLocalAtendido")
+    const selectLocalAtendido = doc.documentElement.querySelector("#idLocalAtendido")
     const indexLocalAtendido = selectLocalAtendido.selectedIndex
     dataClient.localAtendido = indexLocalAtendido === -1 ? "" : selectLocalAtendido.options[indexLocalAtendido].innerText.toUpperCase()
 
-    const selectCidade = response.documentElement.querySelector("#lstCidade")
+    const selectCidade = doc.documentElement.querySelector("#lstCidade")
     const indexCidade = selectCidade.selectedIndex
     dataClient.cidade = indexCidade === -1 ? "" : selectCidade.options[indexCidade].innerText.toUpperCase()
 
-    const selectEstado = response.documentElement.querySelector("#lstEstado")
+    const selectEstado = doc.documentElement.querySelector("#lstEstado")
     const indexEstado = selectEstado.selectedIndex
     dataClient.estado = indexEstado === -1 ? "" : selectEstado.options[indexEstado].value.toUpperCase()
 
-    const selectSituacao = response.documentElement.querySelector("#idSituacao")
+    const selectSituacao = doc.documentElement.querySelector("#idSituacao")
     const indexSituacao = selectSituacao.selectedIndex
     dataClient.situacao = indexSituacao === -1 ? "" : selectSituacao.options[indexSituacao].innerText.toUpperCase()
     
@@ -1696,46 +1696,50 @@ function extrairDadosRequisicaoClienteHtml(response) {
 
 }
 
-function extrairDadosRequisicaoProcessoHtml(response) {
+function extrairDadosRequisicaoProcessoHtml(doc, isSidepanelRequest = false) {
     
     const dataClient = {
-        idCliente: response.documentElement.querySelector("#fdt-form > input[type=hidden]:nth-child(2)").value.toUpperCase(),
+        idCliente: doc.documentElement.querySelector("#fdt-form > input[type=hidden]:nth-child(2)").value.toUpperCase(),
         processo: {
-            id: response.documentElement.querySelector("#fdt-form > input[type=hidden]:nth-child(1)").value.toUpperCase(),
-            origem: response.documentElement.querySelector("#numero").value.toUpperCase(),
-            reu: response.documentElement.querySelector("#nomeReu").value.toUpperCase(),
+            id: doc.documentElement.querySelector("#fdt-form > input[type=hidden]:nth-child(1)").value.toUpperCase(),
+            origem: doc.documentElement.querySelector("#numero").value.toUpperCase(),
+            reu: doc.documentElement.querySelector("#nomeReu").value.toUpperCase(),
         }
     }
 
-    const selectResponsavelProcesso = response.documentElement.querySelector("#idResponsavel")
+    if(isSidepanelRequest) {
+        dataClient.nomeCliente = doc.documentElement.querySelector("#fdt-form > div.row.fdt-ficha > div:nth-child(1) > span").innerText.trim().toUpperCase()
+    }
+
+    const selectResponsavelProcesso = doc.documentElement.querySelector("#idResponsavel")
     const indexResponsavelProcesso = selectResponsavelProcesso.selectedIndex
     dataClient.processo.responsavel = indexResponsavelProcesso === -1 ? "" : selectResponsavelProcesso.options[indexResponsavelProcesso].innerText.toUpperCase()
     
 
-    const selectNaturezaProcesso = response.documentElement.querySelector("#idNatureza")
+    const selectNaturezaProcesso = doc.documentElement.querySelector("#idNatureza")
     const indexNaturezaProcesso = selectNaturezaProcesso.selectedIndex
     dataClient.processo.natureza = indexNaturezaProcesso === -1 ? 0 : selectNaturezaProcesso.options[indexNaturezaProcesso].innerText.toUpperCase()
 
-    const selectMeritoProcesso = response.documentElement.querySelector("#idMerito")
+    const selectMeritoProcesso = doc.documentElement.querySelector("#idMerito")
     const indexMeritoProcesso = selectMeritoProcesso.selectedIndex
     dataClient.processo.merito = indexMeritoProcesso === -1 ? 0 : selectMeritoProcesso.options[indexMeritoProcesso].innerText.toUpperCase()
 
-    const selectCidadeProcesso = response.documentElement.querySelector("#lstCidade")
+    const selectCidadeProcesso = doc.documentElement.querySelector("#lstCidade")
     const indexCidadeProcesso = selectCidadeProcesso.selectedIndex
     dataClient.processo.cidade = indexCidadeProcesso === -1 ? 0 : selectCidadeProcesso.options[indexCidadeProcesso].innerText.toUpperCase()
     
-    const selectEstadoProcesso = response.documentElement.querySelector("#lstEstado")
+    const selectEstadoProcesso = doc.documentElement.querySelector("#lstEstado")
     const indexEstadoProcesso = selectEstadoProcesso.selectedIndex
     dataClient.processo.estado = indexEstadoProcesso === -1 ? 0 : selectEstadoProcesso.options[indexEstadoProcesso].value.toUpperCase()
 
-    const selectVaraProcesso = response.documentElement.querySelector("#idVara")
+    const selectVaraProcesso = doc.documentElement.querySelector("#idVara")
     const indexVaraProcesso = selectVaraProcesso.selectedIndex
     dataClient.processo.vara = indexVaraProcesso === -1 ? 0 : selectVaraProcesso.options[indexVaraProcesso].innerText.toUpperCase()
 
     return dataClient
 }
 
-async function requestDataCliente(params) {
+async function requestDataCliente(params, isSidepanelRequest = false) {
     
     const modules = {
         inss: {
@@ -1761,7 +1765,7 @@ async function requestDataCliente(params) {
     if (params.gravarBtn)
         params.gravarBtn.disabled = false
 
-    return await functionRequest(doc)
+    return isSidepanelRequest ? await functionRequest(doc, isSidepanelRequest) : await functionRequest(doc)
 }
 
 async function ajax(link, id) {

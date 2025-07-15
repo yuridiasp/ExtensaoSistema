@@ -137,7 +137,17 @@ function getAbaAtiva() {
     return null
 }
 
+function isAbaAtivaPJEApenasCiencia() {
+    const itemMenuActive = document.querySelector("#formAbaExpediente\\:divMenuContexto > div > div > div > a > i.rotate-90")
+
+    return itemMenuActive !== null && itemMenuActive.parentElement.children[1].innerText.toUpperCase().includes("APENAS PENDENTES DE CIÊNCIA")
+}
+
 function createButtonReport(row, portalType) {
+
+    if (!isAbaAtivaPJEApenasCiencia()) {
+        return null
+    }
 
     const getIdExpediente = (aProcesso) => {
         return aProcesso.id.match(/tbExpedientes:(\d+)/)[1]
@@ -266,7 +276,6 @@ function addEventToRegisterReport(portalType) {
                 if (buttonAccept)
                     buttonAccept.addEventListener("click", event => captureClickConfirmAndRegister(event, portalType, report), false)
             }
-            
         })
     }
 }

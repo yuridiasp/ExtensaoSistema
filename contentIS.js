@@ -20,6 +20,17 @@ function getCompetencia() {
 
 }
 
+function getPartesProcesso() {
+    const iframe = document.querySelector('#downFrame')
+    if(iframe) {
+        const table = Array.from(document.querySelector('#downFrame').contentDocument.documentElement.querySelector('#mainFrame').contentDocument.documentElement.querySelectorAll("body > form > table")).find(table => table.innerHTML.includes("Partes do Processo:"))
+
+        const partesProcesso = Array.from(table.querySelectorAll("tr")).filter((tr, index) => index > 1).map(tr => removeAcentuacaoString(tr.children[1].innerText.trim().toUpperCase()))
+
+        return partesProcesso
+    }
+}
+
 function copyText(texto, sendResponse) {
     const tempInput = document.createElement("h2")
     let body = document.querySelector("body")
@@ -95,6 +106,7 @@ function getIdProcessFromDocument(document) {
 }
 
 function connectPort() {
+    const isSidepanelRequest = true
     chrome.runtime.onConnect.addListener(function(port) {
 
         port.onMessage.addListener(function(request) {
@@ -102,29 +114,9 @@ function connectPort() {
             if (request) {
                 const data = {
                     bsAdvProcessos: "s",
-                    org: "",
                     bsAdvProcessosTexto: request,
                     bsAdvProcessosData: "p.dataDistribuicao",
-                    bsAdvProcessosDataDe: "",
-                    bsAdvProcessosDataAte: "",
-                    bsAdvProcessosEstado: "",
-                    bsAdvProcessosCidade: "",
-                    bsAdvProcessosSemCidade: "",
-                    bsAdvProcessosCliente: "",
-                    bsAdvProcessosCpf: "",
-                    bsAdvProcessosReu: "",
-                    bsAdvProcessosCargo: "",
-                    bsAdvProcessosClienteComoChegou: "",
-                    bsAdvProcessosStatus: "",
-                    bsAdvProcessosNatureza: "",
-                    bsAdvProcessosMerito: "",
-                    bsAdvProcessosAutorPeticao: "",
-                    bsAdvProcessosResponsavel: "",
-                    bsAdvProcessosIncluidoPor: "",
-                    bsAdvProcessosSentenca: "",
                     bsAdvProcessosDataSentenca: "p.dataSentenca",
-                    bsAdvProcessosDataSentencaDe: "",
-                    bsAdvProcessosDataSentencaAte: "",
                     filtrar: "Filtrar"
                 }
 
@@ -136,7 +128,7 @@ function connectPort() {
                     body: new URLSearchParams(data),
                 }).then(response => {
                     if (!response.ok) {
-                        throw new Error('Erro na requisição: ' + response.status)
+                        console.error('Erro na requisição: ' + response.status)
                     }
                     return response.text();
                 }).then(async resposta => {
@@ -151,7 +143,7 @@ function connectPort() {
                             module: "processos",
                             id: getIdProcessFromDocument(doc.documentElement)
                         }
-                        requestDataCliente(params).then(result => {
+                        requestDataCliente(params, isSidepanelRequest).then(result => {
                             if (verify) {
                                 autoSearchProcess(request)
                             }
@@ -185,7 +177,7 @@ function getPartes () {
     }
 
     return null
-}
+};
 
 (function () {
     updateEvent()
