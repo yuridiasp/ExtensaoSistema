@@ -20,7 +20,8 @@ function enviarResposta() {
         }
 
         if(message.action === 'getPartesProcesso') {
-            sendResponse(getPartesProcesso())
+            const { portal } = getCompetencia()
+            sendResponse(getPartesProcesso(portal))
             return true 
         }
 

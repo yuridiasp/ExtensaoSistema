@@ -20,15 +20,17 @@ function getCompetencia() {
 
 }
 
-function getPartesProcesso() {
-    const iframe = document.querySelector('#downFrame')
-    if(iframe) {
-        const table = Array.from(document.querySelector('#downFrame').contentDocument.documentElement.querySelector('#mainFrame').contentDocument.documentElement.querySelectorAll("body > form > table")).find(table => table.innerHTML.includes("Partes do Processo:"))
-
-        const partesProcesso = Array.from(table.querySelectorAll("tr")).filter((tr, index) => index > 1).map(tr => removeAcentuacaoString(tr.children[1].innerText.trim().toUpperCase()))
-
-        return partesProcesso
+function getPartesProcesso(portal) {
+    if(portal === 'TJ') {
+        const iframe = document.querySelector('#downFrame')
+        if(iframe) {
+            const table = Array.from(document.querySelector('#downFrame').contentDocument.documentElement.querySelector('#mainFrame').contentDocument.documentElement.querySelectorAll("body > form > table")).find(table => table.innerHTML.includes("Partes do Processo:"))
+    
+            return Array.from(table.querySelectorAll("tr")).filter((tr, index) => index > 1).map(tr => removeAcentuacaoString(tr.children[1].innerText.trim().toUpperCase()))
+        }
     }
+
+    return document.querySelector("body > pje-root > mat-sidenav-container > mat-sidenav-content > pje-cabecalho > div > mat-toolbar > pje-cabecalho-processo > section > div > section.mat-tooltip-trigger.partes").innerText.split("x").map(parte => parte.trim())
 }
 
 function copyText(texto, sendResponse) {

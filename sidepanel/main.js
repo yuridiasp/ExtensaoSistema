@@ -48,7 +48,7 @@ const actions = {
 async function sendMessageInnerTabs (message, callback, queryOptions = {}) {
 
     chrome.tabs.query(queryOptions, tabs => {
-        if(tabs.length > 1) {
+        if(tabs.length > 1 && message?.action !== actions.getPartes) {
             alert("Mais de uma aba do portal da justiça aberta no momento. Favor, manter aberto somente a página do portal da justiça que esteja analisando intimações no momento.")
         } else {
             chrome.tabs.sendMessage(tabs[0].id, message, callback)
@@ -172,7 +172,7 @@ async function getPartesProcesso() {
 
     const callback = async (partesProcesso) => {
         const name = customer.innerText.trim().toUpperCase()
-        console.log(partesProcesso)
+        
         const isParteProcesso = partesProcesso?.includes(removeAcentuacaoString(name))
         
         if(!isParteProcesso) {

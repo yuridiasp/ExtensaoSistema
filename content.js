@@ -983,7 +983,7 @@ async function validaResponsavelFederal (num) {
             return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
         }
 
-        if (digitoVerificador === "405" && numeroProcesso.search('080') === 0) { //Processos do TRF5
+        if ((digitoVerificador === "405" && numeroProcesso.search('080') === 0) || (digitoVerificador === "405" && cliente.processo.merito === "MANDADO DE SEGURANÇA")) { //Processos do TRF5
             /* if (cliente.processo.merito === "MANDADO DE SEGURANÇA") {
                 if (setimoDigito <= 4) {
                     return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
@@ -2368,7 +2368,7 @@ async function idPage(url) {
             createButtonLinkJusticePortalForCase("cliente")
             fixProcessRegistrationButton()
         } else if (isPageHistoricoForm) {
-            completeHistoricoRegistroIntimacao()
+            completeDescricaoHistorico()
         }
     } else if (pagePortalDoAdvogado) {
         filtroAlvaraTJSE()
