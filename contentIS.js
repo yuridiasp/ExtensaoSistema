@@ -182,7 +182,7 @@ function getPartes () {
 };
 
 (function () {
-    updateEvent()
+    //updateEvent()
     connectPort()
 
     // Select the node that will be observed for mutations

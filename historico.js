@@ -116,8 +116,8 @@ function completeDescricaoHistorico() {
                 'Aguardando o cliente passar pelo atendimento': 'Acompanhamento realizado (Aguardando o cliente passar pelo atendimento)',
                 'Aguardando a remarcação do atendimento': 'Acompanhamento realizado (Aguardando a remarcação do atendimento)',
                 'Aguardando conclusão e ciência do cálculo': 'Acompanhamento realizado (Aguardando conclusão e ciência do cálculo)',
-                'Aguardando conclusão e ciência do Aguardando resolução das pendências referente ao caso XXX': 'Acompanhamento realizado (Aguardando conclusão e ciência do Aguardando resolução das pendências referente ao caso XXX)',
-                'Aguardando ajuizamento do caso XXX': 'Acompanhamento realizado (Aguardando ajuizamento do caso XXX)',
+                'Aguardando resolução das pendências referente ao caso': 'Acompanhamento realizado (Aguardando resolução das pendências referente ao caso XXX)',
+                'Aguardando ajuizamento do caso': 'Acompanhamento realizado (Aguardando ajuizamento do caso XXX)',
             }
         },
         127: {
@@ -135,7 +135,7 @@ function completeDescricaoHistorico() {
         88: {
             tipo: 'CRM (Intervenção)',
             subtipo: {
-                'Sem tarefa para remarcação de atendimento': 'Ao acompanhar a oportunidade, foi visto que a cliente não compareceu ao atendimento agendado; portanto, criei uma tarefa para proceder com a remarcação.',
+                'Sem tarefa para remarcação de atendimento': 'Ao acompanhar a oportunidade, foi constatado que não foi realizado o atendimento; portanto, criei uma tarefa para proceder com a remarcação.',
                 'Sem tarefa para ciência dos documentos anexados': 'Ao acompanhar a oportunidade, observei que não foi criada tarefa para ciência dos documentos anexados ao cadastro; encaminhei ao setor responsável para as devidas providências.',
                 'Sem tarefa ou envelope para solicitação de pendência': 'Ao acompanhar a oportunidade, constatei que não foi aberto envelope ou criada tarefa para solicitação das pendências; dito isso, encaminho ao setor ADM para as providências. ',
                 'Cadastro em nome de familiar/ amigo': 'Ao acompanhar a oportunidade, constatei que o cadastro estava vinculado ao nome de XXX. Em decorrência disso, atualizei os dados no CRM para refletir o nome correto do cliente e anexei as informações pertinentes à sua ficha no sistema Korbil.',

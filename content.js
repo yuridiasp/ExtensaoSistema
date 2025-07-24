@@ -1035,13 +1035,14 @@ async function validaResponsavelFederal (num) {
             }
             if (secao === "8501") //Processos da seção de Itabaiana
                 return {responsavel: "ANA CAROLINA SOARES DE MELO",executor: "ANA CAROLINA SOARES DE MELO"}
+            const hoje = new Date()
             if (secao === "8502") { //Processos da seção de Estância
                 if (setimoDigito < 3)
                     return {responsavel: "KEVEN FARO DE CARVALHO",executor: "KEVEN FARO DE CARVALHO"}
-                return {responsavel: "SARA GONÇALVES PINHEIRO",executor: "SARA GONÇALVES PINHEIRO"}
+                return hoje.toLocaleDateString() <= "30/07/2025" ? {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"} : {responsavel: "SARA GONÇALVES PINHEIRO",executor: "SARA GONÇALVES PINHEIRO"}
             }
             if (secao === "8503") //Processos da seção de Lagarto
-                return {responsavel: "SARA GONÇALVES PINHEIRO",executor: "SARA GONÇALVES PINHEIRO"}
+                return hoje.toLocaleDateString() <= "30/07/2025" ? {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"} : {responsavel: "SARA GONÇALVES PINHEIRO",executor: "SARA GONÇALVES PINHEIRO"}
             if (secao === "8504")//Processos da seção de Propriá
                 return {responsavel: "ANA CAROLINA SOARES DE MELO",executor: "ANA CAROLINA SOARES DE MELO"}
             //return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
