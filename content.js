@@ -2349,6 +2349,7 @@ async function idPage(url) {
         } else if (isPageVisualizacaoAbaCompromissos) {
             createButtonRolagem()
             setValidacaoFunctionOn()
+            formatarCaracteresProcessoAbaListaCompromissos()
         } else if (isPageVisualizacaoCompromisso || isPageFormularioAddTarefaSemCompromisso) {
             setValidacaoFunctionOff()
         } else if (isPageListaTarefas) {

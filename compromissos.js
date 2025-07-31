@@ -261,3 +261,11 @@ function atualizarListaTarefasAbaCompromissos() {
 
     addEventListenerCheckboxTaskList()
 }
+
+function formatarCaracteresProcessoAbaListaCompromissos() {
+    const inputProcesso = document.querySelector("#bsAdvCompromissosProcesso")
+
+    inputProcesso.addEventListener("input", () => {
+        inputProcesso.value = removeCaracteresProcesso(inputProcesso.value)
+    })
+}
