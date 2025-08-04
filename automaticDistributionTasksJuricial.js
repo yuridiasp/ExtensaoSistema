@@ -63,13 +63,6 @@ const colaboradoresPrev = {
         tarefas: 0,
         isBSB: true
     },
-    yan: {
-        id: 229,
-        nome: "YAN THADEU PORTO DE OLIVEIRA SANTOS",
-        nomeTLC: "YAN",
-        diasViagem: [],
-        tarefas: 0
-    },
     ana: {
         id: 134,
         nome: "ANA CAROLINA SOARES DE MELO",
@@ -126,7 +119,6 @@ const demandas = {
         },
         "AUXÍLIO DOENÇA": {
             executores: [
-                colaboradoresPrev.yan,
                 colaboradoresPrev.elton,
                 colaboradoresPrev.joaoVitor,
                 colaboradoresPrev.arthur,
@@ -136,7 +128,6 @@ const demandas = {
         },
         "AUXÍLIO ACIDENTE": {
             executores: [
-                colaboradoresPrev.yan,
                 colaboradoresPrev.elton,
                 colaboradoresPrev.joaoVitor,
                 colaboradoresPrev.arthur,
@@ -148,7 +139,6 @@ const demandas = {
             executores: [
                 colaboradoresPrev.eduardo,
                 colaboradoresPrev.thalyson,
-                colaboradoresPrev.yan,
                 colaboradoresPrev.elton,
                 colaboradoresPrev.joaoVitor,
                 colaboradoresPrev.arthur,
@@ -160,13 +150,11 @@ const demandas = {
             executores: [
                 colaboradoresPrev.eduardo,
                 colaboradoresPrev.thalyson,
-                colaboradoresPrev.yan,
             ]
         },
         "ADICIONAL 25%": {
             executores: [
                 colaboradoresPrev.thalyson,
-                colaboradoresPrev.yan,
                 colaboradoresPrev.elton,
                 colaboradoresPrev.joaoVitor,
                 colaboradoresPrev.arthur,
@@ -185,7 +173,6 @@ const demandas = {
             executores: [
                 colaboradoresPrev.eduardo,
                 colaboradoresPrev.thalyson,
-                colaboradoresPrev.yan,
             ],
             isDIList: true
         },
@@ -193,7 +180,6 @@ const demandas = {
             executores: [
                 colaboradoresPrev.eduardo,
                 colaboradoresPrev.thalyson,
-                colaboradoresPrev.yan,
                 colaboradoresPrev.elton,
                 colaboradoresPrev.saulo,
             ],
@@ -215,7 +201,6 @@ const demandas = {
         },
         "APOSENTADORIA POR INVALIDEZ": {
             executores: [
-                colaboradoresPrev.yan,
                 colaboradoresPrev.elton,
                 colaboradoresPrev.joaoVitor,
                 colaboradoresPrev.arthur,
@@ -227,14 +212,12 @@ const demandas = {
             executores: [
                 colaboradoresPrev.eduardo,
                 colaboradoresPrev.thalyson,
-                colaboradoresPrev.yan,
                 colaboradoresPrev.elton,
                 colaboradoresPrev.saulo,
             ]
         },
         "LOAS": { 
             executores: [
-                colaboradoresPrev.yan,
                 colaboradoresPrev.elton,
                 colaboradoresPrev.saulo,
                 colaboradoresPrev.arthur,
@@ -253,7 +236,6 @@ const demandas = {
             executores: [
                 colaboradoresPrev.eduardo,
                 colaboradoresPrev.thalyson,
-                colaboradoresPrev.yan,
                 colaboradoresPrev.elton,
                 colaboradoresPrev.joaoVitor,
                 colaboradoresPrev.arthur,
@@ -265,7 +247,6 @@ const demandas = {
             executores: [
                 colaboradoresPrev.eduardo,
                 colaboradoresPrev.thalyson,
-                colaboradoresPrev.yan,
                 colaboradoresPrev.elton,
                 colaboradoresPrev.joaoVitor,
                 colaboradoresPrev.arthur,
@@ -284,7 +265,6 @@ const demandas = {
             executores: [
                 colaboradoresPrev.eduardo,
                 colaboradoresPrev.thalyson,
-                colaboradoresPrev.yan,
                 colaboradoresPrev.elton,
                 colaboradoresPrev.joaoVitor,
                 colaboradoresPrev.arthur,
