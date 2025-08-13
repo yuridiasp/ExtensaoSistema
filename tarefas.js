@@ -14,13 +14,7 @@ async function createTarefa({ idCL, descricaoTarefa, dataParaFinalizacao, idTipo
         superior: '',
         idResponsavelAvisado: '',
         agendada: 'n',
-        acaoColetiva: '',
         idTipoTarefa,
-        pautaIdUsuarioResp: '',
-        dataParaFinalizacaoAgendada: '',
-        onde: '',
-        horarioInicial: '',
-        horarioFinal: '',
         dataParaFinalizacao,
         descricao: descricaoTarefa,
         idResponsavel,
@@ -29,11 +23,11 @@ async function createTarefa({ idCL, descricaoTarefa, dataParaFinalizacao, idTipo
         btnGravar: 'Gravar informações'
     }
 
-    const response = await fetch(url, { body: new URLSearchParams(body).toString(), method, headers: new Headers({ "Content-Type": contentType }) })
-
-    if (response.ok) {
-        console.log("Tarefa criada com sucesso")
-    } else {
-        console.log("Erro ao tentar criar tarefa para o CRM")
-    }
+    return await fetch(url, { body: new URLSearchParams(body).toString(), method, headers: new Headers({ "Content-Type": contentType }) }).then(response => {
+        if (response.ok) {
+            console.log("Tarefa criada com sucesso")
+        } else {
+            console.log("Erro ao tentar criar tarefa para o CRM")
+        }
+    })
 }

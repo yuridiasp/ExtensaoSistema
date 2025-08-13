@@ -45,6 +45,8 @@ let state = {
             criarHistoricoINSSDigital: null,
             tarefasAvulsasJuridicoCRM: null,
             tarefasProrrogacaoDCB: null,
+            tarefasPendenciaADM: null,
+            tarefasRemarcarAtendimento: null,
         },
         abaFollowUps: {
             photoGenerator: null,

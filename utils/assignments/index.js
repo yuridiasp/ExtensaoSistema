@@ -10,5 +10,8 @@ const assignments = {
     inssDigital: {
         prorrogacao: "Prorrogação",
         exigencia: "Prorrogação",
+    },
+    adm: {
+        pendencias: "Pendências ADM"
     }
 }

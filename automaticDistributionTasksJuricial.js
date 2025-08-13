@@ -24,6 +24,7 @@ const typeOfTaskSearch = {
     geral: 0,
     protocolo: 1,
     prorrogacao: 2,
+    pendencias: 3
 }
 const prazosTarefasAvulsas = {
     prev: {
@@ -284,13 +285,19 @@ const demandas = {
         "PEDIDO DE PRORROGAÇÃO AUXÍLIO DOENÇA - ADM": {
             executores: INSS.filter(colaborador => colaborador.assignments.includes(assignments.inssDigital.prorrogacao))
         }
+    },
+    adm: {
+        "PENDÊNCIAS ADM": {
+            executores: ADM.filter(colaborador => colaborador.assignments.includes(assignments.adm.pendencias))
+        }
     }
 }
 const areas = {
     previdenciaria: "prev",
     civel: "civ",
     trabalhista: "trt",
-    inssDigital: "inss"
+    inssDigital: "inss",
+    administrativo: "adm"
 }
 let previousOption = null, estadoCliente = null, dataParaFinalizacaoCRM = null, isEventAdded = false, prazoFatalTarefaProtocolo = null
 
@@ -309,10 +316,9 @@ function obterPrimeiroEUltimoDia(prazoInterno, prazoFatal, tipoTarefa) {
     return { primeiroDia, ultimoDia }
 }
 
-function requererTarefasProtocolJuridico(prazoInterno, prazoFatal, area, tipoTarefa, isBSB) {
+function requererTarefasAutomatic(prazoInterno, prazoFatal, area, tipoTarefa, isBSB, typeOfTask) {
     
     const colaboradores = isBSB ? Object.values(colaboradoresPrev).filter(colaborador => colaborador.isBSB) : demandas[area][tipoTarefa].executores
-    const typeOfTask = typeListTasksProtocol.includes(tipoTarefa.toUpperCase()) ? typeOfTaskSearch.protocolo : typeOfTaskSearch.prorrogacao
     
     const { primeiroDia, ultimoDia } = obterPrimeiroEUltimoDia(prazoInterno, prazoFatal, tipoTarefa)
     
@@ -321,15 +327,15 @@ function requererTarefasProtocolJuridico(prazoInterno, prazoFatal, area, tipoTar
     })
 }
 
-async function selectRespExecJuridico({ area, prazoInterno, prazoFatal, tipoTarefa, isBSB = false }) {
-    const typeOfTask = typeListTasksProtocol.includes(tipoTarefa) ? typeOfTaskSearch.protocolo : typeOfTaskSearch.prorrogacao
+async function selectRespExecAutomatic({ area, prazoInterno, prazoFatal, tipoTarefa, isBSB = false }) {
+    const typeOfTask = typeListTasksProtocol.includes(tipoTarefa) ? typeOfTaskSearch.protocolo : area === areas.inssDigital ? typeOfTaskSearch.prorrogacao : typeOfTaskSearch.pendencias
     const contactDiv = document.querySelector('#contactdiv')
     if (!contactDiv)
         createListaTarefas(typeOfTask, area.toUpperCase())
     else
         limparListaTarefas()
 
-    const listaColaboradores = await Promise.all(requererTarefasProtocolJuridico(prazoInterno, prazoFatal, area, tipoTarefa, isBSB))
+    const listaColaboradores = await Promise.all(requererTarefasAutomatic(prazoInterno, prazoFatal, area, tipoTarefa, isBSB, typeOfTask))
     
     const executor = listaColaboradores.reduce((previous, currrent) => {
         
@@ -339,7 +345,7 @@ async function selectRespExecJuridico({ area, prazoInterno, prazoFatal, tipoTare
         return previous
     })
 
-    const responsavel = area === areas.inssDigital ? "GABRIEL FRANÇA VITAL" : "KEVEN FARO DE CARVALHO"
+    const responsavel = area === areas.inssDigital ? "GABRIEL FRANÇA VITAL" : area === areas.administrativo ? executor.nome : "KEVEN FARO DE CARVALHO"
 
     selectRespExec ({ responsavel, executor: executor.nome }) 
 }
@@ -411,7 +417,7 @@ function addEventListenerToSelect(area, isEnvelope) {
 
         const isBSB = estado === 'DF' || estado === 'GO'
         
-        selectRespExecJuridico({ area, prazoInterno, prazoFatal, tipoTarefa, isBSB })
+        selectRespExecAutomatic({ area, prazoInterno, prazoFatal, tipoTarefa, isBSB })
 
         if (isEventAdded)
             btnGravar.removeEventListener("click", createTaskCRM)
@@ -452,6 +458,13 @@ function createInputSelect({ isEnvelope, area, divDescription }) {
     addEventListenerToSelect(area, isEnvelope)
 }
 
+function calcularPrazoPendenciaADM() {
+    const now = new Date()
+    const prazoTarefa = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate())
+
+    return getDiaUtil(prazoTarefa)
+}
+
 function calcularPrazoProrrogacao(dataDCB, area, tipoTarefa) {
     const agora = new Date()
     const prazoTarefa = new Date(dataDCB)
@@ -490,14 +503,15 @@ async function getDCB (idCliente, gravarBtn) {
 }
 
 async function createInputTextArea(divDescription, area, tipoTarefa) {
-    if (!state.functions.cadastroTarefa.tarefasProrrogacaoDCB) {
+    
+    if (!state.functions.cadastroTarefa.tarefasProrrogacaoDCB && !state.functions.cadastroTarefa.tarefasPendenciaADM) {
         return
     }
 
     const descriptionElement = document.querySelector("#descricao")
     let value = ''
 
-    if (descriptionElement.type === 'textarea' && tipoTarefa !== "PEDIDO DE PRORROGAÇÃO AUXÍLIO DOENÇA - ADM") {
+    if (descriptionElement.type === 'textarea' && (tipoTarefa !== "PEDIDO DE PRORROGAÇÃO AUXÍLIO DOENÇA - ADM" && tipoTarefa !== "PENDÊNCIAS ADM")) {
         return
     }
 
@@ -513,8 +527,18 @@ async function createInputTextArea(divDescription, area, tipoTarefa) {
             value = `Realizar Pedido de Prorrogação - DCB ${dcb.toLocaleDateString()}`
             const prazoTarefa = calcularPrazoProrrogacao(dcb, area, tipoTarefa)
             setDataTarefa(prazoTarefa)
-            selectRespExecJuridico({ area, prazoInterno: prazoTarefa, prazoFatal: prazoTarefa, tipoTarefa })
+            selectRespExecAutomatic({ area, prazoInterno: prazoTarefa, prazoFatal: prazoTarefa, tipoTarefa })
         }
+    }
+
+    if (tipoTarefa === "PENDÊNCIAS ADM") {
+        const now = new Date()
+        now.setDate(now.getDate() + 1)
+        const prazoTarefa = calcularPrazoPendenciaADM()
+        const [day, month] = prazoTarefa.toLocaleDateString().split("/")
+        value = descriptionElement.innerHTML + ` - PF ${day}/${month}`
+        setDataTarefa(getDiaUtil(now))
+        selectRespExecAutomatic({ area, prazoInterno: prazoTarefa, prazoFatal: prazoTarefa, tipoTarefa })
     }
 
     const htmlDescriptionTextArea = `<textarea name="descricao" id="descricao" required="" maxlength="1000" class="form-control" data-parsley-id="19">${value}</textarea>`
@@ -571,6 +595,10 @@ function automaticDistributionTasksJuricial() {
 
         if (tipoTarefa === "DEMORA INJUSTIFICADA") {
             return createInputSelect({ isEnvelope: false, area: areas.previdenciaria, divDescription })
+        }
+
+        if(tipoTarefa === "PENDÊNCIAS ADM") {
+            return createInputTextArea(divDescription, areas.administrativo, tipoTarefa)
         }
         
         return createInputTextArea(divDescription, areas.inssDigital, tipoTarefa)
