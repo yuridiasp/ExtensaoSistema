@@ -151,6 +151,7 @@ async function getLocalProcesso(prazo, parametro) {
     const message = { action: actions.getCompetencia }
 
     const callback = async (response) => {
+        console.log(response)
         portal = response.portal
         calcularPrazo(prazo, response.competencia, parametro)
         setAnalise(saveInfoAnalise())
@@ -544,7 +545,6 @@ function removeAcentuacaoString (string) {
 }
 
 function calcularPrazo (prazo, competencia, parametro) {
-
     const domingo = 0,
         sabado = 6,
         StringTipoIntimacao = removeAcentuacaoString(tipoIntimacao.value).toUpperCase(),

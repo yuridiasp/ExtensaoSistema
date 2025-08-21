@@ -65,7 +65,7 @@
     ],
     "web_accessible_resources": [
       {
-        "resources": ["atendimentos/images/*.png", "atendimentos/images/*.jpg", "assets/*.png"],
+        "resources": ["atendimentos/images/*.png", "atendimentos/images/*.jpg", "assets/*.jpg", "assets/*.png"],
         "matches": ["<all_urls>"]
       }
     ],

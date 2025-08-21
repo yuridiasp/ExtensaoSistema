@@ -978,8 +978,12 @@ async function validaResponsavelFederal (num) {
                 return {responsavel: "BRUNO PRADO GUIMARAES",executor: "BRUNO PRADO GUIMARAES"}
             return {responsavel: "BRUNO PRADO GUIMARAES",executor: "PAULO VICTOR SANTANA TEIXEIRA"}
         }
+
+        if ((cliente.processo.estado === "BA")) {
+            return {responsavel: "ANA CAROLINA SOARES DE MELO",executor: "ANA CAROLINA SOARES DE MELO"}
+        }
         
-        if (cliente.processo.estado === "BA") {
+       /*  if (cliente.processo.estado === "BA") {
             return {responsavel: "ANA CAROLINA SOARES DE MELO",executor: "ANA CAROLINA SOARES DE MELO"}
         }
 
@@ -993,14 +997,12 @@ async function validaResponsavelFederal (num) {
             return {responsavel: "ANA CAROLINA SOARES DE MELO",executor: "ANA CAROLINA SOARES DE MELO"}
 
         if (setimoDigito === 8 || setimoDigito === 9)
-            return {responsavel: "KEVEN FARO DE CARVALHO",executor: "KEVEN FARO DE CARVALHO"}
-
-        return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
+            return {responsavel: "KEVEN FARO DE CARVALHO",executor: "KEVEN FARO DE CARVALHO"} */
     }
 
     if (natureza === "PREVIDENCIÁRIA") {
         if (digitoVerificador === "403") { //Processos do TRF3
-            if (setimoDigito === 0 || setimoDigito === 1)
+            /* if (setimoDigito === 0 || setimoDigito === 1)
                 return {responsavel: "MARCUS VINICIUS DE SOUZA MORAIS",executor: "MARCUS VINICIUS DE SOUZA MORAIS"}
 
             if (setimoDigito === 2 || setimoDigito === 3 || setimoDigito === 4)
@@ -1010,32 +1012,25 @@ async function validaResponsavelFederal (num) {
                 return {responsavel: "ANA CAROLINA SOARES DE MELO",executor: "ANA CAROLINA SOARES DE MELO"}
 
             if (setimoDigito === 8 || setimoDigito === 9)
-                return {responsavel: "KEVEN FARO DE CARVALHO",executor: "KEVEN FARO DE CARVALHO"}
+                return {responsavel: "KEVEN FARO DE CARVALHO",executor: "KEVEN FARO DE CARVALHO"} */
 
-            //return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
+            return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
         }
 
         if ((digitoVerificador === "405" && numeroProcesso.search('080') === 0) || (digitoVerificador === "405" && cliente.processo.merito === "MANDADO DE SEGURANÇA")) { //Processos do TRF5
-            /* if (cliente.processo.merito === "MANDADO DE SEGURANÇA") {
-                if (setimoDigito <= 4) {
-                    return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
-                }
+            /* if (setimoDigito === 0 || setimoDigito === 1)
+                return {responsavel: "MARCUS VINICIUS DE SOUZA MORAIS",executor: "MARCUS VINICIUS DE SOUZA MORAIS"}
 
-                return {responsavel: "DIEGO MELO SOBRINHO",executor: "ITALO DE ANDRADE BEZERRA"}
-            } */
-            if (setimoDigito === 0 || setimoDigito === 1)
-            return {responsavel: "MARCUS VINICIUS DE SOUZA MORAIS",executor: "MARCUS VINICIUS DE SOUZA MORAIS"}
+            if (setimoDigito === 2 || setimoDigito === 3 || setimoDigito === 4)
+                return {responsavel: "SARA GONÇALVES PINHEIRO",executor: "SARA GONÇALVES PINHEIRO"}
 
-        if (setimoDigito === 2 || setimoDigito === 3 || setimoDigito === 4)
-            return {responsavel: "SARA GONÇALVES PINHEIRO",executor: "SARA GONÇALVES PINHEIRO"}
+            if (setimoDigito === 5 || setimoDigito === 6 || setimoDigito === 7)
+                return {responsavel: "ANA CAROLINA SOARES DE MELO",executor: "ANA CAROLINA SOARES DE MELO"}
 
-        if (setimoDigito === 5 || setimoDigito === 6 || setimoDigito === 7)
-            return {responsavel: "ANA CAROLINA SOARES DE MELO",executor: "ANA CAROLINA SOARES DE MELO"}
+            if (setimoDigito === 8 || setimoDigito === 9)
+                return {responsavel: "KEVEN FARO DE CARVALHO",executor: "KEVEN FARO DE CARVALHO"} */
 
-        if (setimoDigito === 8 || setimoDigito === 9)
-            return {responsavel: "KEVEN FARO DE CARVALHO",executor: "KEVEN FARO DE CARVALHO"}
-
-            //return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
+            return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
         }
 
         else {
@@ -1088,7 +1083,7 @@ async function validaResponsavelFederal (num) {
                 return {responsavel: "SARA GONÇALVES PINHEIRO",executor: "SARA GONÇALVES PINHEIRO"}
             if (secao === "8504")//Processos da seção de Propriá
                 return {responsavel: "ANA CAROLINA SOARES DE MELO",executor: "ANA CAROLINA SOARES DE MELO"}
-            //return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
+            return {responsavel: "DIEGO MELO SOBRINHO",executor: "DIEGO MELO SOBRINHO"}
                 
         }
     }

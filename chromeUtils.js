@@ -9,7 +9,7 @@ function enviarResposta() {
             return true 
         }
 
-        if(message.action === "getCompetencia") {
+        if(message.action === "getCompetenciaProcesso") {
             sendResponse(getCompetencia())
             return true 
         }

@@ -1,22 +1,25 @@
 function getCompetencia() {
-    let texto, array, textoTrabalhista
+    const { URL } = document
+    const urlTJSE = "https://www.tjse.jus.br/tjnet/portaladv/index.wsp"
+    const portal = urlTJSE === URL ? 'TJ' : 'TRT'
+    let texto, array, textoTrabalhista, competencia = null
     
-    if (document.querySelector('#downFrame'))
+    if (document.querySelector('#downFrame')) {
         texto = document.querySelector('#downFrame').contentDocument.documentElement.querySelector('#mainFrame').contentDocument.documentElement.querySelector('body > form > table.table.table-striped > tbody > tr > td:nth-child(3)')
-    else
+    }
+    else {
         textoTrabalhista = document.querySelector("body > pje-root > mat-sidenav-container > mat-sidenav-content > pje-cabecalho > div > mat-toolbar > pje-cabecalho-processo > section > div > section.oj-cargo")
+    }
 
     if (texto) {
         array = texto.innerText.split('\n')
-    
-        return {competencia: array[1], portal: 'TJ'}
+        competencia = array[1]
     } else if (textoTrabalhista) {
         array = textoTrabalhista.innerText.split('/')
-    
-        return {competencia: array[0], portal: 'TRT'}
+        competencia = array[0]
     }
     
-    return {competencia: null, portal: null}
+    return { competencia, portal }
 
 }
 
