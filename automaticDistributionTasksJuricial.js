@@ -283,12 +283,12 @@ const demandas = {
     trt: {},
     inss: {
         "PEDIDO DE PRORROGAÇÃO AUXÍLIO DOENÇA - ADM": {
-            executores: INSS.filter(colaborador => colaborador.assignments.includes(assignments.inssDigital.prorrogacao))
+            executores: INSS.filter(colaborador => colaborador.assignments.includes(assignments.INSSDIGITAL.prorrogacao))
         }
     },
     adm: {
         "PENDÊNCIAS ADM": {
-            executores: ADM.filter(colaborador => colaborador.assignments.includes(assignments.adm.pendencias))
+            executores: ADM.filter(colaborador => colaborador.assignments.includes(assignments.ADM.pendencias))
         }
     }
 }
@@ -381,8 +381,10 @@ function addEventListenerToSelect(area, isEnvelope) {
 
         const bodyTask = { idCL, descricaoTarefa, dataParaFinalizacao: dataParaFinalizacaoCRM.toLocaleDateString() }
         if (!isEnvelope) {
-            bodyTask.idResponsavel = 196
-            bodyTask.idExecutor = 196
+            const responsavel = CRM.find(colaborador => colaborador.assignments.includes(assignments.CRM.demoraInjustificada.responsavel))
+            const executor = CRM.find(colaborador => colaborador.assignments.includes(assignments.CRM.demoraInjustificada.executor))
+            bodyTask.idResponsavel = responsavel.id
+            bodyTask.idExecutor = executor.id
         }
         
         await createTarefa(bodyTask)

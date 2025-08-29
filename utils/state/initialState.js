@@ -77,6 +77,7 @@ let state = {
         },
         kentro: {
             contagemTarefasVencimento: null,
+            selectComboPendencias: null,
         }
     }
 }

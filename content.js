@@ -532,7 +532,7 @@ async function selectExecutorContatarAdministrativo (colaboradores) {
     }, adm[0])
 
     const getResponsavelAdministrativo = () => {
-        const brasilia = ADM.filter(colaborador => colaborador.assignments.includes(assignments.contatar.BSB)).map(colaborador => colaborador.nome)
+        const brasilia = ADM.filter(colaborador => colaborador.assignments.includes(assignments.ADM.contatar.BSB)).map(colaborador => colaborador.nome)
 
         if (brasilia.includes(executor.nome)) {
             return "FLAVIO LUCAS LIMA SOUZA"
@@ -552,13 +552,7 @@ async function selectExecutorContatarJudicial (colaboradores) {
     const adm = await Promise.all(await colaboradores)
     let responsavel = 'JULIANO OLIVEIRA DE SOUZA'
 
-    const responsavelInterior = adm.reduce((previous, currrent) => {
-        
-        if (currrent.interiores.includes(removeAcentuacaoString(cliente.cliente.localAtendido))) {
-            return currrent
-        }
-        return previous
-    }, null)
+    const responsavelInterior = adm.find(colaborador => colaborador.interiores.includes(removeAcentuacaoString(cliente.cliente.localAtendido)))
 
     if (responsavelInterior) {
         return {responsavel, executor: responsavelInterior.nome}
@@ -731,10 +725,10 @@ function filterColaboradoresAdministrativo () {
         "AG. VALPARAISO DE GOIAS",
     ]
 
-    const inssDigital = INSS.filter(colaborador => colaborador.assignments.includes(assignments.inssDigital.exigencia))
+    const inssDigital = INSS.filter(colaborador => colaborador.assignments.includes(assignments.INSSDIGITAL.exigencia))
 
     if (postosDFGO.includes(cliente.requerimento.postoINSS.toUpperCase()) && tarefasAdm.includes(tarefaAtualNormalizada)) {
-        colaboradores.push(...ADM.filter(colaborador => colaborador.assignments.includes(assignments.contatar.BSB)))
+        colaboradores.push(...ADM.filter(colaborador => colaborador.assignments.includes(assignments.ADM.contatar.BSB)))
     } else {
         colaboradores = inssDigital.filter(({ nome }) => {
     
@@ -778,16 +772,15 @@ function filterColaboradoresJudicial () {
         varaEstancia = ['7ª VARA FEDERAL', '1ª VARA CIVEL DE ESTÂNCIA', '2ª VARA CIVEL DE ESTÂNCIA', 'JUIZADO ESPECIAL CÍVEL E CRIMINAL DE ESTÂNCIA', 'VARA DE ESTÂNCIA', 'VARA DO TRABALHO DE ESTÂNCIA']
 
     if (cliente.processo.estado === 'GO' || cliente.processo.estado === 'DF') {
-        colaboradores.push(...ADM.filter(colaborador => colaborador.assignments.includes(assignments.contatar.BSB)))
-    } else if (((cliente.cliente.cidade == "ESTANCIA" && cliente.cliente.localAtendido == "ESTANCIA")) || ((parceiros.includes(cliente.cliente.parceiro)) && varaEstancia.includes(cliente.processo.vara))) {
-        colaboradores.push(...ADM.filter(colaborador => colaborador.assignments.includes(assignments.contatar.estancia)))
+        colaboradores.push(...ADM.filter(colaborador => colaborador.assignments.includes(assignments.ADM.contatar.BSB)))
+    } else if ((cliente.cliente.localAtendido == "ESTANCIA") || ((parceiros.includes(cliente.cliente.parceiro)) && varaEstancia.includes(cliente.processo.vara))) {
+        colaboradores.push(...ADM.filter(colaborador => colaborador.assignments.includes(assignments.ADM.contatar.estancia)))
     } else {
         if (varaEstancia.includes(cliente.processo.vara)) {
-            colaboradores.push(...ADM.filter(colaborador => colaborador.assignments.includes(assignments.contatar.geral)))
-            colaboradores.push(...ADM.filter(colaborador => colaborador.assignments.includes(assignments.contatar.estancia)))
+            colaboradores.push(...ADM.filter(colaborador => (colaborador.assignments.includes(assignments.ADM.contatar.geral) || colaborador.assignments.includes(assignments.ADM.contatar.estancia))))
             alert("Verificar executor manualmente!")
         } else {
-            colaboradores.push(...ADM.filter(colaborador => colaborador.assignments.includes(assignments.contatar.geral)))
+            colaboradores.push(...ADM.filter(colaborador => colaborador.assignments.includes(assignments.ADM.contatar.geral)))
         }
     }
 

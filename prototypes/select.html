@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Dropdown com busca (vanilla)</title>
+<style>
+  :root { --radius:10px; --border:#d9d9d9; --shadow:0 10px 20px rgba(0,0,0,.08); --bg:#fff; }
+  body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; padding: 32px; background:#f7f7f8; }
+  .combo { position: relative; width: 280px; }
+  .combo__control { display:flex; align-items:center; background:var(--bg); border:1px solid var(--border); border-radius: var(--radius); }
+  .combo__input { flex:1; border:0; outline:0; padding:10px 12px; font-size:14px; border-radius: var(--radius); }
+  .combo__btn { border:0; background:transparent; width:36px; cursor:pointer; color:#666; }
+  .combo__btn:after { content:"▾"; font-size:14px; }
+  .combo[aria-expanded="true"] .combo__control { border-bottom-left-radius: 0; border-bottom-right-radius:0; }
+  .combo__listbox { position:absolute; z-index:20; top:100%; left:0; right:0; background:var(--bg);
+                    border:1px solid var(--border); border-top:0; border-bottom-left-radius:var(--radius);
+                    border-bottom-right-radius:var(--radius); box-shadow:var(--shadow); max-height:260px; 
+                    overflow:auto; display:none; }
+  .combo[aria-expanded="true"] .combo__listbox { display:block; }
+  .combo__option { padding:8px 12px; cursor:pointer; font-size:14px; }
+  .combo__option[aria-selected="true"], .combo__option.is-active { background:#f0f6ff; }
+  .combo__option.is-focused { background:#e9edf3; }
+  .combo__empty { padding:10px 12px; color:#888; font-style:italic; }
+  mark { background: #fff5a9; padding:0 1px; }
+  /* Ajudas visuais por teclado */
+  .combo__option:focus { outline: none; }
+  /* Live region para leitores de tela (visual escondido) */
+  .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+</style>
+</head>
+<body>
+
+<h2>Exemplo: Status do processo</h2>
+
+<div id="status-combo" class="combo" role="combobox" aria-haspopup="listbox"
+     aria-owns="status-list" aria-expanded="false" aria-controls="status-list" aria-autocomplete="list">
+  <div class="combo__control">
+    <input id="status-input" class="combo__input" type="text" autocomplete="off" placeholder="Selecione ou pesquise…" />
+    <button class="combo__btn" aria-label="Abrir/fechar opções" type="button"></button>
+  </div>
+  <ul id="status-list" class="combo__listbox" role="listbox"></ul>
+  <div id="status-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+</div>
+
+<script>
+/* Utilidades */
+const strip = s => (s ?? "")
+  .toString()
+  .normalize("NFD")
+  .replace(/\p{Diacritic}+/gu, "")
+  .toLowerCase().trim();
+
+function highlight(text, query) {
+  if (!query) return text;
+  const q = strip(query);
+  // cria uma regex sobre o texto original usando índice do texto "stripped"
+  const source = text;
+  const stripped = strip(text);
+  let i = 0, out = "", last = 0;
+  while (true) {
+    const idx = stripped.indexOf(q, i);
+    if (idx === -1) break;
+    // mapear idx/idx+q.length para o original
+    // percorre original contando caracteres "stripped"
+    let oStart = 0, oEnd = 0, count = 0;
+    for (let k = 0; k < source.length; k++) {
+      const ch = strip(source[k]);
+      if (ch.length) count += ch.length; // conta 1
+      if (count > idx && oStart === 0) oStart = k;            // passou início
+      if (count >= idx + q.length) { oEnd = k + 1; break; }   // alcançou fim
+    }
+    out += source.slice(last, oStart) + "<mark>" + source.slice(oStart, oEnd) + "</mark>";
+    last = oEnd; i = idx + q.length;
+  }
+  return out + source.slice(last);
+}
+
+/* Componente */
+class ComboSelect {
+  constructor(root, items, { placeholder = "" } = {}) {
+    this.root = typeof root === "string" ? document.querySelector(root) : root;
+    this.input = this.root.querySelector(".combo__input");
+    this.button = this.root.querySelector(".combo__btn");
+    this.list = this.root.querySelector(".combo__listbox");
+    this.live = this.root.querySelector('[aria-live]');
+    this.items = items.slice();  // [{label, value}]
+    this.filtered = this.items;
+    this.activeIndex = -1;
+    if (placeholder) this.input.placeholder = placeholder;
+
+    this.render();
+    this.bind();
+  }
+
+  bind() {
+    this.button.addEventListener("click", () => this.toggle());
+    this.input.addEventListener("focus", () => this.open());
+    this.input.addEventListener("input", () => this.onInput());
+    this.input.addEventListener("keydown", (e) => this.onKey(e));
+    document.addEventListener("click", (e) => {
+      if (!this.root.contains(e.target)) this.close();
+    });
+  }
+
+  onInput() {
+    const q = strip(this.input.value);
+    this.filtered = this.items.filter(it => strip(it.label).includes(q));
+    this.activeIndex = -1;
+    this.render();
+    this.open();
+  }
+
+  onKey(e) {
+    const key = e.key;
+    if (key === "ArrowDown") {
+      e.preventDefault();
+      this.open();
+      this.move(1);
+    } else if (key === "ArrowUp") {
+      e.preventDefault();
+      this.open();
+      this.move(-1);
+    } else if (key === "Enter") {
+      if (this.activeIndex >= 0) {
+        e.preventDefault();
+        this.choose(this.filtered[this.activeIndex]);
+      }
+    } else if (key === "Escape") {
+      this.close();
+    } else if (key === "Home") {
+      this.activeIndex = 0; this.focusItem();
+    } else if (key === "End") {
+      this.activeIndex = this.filtered.length - 1; this.focusItem();
+    }
+  }
+
+  move(delta) {
+    const len = this.filtered.length;
+    if (!len) return;
+    this.activeIndex = ( (this.activeIndex + delta) % len + len ) % len;
+    this.focusItem();
+  }
+
+  focusItem() {
+    const els = [...this.list.querySelectorAll('[role="option"]')];
+    els.forEach(el => el.classList.remove("is-focused"));
+    const el = els[this.activeIndex];
+    if (el) {
+      el.classList.add("is-focused");
+      el.scrollIntoView({ block:"nearest" });
+      this.root.setAttribute("aria-activedescendant", el.id);
+    }
+  }
+
+  choose(item) {
+    this.input.value = item.label;
+    this.input.dataset.value = item.value;
+    this.close();
+    // Dispara evento customizado
+    this.root.dispatchEvent(new CustomEvent("change", { detail: item }));
+  }
+
+  open() {
+    this.root.setAttribute("aria-expanded", "true");
+  }
+  close() {
+    this.root.setAttribute("aria-expanded", "false");
+    this.activeIndex = -1;
+  }
+  toggle() {
+    const open = this.root.getAttribute("aria-expanded") === "true";
+    open ? this.close() : this.open();
+    this.input.focus();
+  }
+
+  render() {
+    const q = this.input.value;
+    this.list.innerHTML = "";
+    if (!this.filtered.length) {
+      const li = document.createElement("li");
+      li.className = "combo__empty";
+      li.textContent = "Nenhum resultado";
+      this.list.appendChild(li);
+      this.live.textContent = "Nenhum resultado encontrado";
+      return;
+    }
+    const frag = document.createDocumentFragment();
+    this.filtered.forEach((it, idx) => {
+      const li = document.createElement("li");
+      li.className = "combo__option";
+      li.id = `opt-${idx}-${Math.random().toString(36).slice(2)}`;
+      li.setAttribute("role", "option");
+      li.setAttribute("aria-selected", "false");
+      li.innerHTML = highlight(it.label, q);
+      li.addEventListener("mouseenter", () => { this.activeIndex = idx; this.focusItem(); });
+      li.addEventListener("mousedown", (e) => e.preventDefault()); // impedir blur no input
+      li.addEventListener("click", () => this.choose(it));
+      frag.appendChild(li);
+    });
+    this.list.appendChild(frag);
+    this.live.textContent = `${this.filtered.length} opção(ões)`;
+  }
+}
+
+/* Instanciação com a sua lista */
+const options = [
+  { label: "Todas", value: "" },
+  { label: "Acórdão", value: "acordao" },
+  { label: "Acordo", value: "acordo" },
+  { label: "Concedido administrativamente", value: "concedido_admin" },
+  { label: "Deu Parcial Provimento ao Recurso", value: "parcial_provimento" },
+  { label: "Deu Provimento ao Recurso", value: "provimento" },
+  { label: "Extinto sem Mérito", value: "extinto_sem_merito" },
+  { label: "Improcedente", value: "improcedente" },
+  { label: "Indeferido administrativamente", value: "indeferido_admin" },
+  { label: "Negou Provimento ao Recurso", value: "negou_provimento" },
+  { label: "Precatório", value: "precatorio" },
+  { label: "Procedente", value: "procedente" },
+  { label: "Procedente Parcial", value: "procedente_parcial" },
+  { label: "Sentença acordo", value: "sentenca_acordo" },
+  { label: "Terminativa", value: "terminativa" },
+];
+
+const combo = new ComboSelect("#status-combo", options, {
+  placeholder: "Selecione ou pesquise…"
+});
+
+// Exemplo: capturar valor selecionado
+document.querySelector("#status-combo").addEventListener("change", (e) => {
+  // e.detail tem {label, value}
+  console.log("Selecionado:", e.detail);
+});
+</script>
+</body>
+</html>

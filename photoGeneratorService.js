@@ -123,9 +123,9 @@ function createPopupPhotoGenerator() {
     popup.innerHTML = `<div id="closePhotoGenerator" style="display: flex; justify-content: center; align-items: center; position: absolute; z-index: 15; width: 40px; height: 40px; border-radius: 100%; background: #111; right: -10px; top: -10px; color: #CCC"><i class="fa fa-times"></i></div>
                 <div id="capture" style="position: relative; margin: 0; padding: 0; max-height: 1131.530px">
                     <div id="legendaImagem" style="font-family: &quot;Arial Black&quot;, sans-serif; flex-direction: column; position: absolute; top: 35.5%; width: 100%; height: 171.422px;justify-content: space-between;">
-                        <div id="advogadoAgendamento" style="text-align: left; color: #ffffff;font-size: 40px; padding-left: 70px;">DR. DIEGO</div>
-                        <div id="dataAgendamento" style="text-align: left; color: #ffffff;font-size: 40px; padding-left: 70px;">15/08/2025</div>
-                        <div id="horarioAgendamento" style="text-align: left; color: #ffffff;font-size: 40px; padding-left: 70px;">08:00</div>
+                        <div id="advogadoAgendamento" style="text-align: left; color: #ffffff;font-size: 40px; padding-left: 70px; height: 57.141px;align-items: center;">DR. DIEGO</div>
+                        <div id="dataAgendamento" style="text-align: left; color: #ffffff;font-size: 40px; padding-left: 70px; height: 57.141px;">15/08/2025</div>
+                        <div id="horarioAgendamento" style="text-align: left; color: #ffffff;font-size: 40px; padding-left: 70px; height: 57.141px;">08:00</div>
                     </div>
                     <img id="image-background" width="800" src="" alt="" srcset="">
                 </div>
@@ -217,6 +217,11 @@ const setAgendamentoImage = (horarioAgendamento, horarioFormulario, dataAgendame
 
 const setAdvogadoImage = (advogadoAgendamento, advogadoFormulario) => {
     advogadoAgendamento.innerHTML = advogadoFormulario.value
+    if(advogadoFormulario.value.length > 10) {
+        advogadoAgendamento.style.fontSize = "30px"
+    } else {
+        advogadoAgendamento.style.fontSize = "40px"
+    }
 }
 
 const verifyFollowUpRegister = (local) => {
@@ -250,7 +255,7 @@ const setViewLegendDiv = (hasFollowUp, legendaImagem, local) => {
     if(atendimentos[local]) {
         fields.forEach(field => {
             if(atendimentos[local].fields.includes(field))
-                document.querySelector(`#${field}`).style.display = "block"
+                document.querySelector(`#${field}`).style.display = "flex"
             else
                 document.querySelector(`#${field}`).style.display = "none"
         })
@@ -342,6 +347,11 @@ const setListenersPhotoGenerator = (horarioAgendamento, dataAgendamento, advogad
     atendimentosSelect.addEventListener("input", () => {
         const local = atendimentosSelect.value
         changeImage(local, atendimentosSelect, imageBackground, legendaImagem, advogadoFormulario, dataFormulario, horarioFormulario)
+        if(advogadoFormulario.value.length > 10) {
+            advogadoAgendamento.style.fontSize = "30px"
+        } else {
+            advogadoAgendamento.style.fontSize = "40px"
+        }
     })
 }
 
@@ -395,6 +405,12 @@ function initDataImageDefaut(
     horarioAgendamento.innerHTML = horario
     dataAgendamento.innerHTML = date.toLocaleDateString()
     advogadoAgendamento.innerHTML = tiposAtendimentos[tiposAtendimento]
+
+    if(advogadoFormulario.value.length > 10) {
+        advogadoAgendamento.style.fontSize = "30px"
+    } else {
+        advogadoAgendamento.style.fontSize = "40px"
+    }
     
     changeImage(local, atendimentosSelect, imageBackground, legendaImagem, advogadoFormulario, dataFormulario, horarioFormulario)
     setAdvogadoImage(advogadoAgendamento, advogadoFormulario)

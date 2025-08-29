@@ -1,17 +1,28 @@
 const assignments = {
-    contatar: {
-        BSB: "Contatar BSB",
-        estancia: "Contatar Estância",
-        geral: "Contatar",
+    SAC: {
+        whatsapp: "Whatsapp",
     },
-    whatsapp: "Whatsapp",
-    rpv: "RPV",
-    alvara: "Alvará",
-    inssDigital: {
+    FINANCEIRO: {
+        rpv: "RPV",
+        alvara: "Alvará",
+        precatorio: "Precatório",
+    },
+    INSSDIGITAL: {
         prorrogacao: "Prorrogação",
         exigencia: "Prorrogação",
     },
-    adm: {
-        pendencias: "Pendências ADM"
+    ADM: {
+        contatar: {
+            BSB: "Contatar BSB",
+            estancia: "Contatar Estância",
+            geral: "Contatar",
+        },
+        pendencias: "Pendências ADM",
+    },
+    CRM: {
+        demoraInjustificada: {
+            responsavel: 'Responsavel Demora Injustificada CRM',
+            executor: 'Executor Demora Injustificada CRM',
+        }
     }
 }
