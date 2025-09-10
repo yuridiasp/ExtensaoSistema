@@ -1,7 +1,7 @@
 const atendimentos = {
     "AASM": {
         top: "39.5%",
-        fields: ["dataAgendamento"],
+        fields: ["dataAgendamento", "horarioAgendamento"],
         height: "57.141px",
     },
     "ÁGUAS LINDAS": {
@@ -26,13 +26,13 @@ const atendimentos = {
     "LOT. JEOVÁ": null,
     "NOVO GAMA": {
         top: "39.5%",
-        fields: ["dataAgendamento"],
+        fields: ["dataAgendamento", "horarioAgendamento"],
         height: "57.141px",
     },
     "PEDRINHAS": null,
     "PORTO RICO": {
         top: "39.5%",
-        fields: ["dataAgendamento"],
+        fields: ["dataAgendamento", "horarioAgendamento"],
         height: "57.141px",
     },
     "SANTA MARIA": {
@@ -42,12 +42,12 @@ const atendimentos = {
     },
     "SANTA MARIA DF": {
         top: "39.5%",
-        fields: ["dataAgendamento"],
+        fields: ["dataAgendamento", "horarioAgendamento"],
         height: "57.141px",
     },
     "SANTO ANTÔNIO GO": {
         top: "39.5%",
-        fields: ["dataAgendamento"],
+        fields: ["dataAgendamento", "horarioAgendamento"],
         height: "57.141px",
     },
     "TAGUATINGA": {
@@ -62,7 +62,7 @@ const atendimentos = {
     },
     "VALPARAÍSO": {
         top: "39.5%",
-        fields: ["dataAgendamento"],
+        fields: ["dataAgendamento", "horarioAgendamento"],
         height: "57.141px",
     },
 }

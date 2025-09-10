@@ -6,6 +6,7 @@ function Kentro() {
     let previousBTN = null
     let scheduled = null
     let textarea = null
+    let inputResponsavel = null
 
     const removePreviousLabel = (btn) => {
         const label = btn.querySelector(`#${idLabel}`)
@@ -139,16 +140,29 @@ function Kentro() {
         }
     }
 
-    const createSelectCombo = (lastContainer) => {
+    const setMatInputValue = (el, value, {blur = true} = {}) => {
+        if (!el) throw new Error('Elemento inválido');
+
+        el.focus();
+        // Ajuste do valor no elemento nativo
+        el.value = value;
+        // Eventos que informam o Angular/Material
+        el.dispatchEvent(new InputEvent('input', {bubbles: true}));
+        el.dispatchEvent(new Event('change', {bubbles: true}));
+
+        if (blur) el.blur();
+    }
+
+    const createSelectCombo = () => {
         if (!state.functions.kentro.selectComboPendencias) {
             return
         }
 
         const root = Array.from(document.querySelectorAll("mat-label"))?.find(label => label.innerHTML === "Pendência")?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement
         
-        if(!root || (lastContainer === root)) return
+        if(!root) return
 
-        const options = [
+        const pendingDocumentOptions = [
             "AGENDAMENTO INSS",
             "AGRAVO DE EXECUÇÃO",
             "AGRAVO DE INSTRUMENTO",
@@ -243,6 +257,7 @@ function Kentro() {
             "PETIÇÃO GERAL",
             "PETIÇÃO INICIAL",
             "PPP E LTCAT",
+            "PROCESSO",
             "PROCESSO ADMINISTRATIVO",
             "PROCURAÇÃO",
             "PROCURAÇÃO E CTPS",
@@ -264,22 +279,125 @@ function Kentro() {
             "TERMO DE CURATELA",
             "TERMO DE REPRESENTAÇÃO",
             "TERMO DE RESCISÃO",
+            "TESTEMUNHAS",
             "TRANSCRIÇÃO",
             "TRCT",
             "TRCT E OUTROS"
         ]
 
+        const colaboradores = [
+            "ALÃ FEITOSA CARVALHO",
+            "ALINE RIBEIRO",
+            "ALVARO SÉRGIO DE OLIVEIRA FALCÃO",
+            "ANA CAROLINA SOARES DE MELO",
+            "ANDRÉ LEVY BATISTA DA SILVA",
+            "ANSELMO DAVID DOS SANTOS RODRIGUES",
+            "ARTHUR PISISTRATO DE AMORIM REBELO",
+            "ARTHUR PORTO ROSENDO",
+            "BRUNO PEREIRA LIMA VASCONCELOS",
+            "BRUNO PRADO GUIMARAES",
+            "BRYAN CAMPOS DE ANDRADE",
+            "CAMILA TOJAL MACHADO SANTOS",
+            "CARLOS EDUARDO DOS SANTOS",
+            "CARLOS FERNANDES PEREIRA DA SILVA",
+            "CARLOS ROBERTO SANTOS ARAUJO DA SILVA",
+            "CHRISTYAN RANGELL SILVA DAMASCENO XAVIER",
+            "CRISTINA BEZERRA DA SILVA",
+            "DANIEL CABRAL PEREIRA SANTOS",
+            "DAVI ALVES DOS SANTOS",
+            "DIEGO DOS SANTOS SILVA",
+            "DIEGO MELO SOBRINHO",
+            "EDUARDO PAIXÃO ROCHA SOBRINHO",
+            "EFRAIM SILVA CORREA DOS SANTOS",
+            "ELTON SILVA HONORATO",
+            "EMILLY STHEFANE FERREIRA DOS SANTOS PEREIRA",
+            "ENZO RIBEIRO",
+            "ERICK RODRIGUES DE JEUS",
+            "ERINALDO FARO SANTOS",
+            "FABIO RIBEIRO",
+            "FELIPE PANTA CARDOSO",
+            "FERNANDO BATISTA",
+            "FERNANDO HENRIQUE BARBOZA NASCIMENTO",
+            "FLAVIO LUCAS LIMA SOUZA",
+            "FRANCIELLE DIAS NEVES",
+            "GABRIEL DAVILA FILGUEIRAS MELLONE",
+            "GABRIEL FRANÇA VITAL",
+            "GLENISSON NASCIMENTO",
+            "GUILHERME CAUAN MATOS SILVA",
+            "GUILHERME VINICIUS RIBEIRO JASMIM",
+            "HELLEN VITORIA ROCHA SILVA SANTOS",
+            "HELTON FRADES BRABEC SOUZA",
+            "HENYR GOIS DOS SANTOS",
+            "ICARO RODRIGO DOS SANTOS SILVA",
+            "ISAC CRUZ SANTOS",
+            "JEFERSON ALMEIDA SANTOS",
+            "JHONATAN NASCIMENTO TAVARES",
+            "JHONATHAN DA FONSECA ALMEIDA FLOR",
+            "JOÃO VITOR FARIAS DOS SANTOS",
+            "JOSÉ ESTEFÂNIO DOS SANTOS FIGUEIREDO",
+            "JULIANO OLIVEIRA DE SOUZA",
+            "KAUÃ DE CARVALHO NASCIMENTO",
+            "KEVEN FARO DE CARVALHO",
+            "LAYNE DA SILVA GOIS",
+            "LEANDRO SANTOS",
+            "LEONARDO CARDOSO AMÉRICO VITAL",
+            "LEONARDO TEIXEIRA SANTOS SILVA",
+            "LINIKER BERNARDO SOARES",
+            "LUCAS NATHAN NOGUEIRA DA SILVA",
+            "LUCIANA DOS SANTOS ARAUJO",
+            "LUCIANA LIMA REZENDE",
+            "LUIZ CARLOS LOPES DOS SANTOS",
+            "MARCO AURELIO LEITE GOMES",
+            "MARCUS VINICIUS DE SOUZA MORAIS",
+            "MARIA LUANNA DE LIMA SOUZA",
+            "MATHEUS CAMPELO DA SILVA",
+            "MATHEUS CORREIA SANTOS",
+            "MATHEUS MATOS BARRETO",
+            "MONICA NOGUEIRA SANTOS",
+            "MURILLO VICTOR SANTOS ROCHA",
+            "PABLO DIAS MARIANO",
+            "PATRICK DE OLIVEIRA COSTA",
+            "PAULO VICTOR SANTANA TEIXEIRA",
+            "PAUTISTA BRASILIA ADVOGADOS",
+            "PAUTISTA CIVEL ADVOGADOS",
+            "PAUTISTA PREVIDENCIARIO ADVOGADOS",
+            "PAUTISTA TRABALHISTA ADVOGADOS",
+            "RENATA DE JESUS SANTOS",
+            "RODRIGO AGUIAR SANTOS",
+            "SANDOVAL FILHO CORREIA LIMA FILHO",
+            "SARA CRISTINA TELES LOIOLA",
+            "SARA GONÇALVES PINHEIRO",
+            "SAULO LIMA ALVES DOS SANTOS",
+            "SAULO MATHEUS ARAUJO DE SANTANA",
+            "SHEYLA SANTANA SANTOS",
+            "SILVANIA PINHEIRO DE LEMOS",
+            "STEFANNY MORAIS DO NASCIMENTO",
+            "SUPORTE FÁBRICA DE TEMPO",
+            "THALYSON KELSON LIMA TORRES",
+            "THIAGO SANTOS SANTANA",
+            "TRICYA MATEUS ROLEMBERG",
+            "VICTOR ALESSANDRO DANTAS PAIXÃO",
+            "VICTOR MENDES DOS SANTOS",
+            "VINICIUS SANTOS MELO",
+            "WILKE RODRIGUES DE JESUS",
+            "YAN THADEU PORTO DE OLIVEIRA SANTOS",
+            "YURI DIAS PEREIRA"
+        ]
+
         class SelectCombo {
+            lastItemSelected = null
 
-            #selectItems = []
-
-            constructor(contentRoot, items, target, { placeholder = "" } = {}) {
-                this.root = typeof contentRoot === "string" ? document.querySelector(contentRoot) : contentRoot
+            constructor(items, target, options = { isUnique: false, placeholder: "Buscar tipos de documentos..."}) {
+                this.isUnique = options.isUnique
+                this.selectItems = this.isUnique ? null : []
                 this.target = target
+                this.root = this.setRoot(target)
                 this.items = this.setItemList(items)
-                this.searchBar = this.setSearchBar(placeholder)
+                this.searchBar = this.setSearchBar(options.placeholder)
                 this.container = this.setContainerList()
                 this.list = this.setList()
+                this.render()
+                this.childrens = [...this.getAllChildren(target.parentElement.parentElement.parentElement.parentElement), ...this.getAllChildren(this.container)]
                 //this.selectItems = this.initSelectItemsList(target)
             }
 
@@ -294,6 +412,24 @@ function Kentro() {
 
                 return []
             } */
+
+            getAllChildren(target) {
+                let children = []
+                
+                // Função recursiva para percorrer todos os filhos
+                function traverse(node) {
+                    // Adiciona os filhos ao array
+                    for (let child of node.children) {
+                        children.push(child)
+                        // Chama a função recursivamente para adicionar os filhos dos filhos
+                        traverse(child)
+                    }
+                }
+                
+                traverse(target)
+
+                return children
+            }
             
             bind() {
                 this.searchBar.addEventListener("input", () => this.updateListSeachBar())
@@ -311,7 +447,7 @@ function Kentro() {
                     const checked = item.querySelector("span.checked")
                     const textContent = item.querySelector("span.textContent")
                     item.addEventListener("mouseenter", () => item.style.background = "whitesmoke")
-                    item.addEventListener("mouseout", () => item.style.background = "none")
+                    item.addEventListener("mouseout", () => item.style.background = "#FFF")
                     checked.addEventListener("mouseenter", () => item.style.background = "whitesmoke")
                     checked.addEventListener("mouseout", () => item.style.background = "none")
                     textContent.addEventListener("mouseenter", () => item.style.background = "whitesmoke")
@@ -322,15 +458,29 @@ function Kentro() {
             applySelection(item) {
                 const checked = item.querySelector("span.checked")
                 const textContent = item.querySelector("span.textContent")
-                if (this.#selectItems.includes(textContent.innerHTML)) {
-                    this.#selectItems = this.#selectItems.filter(item => item !== textContent.innerHTML)
-                    checked.innerHTML = ''
+                let newValue
+                
+                if (this.isUnique) {
+                    if (this.selectItems === textContent.innerHTML) {
+                        newValue = ""
+                        this.lastItemSelected.remove("selected")
+                    } else {
+                        newValue = textContent.textContent
+                        this.lastItemSelected = item.textContent
+                        item.classList.add("selected")
+                    }
                 } else {
-                    this.#selectItems.push(textContent.innerHTML)
-                    checked.innerHTML = '✓'
+                    if (this.selectItems.includes(textContent.innerHTML)) {
+                        this.selectItems = this.selectItems.filter(item => item !== textContent.innerHTML)
+                        checked.innerHTML = ''
+                    } else {
+                        this.selectItems.push(textContent.innerHTML)
+                        checked.innerHTML = '✓'
+                    }
+                    newValue = this.selectItems.join(";")
                 }
 
-                this.target.value = this.#selectItems.join(";")
+                setMatInputValue(this.target, newValue)
             }
 
             setItemList(items) {
@@ -340,6 +490,7 @@ function Kentro() {
                     li.style.width = "100%"
                     li.style.justifyContent = "space-between"
                     li.style.padding = "10px"
+                    li.style.background = '#FFF'
 
                     li.innerHTML = `<span class="textContent">${item}</span><span style="margin-right: 20px;" class="checked"></span>`
 
@@ -363,6 +514,19 @@ function Kentro() {
                 input.style.boxSizing = "border-box"
                 
                 return input
+            }
+
+            setRoot() {
+                const root = document.createElement("div")
+                root.style.display = "none"
+                this.target.parentElement.parentElement.parentElement.parentElement.parentElement.append(root)
+                /* const { top, left } = this.calculateBelowPosition()
+                root.style.position = 'absolute'
+                root.style.top = top + 'px'
+                root.style.left = left + 'px' */
+                root.style.zIndex = "999"
+
+                return root
             }
 
             setContainerList() {
@@ -405,7 +569,7 @@ function Kentro() {
             }
 
             toggle(event)  {
-                if (event.target.tagName === "LI" || event.target.tagName === "UL" || event.target.tagName === "SPAN" || event.target.tagName === "INPUT"  || event.target.tagName === "TEXTAREA") {
+                if (this.childrens.includes(event.target)) {
                     this.open()
                 } else {
                     this.close()
@@ -426,24 +590,36 @@ function Kentro() {
             clearSearchBar() {
                 this.searchBar.value = ""
             }
+
+            calculateBelowPosition() {
+                const rect = this.target.getBoundingClientRect()
+                
+                return {
+                    top: rect.x,
+                    left: rect.y
+                }
+            }
         }
-        
+
         const pendencias = root.querySelector('textarea[placeholder="Pendência"]')
 
-        if (textarea?.id === pendencias.id) return
+        if (textarea?.id !== pendencias?.id) {
+            const selectComboPendencias = new SelectCombo(pendingDocumentOptions, pendencias)
+            selectComboPendencias.bind()
+    
+            textarea = pendencias
+        }
 
-        const content = document.createElement("div")
-        content.style.display = "none"
-        root.append(content)
+        const responsavelPendencia = Array.from(root.querySelectorAll('input'))?.find(input => input.parentElement.querySelector("label")?.innerText === "Responsável pela pendência")
 
-        const selectCombo = new SelectCombo(content, options, pendencias, "Buscar tipos de documentos...")
+        if (inputResponsavel?.id !== responsavelPendencia?.id) {
+            const selectComboResponsavel = new SelectCombo(colaboradores, responsavelPendencia, { isUnique: true,  placeholder: "Buscar colaborador..." })
+            selectComboResponsavel.bind()
+    
+            inputResponsavel = responsavelPendencia
+        }
 
-        selectCombo.render()
-        selectCombo.bind()
-
-        textarea = pendencias
-
-        return selectCombo
+        console.log(pendencias, responsavelPendencia)
     }
 
     const handleMutations = () => {
@@ -488,3 +664,38 @@ function Kentro() {
 
     observeDOMChanges()
 }
+
+async function callKentro(url, init = {}) {
+    return await new Promise((resolve) => {
+        chrome.runtime.sendMessage(
+            {
+            type: "KENTRO_FETCH",
+            url,
+            method: init.method,
+            headers: init.headers,
+            body: init.body
+            },
+            resolve
+        );
+    });
+};
+
+function getCsrf() {
+  const m = document.querySelector('meta[name="csrf-token"]');
+  return m?.content || "";
+};
+
+// exemplo de uso
+(async () => {
+    if (!document.URL.includes("fabioribeiroadvogados.atenderbem.com"))
+        return
+
+    const r = await callKentro("https://fabioribeiroadvogados.atenderbem.com/documentstemplates/getItems?t=1757538037399", {
+        method: "GET",
+        headers: { "Content-Type": "application/json", "x-csrf-token": getCsrf(), 'Authorization': `Bearer ${localStorage.getItem("jwtToken")}` },
+        body: { id: 9008, simple: true }
+    })
+
+    if (!r.ok) console.error(r)
+    else console.log("Resposta Kentro:", r.status, r.body)
+})();

@@ -773,7 +773,7 @@ function filterColaboradoresJudicial () {
 
     if (cliente.processo.estado === 'GO' || cliente.processo.estado === 'DF') {
         colaboradores.push(...ADM.filter(colaborador => colaborador.assignments.includes(assignments.ADM.contatar.BSB)))
-    } else if ((cliente.cliente.localAtendido == "ESTANCIA") || ((parceiros.includes(cliente.cliente.parceiro)) && varaEstancia.includes(cliente.processo.vara))) {
+    } else if ((cliente.cliente.localAtendido == "FILIAL ESTANCIA/SE") || ((parceiros.includes(cliente.cliente.parceiro)) && varaEstancia.includes(cliente.processo.vara))) {
         colaboradores.push(...ADM.filter(colaborador => colaborador.assignments.includes(assignments.ADM.contatar.estancia)))
     } else {
         if (varaEstancia.includes(cliente.processo.vara)) {
@@ -916,7 +916,7 @@ async function validaResponsavelFederal (num) {
         }
 
         //Tarefa contatar para escritório de Estância
-        if(cliente.cliente.cidade === "ESTANCIA"  && cliente.cliente.localAtendido === "ESTANCIA") { 
+        if(cliente.cliente.cidade === "ESTANCIA"  && cliente.cliente.localAtendido === "FILIAL ESTANCIA/SE") { 
             return {responsavel: "SANDOVAL FILHO CORREIA LIMA FILHO",executor: "SANDOVAL FILHO CORREIA LIMA FILHO"}
         }
 
