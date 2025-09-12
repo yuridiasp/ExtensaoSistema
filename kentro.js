@@ -8,6 +8,18 @@ function Kentro() {
     let textarea = null
     let inputResponsavel = null
 
+    const postRequest = async (url, body) => {
+        const r = await callKentro(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: body
+        })
+    
+        if (!r?.ok) console.error(r)
+        
+        return { status: r?.status, body: r?.body}
+    }
+
     const removePreviousLabel = (btn) => {
         const label = btn.querySelector(`#${idLabel}`)
         const previousLabel = previousBTN?.querySelector(`#${idLabel}`)
@@ -55,11 +67,11 @@ function Kentro() {
         return new Date(anoVencimento, mesVencimento - 1, diaVencimento)
     }
 
-    const contarDatas = (elements) => {
+    const contarDatas = (tasks) => {
         const resultado = new Map()
 
-        elements.forEach((el) => {
-            const date = extractDateFromText(el.innerText)
+        tasks.forEach((task) => {
+            const date = convertTimestampToDate(task.duedate)
             if (!date) return
             const key = date.toLocaleDateString()
             resultado.set(key, (resultado.get(key) || 0) + 1)
@@ -68,19 +80,10 @@ function Kentro() {
         return resultado
     }
 
-    const extractDateFromText = (text) => {
-        const regexDate = text.match(/\d\d\/\d\d\/\d{4}/)
-        if (regexDate) {
-            const [dia, mes, ano] = regexDate[0].split("/")
-            return new Date(ano, mes - 1, dia)
-        } else if (text.includes("Vence hoje")) {
-            return new Date()
-        } else if (text.includes("Vence amanhã")) {
-            const date = new Date()
-            date.setDate(date.getDate() + 1)
-            return date
-        }
-        return null
+    const convertTimestampToDate = (timestamp) => {
+        if(!timestamp)
+            return null
+        return new Date(timestamp * 1000)
     }
 
     const createOrUpdateLabel = (btn, elementDateText) => {
@@ -92,15 +95,21 @@ function Kentro() {
         previousBTN = btn
     }
 
-    const atualizarDatepicker = () => {
-        const datepicker = document.querySelector("div.cdk-overlay-pane.mat-datepicker-popup")
-        const elementDateText = document.querySelector("label.mat-calendar-hidden-label")
-        const elements = document.querySelectorAll("ca-task-row")
+    const atualizarDatepicker = async (username) => {
+        
+        const { url, schema } = getDataApiKentro(username)
+        const { status, body } = await postRequest(url, schema)
+        let tasks = []
 
-        if (!datepicker || !elementDateText || !elements.length) return
+        if(status === 200) tasks = JSON.parse(body)
+        
+        const datepicker = document.querySelector("div.cdk-overlay-pane.mat-datepicker-popup") || document.querySelector("div.mat-datepicker-popup.cdk-overlay-pane")
+        const elementDateText = document.querySelector("label.mat-calendar-hidden-label")
+
+        if (!datepicker || !elementDateText || !tasks.length) return
 
         contagemTarefas.clear()
-        contarDatas(elements).forEach((value, key) => contagemTarefas.set(key, value))
+        contarDatas(tasks).forEach((value, key) => contagemTarefas.set(key, value))
 
         datepicker.querySelectorAll("td > button").forEach(btn => {
             if (!btnsRegistrados.has(btn)) {
@@ -121,20 +130,20 @@ function Kentro() {
         })
     }
 
-    const registrarNavegacaoMensal = () => {
+    const registrarNavegacaoMensal = (username) => {
         const previousMonthButton = document.querySelector("button.mat-calendar-previous-button")
         const forwardMonthButton = document.querySelector("button.mat-calendar-next-button")
 
         if (previousMonthButton && !previousMonthButton.dataset.listenerAdded) {
             previousMonthButton.addEventListener("click", () => {
-                setTimeout(atualizarDatepicker, 100)
+                setTimeout(() => atualizarDatepicker(username), 100)
             });
             previousMonthButton.dataset.listenerAdded = "true"
         }
 
         if (forwardMonthButton && !forwardMonthButton.dataset.listenerAdded) {
             forwardMonthButton.addEventListener("click", () => {
-                setTimeout(atualizarDatepicker, 100)
+                setTimeout(() => atualizarDatepicker(username), 100)
             })
             forwardMonthButton.dataset.listenerAdded = "true"
         }
@@ -618,8 +627,6 @@ function Kentro() {
     
             inputResponsavel = responsavelPendencia
         }
-
-        console.log(pendencias, responsavelPendencia)
     }
 
     const handleMutations = () => {
@@ -638,14 +645,16 @@ function Kentro() {
                 
                 if (document.URL !== urlTarefas) return
                 
-                const vencimento = document.querySelector("body > div.cdk-overlay-container app-task-duedate")
+                const vencimento = document.querySelector("div.dialog-content.overflow-hidden app-task-duedate")
                 
                 if (!vencimento || vencimentoRegistrado.has(vencimento)) return;
+
+                const username = document.querySelector(" body > ca-sp > ng-component > div > div > div:nth-child(1) > div:nth-child(5) > ca-userdropdown > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)")?.innerText || document.querySelector("body > ca-sp > ng-component > div > div > div.header-base.header-bg.header-fg.ng-tns-c1117775850-1 > div.header-user.ng-tns-c1117775850-1.ng-star-inserted > ca-userdropdown > div > div.mat-ripple.mat-mdc-menu-trigger.flex-row.usermenu-area > div.username-text-area > div.font-light")?.innerText || document.querySelector("body > ca-sp > ng-component > div > div > div.header-base.header-bg.header-fg.ng-tns-c327233304-1 > div.header-user.ng-tns-c327233304-1.ng-star-inserted > ca-userdropdown > div > div.mat-ripple.mat-mdc-menu-trigger.flex-row.usermenu-area > div.username-text-area > div.font-light")?.innerText
     
                 vencimento.addEventListener('click', () => {
                     setTimeout(() => {
-                        atualizarDatepicker()
-                        registrarNavegacaoMensal()
+                        atualizarDatepicker(username)
+                        registrarNavegacaoMensal(username)
                     }, 100)
                 })
             } finally {
@@ -686,16 +695,33 @@ function getCsrf() {
 };
 
 // exemplo de uso
-(async () => {
+/* (async () => {
     if (!document.URL.includes("fabioribeiroadvogados.atenderbem.com"))
         return
 
-    const r = await callKentro("https://fabioribeiroadvogados.atenderbem.com/documentstemplates/getItems?t=1757538037399", {
-        method: "GET",
-        headers: { "Content-Type": "application/json", "x-csrf-token": getCsrf(), 'Authorization': `Bearer ${localStorage.getItem("jwtToken")}` },
-        body: { id: 9008, simple: true }
-    })
+     const get = async (url) => {
+        const r = await callKentro(url, {
+            method: "GET",
+            headers: { "Content-Type": "application/json", "x-csrf-token": getCsrf(), 'Authorization': `Bearer ${localStorage.getItem("jwtToken")}` },
+            body: { id: 9008, simple: true }
+        })
+    
+        if (!r?.ok) console.error(r)
+        else console.log("Resposta Kentro:", r?.status, r?.body)
+    } 
+    const post = async (url, body) => {
+        const r = await callKentro(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: body
+        })
+    
+        if (!r?.ok) console.error(r)
+        
+        return { status: r?.status, body: r?.body}
+    }
+    const { url, schema } = getDataApiKentro("leandro")
+    const result = await post(url, schema)
 
-    if (!r.ok) console.error(r)
-    else console.log("Resposta Kentro:", r.status, r.body)
-})();
+    console.log(JSON.parse(result.body))
+})(); */

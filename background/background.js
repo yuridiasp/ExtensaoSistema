@@ -106,24 +106,21 @@ async function setInitialState() {
     await Promise.all(promises)
 }; */
 
-chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg?.type === "KENTRO_FETCH") {
         const method = msg.method || "GET"
-        try {
-            const res = await fetch(msg.url, {
+
+        fetch(msg.url, {
             method,
             headers: msg.headers || {},
             body: msg.body && method != "GET" ? JSON.stringify(msg.body) : undefined,
             credentials: "include",              // inclui cookies/sessão do usuário
             cache: "no-store",                   // evita cache agressivo do SW do site
             mode: "cors"
-            });
-            const text = await res.text();
-            console.log(text)
-            sendResponse({ ok: res.ok, status: res.status, body: text });
-        } catch (e) {
-            sendResponse({ ok: false, error: String(e) });
-        }
-        return true; // resposta assíncrona
+        }).then(res => res.text().then(text => ({ ok: res.ok, status: res.status, body: text })))
+        .then(result => sendResponse(result))
+        .catch(err => sendResponse({ ok: false, error: String(err) }))
+
+        return true
     }
-});
+})

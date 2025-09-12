@@ -26,7 +26,7 @@ function enviarResposta() {
         }
 
         sendResponse({ validation: "Atualizado" })
-        return false
+        return true
     })
 }
 

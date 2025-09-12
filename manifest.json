@@ -27,6 +27,7 @@
                 "https://fabioribeiroadvogados.atenderbem.com/*"
             ],
             "js": [
+                "apiKentroData.js",
                 "chromeUtils.js",
                 "utils/state/initialState.js",
                 "utils/typeListCompromissos/typeListCompromissos.js",
