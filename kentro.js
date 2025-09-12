@@ -649,7 +649,7 @@ function Kentro() {
                 
                 if (!vencimento || vencimentoRegistrado.has(vencimento)) return;
 
-                const username = document.querySelector(" body > ca-sp > ng-component > div > div > div:nth-child(1) > div:nth-child(5) > ca-userdropdown > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)")?.innerText || document.querySelector("body > ca-sp > ng-component > div > div > div.header-base.header-bg.header-fg.ng-tns-c1117775850-1 > div.header-user.ng-tns-c1117775850-1.ng-star-inserted > ca-userdropdown > div > div.mat-ripple.mat-mdc-menu-trigger.flex-row.usermenu-area > div.username-text-area > div.font-light")?.innerText || document.querySelector("body > ca-sp > ng-component > div > div > div.header-base.header-bg.header-fg.ng-tns-c327233304-1 > div.header-user.ng-tns-c327233304-1.ng-star-inserted > ca-userdropdown > div > div.mat-ripple.mat-mdc-menu-trigger.flex-row.usermenu-area > div.username-text-area > div.font-light")?.innerText
+                const username = document.querySelector("div.username-text-area div:nth-child(2)").innerText
     
                 vencimento.addEventListener('click', () => {
                     setTimeout(() => {
