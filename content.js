@@ -644,7 +644,7 @@ async function getTarefasColaboradores({ colaborador, dataDe, dataAte = dataDe, 
         const doc = parser.parseFromString(await result.text(), 'text/html');
 
         const tarefasHTML = doc.documentElement.querySelectorAll('body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr');
-        let contador = 0;
+        let contador = 0
 
         tarefasHTML.forEach(tarefaHTMLElement => {
             if (typeOfTask === typeOfTaskSearch.protocolo) {
@@ -659,27 +659,27 @@ async function getTarefasColaboradores({ colaborador, dataDe, dataAte = dataDe, 
                 if (tarefaHTMLElement.children[3] != null) {
                     const tipoTarefa = tarefaHTMLElement.children[3].innerText.toUpperCase();
 
-                    if (tipoTarefa === typeOfTaskSearch.prorrogacao) {
-                        contador++;
+                    if (tipoTarefa === "PEDIDO DE PRORROGAÇÃO AUXÍLIO DOENÇA - ADM") {
+                        contador++
                     }
                 }
             } else if (typeOfTask === typeOfTaskSearch.pendencias) {
                 if (tarefaHTMLElement.children[3] != null) {
                     const tipoTarefa = tarefaHTMLElement.children[3].innerText.toUpperCase();
-
-                    if (tipoTarefa === typeOfTaskSearch.pendencias) {
-                        contador++;
+                    
+                    if (tipoTarefa === "PENDÊNCIAS ADM") {
+                        contador++
                     }
                 }
             } else {
                 if (tarefaHTMLElement.children[2] != null) {
                     const lengthProcessTJ = 12;
                     if ((tarefaHTMLElement.children[2].innerText.match("[0-9]*")[0].length >= lengthProcessTJ) && !(tarefaHTMLElement.children[3].innerText.search('Acompanhar') == 0)) {
-                        contador++;
+                        contador++
                     }
                 }
             }
-        });
+        })
 
         colaborador.tarefas = contador;
         addListaTarefas(colaborador, dataDe);

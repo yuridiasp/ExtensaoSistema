@@ -181,6 +181,7 @@ function Kentro() {
             "AGRAVO REGIMENTAL",
             "ALEGAÇÕES FINAIS",
             "APELAÇÃO",
+            "ATENDIMENTO",
             "AUTO DECLARAÇÃO",
             "BOLETIM DE OCORRÊNCIA",
             "CAD UNICO",

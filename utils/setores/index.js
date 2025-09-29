@@ -288,6 +288,17 @@ const SAC = [
         tarefasIntimacoes: 0,
     },
     {
+        id: 267,
+        nome: "FRANCIELLE DIAS NEVES",
+        nomeTLC: "FRANCIELLE",
+        interiores: [],
+        assignments: [],
+        diasViagem: null,
+        contagem: 0,
+        atrasadas: 0,
+        tarefasIntimacoes: 0,
+    },
+    {
         id: 213,
         nome: "HELLEN VITORIA ROCHA SILVA SANTOS",
         nomeTLC: "HELLEN",

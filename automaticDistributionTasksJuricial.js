@@ -540,7 +540,7 @@ async function createInputTextArea(divDescription, area, tipoTarefa) {
         const [day, month] = prazoTarefa.toLocaleDateString().split("/")
         value = descriptionElement.innerHTML + ` - PF ${day}/${month}`
         setDataTarefa(getDiaUtil(now))
-        selectRespExecAutomatic({ area, prazoInterno: prazoTarefa, prazoFatal: prazoTarefa, tipoTarefa })
+        selectRespExecAutomatic({ area, prazoInterno: new Date(), prazoFatal: new Date(), tipoTarefa })
     }
 
     const htmlDescriptionTextArea = `<textarea name="descricao" id="descricao" required="" maxlength="1000" class="form-control" data-parsley-id="19">${value}</textarea>`

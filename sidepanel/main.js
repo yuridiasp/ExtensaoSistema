@@ -239,8 +239,8 @@ function existeOrigem() {
 }
 
 async function gerarTxt (executor) {
-    const init = `${prazoInicial.value.slice(8,10)}/${prazoInicial.value.slice(5,7)}`,
-        final = `${prazoFinal.value.slice(8,10)}/${prazoFinal.value.slice(5,7)}`
+    /* const init = `${prazoInicial.value.slice(8,10)}/${prazoInicial.value.slice(5,7)}`,
+        final = `${prazoFinal.value.slice(8,10)}/${prazoFinal.value.slice(5,7)}` */
 
     const stylizer = (node) => {
         node.style.textAlign = "center"
@@ -252,13 +252,13 @@ async function gerarTxt (executor) {
         node.style.fontWeight = "normal"
         node.style.border = "none"
     }
+    const dataInicial = new Date(prazoInicial.value + 'T00:00:00')
+    const prazoInterno = dataInicial.toLocaleDateString()
+    const dataFinal = new Date(prazoFinal.value + 'T00:00:00')
+    const prazoFatal = dataFinal.toLocaleDateString()
 
     if (fileFormatIS.value === 'excel') {
         if (executor !== "OK") {
-            const dataInicial = new Date(prazoInicial.value + 'T00:00:00')
-            const prazoInterno = dataInicial.toLocaleDateString()
-            const dataFinal = new Date(prazoFinal.value + 'T00:00:00')
-            const prazoFatal = dataFinal.toLocaleDateString()
             const [processoOrigem, processoDependente] = existeOrigem()
             const description = tipoIntimacao.value
             const peritoReu = perito.value || reu.value
@@ -306,13 +306,13 @@ async function gerarTxt (executor) {
     
         let data
     
-        if (init == final)
+        if (prazoInterno == prazoFatal)
             if (horario.value.length)
-                data = `(${init} ÀS ${horario.value})`
+                data = `(${prazoInterno} ÀS ${horario.value})`
             else
-                data = `(${init})`
+                data = `(${prazoInterno})`
         else
-            data = `(${init} - ${final})`
+            data = `(${prazoInterno} - ${prazoFatal})`
     
         if ((localPericia.value.length || perito.value.length) && executor !== "OK")
             if (origem.value.length && executor !== "OK")
