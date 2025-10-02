@@ -28,6 +28,7 @@
             ],
             "js": [
                 "apiKentroData.js",
+                "buscaCEP.js",
                 "chromeUtils.js",
                 "utils/state/initialState.js",
                 "utils/typeListCompromissos/typeListCompromissos.js",

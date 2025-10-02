@@ -445,7 +445,7 @@ function limparListaTarefas() {
     })
 }
 
-function addListaTarefas({ nome, datasViagem, tarefas }, data) {
+function addListaTarefas({ nome, datasViagem, tarefas }, data, typeOfTask = typeOfTaskSearch.geral) {
 
     const createRowTaskList = (name, tasks, travelDates) => {
         const ano = new Date().getFullYear()
@@ -490,7 +490,7 @@ function addListaTarefas({ nome, datasViagem, tarefas }, data) {
         const responsaveisPrevidenciario = ['KEVEN FARO DE CARVALHO']
         const executor = event.target.dataset.colaborador;
         const responsavel = (() => {
-            if (!state.functions.todasPaginas.tipoIntimacaoIsJudicial && responsaveisINSS.includes(executor) || responsaveisAdministrativo.includes(executor)) {
+            if (!state.functions.todasPaginas.tipoIntimacaoIsJudicial && responsaveisINSS.includes(executor) || responsaveisAdministrativo.includes(executor) || typeOfTask === typeOfTaskSearch.pendencias) {
                 return executor
             } else if(cliente.cliente.estado === "DF" || cliente.cliente.estado === "GO") {
                 return "FLAVIO LUCAS LIMA SOUZA"
@@ -681,10 +681,10 @@ async function getTarefasColaboradores({ colaborador, dataDe, dataAte = dataDe, 
             }
         })
 
-        colaborador.tarefas = contador;
-        addListaTarefas(colaborador, dataDe);
+        colaborador.tarefas = contador
+        addListaTarefas(colaborador, dataDe, typeOfTask)
 
-        return colaborador;
+        return colaborador
 
     } catch (error) {
         if (error.name === 'AbortError') {
@@ -2147,6 +2147,50 @@ function pinSideMenu() {
     }
 }
 
+async function preencherFormularioEnderecoViaCEP() {
+    if (!state.functions.abaCadastroCliente.autopreenchimentoEnderecoViaCep) {
+        return
+    }
+
+    const selectFromSelectList = (list, value) => {
+        const options = list.querySelectorAll("li a")
+
+        if(!options.length) {
+            return
+        }
+
+        for (let index = 0; index < options.length; index++) {
+            console.log(options[index], value, options[index].innerText === value)
+            if(removeAcentuacaoString(options[index].innerText) === removeAcentuacaoString(value)) {
+                options[index].click()
+                break
+            }
+        }
+    }
+
+    const adressInput = document.querySelector("#endereco")
+    const complementoInput = document.querySelector("#complemento")
+    const bairroList = document.querySelector("#fdt-form > div:nth-child(23) > div:nth-child(1) > div > div > ul")
+    const estadoList = document.querySelector("#fdt-form > div:nth-child(23) > div.form-group.col-sm-2 > div > div > ul")
+    const cidadeList = document.querySelector("#fdt-form > div:nth-child(23) > div.form-group.col-sm-4 > div > div > ul")
+    const cepInput = document.querySelector("#cep")
+
+    cepInput.addEventListener("blur", async (event) => {
+        const cep = event.target.value.replace("-","")
+    
+        const adress = await buscaCEP(cep)
+        
+        if (adress.erro) {
+            return
+        }
+        adressInput.value = adress.logradouro?.toUpperCase()
+        complementoInput.value = adress.complemento?.toUpperCase()
+        selectFromSelectList(bairroList, adress.bairro?.toUpperCase())
+        selectFromSelectList(estadoList, adress.estado?.toUpperCase())
+        selectFromSelectList(cidadeList, adress.localidade?.toUpperCase())
+    })
+}
+
 function criarTarefaClientePrimeiraVez() {
     if (!state.functions.abaCadastroCliente.criarTarefaCRM) {
         return
@@ -2299,7 +2343,7 @@ function createTaskRemarcarAtendimento() {
 
 async function idPage(url) {
     
-    const urlClienteCadastro = 'http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/formulario.asp?org=',
+    const urlClienteCadastro = 'http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/formulario.asp',
         urlProcessosCadastro = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/formulario",
         urlProcessos = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/default",
         urlProcessosFicha = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/ficha",
@@ -2430,6 +2474,7 @@ async function idPage(url) {
             await setAutoComplete(true)
         } else if (isPageCadastroCliente) {
             //criarTarefaClientePrimeiraVez()
+            preencherFormularioEnderecoViaCEP()
         } else if (isPageVisualizacaoProcesso) {
             createButtonLinkJusticePortalForCase("processo")
         } else if (isPageFichaCliente) {

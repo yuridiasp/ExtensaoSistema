@@ -350,7 +350,7 @@ async function selectRespExecAutomatic({ area, prazoInterno, prazoFatal, tipoTar
     selectRespExec ({ responsavel, executor: executor.nome }) 
 }
 
-function updateOption(selectedOptions, date) {
+function updateOption(selectedOptions, date, isEnvelope) {
     if (previousOption) {
         previousOption.value = previousOption.dataset.original
         previousOption.innerHTML = previousOption.dataset.original
@@ -358,8 +358,8 @@ function updateOption(selectedOptions, date) {
 
     previousOption = selectedOptions
     
-    selectedOptions.innerHTML += ` - D.I. ${date.toLocaleDateString()}`
-    selectedOptions.value += ` - D.I. ${date.toLocaleDateString()}`
+    selectedOptions.innerHTML += ` - ${isEnvelope? 'Prazo Interno:' : 'D.I.'} ${date.toLocaleDateString()}`
+    selectedOptions.value += ` - ${isEnvelope? 'Prazo Interno:' : 'D.I.'} ${date.toLocaleDateString()}`
 }
 
 function setDataTarefa(date) {
@@ -405,7 +405,7 @@ function addEventListenerToSelect(area, isEnvelope) {
         
         setDataTarefa(prazoFatal)
 
-        updateOption(selectedOptions[0], prazoInterno)
+        updateOption(selectedOptions[0], prazoInterno, isEnvelope)
 
         const btnGravar = document.querySelector("#btnGravar")
 

@@ -19,6 +19,7 @@ let state = {
         },
         abaCadastroCliente: {
             criarTarefaCRM: null,
+            autopreenchimentoEnderecoViaCep: null,
         },
         abaCadastrodeProcesso: {
             alteracaoNumeroProcesso: null,
