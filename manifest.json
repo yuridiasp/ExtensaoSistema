@@ -19,6 +19,7 @@
         {
             "matches": [
                 "http://fabioribeiro.eastus.cloudapp.azure.com/*",
+                "http://fabio-ribeiro.eastus.cloudapp.azure.com/*",
                 "https://maps.googleapis.com/*",
                 "https://*/pje/*",
                 "https://creta.jfse.jus.br/*",

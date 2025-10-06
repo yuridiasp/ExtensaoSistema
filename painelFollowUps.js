@@ -21,7 +21,7 @@ let updateCountFollowUps,
 
 async function getFollowUpTypes() {
     const parser = new DOMParser()
-    const result = await fetch("http://fabioribeiro.eastus.cloudapp.azure.com/fab/tiposHistorico/default.asp")
+    const result = await fetch(`${basePathKorbil}/fab/tiposHistorico/default.asp`)
     const html = await result.text()
     const doc =  parser.parseFromString(html, "text/html")
     const typesElementList = doc.querySelectorAll("body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr")
@@ -484,7 +484,7 @@ async function getFollowUps(datas) {
         const dataDe = datas[firstIndexDate].toLocaleDateString()
         const dataAte = datas[lastIndexDate].toLocaleDateString()
         const numberPageTextIndex = 3
-        const html = await (await fetch(`http://fabioribeiro.eastus.cloudapp.azure.com/flw/followups/default.asp?pg=${page}&bsFlwFollows=s&bsFlwFollowsAcao=&bsFlwFollowsUsuario=&bsFlwFollowsCliente=&bsFlwFollowsDataDe=${dataDe}&bsFlwFollowsDataAte=${dataAte}&bsFlwFollowsStatus=0&bsFlwFollowsTipo=&bsFlwFollowsCPF=&bsFlwFollowsChegou=`)).text()
+        const html = await (await fetch(`${basePathKorbil}/flw/followups/default.asp?pg=${page}&bsFlwFollows=s&bsFlwFollowsAcao=&bsFlwFollowsUsuario=&bsFlwFollowsCliente=&bsFlwFollowsDataDe=${dataDe}&bsFlwFollowsDataAte=${dataAte}&bsFlwFollowsStatus=0&bsFlwFollowsTipo=&bsFlwFollowsCPF=&bsFlwFollowsChegou=`)).text()
 
         const parser = new DOMParser()
 

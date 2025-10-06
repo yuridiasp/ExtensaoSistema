@@ -1,3 +1,4 @@
+const basePathKorbil = "http://fabio-ribeiro.eastus.cloudapp.azure.com"
 const controllers = new Map()
 
 let cliente = {
@@ -614,7 +615,7 @@ async function getTarefasColaboradores({ colaborador, dataDe, dataAte = dataDe, 
 
     const parser = new DOMParser()
 
-    const urlRequest = 'http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/default.asp'
+    const urlRequest = `${basePathKorbil}/adv/tarefas/default.asp`
 
     const bodyObject = {
         bsAdvTarefas: 's',
@@ -1647,7 +1648,7 @@ function limparInputProcesso() {
 async function requestIdClientFromProtocol(protocolo) {
     
     const parser = new DOMParser()
-    const urlRequest = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/inss/default.asp"
+    const urlRequest = `${basePathKorbil}/adv/inss/default.asp`
     const formData = `bsAdvINSS=s&org=&bsAdvINSSData=inssData&bsAdvINSSDataDe=29%2F06%2F2010&bsAdvINSSDataAte=02%2F07%2F2050&bsAdvINSSCpf=&bsAdvINSSResponsavel=&bsAdvINSSCliente=&bsAdvINSSProtocolo=${protocolo}&filtrar=Filtrar`
 
     const doc = await fetch(urlRequest, {
@@ -1775,15 +1776,15 @@ async function requestDataCliente(params, isSidepanelRequest = false) {
     
     const modules = {
         inss: {
-            link: "http://fabioribeiro.eastus.cloudapp.azure.com/adv/inss/formulario.asp?idPK=",
+            link: `${basePathKorbil}/adv/inss/formulario.asp?idPK=`,
             functionRequest: extrairDadosRequisicaoRequerimentoHtml
         },
         cliente: {
-            link: "http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/formulario.asp?idPK=",
+            link: `${basePathKorbil}/adv/clientes/formulario.asp?idPK=`,
             functionRequest: extrairDadosRequisicaoClienteHtml
         },
         processos: {
-            link: "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/formulario.asp?idPK=",
+            link: `${basePathKorbil}/adv/processos/formulario.asp?idPK=`,
             functionRequest: extrairDadosRequisicaoProcessoHtml
         }
     }
@@ -2217,7 +2218,7 @@ function criarTarefaClientePrimeiraVez() {
                 const dataParaFinalizacao = calcularProximoDiaUtil(parametros.tarefaContatar)
                 await createTarefa({ idCL, dataParaFinalizacao })
     
-                const pageAddFoto = `http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/foto.asp?msg=add&idPK=${idCL}`
+                const pageAddFoto = `${basePathKorbil}/adv/clientes/foto.asp?msg=add&idPK=${idCL}`
                 window.location.replace(pageAddFoto)
             } catch (error) {
                 console.error(error)
@@ -2253,7 +2254,7 @@ function fixProcessRegistrationButton() {
     const regex = /(?<=idPK=)\d+/
     const url = document.URL
     const id = regex.exec(url)
-    const link = `http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/formulario.asp?idCL=${id}`
+    const link = `${basePathKorbil}/adv/processos/formulario.asp?idCL=${id}`
 
     const button = document.querySelector("body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > a")
     button.href = link
@@ -2274,34 +2275,34 @@ function addListaAuxiliares() {
 
     const ul = document.createElement("ul")
     ul.classList.add("fdt_ml-menu-dropdown")
-    ul.innerHTML = `<li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstCliCargos/default.asp"><i class="fa fa-list"></i> Cargos</a></li>
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstCliGrupos/default.asp"><i class="fa fa-list"></i> Grupos</a></li>
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstCliPostosINSS/default.asp"><i class="fa fa-list"></i> Postos do INSS</a></li>
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstCliSituacoes/default.asp"><i class="fa fa-list"></i> Situações</a></li>
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstCliTiposArquivos/default.asp"><i class="fa fa-list"></i> Tipos de arquivos</a></li>
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstCliTiposHistoricos/default.asp"><i class="fa fa-list"></i> Tipos de históricos</a></li>
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstCliLocalAtendido/default.asp"><i class="fa fa-list"></i> Locais de atendimento</a></li>
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstCliComoChegou/default.asp"><i class="fa fa-list"></i> Como chegou</a></li>
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstINSSStatus/default.asp"><i class="fa fa-list"></i> Status do INSS</a></li>
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstCliPrioridades/default.asp"><i class="fa fa-list"></i> Prioridades de clientes</a></li>
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstModelos/default.asp"><i class="fa fa-print"></i> Modelos de documentos</a></li>
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstCliBairros/default.asp"><i class="fa fa-list"></i> Bairros</a></li>
+    ul.innerHTML = `<li><a href="${basePathKorbil}/adv/lstCliCargos/default.asp"><i class="fa fa-list"></i> Cargos</a></li>
+                <li><a href="${basePathKorbil}/adv/lstCliGrupos/default.asp"><i class="fa fa-list"></i> Grupos</a></li>
+                <li><a href="${basePathKorbil}/adv/lstCliPostosINSS/default.asp"><i class="fa fa-list"></i> Postos do INSS</a></li>
+                <li><a href="${basePathKorbil}/adv/lstCliSituacoes/default.asp"><i class="fa fa-list"></i> Situações</a></li>
+                <li><a href="${basePathKorbil}/adv/lstCliTiposArquivos/default.asp"><i class="fa fa-list"></i> Tipos de arquivos</a></li>
+                <li><a href="${basePathKorbil}/adv/lstCliTiposHistoricos/default.asp"><i class="fa fa-list"></i> Tipos de históricos</a></li>
+                <li><a href="${basePathKorbil}/adv/lstCliLocalAtendido/default.asp"><i class="fa fa-list"></i> Locais de atendimento</a></li>
+                <li><a href="${basePathKorbil}/adv/lstCliComoChegou/default.asp"><i class="fa fa-list"></i> Como chegou</a></li>
+                <li><a href="${basePathKorbil}/adv/lstINSSStatus/default.asp"><i class="fa fa-list"></i> Status do INSS</a></li>
+                <li><a href="${basePathKorbil}/adv/lstCliPrioridades/default.asp"><i class="fa fa-list"></i> Prioridades de clientes</a></li>
+                <li><a href="${basePathKorbil}/adv/lstModelos/default.asp"><i class="fa fa-print"></i> Modelos de documentos</a></li>
+                <li><a href="${basePathKorbil}/adv/lstCliBairros/default.asp"><i class="fa fa-list"></i> Bairros</a></li>
             
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstProEscritorios/default.asp"><i class="fa fa-list"></i> Escritórios</a></li>
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstProFases/default.asp"><i class="fa fa-list"></i> Fases do processo</a></li>
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstProInstancias/default.asp"><i class="fa fa-list"></i> Instâncias</a></li>
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstProMeritos/default.asp"><i class="fa fa-list"></i> Méritos da causa</a></li>
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstProNaturezas/default.asp"><i class="fa fa-list"></i> Naturezas de ação</a></li>
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstProOrgaos/default.asp"><i class="fa fa-list"></i> Órgãos</a></li>
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstProProbabilidades/default.asp"><i class="fa fa-list"></i> Probabilidades de êxito</a></li>
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstProRelevancias/default.asp"><i class="fa fa-list"></i> Relev. do processo</a></li>
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstProSentencas/default.asp"><i class="fa fa-list"></i> Sentenças</a></li>
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstProStatus/default.asp"><i class="fa fa-list"></i> Status</a></li>
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstProTipos/default.asp"><i class="fa fa-list"></i> Tipos de processos</a></li>
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstProVaras/default.asp"><i class="fa fa-list"></i> Varas</a></li>
+                <li><a href="${basePathKorbil}/adv/lstProEscritorios/default.asp"><i class="fa fa-list"></i> Escritórios</a></li>
+                <li><a href="${basePathKorbil}/adv/lstProFases/default.asp"><i class="fa fa-list"></i> Fases do processo</a></li>
+                <li><a href="${basePathKorbil}/adv/lstProInstancias/default.asp"><i class="fa fa-list"></i> Instâncias</a></li>
+                <li><a href="${basePathKorbil}/adv/lstProMeritos/default.asp"><i class="fa fa-list"></i> Méritos da causa</a></li>
+                <li><a href="${basePathKorbil}/adv/lstProNaturezas/default.asp"><i class="fa fa-list"></i> Naturezas de ação</a></li>
+                <li><a href="${basePathKorbil}/adv/lstProOrgaos/default.asp"><i class="fa fa-list"></i> Órgãos</a></li>
+                <li><a href="${basePathKorbil}/adv/lstProProbabilidades/default.asp"><i class="fa fa-list"></i> Probabilidades de êxito</a></li>
+                <li><a href="${basePathKorbil}/adv/lstProRelevancias/default.asp"><i class="fa fa-list"></i> Relev. do processo</a></li>
+                <li><a href="${basePathKorbil}/adv/lstProSentencas/default.asp"><i class="fa fa-list"></i> Sentenças</a></li>
+                <li><a href="${basePathKorbil}/adv/lstProStatus/default.asp"><i class="fa fa-list"></i> Status</a></li>
+                <li><a href="${basePathKorbil}/adv/lstProTipos/default.asp"><i class="fa fa-list"></i> Tipos de processos</a></li>
+                <li><a href="${basePathKorbil}/adv/lstProVaras/default.asp"><i class="fa fa-list"></i> Varas</a></li>
             
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstAgeTiposCompromissos/default.asp"><i class="fa fa-list"></i> Tipos de compromissos</a></li>
-                <li><a href="http://fabioribeiro.eastus.cloudapp.azure.com/adv/lstAgeTiposTarefas/default.asp"><i class="fa fa-list"></i> Tipos de tarefas</a></li>`
+                <li><a href="${basePathKorbil}/adv/lstAgeTiposCompromissos/default.asp"><i class="fa fa-list"></i> Tipos de compromissos</a></li>
+                <li><a href="${basePathKorbil}/adv/lstAgeTiposTarefas/default.asp"><i class="fa fa-list"></i> Tipos de tarefas</a></li>`
     
     li.append(a)
     li.append(ul)
@@ -2343,27 +2344,27 @@ function createTaskRemarcarAtendimento() {
 
 async function idPage(url) {
     
-    const urlClienteCadastro = 'http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/formulario.asp',
-        urlProcessosCadastro = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/formulario",
-        urlProcessos = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/default",
-        urlProcessosFicha = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/ficha",
-        urlCompromissos = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/compromissos/formulario",
-        urlCompromissoFicha = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/compromissos/ficha",
-        urlCompromissoDefault = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/compromissos/default",
-        urlCompromissoEscolherTipo= "http://fabioribeiro.eastus.cloudapp.azure.com/adv/compromissos/incluirEscolhe",
-        urlListaTarefas = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/default",
-        urlTarefasForm = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/formulario",
-        urlHistoricoForm = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientesHistorico/formulario",
-        urlTarefasFicha = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/ficha",
-        urlClienteFicha = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/ficha",
-        urlClienteAddtarefa = "http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/default",
-       /*  urlCadastroPreProcesso = "http://fabioribeiro.eastus.cloudapp.azure.com/pre/preProcessos/formulario",
-        urlCadastroPreProcessoPasta = "http://fabioribeiro.eastus.cloudapp.azure.com/pre/preProcessos/formularioCria", */
-        urlSistemaFR = "http://fabioribeiro.eastus.cloudapp.azure.com",
-        urlListaFollowUps = "http://fabioribeiro.eastus.cloudapp.azure.com/flw/followups/default.asp",
-        urlPortalDoAdvogadoTJSE = "https://www.tjse.jus.br/tjnet/portaladv/index.wsp",
-        urlKentro = "fabioribeiroadvogados.atenderbem.com/",
-        urlPJE = "/pje/",
+    const urlClienteCadastro = `${basePathKorbil}/adv/clientes/formulario.asp`,
+        urlProcessosCadastro = `${basePathKorbil}/adv/processos/formulario`,
+        urlProcessos = `${basePathKorbil}/adv/processos/default`,
+        urlProcessosFicha = `${basePathKorbil}/adv/processos/ficha`,
+        urlCompromissos = `${basePathKorbil}/adv/compromissos/formulario`,
+        urlCompromissoFicha = `${basePathKorbil}/adv/compromissos/ficha`,
+        urlCompromissoDefault = `${basePathKorbil}/adv/compromissos/default`,
+        urlCompromissoEscolherTipo= `${basePathKorbil}/adv/compromissos/incluirEscolhe`,
+        urlListaTarefas = `${basePathKorbil}/adv/tarefas/default`,
+        urlTarefasForm = `${basePathKorbil}/adv/tarefas/formulario`,
+        urlHistoricoForm = `${basePathKorbil}/adv/clientesHistorico/formulario`,
+        urlTarefasFicha = `${basePathKorbil}/adv/tarefas/ficha`,
+        urlClienteFicha = `${basePathKorbil}/adv/clientes/ficha`,
+        urlClienteAddtarefa = `${basePathKorbil}/adv/clientes/default`,
+       /*  urlCadastroPreProcesso = `${basePathKorbil}/pre/preProcessos/formulario`,
+        urlCadastroPreProcessoPasta = `${basePathKorbil}/pre/preProcessos/formularioCria`, */
+        urlSistemaFR = `${basePathKorbil}`,
+        urlListaFollowUps = `${basePathKorbil}/flw/followups/default.asp`,
+        urlPortalDoAdvogadoTJSE = `https://www.tjse.jus.br/tjnet/portaladv/index.wsp`,
+        urlKentro = `fabioribeiroadvogados.atenderbem.com/`,
+        urlPJE = `/pje/`,
         urlTRF1 = 'trf1.jus.br/',
         urlCRETA = 'https://creta.jfse.jus.br/',
         urlTRF51G = 'https://pje.jfse.jus.br/',

@@ -90,7 +90,7 @@ function copyText(texto, sendResponse) {
 
 function autoSearchProcess(processo) {
     const urlAtual = document.URL
-    const urlPageBuscaProcesso = 'http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/default.asp'
+    const urlPageBuscaProcesso = 'http://fabio-ribeiro.eastus.cloudapp.azure.com/adv/processos/default.asp'
     
     if (urlAtual == urlPageBuscaProcesso) {
         const processoInput = document.querySelector("#bsAdvProcessosTexto")
@@ -125,7 +125,7 @@ function connectPort() {
                     filtrar: "Filtrar"
                 }
 
-                fetch("http://fabioribeiro.eastus.cloudapp.azure.com/adv/processos/default.asp", {
+                fetch("http://fabio-ribeiro.eastus.cloudapp.azure.com/adv/processos/default.asp", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded",

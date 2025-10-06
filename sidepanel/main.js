@@ -87,7 +87,7 @@ function sendMessageCheck(element, icon) {
     }
     
     const message = element.value
-    const queryOptions = { url: "http://fabioribeiro.eastus.cloudapp.azure.com/*" }
+    const queryOptions = { url: `http://fabio-ribeiro.eastus.cloudapp.azure.com/*` }
     const connectInfo = { name: 'check' }
     const onMessageCallback = (msg) => {
         atualizarDataProcessList(msg.result)

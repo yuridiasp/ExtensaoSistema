@@ -424,7 +424,7 @@ function getArrayDate (qtdDias) {
 }
 
 function getTarefasSemanal (id, start, end, datas) {
-    const url = 'http://fabioribeiro.eastus.cloudapp.azure.com/adv/ajax/jsonAgendaTarefas.asp'
+    const url = `${basePathKorbil}/adv/ajax/jsonAgendaTarefas.asp`
     const endIso = end.toISOString().split('T')[0]
     const data = {
         idTI: '',
@@ -503,7 +503,7 @@ async function getTarefasAtrasadas (params, tarefasAtrasadas) {
     const passado = new Date(ontem.getFullYear()-10,ontem.getMonth(), ontem.getDate())
     ontem.setDate(ontem.getDate()-1)
     
-    const url = 'http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/default.asp'
+    const url = '${}/adv/tarefas/default.asp'
 
     const data = {
         bsAdvTarefas: "s",
