@@ -1,8 +1,8 @@
-const idResponsavelCRM = 64
+const idResponsavelCRM = 62
 const idTarefaRegistroCRM = 124
 
 async function createTarefa({ idCL, descricaoTarefa, dataParaFinalizacao, idTipoTarefa = idTarefaRegistroCRM, idResponsavel = idResponsavelCRM, idExecutor = idResponsavelCRM }) {
-    const url = 'http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/formularioScript.asp'
+    const url = `${basePathKorbil}/adv/tarefas/formularioScript.asp`
     const method = 'POST'
     const contentType = 'application/x-www-form-urlencoded'
     const body = {

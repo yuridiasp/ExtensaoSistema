@@ -41,7 +41,7 @@ async function contarTarefasParaHoje() {
     }
 
     const { URL } = document
-    const urlTarefasHoje = `http://fabioribeiro.eastus.cloudapp.azure.com/adv/tarefas/default.asp?bsAdvTarefas=s&bsAdvTarefasStatus=p&bsAdvTarefasExecutor=${id}&bsAdvTarefasDe=${date}&bsAdvTarefasAte=${date}`
+    const urlTarefasHoje = `${basePathKorbil}/adv/tarefas/default.asp?bsAdvTarefas=s&bsAdvTarefasStatus=p&bsAdvTarefasExecutor=${id}&bsAdvTarefasDe=${date}&bsAdvTarefasAte=${date}`
 
     if (URL == urlTarefasHoje) {
         const tarefas = document.querySelectorAll("body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr")

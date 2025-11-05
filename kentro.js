@@ -1,12 +1,19 @@
 function Kentro() {
-    const contagemTarefas = new Map()
+    if(!state.functions.kentro.contagemTarefasVencimento && !state.functions.kentro.selectComboPendencias)
+        return
+
+    const contagemTarefasCurrentUser = new Map()
+    const contagemTarefasResponsibleUser = new Map()
     const btnsRegistrados = new WeakSet()
     const vencimentoRegistrado = new WeakSet()
     const idLabel = "contador_tarefas"
+    const respUserPrefix = "resp_user_"
     let previousBTN = null
     let scheduled = null
     let textarea = null
     let inputResponsavel = null
+    let user = null
+    let responsibleUser = null
 
     const postRequest = async (url, body) => {
         const r = await callKentro(url, {
@@ -21,29 +28,32 @@ function Kentro() {
     }
 
     const removePreviousLabel = (btn) => {
+        const labelRespUser = btn.querySelector(`#${respUserPrefix + idLabel}`)
+        const previousLabelRespUser = previousBTN?.querySelector(`#${respUserPrefix + idLabel}`)
         const label = btn.querySelector(`#${idLabel}`)
         const previousLabel = previousBTN?.querySelector(`#${idLabel}`)
 
-        if (label === previousLabel || !previousBTN)
-            return
-
-        previousLabel.remove()
+        if (label !== previousLabel && previousBTN)
+            previousLabel.remove()
+        
+        if (labelRespUser !== previousLabelRespUser && previousBTN)
+            previousLabelRespUser.remove()
     }
 
-    const addLabelContagemTarefas = (btn) => {
-        let label = btn.querySelector(`#${idLabel}`)
+    const addLabelContagemTarefas = (btn, isRespUser = false) => {
+        let label = btn.querySelector(`#${isRespUser ? respUserPrefix + idLabel : idLabel}`)
         if (!label) {
             label = document.createElement("span")
-            label.id = idLabel;
+            label.id = isRespUser ? respUserPrefix + idLabel : idLabel
             label.style.cssText = `
                 color: #FFF;
-                background: crimson;
+                background: ${isRespUser ? '#29bdff' : 'crimson'};
                 border-radius: 50%;
                 width: 20px;
                 height: 20px;
                 z-index: 10;
                 position: absolute;
-                top: -5px;
+                ${isRespUser ? 'bottom: -5px;' : 'top: -5px;'}
                 right: -5px;
                 display: flex;
                 justify-content: center;
@@ -67,17 +77,24 @@ function Kentro() {
         return new Date(anoVencimento, mesVencimento - 1, diaVencimento)
     }
 
-    const contarDatas = (tasks) => {
-        const resultado = new Map()
-
+    const contarDatas = (tasks, user) => {
+        const resultadoCurrentUser = new Map()
+        const resultadoResponsibleUser = new Map()
+        
         tasks.forEach((task) => {
             const date = convertTimestampToDate(task.duedate)
             if (!date) return
             const key = date.toLocaleDateString()
-            resultado.set(key, (resultado.get(key) || 0) + 1)
+            if(task.users.includes(user.id)) {
+                const count = (resultadoCurrentUser.get(key)?.count || 0) + 1
+                resultadoCurrentUser.set(key, { count, users: task.users })
+            } else {
+                const count = (resultadoResponsibleUser.get(key)?.count || 0) + 1
+                resultadoResponsibleUser.set(key, { count, users: task.users })
+            }
         })
 
-        return resultado
+        return [resultadoCurrentUser, resultadoResponsibleUser]
     }
 
     const convertTimestampToDate = (timestamp) => {
@@ -89,27 +106,47 @@ function Kentro() {
     const createOrUpdateLabel = (btn, elementDateText) => {
         removePreviousLabel(btn)
         const dateKey = getVencimento(elementDateText).toLocaleDateString()
-        const count = contagemTarefas.get(dateKey) || 0
+        const count = contagemTarefasCurrentUser.get(dateKey) || 0
         const label = addLabelContagemTarefas(btn)
         label.innerHTML = count
+        const isRespUser = responsibleUser?.profilePic !== user?.profilePic
+        
+        if(isRespUser) {
+            const countRespUser = contagemTarefasResponsibleUser.get(dateKey) || 0
+            const labelRespUser = addLabelContagemTarefas(btn, true)
+            labelRespUser.innerHTML = countRespUser
+        }
         previousBTN = btn
     }
 
-    const atualizarDatepicker = async (username) => {
-        
-        const { url, schema } = getDataApiKentro(username)
+    const atualizarDatepicker = async () => {
+        if(!user)
+            return
+
+        const { url, schema } = getDataApiKentro({ user, responsibleUser })
         const { status, body } = await postRequest(url, schema)
         let tasks = []
-
+        
         if(status === 200) tasks = JSON.parse(body)
         
         const datepicker = document.querySelector("div.cdk-overlay-pane.mat-datepicker-popup") || document.querySelector("div.mat-datepicker-popup.cdk-overlay-pane")
         const elementDateText = document.querySelector("label.mat-calendar-hidden-label")
 
         if (!datepicker || !elementDateText || !tasks.length) return
+        
+        contagemTarefasCurrentUser.clear()
+        contagemTarefasResponsibleUser.clear()
+        const [ resultadoCurrentUser, resultadoResponsibleUser ] = contarDatas(tasks, user)
 
-        contagemTarefas.clear()
-        contarDatas(tasks).forEach((value, key) => contagemTarefas.set(key, value))
+        if (resultadoCurrentUser.size)
+            resultadoCurrentUser.forEach((value, key) => {
+                contagemTarefasCurrentUser.set(key, value.count)
+            })
+
+        if (resultadoResponsibleUser.size)
+            resultadoResponsibleUser.forEach((value, key) => {
+                contagemTarefasResponsibleUser.set(key, value.count)
+            })
 
         datepicker.querySelectorAll("td > button").forEach(btn => {
             if (!btnsRegistrados.has(btn)) {
@@ -130,20 +167,20 @@ function Kentro() {
         })
     }
 
-    const registrarNavegacaoMensal = (username) => {
+    const registrarNavegacaoMensal = () => {
         const previousMonthButton = document.querySelector("button.mat-calendar-previous-button")
         const forwardMonthButton = document.querySelector("button.mat-calendar-next-button")
 
         if (previousMonthButton && !previousMonthButton.dataset.listenerAdded) {
             previousMonthButton.addEventListener("click", () => {
-                setTimeout(() => atualizarDatepicker(username), 100)
+                setTimeout(() => atualizarDatepicker(), 100)
             });
             previousMonthButton.dataset.listenerAdded = "true"
         }
 
         if (forwardMonthButton && !forwardMonthButton.dataset.listenerAdded) {
             forwardMonthButton.addEventListener("click", () => {
-                setTimeout(() => atualizarDatepicker(username), 100)
+                setTimeout(() => atualizarDatepicker(), 100)
             })
             forwardMonthButton.dataset.listenerAdded = "true"
         }
@@ -643,19 +680,28 @@ function Kentro() {
                 }
     
                 const urlTarefas = "https://fabioribeiroadvogados.atenderbem.com/base/agenttasksdashboard"
+                const urlCRM = "https://fabioribeiroadvogados.atenderbem.com/base/crmpanel"
                 
-                if (document.URL !== urlTarefas) return
+                if (document.URL !== urlTarefas && document.URL !== urlCRM) return
                 
                 const vencimento = document.querySelector("div.dialog-content.overflow-hidden app-task-duedate")
                 
-                if (!vencimento || vencimentoRegistrado.has(vencimento)) return;
+                if (!vencimento || vencimentoRegistrado.has(vencimento)) return
 
-                const username = document.querySelector("div.username-text-area div:nth-child(2)").innerText
-    
+                const username = document.querySelector("div.username-text-area div:nth-child(2)")?.innerText
+
+                if (!username) return
+
+                const userProfilePic = document.querySelector("div.dialog-content.overflow-hidden > div > ca-task-form > div.mrg16T.full-width.flex-row.s12.align-items-center > div.flex-elastic.mrg12L > app-multi-user-selection > div > div > div:nth-child(1) > user-profile-pic > div > img")?.src
+
+                user = users.find(({ user }) => user === username)
+                
+                responsibleUser = users.find(({ profilePic }) => userProfilePic.includes(profilePic))
+                
                 vencimento.addEventListener('click', () => {
                     setTimeout(() => {
-                        atualizarDatepicker(username)
-                        registrarNavegacaoMensal(username)
+                        atualizarDatepicker()
+                        registrarNavegacaoMensal()
                     }, 100)
                 })
             } finally {
@@ -679,11 +725,11 @@ async function callKentro(url, init = {}) {
     return await new Promise((resolve) => {
         chrome.runtime.sendMessage(
             {
-            type: "KENTRO_FETCH",
-            url,
-            method: init.method,
-            headers: init.headers,
-            body: init.body
+                type: "KENTRO_FETCH",
+                url,
+                method: init.method,
+                headers: init.headers,
+                body: init.body
             },
             resolve
         );

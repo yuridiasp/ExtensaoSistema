@@ -2,7 +2,7 @@ const SELECTORS = {
     taskListContainer: "#listagem",
 }
 
-const localAtendimentoKorbil = {
+/* const localAtendimentoKorbil = {
     ba: {
         alagoinhas: 'ALAGOINHAS/BA',
         conde: 'CONDE/BA',
@@ -67,5 +67,79 @@ const localAtendimentoKorbil = {
         padreBernardo: 'PADRE BERNARDO',
         santoAntonioDoDescoberto: 'SANTO ANTÔNIO DO DESCOBERTO/GO',
         valparaiso: 'VALPARAÍSO/GO',
+    }
+}
+ */
+
+const localAtendimentoKorbil = {
+    ba: {
+        alagoinhas: 'Estância - Alagoinhas',
+        conde: 'Estância - Conde/BA',
+        pauloAfonso: 'Estância - Paulo Afonso',
+        salvador: 'Estância - Salvador',
+    },
+    df: {
+        aasm: 'AASM',
+        aguaQuente: 'Brasília - Agua Quente',
+        associacaoMaosQueCriam: 'Brasília - Associação Mãos que Criam',
+        brasilia: 'Brasília - Brasília',
+        caritas: 'CÁRITAS/DF',
+        estrutural: 'Brasília - Estrutural',
+        taguatinga: 'FIBrasília - Taguatinga ( Filial)',
+        planaltina: 'Brasília - Planaltina',
+        portoRico: 'PORTO RICO',
+        recantoDasEmas: 'Brasília - Recanto das Emas',
+        riachoFundo: 'Brasília - Riacho Fundo',
+        samambaia: 'Brasília - Samambaia',
+        santaMaria: 'Brasília - Santa Maria',
+        sobradinho: 'Brasília - Sobradinho',
+        vicentePires: 'Brasília - Vicente Pires',
+    },
+    se: {
+        amorimDeLimaAdvogados: 'Aracajú - Amorim de Lima Adv',
+        assentamentoAratu: 'Aracajú - Povoado Aratu',
+        campoDoBrito: 'Aracajú - Campo do Brito',
+        capela: 'Aracajú - Capela',
+        carmopolis: 'Aracajú - Carmópolis',
+        carroQuebrado: 'Aracajú - Pov. carro quebrado ( Japotã)',
+        coloniaItaporanga: 'Estância - Colonia Itaporanga',
+        cristinapolis: 'Estância - Cristinápolis',
+        estancia: 'Estância - Estância',
+        santaMaria: 'Aracajú - Santa Maria',
+        tobiasBarreto: 'Estância - Tobias Barreto',
+        indiaroba: 'Estância - Indiaroba',
+        itabaiana: 'Aracajú - Itabaiana',
+        japaratuba: 'Aracajú - Japaratuba',
+        japoata: 'Aracajú - Japoatã',
+        joaoAlves: 'Aracajú - João Alves',
+        lagarto: 'Estância - Lagarto',
+        lamarao: 'Aracajú - Lamarão',
+        loteamentoJeova: 'Estância - Loteamento Jeová',
+        maruim: 'Aracajú - Maruim',
+        matrizAracaju: 'Aracajú - Aracajú',
+        muribeca: 'Aracajú - Muribeca',
+        pacatuba: 'Aracajú - Pacatuba',
+        pedrinhas: 'Estância - Pedrinhas',
+        piabeta: 'Aracajú - Piabeta',
+        portoDoMato: 'Aracajú - Porto do Mato',
+        propria: 'Aracajú - Propriá',
+        rateio: 'Aracajú - Rateio',
+        rosarioDoCatete: 'Aracajú - Rosário do Catete',
+        santaRosaDeLima: 'Aracajú - Santa Rosa de Lima',
+        santoAmaro: 'Aracajú - Santo Amaro',
+        sindicatoDosTrabalhadoresIndiaroba: 'SINDICATO DOS TRABALHADORES RURAIS EM INDIAROBA/SE',
+        sinttra: 'Aracajú - Sinttra',
+        umbauba: 'Estância - Umbaúba',
+    },
+    go: {
+        ceuAzul: 'CÉU AZUL',
+        aguasLindas: 'Brasília - Águas Lindas',
+        jardimInga: 'Brasília - Jardim Ingá',
+        lunabelNovoGama: 'Brasília - Lunabel Novo Gama',
+        monteAlto: 'MONTE ALTO',
+        novoGama: 'Brasília - Novo Gama',
+        padreBernardo: 'Brasília - Padre Bernardo',
+        santoAntonioDoDescoberto: 'Brasília - Santo Antonio',
+        valparaiso: 'Brasília - Valparaiso',
     }
 }

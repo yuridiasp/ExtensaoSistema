@@ -40,7 +40,7 @@ function calculaPascoa(ano) {
     return new Date(ano, MES, DIA)
 }
 
-function getFeriadosFixos ({ ano, parametro, competencia = null, cliente }) {
+function getFeriadosFixos ({ ano, parametro, competencia = null, cliente, portal }) {
     
     const indexJaneiro = 0
 
@@ -79,11 +79,13 @@ function getFeriadosFixos ({ ano, parametro, competencia = null, cliente }) {
         return feriados
     }
     
+    debugger
+    
     const tarefaContatar = parametro === parametros.tarefaContatar,
         tarefaAdvogado = parametro === parametros.tarefaAdvogado,
         tarefaINSSDigital = parametro === parametros.inss,
         isHighlight = parametro === parametros.highlight,
-        isTJ = cliente?.processo?.origem?.length === 12,
+        isTJ = cliente?.processo?.origem?.length === 12 || portal === 'TJ',
         diaInicioForense = 20,
         mesInicioForense = 11,
         diaFimForense = 6,
@@ -91,7 +93,7 @@ function getFeriadosFixos ({ ano, parametro, competencia = null, cliente }) {
         diaInicioFeriasAdvogados = 20,
         mesInicioFeriasAdvogados = 11,
         diaFimFeriasAdvogados = isTJ ? 20 : 21,
-        isTRT = cliente?.processo?.natureza === "TRABALHISTA",
+        isTRT = cliente?.processo?.natureza === "TRABALHISTA" || portal === "TRT",
         mesFimFeriasAdvogados = 0,
         isIS = competenciaNormalizada || isTJ || isTRT,
         isTRF1 = !isTJ && !isHighlight && cliente?.processo?.origem?.slice(13,16) === "401",
@@ -108,26 +110,39 @@ function getFeriadosFixos ({ ano, parametro, competencia = null, cliente }) {
                     {data: [9,12], feriado: "DIA DAS CRIANÇAS - DIA DA PADROEIRA DO BRASIL - NACIONAL", isNacional: true},
                     {data: [10,2], feriado: "FINADOS - NACIONAL", isNacional: true},
                     {data: [10,15], feriado: "PROCLAMAÇÃO DA REPÚBLICA - NACIONAL", isNacional: true},
-                    {data: [10,20], feriado: "DIA DA CONSCIÊNCIA NEGRA - NACIONAL", isNacional: true},
+                    {data: [10,20], feriado: "DIA NACIONAL DE ZUMBI E DA CONSCIÊNCIA NEGRA - NACIONAL", isNacional: true},
                     {data: [11,25], feriado: "NATAL - NACIONAL", isNacional: true},
                 ],
                 recessoForense : forense,
                 feriasAdvogados: advogados,
                 justicaNacional: [
                     {data: [7,11], feriado: "DIA DO MAGISTRADO - JUSTIÇA"},
-                    {data: [9,28], feriado: "DIA DO FUNCIONÁRIO PÚBLICO - JUSTIÇA"},
+                    //{data: [9,28], feriado: "DIA DO FUNCIONÁRIO PÚBLICO - JUSTIÇA"},
                     {data: [10,1], feriado: "LEI FEDERAL Nº 5.010/66 - JUSTIÇA"},
                     {data: [11,8], feriado: "DIA DA JUSTIÇA - JUSTIÇA"},
                     {data: [3,16], feriado: "QUARTA-FEIRA SANTA - PONTO FACULTATIVO JUSTIÇA"}, //ADICIONADO EM 16/04/2025
                     {data: [3,17], feriado: "QUINTA-FEIRA SANTA - PONTO FACULTATIVO JUSTIÇA"}, //ADICIONADO EM 16/04/2025
                 ],
+                justicaFederal: [
+                    {data: [9,31], feriado: "DIA DO FUNCIONÁRIO PÚBLICO - JUSTIÇA - PONTO FACULTADO DA JUSTIÇA"},
+                ],
                 justicaEstadual: [
                     {data: [5,20], feriado: "PÓS CORPUS CHRISTI - PONTO FACULTATIVO"},
                     {data: [5,23], feriado: "VÉSPERA SÃO JOÃO - PONTO FACULTATIVO"},
                     {data: [6,7], feriado: "SEGUNDA IMPRENSSADA REFERENTE AO FERIADO DE EMANCIPAÇÃO POLÍTICA DE SERGIPE - PONTO FACULTADO DA JUSTIÇA DE SERGIPE"},
+                    {data: [10,21], feriado: "DIA NACIONAL DE ZUMBI E DA CONSCIÊNCIA NEGRA - JUSTIÇA - PONTO FACULTADO DA JUSTIÇA"}
                 ],
                 TRF1: [
                     {data: [4,2], feriado: "SEXTA IMPRENSSADA REFERENTE AO FERIADO DE DIA DO TRABALHO - PONTO FACULTADO DA JUSTIÇA"},
+                ],
+                TJSE: [
+                    {data: [9,27], feriado: "DIA DO FUNCIONÁRIO PÚBLICO - JUSTIÇA - PONTO FACULTADO DA JUSTIÇA"},
+                    {data: [9,28], feriado: "DIA DO FUNCIONÁRIO PÚBLICO - JUSTIÇA"},
+                    {data: [10,21], feriado: "DIA NACIONAL DE ZUMBI E DA CONSCIÊNCIA NEGRA - JUSTIÇA - PONTO FACULTADO DA JUSTIÇA"}
+                ],
+                TRT: [
+                    {data: [9,31], feriado: "DIA DO FUNCIONÁRIO PÚBLICO - JUSTIÇA - PONTO FACULTADO DA JUSTIÇA"},
+                    {data: [10,21], feriado: "DIA NACIONAL DE ZUMBI E DA CONSCIÊNCIA NEGRA - JUSTIÇA - PONTO FACULTADO DA JUSTIÇA"},
                 ],
                 'SE': [
                     {data: [5,24], feriado: "SÃO JOÃO - SERGIPE"},
@@ -353,6 +368,18 @@ function getFeriadosFixos ({ ano, parametro, competencia = null, cliente }) {
     if (isIS || isHighlight) {
         datas.justicaEstadual.forEach(date => dataFactory(date, resultados))
     }
+    
+    if(!isIS) {
+        datas.justicaFederal.forEach(date => dataFactory(date, resultados))
+    }
+
+    if (isTJ) {
+        datas.TJSE.forEach(date => dataFactory(date, resultados))
+    }
+
+    if (isTRT) {
+        datas.TRT.forEach(date => dataFactory(date, resultados))
+    }
 
     if (tarefaContatar || isHighlight || tarefaINSSDigital) {
         datas.SE.forEach(date => dataFactory(date, resultados))
@@ -447,11 +474,11 @@ function calculaFeriadosDerivadosPascoa(pascoa) {
     ]
 }
 
-function calculaFeriados({ parametro, year, competencia, cliente }) {
+function calculaFeriados({ parametro, year, competencia, cliente, portal }) {
     const date = new Date()
     
     const ano = year || date.getFullYear(),
-        fixos = getFeriadosFixos({ parametro, ano, competencia, cliente }),
+        fixos = getFeriadosFixos({ parametro, ano, competencia, cliente, portal }),
         pascoa = calculaPascoa(ano),
         feriados = { ...fixos }
     
@@ -468,9 +495,9 @@ function calculaFeriados({ parametro, year, competencia, cliente }) {
     return feriados
 }
 
-function isFeriado ({ date, parametro, year = null, competencia = null, cliente = null }) {
+function isFeriado ({ date, parametro, year = null, competencia = null, cliente = null, portal = null }) {
     
-    const feriados = calculaFeriados({ parametro, year, competencia, cliente })
+    const feriados = calculaFeriados({ parametro, year, competencia, cliente, portal })
     
     const dateString = date.toISOString()
     

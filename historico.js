@@ -20,7 +20,7 @@ async function createHistorico() {
         },
         'PERICIA': {
             historico: `${cliente.requerimento.protocolo} - ${cliente.compromisso.tipoCompromisso}\r\nData e Hora: ${cliente.compromisso.prazoFatal} (${day}) às ${cliente.compromisso.horario}\r\nLocal: ${cliente.compromisso.local}\r\nEndereço: ${cliente.compromisso.endereco}\r\nOrientar a levar o agendamento, relatórios médicos e documentos pertinentes a atividade rural / pescador (caso exerça).\r\nChegar com 30 minutos de antecedência.`,
-            tipo: '20'
+            tipo: '128'
         }
     }
 
@@ -43,7 +43,7 @@ async function createHistorico() {
 
     const parser = new DOMParser()
 
-    const urlRequest = 'http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientesHistorico/formularioScript.asp'
+    const urlRequest = `${basePathKorbil}/adv/clientesHistorico/formularioScript.asp`
 
     return await fetch(urlRequest, {
             method: "POST",
@@ -128,7 +128,7 @@ function completeDescricaoHistorico() {
                     'Aguardando ajuizamento do caso': 'Acompanhamento realizado (Aguardando ajuizamento do caso XXX)',
                 },
                 'Judicial': {
-                    'Acompanhamento realizado': 'Acompanhamento realizado. No momento, o processo judicial encontra-se em andamento, aguardando XXXXXXX.'
+                    'Acompanhamento realizado': 'Acompanhamento realizado. No momento, o processo judicial encontra-se em andamento, aguardando XXXXXXX.',
                 },
                 'Administrativo': {
                     'Acompanhamento realizado': 'Acompanhamento realizado. No momento, aguardando a resolução do requerimento administrativo nº XXXXX.',
@@ -139,15 +139,15 @@ function completeDescricaoHistorico() {
         },
         127: {
             tipo: 'CRM (Avanço de Etapa)',
-            texto: 'Oportunidade avançada da etapa XXX para a etapa YYY.'
+            texto: 'Oportunidade avançada da etapa XXX para a etapa YYY.',
         },
         102: {
             tipo:'CRM (Criação de Oportunidade)',
-            texto: 'Oportunidade registrada no CRM (Possível caso de XXX).'
+            texto: 'Oportunidade registrada no CRM (Possível caso de XXX).',
         },
         110: {
             tipo: 'CRM (Ganho de Oportunidade)',
-            texto: 'Tendo em vista o término do processo e não existir honorários pendentes de quitação, registro o ganho da oportunidade no CRM.'
+            texto: 'Tendo em vista o término do processo e não existir honorários pendentes de quitação, registro o ganho da oportunidade no CRM.',
         },
         88: {
             tipo: 'CRM (Intervenção)',
@@ -168,15 +168,86 @@ function completeDescricaoHistorico() {
         },
         105: {
             tipo: 'CRM (Perda de Oportunidade)',
-            texto: 'Registro a perda da oportunidade no CRM tendo em vista que XXX.'
+            texto: 'Registro a perda da oportunidade no CRM tendo em vista que XXX.',
         },
         126: {
             tipo: 'CRM (Transferência de Funil)',
-            texto: 'Oportunidade transferida do funil COMERCIAL para o funil YYY. '
+            texto: 'Oportunidade transferida do funil COMERCIAL para o funil YYY. ',
         },
         124: {
             tipo: 'Registro de Intimação',
-            texto: `Registrado compromisso de intimação conforme solicitação:\nNúmero do Processo: [Número do Processo]\nDescrição da Intimação: [Descrição resumida e objetiva da intimação]\nNome do Solicitante: [Nome e segundo nome do colaborador que solicitou]\nMeio de Comunicação: [Mensagem via Contact Board, Grupo Geral no Whatsapp, Tarefa, etc.]\nData da Solicitação: [Data da solicitação]`
+            texto: `Registrado compromisso de intimação conforme solicitação:\nNúmero do Processo: [Número do Processo]\nDescrição da Intimação: [Descrição resumida e objetiva da intimação]\nNome do Solicitante: [Nome e segundo nome do colaborador que solicitou]\nMeio de Comunicação: [Mensagem via Contact Board, Grupo Geral no Whatsapp, Tarefa, etc.]\nData da Solicitação: [Data da solicitação]`,
+        },
+        70: {
+            tipo: 'Sentença Procedente',
+            subtipo: {
+                'Tipo de Atendimento': {
+                    'Presencial': 'O juízo de primeira instância proferiu sentença de procedência. Necessário marcar atendimento presencial para dar ciência ao cliente.',
+                    'Virtual': 'O juízo de primeira instância proferiu sentença de procedência. Necessário marcar atendimento virtual para dar ciência ao cliente.',
+                }
+            }
+        },
+        71: {
+            tipo: 'Sentença improcedente',
+            subtipo: {
+                'Tipo de Atendimento': {
+                    'Presencial': 'O juízo de primeira instância proferiu sentença de improcedência. Necessário marcar atendimento presencial para dar ciência ao cliente.',
+                    'Virtual': 'O juízo de primeira instância proferiu sentença de improcedência. Necessário marcar atendimento virtual para dar ciência ao cliente.',
+                }
+            }
+        },
+        33: {
+            tipo: 'Acórdão',
+            subtipo: {
+                'Decisão positiva': {
+                    'Atendimento Presencial': 'A decisão da TRSE foi positiva. Necessário marcar atendimento presencial para dar ciência ao cliente.',
+                    'Atendimento Virtual': 'A decisão da TRSE foi positiva. Necessário marcar atendimento virtual para dar ciência ao cliente.',
+                },
+                'Decisão negativa': {
+                    'Atendimento Presencial': 'A decisão da TRSE foi negativa. Necessário marcar atendimento presencial para dar ciência ao cliente.',
+                    'Atendimento Virtual': 'A decisão da TRSE foi negativa. Necessário marcar atendimento virtual para dar ciência ao cliente.',
+                }
+            }
+        },
+        3: {
+            tipo: 'Atendimento Interno',
+            texto: `AÇÃO: XX.\n\nCASO: XXX.\n\nDocumentação solicitada:\n•	RG e CPF do requerente\n•	Comprovante de residência atualizado\n•	Senha do MEU INSS\n•	Carteira de trabalho/CNIS/Carnês\n•	Laudo médico atualizado – relatórios, receitas, exames... etc.\n•	Cadastro Único atualizado\n•	Documentos de identificação e CPF dos membros do grupo familiar\n•	Comprovantes de gastos com medicamentos, tratamentos, etc.\n•	Certidão de casamento\n•	Declaração de imposto de renda\n•	Comprovantes de endereço em comum\n•	Documentos da funerária\n•	Documentos do hospital\n•	Registros fotográficos\n•	Certidão de óbito\n•	RG e CPF do falecido\n\nPara segurado especial: em nome do cliente (preferencialmente):\n•	Certidão de nascimento de filhos com profissão “lavrador”\n•	Certidão de casamento com profissão “lavrador”\n•	Notas fiscais de venda de produtos rurais\n•	Bloco de produtor rural\n•	Contratos de arrendamento/parceria/meação\n•	Declarações de sindicatos ou associações rurais\n•	Declaração de assentamento do INCRA\n•	Declaração de exercício de pesca artesanal (se aplicável)\n•	Cadastro do PRONAF\n•	Comprovantes de recebimento de benefício rural\n•	Fichas de filiação em sindicato rural\n•	Registro de imóvel rural (próprio ou de terceiro)\n•	Cadastro no CAR (Cadastro Ambiental Rural)\n•	DAP ou CAF ativa (Declaração de Aptidão ao Pronaf / Cadastro Nacional da Agricultura Familiar)\n•	Contrato de empréstimo rural\n•	Declaração da prefeitura [programa de sementes ou outro agrícola];\n•	Ficha de matrícula escolar com profissão;\n•	Ficha do posto de Saúde com profissão;\n•	Outro: ______,`
+        },
+        4: {
+            tipo: 'Atendimento Externo',
+            texto: `AÇÃO: XX.\n\nCASO: XXX.\n\nDocumentação solicitada:\n•	RG e CPF do requerente\n•	Comprovante de residência atualizado\n•	Senha do MEU INSS\n•	Carteira de trabalho/CNIS/Carnês\n•	Laudo médico atualizado – relatórios, receitas, exames... etc.\n•	Cadastro Único atualizado\n•	Documentos de identificação e CPF dos membros do grupo familiar\n•	Comprovantes de gastos com medicamentos, tratamentos, etc.\n•	Certidão de casamento\n•	Declaração de imposto de renda\n•	Comprovantes de endereço em comum\n•	Documentos da funerária\n•	Documentos do hospital\n•	Registros fotográficos\n•	Certidão de óbito\n•	RG e CPF do falecido\n\nPara segurado especial: em nome do cliente (preferencialmente):\n•	Certidão de nascimento de filhos com profissão “lavrador”\n•	Certidão de casamento com profissão “lavrador”\n•	Notas fiscais de venda de produtos rurais\n•	Bloco de produtor rural\n•	Contratos de arrendamento/parceria/meação\n•	Declarações de sindicatos ou associações rurais\n•	Declaração de assentamento do INCRA\n•	Declaração de exercício de pesca artesanal (se aplicável)\n•	Cadastro do PRONAF\n•	Comprovantes de recebimento de benefício rural\n•	Fichas de filiação em sindicato rural\n•	Registro de imóvel rural (próprio ou de terceiro)\n•	Cadastro no CAR (Cadastro Ambiental Rural)\n•	DAP ou CAF ativa (Declaração de Aptidão ao Pronaf / Cadastro Nacional da Agricultura Familiar)\n•	Contrato de empréstimo rural\n•	Declaração da prefeitura [programa de sementes ou outro agrícola];\n•	Ficha de matrícula escolar com profissão;\n•	Ficha do posto de Saúde com profissão;\n•	Outro: ______`,
+        },
+        72: {
+            tipo: 'Atendimento Virtual',
+            subtipo: {
+                'Tentativa de contato': {
+                    'Com sucesso': `AÇÃO: XX.\n\nCASO: XXX.\n\nDocumentação solicitada:\n•	RG e CPF do requerente\n•	Comprovante de residência atualizado\n•	Senha do MEU INSS\n•	Carteira de trabalho/CNIS/Carnês\n•	Laudo médico atualizado – relatórios, receitas, exames... etc.\n•	Cadastro Único atualizado\n•	Documentos de identificação e CPF dos membros do grupo familiar\n•	Comprovantes de gastos com medicamentos, tratamentos, etc.\n•	Certidão de casamento\n•	Declaração de imposto de renda\n•	Comprovantes de endereço em comum\n•	Documentos da funerária\n•	Documentos do hospital\n•	Registros fotográficos\n•	Certidão de óbito\n•	RG e CPF do falecido\n•	Provas rurais.`,
+                    'Com falha': 'Não realizado: Tentativa de contato frustrada. Liguei ?x, mas ninguém atendeu. Retorno tarefa para remarcar atendimento.',
+                },
+            }
+        },
+        128: {
+            tipo: 'Laudo perícial',
+            subtipo: {
+                'Médico': {
+                    'Favorável': 'Foi juntado aos autos laudo pericial médico favorável à parte autora. Manifestação protocolada.',
+                    'Desfavorável': 'Foi juntado aos autos laudo pericial médico desfavorável à parte autora. Manifestação protocolada.',
+                },
+                'Social': {
+                    'Favorável': 'Foi juntado aos autos laudo pericial social favorável à parte autora. Manifestação protocolada.',
+                    'Desfavorável': 'Foi juntado aos autos laudo pericial social desfavorável à parte autora. Manifestação protocolada.',
+                }
+            }
+        },
+        129: {
+            tipo: 'Protocolo',
+            subtipo: {
+                'Processo em andamento': {
+                    'Juntada de Documento': 'Houve a juntada de documento aos autos.',
+                    'Juntada de Relatório': 'Houve a juntada de relatório médico aos autos.',
+                    'Regular Andamento': 'Foi protocolado pedido de andamento processual.',
+                }
+            }
         }
     }
 

@@ -6,7 +6,7 @@ function getIdClienteCreateClienteRequest(url) {
 
 async function createCliente(body) {
     try {
-        const url = 'http://fabioribeiro.eastus.cloudapp.azure.com/adv/clientes/formularioScript.asp'
+        const url = `${basePathKorbil}/adv/clientes/formularioScript.asp`
         const method = 'POST'
         const contentType = 'application/x-www-form-urlencoded'
         const response = await fetch(url, { body: new URLSearchParams(body).toString(), method, headers: new Headers({ "Content-Type": contentType }) })

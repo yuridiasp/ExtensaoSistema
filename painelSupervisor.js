@@ -446,7 +446,7 @@ function getTarefasSemanal (id, start, end, datas) {
     .then(response => response.text())
     .then(response => {
         let str = response
-        str = str.replace(/(\r\n|\n|\r|\t)/gm, "").replaceAll('"',"'")
+        str = str.replace(/(\r\n|\n|\r|\t|\\[oO]\/)/gm, "").replaceAll('"',"'")
         if (str.match(/\x07/)) {
             str = str.replace(/\x07/,"")
         }
@@ -456,7 +456,7 @@ function getTarefasSemanal (id, start, end, datas) {
         for (c = 0; c < chavesCorretas.length; c++) {
             str = str.replaceAll(chavesErradas[c], chavesCorretas[c])
         }
-
+        
         return JSON.parse(str)
     })
     .then(resp => {
@@ -503,7 +503,7 @@ async function getTarefasAtrasadas (params, tarefasAtrasadas) {
     const passado = new Date(ontem.getFullYear()-10,ontem.getMonth(), ontem.getDate())
     ontem.setDate(ontem.getDate()-1)
     
-    const url = '${}/adv/tarefas/default.asp'
+    const url = `${basePathKorbil}/adv/tarefas/default.asp`
 
     const data = {
         bsAdvTarefas: "s",

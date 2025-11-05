@@ -15,6 +15,7 @@ const assignments = {
         contatar: {
             BSB: "Contatar BSB",
             estancia: "Contatar Estância",
+            tobiasBarreto: "Contatar Tobias Barreto",
             geral: "Contatar",
         },
         pendencias: "Pendências ADM",

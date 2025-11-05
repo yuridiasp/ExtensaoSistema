@@ -774,8 +774,10 @@ function filterColaboradoresJudicial () {
 
     if (cliente.processo.estado === 'GO' || cliente.processo.estado === 'DF') {
         colaboradores.push(...ADM.filter(colaborador => colaborador.assignments.includes(assignments.ADM.contatar.BSB)))
-    } else if ((cliente.cliente.localAtendido == "FILIAL ESTANCIA/SE") || ((parceiros.includes(cliente.cliente.parceiro)) && varaEstancia.includes(cliente.processo.vara))) {
+    } else if ((cliente.cliente.localAtendido === localAtendimentoKorbil.se.estancia) || ((parceiros.includes(cliente.cliente.parceiro)) && varaEstancia.includes(cliente.processo.vara))) {
         colaboradores.push(...ADM.filter(colaborador => colaborador.assignments.includes(assignments.ADM.contatar.estancia)))
+    } else if (cliente.cliente.localAtendido === localAtendimentoKorbil.se.tobiasBarreto) {
+        colaboradores.push(...ADM.filter(colaborador => colaborador.assignments.includes(assignments.ADM.contatar.tobiasBarreto)))
     } else {
         if (varaEstancia.includes(cliente.processo.vara)) {
             colaboradores.push(...ADM.filter(colaborador => (colaborador.assignments.includes(assignments.ADM.contatar.geral) || colaborador.assignments.includes(assignments.ADM.contatar.estancia))))
@@ -1709,7 +1711,7 @@ function extrairDadosRequisicaoClienteHtml(doc) {
     const indexParceiro = selectParceiro.selectedIndex
     dataClient.parceiro = indexParceiro === -1 ? "" : selectParceiro.options[indexParceiro].innerText.toUpperCase()
 
-    const selectLocalAtendido = doc.documentElement.querySelector("#idLocalAtendido")
+    const selectLocalAtendido = doc.documentElement.querySelector("#lstCentrosCusto")
     const indexLocalAtendido = selectLocalAtendido.selectedIndex
     dataClient.localAtendido = indexLocalAtendido === -1 ? "" : selectLocalAtendido.options[indexLocalAtendido].innerText.toUpperCase()
 
@@ -2101,7 +2103,7 @@ function datepickerHighlighter () {
                             if (td.dataset.day) {
                                 const [dia, mes, ano] = td.dataset.day.split("/")
                                 const date = new Date(`${mes}/${dia}/${ano}`)
-                                const { isHoliday, holiday, isNacional } = isFeriado({ date, parametro: parametros.highlight, year: ano, cliente })
+                                const { isHoliday, holiday, isNacional } = isFeriado({ date, parametro: parametros.highlight, year: ano, cliente, portal })
                                 
                                 if (isHoliday) {
                                     td.style.backgroundColor = isNacional ? '#fce3e4' : '#CCC'
@@ -2407,7 +2409,7 @@ async function idPage(url) {
         const isYuri = document.querySelector("#fdt-mt-header > ul.nav.navbar-nav.navbar-right.hidden-xs > li > a").innerText.trim() === "YURI DIAS"
 
         if(isYuri) {
-            addListaAuxiliares()
+            //addListaAuxiliares()
         }
 
         datepickerHighlighter()

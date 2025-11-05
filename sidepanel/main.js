@@ -50,8 +50,10 @@ async function sendMessageInnerTabs (message, callback, queryOptions = {}) {
     chrome.tabs.query(queryOptions, tabs => {
         if(tabs.length > 1 && message?.action !== actions.getPartes) {
             alert("Mais de uma aba do portal da justiça aberta no momento. Favor, manter aberto somente a página do portal da justiça que esteja analisando intimações no momento.")
-        } else {
+        } else if(tabs.length) {
             chrome.tabs.sendMessage(tabs[0].id, message, callback)
+        } else if (message.action === actions.getCompetencia) {
+            callback({ competencia: "ARCAJU", portal: "JF" })
         }
     })
 }
@@ -337,6 +339,10 @@ async function gerarTxt (executor) {
                 else
                     if (executor !== "OK")
                         genTXT.innerHTML = `<strong>${processo.value} - ${tipoIntimacao.value} - ${data} - ${executor}</strong>`
+                    else if (origem.value.length && processo.value.length && executor === "OK")
+                        genTXT.innerHTML = `<strong>${processo.value} (ORIGEM ${origem.value}) - ${executor}</strong>`
+                    else if (processo.value.length && executor === "OK")
+                        genTXT.innerHTML = `<strong>${processo.value} - ${executor}</strong>`
                     else
                         genTXT.innerHTML = `<strong>${executor}</strong>`
     }
@@ -571,7 +577,7 @@ function calcularPrazo (prazo, competencia, parametro) {
         dayOfWeek = dataFinal.getDay()
 
         const notFimDeSemana = (dayOfWeek > domingo && dayOfWeek < sabado),
-            isDiaUtil = notFimDeSemana && !isFeriado({ date: dataFinal, parametro, competencia }).isHoliday
+            isDiaUtil = notFimDeSemana && !isFeriado({ date: dataFinal, parametro, competencia, portal }).isHoliday
 
         if (isDiaUtil) {
             cont = cont + 1
@@ -603,7 +609,7 @@ function calcularPrazo (prazo, competencia, parametro) {
         dayOfWeek = dataInicial.getDay()
 
         const notFimDeSemana = (dayOfWeek > domingo && dayOfWeek < sabado)
-        const dateIsFeriado = isFeriado({ date: dataInicial, competencia, parametro }).isHoliday
+        const dateIsFeriado = isFeriado({ date: dataInicial, competencia, parametro, portal }).isHoliday
         
         if (diasInterno >= cont) {
             if (!dateIsFeriado && notFimDeSemana) {
