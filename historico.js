@@ -56,7 +56,20 @@ async function createHistorico() {
     }).then(async (result) => parser.parseFromString(await result.text(),'text/html'))
 }
 
-function completeDescricaoHistorico() {
+function initHistoricoHandlers() {
+    const selectTipoHistorico = document.querySelector("#idTipoHistorico")
+    if (!selectTipoHistorico) return
+
+    const descricaoHandler = setupDescricaoHistorico()
+    const taskHandler = setupTaskFromTypeHistorico()
+
+    selectTipoHistorico.addEventListener("change", () => {
+        descricaoHandler?.(selectTipoHistorico.value)
+        taskHandler?.(selectTipoHistorico.value)
+    })
+}
+
+function setupDescricaoHistorico() {
     if(!state.functions.abaRegistroHistorico.historicoRegistroIntimacao) {
         return
     }
@@ -65,7 +78,7 @@ function completeDescricaoHistorico() {
     const selectTipoHistorico = document.querySelector("#idTipoHistorico")
 
     const createSelectSubtipo = () => {
-        const selectTipoHistoricoContainer = document.querySelector("#fdt-form > div:nth-child(10)")
+        const selectTipoHistoricoContainer = document.querySelector("#fdt-form > div:nth-child(8)")
         const div = document.createElement('div')
         div.classList.add('row')
         div.style.display = 'none'
@@ -226,7 +239,7 @@ function completeDescricaoHistorico() {
                 },
             }
         },
-        128: {
+        129: {
             tipo: 'Laudo perícial',
             subtipo: {
                 'Médico': {
@@ -239,7 +252,7 @@ function completeDescricaoHistorico() {
                 }
             }
         },
-        129: {
+        130: {
             tipo: 'Protocolo',
             subtipo: {
                 'Processo em andamento': {
@@ -251,7 +264,7 @@ function completeDescricaoHistorico() {
         }
     }
 
-    selectTipoHistorico.addEventListener("change", () => {
+    /* selectTipoHistorico.addEventListener("change", () => {
         resetSelectSubtipo()
         if (tiposHistorico[selectTipoHistorico.value]) {
             textArea.innerHTML = ''
@@ -262,5 +275,109 @@ function completeDescricaoHistorico() {
                 textArea.innerHTML = tiposHistorico[selectTipoHistorico.value].texto
             }
         }
+    }) */
+
+    return (selectedValue) => {
+        resetSelectSubtipo()
+
+        const tipoSelecionado = tiposHistorico[selectedValue]
+        if (!tipoSelecionado) return
+
+        textArea.innerHTML = ""
+
+        if (tipoSelecionado.subtipo) {
+            showSelectSubtipo()
+            addOptionsToSelect(subOption, tipoSelecionado.subtipo)
+        } else if (tipoSelecionado.texto) {
+            textArea.innerHTML = tipoSelecionado.texto
+        }
+    }
+}
+
+function setupTaskFromTypeHistorico () {
+    if (!state.functions.abaRegistroHistorico.historicoRegistroTask)
+        return
+
+    const idLucas = 199
+    const idGabriel = 115
+    const idTipoTarefaContatar = 15
+    const idTipoTarefaProtocoloINSS = 97
+    const selectTipoHistorico = document.querySelector("#idTipoHistorico")
+    const gravarBTN = document.querySelector('input[name="btnGravar"]')
+    const divPilotoTarefaAuto = document.querySelector("#divPilotoTarefaAuto")
+    const form = document.querySelector("#fdt-form")
+    const btnClone = gravarBTN.cloneNode(true)
+    gravarBTN.parentNode.insertBefore(btnClone, gravarBTN)
+    btnClone.style.display = "none"
+
+    const tiposHistorico = {
+        acordao: 33,
+        sentenca_improcedente: 71,
+        sentenca_procedente: 70,
+        analise_inss_digital: 43
+    }
+
+    const tiposComTarefa = [
+        String(tiposHistorico.acordao),
+        String(tiposHistorico.sentenca_improcedente),
+        String(tiposHistorico.sentenca_procedente),
+        String(tiposHistorico.analise_inss_digital)
+    ]
+
+    const getHistoricoDescription = (idTipoHistorico) => {
+        if (idTipoHistorico == tiposHistorico.analise_inss_digital) {
+            const hora = document.querySelector("#hora")
+            const data = document.querySelector("#data")
+            return `Protocolar requerimento: histórico ${data.value} às ${hora.value}`
+        }
+
+        if (idTipoHistorico == tiposHistorico.acordao)
+            return "Informar acórdão."
+
+        return "Informar sentença."
+    }
+
+    /* selectTipoHistorico.addEventListener('change', () => {
+        if (selectTipoHistorico.value == tiposHistorico.acordao || selectTipoHistorico.value == tiposHistorico.sentenca_improcedente || selectTipoHistorico.value == tiposHistorico.sentença_procedente || selectTipoHistorico.value == tiposHistorico.analise_inss_digital) {
+            divPilotoTarefaAuto.style.display = "block"
+            btnClone.style.display = "inline-block"
+            gravarBTN.style.display = "none"
+        } else {
+            divPilotoTarefaAuto.style.display = "none"
+            gravarBTN.style.display = "inline-block"
+            btnClone.style.display = "none"
+        }
+    }) */
+
+    btnClone.addEventListener('click', async event => {
+        event.preventDefault()
+        btnClone.disabled = true
+        try {
+            const idCL = document.URL.match(/(?<=idCL=)\d+/)
+            const descricaoTarefa = getHistoricoDescription(selectTipoHistorico.value)
+            const dataParaFinalizacao = calcularProximoDiaUtil(parametros.tarefaContatar)
+            const idTipoTarefa = selectTipoHistorico.value == tiposHistorico.analise_inss_digital ? idTipoTarefaProtocoloINSS : idTipoTarefaContatar
+            const idResponsavel = selectTipoHistorico.value == tiposHistorico.analise_inss_digital ? idGabriel : idLucas
+            const idExecutor = idResponsavel
+            await createTarefa({ idCL, descricaoTarefa, dataParaFinalizacao, idTipoTarefa, idExecutor, idResponsavel })
+            alert("Tarefa criada com sucesso!")
+            form.submit()
+        } catch (error) {
+            alert(`Houve um erro para criar a tarefa: ${error}`)
+        } finally {
+            btnClone.disabled = false
+        }
     })
+
+    return (selectedValue) => {
+        if (tiposComTarefa.includes(String(selectedValue))) {
+            divPilotoTarefaAuto.style.display = "block"
+            btnClone.style.display = "inline-block"
+            gravarBTN.style.display = "none"
+        } else {
+            divPilotoTarefaAuto.style.display = "none"
+            gravarBTN.style.display = "inline-block"
+            btnClone.style.display = "none"
+        }
+    }
 }

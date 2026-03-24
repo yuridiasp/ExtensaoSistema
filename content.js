@@ -448,6 +448,9 @@ function limparListaTarefas() {
 
 function addListaTarefas({ nome, datasViagem, tarefas }, data, typeOfTask = typeOfTaskSearch.geral) {
 
+    if(typeOfTask === null || typeOfTask === undefined || typeOfTask < 0)
+        return
+
     const createRowTaskList = (name, tasks, travelDates) => {
         const ano = new Date().getFullYear()
         const p = document.createElement('p')
@@ -553,7 +556,7 @@ async function selectExecutorContatarJudicial (colaboradores) {
     const adm = await Promise.all(await colaboradores)
     let responsavel = 'JULIANO OLIVEIRA DE SOUZA'
 
-    const responsavelInterior = adm.find(colaborador => colaborador.interiores.includes(removeAcentuacaoString(cliente.cliente.localAtendido)))
+    const responsavelInterior = adm.find(colaborador => colaborador.interiores.includes(cliente.cliente.localAtendido))
 
     if (responsavelInterior) {
         return {responsavel, executor: responsavelInterior.nome}
@@ -681,7 +684,7 @@ async function getTarefasColaboradores({ colaborador, dataDe, dataAte = dataDe, 
                 }
             }
         })
-
+        debugger
         colaborador.tarefas = contador
         addListaTarefas(colaborador, dataDe, typeOfTask)
 
@@ -850,7 +853,7 @@ async function validaResponsavelTj (num) {
     }
 
     if (tarefasAdm.includes(tarefaAtualNormalizada)) {
-        if (cliente.cliente.cidade === "ESTANCIA" && cliente.cliente.localAtendido === "ESTANCIA")
+        if (cliente.cliente.localAtendido === "ESTANCIA")
             return {responsavel: "SANDOVAL FILHO CORREIA LIMA FILHO",executor: "SANDOVAL FILHO CORREIA LIMA FILHO"}
         return {responsavel: "JULIANO OLIVEIRA DE SOUZA",executor: "JULIANO OLIVEIRA DE SOUZA"}
     }
@@ -869,15 +872,18 @@ async function validaResponsavelTj (num) {
         return {responsavel: "KEVEN FARO DE CARVALHO",executor: "KEVEN FARO DE CARVALHO"}
 
     if (natureza === "BANCÁRIO" || natureza === "CÍVEL" || natureza === "CONSUMIDOR" || natureza === "SERVIDOR PÚBLICO") {
-        const ala = [0,1,8]
-        const gabriel = [2,3,4,6]
+        const gabriel = [2, 3, 4, 5]
+        const fernando = [6]
+        const estefanio = [7]
         if (tarefaAtualNormalizada !== "SESSÃO DE JULGAMENTO" && tarefaAtualNormalizada.search("AUDIENCIA") !== 0) {
             if (gabriel.includes(digito))
-                return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "GABRIEL DAVILA FILGUEIRAS MELLONE"}
-            if (ala.includes(digito))
-                return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "ALÃ FEITOSA CARVALHO"}
+                return {responsavel: "ALÃ FEITOSA CARVALHO",executor: "GABRIEL DAVILA FILGUEIRAS MELLONE"}
+            if (estefanio.includes(digito))
+                return {responsavel: "ALÃ FEITOSA CARVALHO",executor: "JOSÉ ESTEFÂNIO DOS SANTOS FIGUEIREDO"}
+            if (fernando.includes(digito))
+                return {responsavel: "ALÃ FEITOSA CARVALHO",executor: "FERNANDO HENRIQUE BARBOZA NASCIMENTO"}
         }
-        return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "RODRIGO AGUIAR SANTOS"}
+        return {responsavel: "ALÃ FEITOSA CARVALHO",executor: "ALÃ FEITOSA CARVALHO"}
     }
 }
 
@@ -919,7 +925,7 @@ async function validaResponsavelFederal (num) {
         }
 
         //Tarefa contatar para escritório de Estância
-        if(cliente.cliente.cidade === "ESTANCIA"  && cliente.cliente.localAtendido === "FILIAL ESTANCIA/SE") { 
+        if(cliente.cliente.localAtendido === localAtendimentoKorbil.se.estancia) { 
             return {responsavel: "SANDOVAL FILHO CORREIA LIMA FILHO",executor: "SANDOVAL FILHO CORREIA LIMA FILHO"}
         }
 
@@ -929,7 +935,7 @@ async function validaResponsavelFederal (num) {
 
     if (tarefaSac === tarefaAtualNormalizada) { //Tarefas para o SAC
         if (cliente.processo.estado === "DF" || cliente.processo.estado === "GO") {
-            return {responsavel: "FLAVIO LUCAS LIMA SOUZA",executor: "TRICYA MATEUS ROLEMBERG"}
+            return {responsavel: "FLAVIO LUCAS LIMA SOUZA",executor: "FLAVIO LUCAS LIMA SOUZA"}
         }
         return {responsavel: "FLAVIO LUCAS LIMA SOUZA",executor: "FLAVIO LUCAS LIMA SOUZA"}
     }
@@ -1088,7 +1094,7 @@ async function validaResponsavelFederal (num) {
         if (cliente.processo.estado === "DF" || cliente.processo.estado === "GO") {
             return {responsavel: "BRUNO PRADO GUIMARAES",executor: "BRUNO PRADO GUIMARAES"}
         }
-        return {responsavel: "RODRIGO AGUIAR SANTOS",executor: "RODRIGO AGUIAR SANTOS"}
+        return {responsavel: "ALÃ FEITOSA CARVALHO",executor: "ALÃ FEITOSA CARVALHO"}
     }
 }
 
@@ -1915,7 +1921,7 @@ async function preenchimentoFormularioPreProcesso() {
         const naturezaNormalizado = removeAcentuacaoString(naturezaTitle).toLowerCase()
         const responsaveis = {
             calculo: "GUILHERME JASMIM",
-            civel: "RODRIGO AGUIAR SANTOS",
+            civel: "ALÃ FEITOSA CARVALHO",
             indefinido: "",
             "inss digital": "SILVANIA PINHEIRO DE LEMOS",
             previdenciario: {
@@ -2081,46 +2087,282 @@ async function buscarDadosClienteProcessos(url) {
     await setCliente(cliente)
 }
 
-function datepickerHighlighter () {
+function datepickerHighlighter() {
+  if (!state.functions.todasPaginas.datepickerHighlighter && !state.functions.cadastroTarefa.exibirContagemTarefasColaborador) return;
 
-    if (!state.functions.todasPaginas.datepickerHighlighter) {
-        return
+  const datepickers = document.querySelectorAll(".datepicker");
+
+  // Cache e controle de requisições (fora do loop, para persistir)
+  const tarefasCache = new Map();     // key -> Map('dd/mm/yyyy' -> count)
+  const inflight = new Map();         // key -> { controller, promise }
+  const lastMonthKeyByDp = new WeakMap(); // datepicker -> monthKey atual
+
+  const addLabelContagemTarefas = (datepicker, td, contagem) => {
+    const label = document.createElement("span");
+    label.style.cssText = `
+      color: #FFF;
+      background: crimson;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      z-index: 10;
+      position: absolute;
+      top: -5px;
+      right: -10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.7em;
+    `;
+    label.innerHTML = contagem;
+    label.dataset.day = td.dataset.day;
+    td.appendChild(label);
+    td.style.position = "relative";
+    return label;
+  };
+
+  const getMesAnoVisivel = () => {
+    const th = document.querySelector('th.picker-switch[data-action="pickerSwitch"]');
+    if (!th) return null;
+    const [mes, ano] = th.textContent.trim().split(/\s+/);
+    return { mes, ano };
+  };
+
+  const getDatesFromGetTask = (mes, ano) => {
+    const mesMin = mes.toLowerCase();
+    const meses = {
+      "janeiro": "01",
+      "fevereiro": "02",
+      "março": "03",
+      "abril": "04",
+      "maio": "05",
+      "junho": "06",
+      "julho": "07",
+      "agosto": "08",
+      "setembro": "09",
+      "outubro": "10",
+      "novembro": "11",
+      "dezembro": "12",
+    };
+
+    const mesesIndex = Object.keys(meses);
+    const idx = mesesIndex.findIndex(m => m === mesMin);
+    const nextMonthName = mesesIndex[idx + 1];
+
+    const currentMonth = meses[mesMin];
+    const nextMonth = (mesMin === "dezembro") ? "01" : meses[nextMonthName];
+    const yearNext = (mesMin === "dezembro") ? (Number(ano) + 1) : ano;
+
+    return { dataDe: `01/${currentMonth}/${ano}`, dataAte: `01/${nextMonth}/${yearNext}` };
+  };
+
+  // Retorna Map(dayStr -> count)
+  const fetchTarefasCountPorDia = async ({ executorId, mes, ano, monthKey }) => {
+    const cacheKey = `${executorId}|${monthKey}`;
+    if (tarefasCache.has(cacheKey)) return tarefasCache.get(cacheKey);
+
+    // Aborta requisição anterior do MESMO executor|mês se existir
+    const prev = inflight.get(cacheKey);
+    if (prev && !prev.controller.signal.aborted) {
+      prev.controller.abort();
     }
 
-    const datepickers = document.querySelectorAll(".datepicker")
+    const controller = new AbortController();
+    const signal = controller.signal;
 
-    datepickers.forEach(datepicker => {
-    
-        const callback = (mutationList, observer) => {
-            for (const mutation of mutationList) {
-                if (mutation.type === "childList") {
-                    const dateTimeWidget = datepicker.querySelector(".bootstrap-datetimepicker-widget")
-                
-                    if (dateTimeWidget) {
-                        const tbody = dateTimeWidget.querySelector("ul > li:nth-child(1) > div > div.datepicker-days > table > tbody")
-                        const tds = tbody.querySelectorAll("td")
-                        tds.forEach(td => {
-                            if (td.dataset.day) {
-                                const [dia, mes, ano] = td.dataset.day.split("/")
-                                const date = new Date(`${mes}/${dia}/${ano}`)
-                                const { isHoliday, holiday, isNacional } = isFeriado({ date, parametro: parametros.highlight, year: ano, cliente, portal })
-                                
-                                if (isHoliday) {
-                                    td.style.backgroundColor = isNacional ? '#fce3e4' : '#CCC'
-                                    td.style.border = isNacional ? '1px solid #fe9595' : '1px solid #ffe5e7'
-                                    td.title = holiday
-                                }
-                            }
-                        })
-                    }
-                }
+    const promise = (async () => {
+      const { dataDe, dataAte } = getDatesFromGetTask(mes, ano);
+
+      const urlRequest = `${basePathKorbil}/adv/tarefas/default.asp`;
+      const bodyObject = {
+        bsAdvTarefas: "s",
+        bsAdvTarefasExecutor: executorId,
+        filtrar: "Filtrar",
+        bsAdvTarefasDe: dataDe,
+        bsAdvTarefasAte: dataAte,
+        bsAdvTarefasStatus: "p",
+      };
+
+      const response = await fetch(urlRequest, {
+        method: "POST",
+        body: new URLSearchParams(bodyObject),
+        headers: new Headers({ "Content-Type": "application/x-www-form-urlencoded" }),
+        signal,
+      });
+
+      // Se abortou, deixa estourar AbortError para cair no catch de cima
+      const html = await response.text();
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, "text/html");
+
+      const rows = doc.documentElement.querySelectorAll(
+        "body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr"
+      );
+
+      const counts = new Map();
+      rows.forEach(tr => {
+        const tds = Array.from(tr.children);
+        const dateTd = tds[7]; // sua ordem original: [..., date]
+        if (!dateTd) return;
+        const dayStr = dateTd.innerText?.trim();
+        if (!dayStr) return;
+
+        counts.set(dayStr, (counts.get(dayStr) || 0) + 1);
+      });
+
+      tarefasCache.set(cacheKey, counts);
+      return counts;
+    })();
+
+    inflight.set(cacheKey, { controller, promise });
+
+    try {
+      const res = await promise;
+      return res;
+    } finally {
+      // Limpa inflight apenas se ainda for a mesma referência
+      const cur = inflight.get(cacheKey);
+      if (cur?.promise === promise) inflight.delete(cacheKey);
+    }
+  };
+
+  datepickers.forEach((datepicker) => {
+    if (datepicker.__dpHighlighterObserver) return;
+
+    let rafId = null;
+
+    // Lock para evitar concorrência de highlight
+    let running = false;
+    let rerun = false;
+
+    const highlight = async () => {
+      rafId = null;
+
+      if (running) {
+        rerun = true;
+        return;
+      }
+
+      running = true;
+      rerun = false;
+
+      try {
+        const widget = datepicker.querySelector(".bootstrap-datetimepicker-widget");
+        if (!widget) return;
+
+        const tbody = widget.querySelector("ul > li:nth-child(1) > div > div.datepicker-days > table > tbody");
+        if (!tbody) return;
+
+        // Apenas células não processadas
+        const tds = tbody.querySelectorAll("td[data-day]:not([data-hl])");
+
+        // Busca tarefas UMA vez por mês (se habilitado)
+        let tarefasCountMap = null;
+
+        const isTelaTarefas =
+          state.functions.cadastroTarefa.exibirContagemTarefasColaborador &&
+          document.URL.startsWith("http://fabio-ribeiro.eastus.cloudapp.azure.com/adv/tarefas/formulario.asp");
+
+        if (false) { //isTelaTarefas
+          const mesAno = getMesAnoVisivel();
+          const executorId = document.querySelector("#idExecutor")?.value;
+
+          if (mesAno && executorId) {
+            const monthKey = `${mesAno.ano}-${mesAno.mes.toLowerCase()}`;
+            lastMonthKeyByDp.set(datepicker, monthKey);
+
+            try {
+              // Importante: se o usuário já mudou de mês enquanto aguardava, ignora ao voltar
+              const localMonthKey = monthKey;
+
+              tarefasCountMap = await fetchTarefasCountPorDia({
+                executorId,
+                mes: mesAno.mes,
+                ano: mesAno.ano,
+                monthKey: localMonthKey,
+              });
+
+              // Se o monthKey atual do datepicker mudou, descarta esta resposta
+              if (lastMonthKeyByDp.get(datepicker) !== localMonthKey) {
+                return;
+              }
+            } catch (e) {
+              if (e?.name !== "AbortError") {
+                console.error("Erro ao buscar tarefas:", e);
+              }
+              // Em caso de abort/erro, apenas não aplica contagem
+              tarefasCountMap = null;
             }
+          }
         }
-    
-        const observer = new MutationObserver(callback)
-        
-        observer.observe(datepicker, { attributes: true, childList: true, subtree: true })
-    })
+
+        // Agora percorre as células SEM async por td
+        for (const td of tds) {
+          const [dia, mes, ano] = td.dataset.day.split("/");
+          const date = new Date(`${mes}/${dia}/${ano}`);
+
+          if (state.functions.todasPaginas.datepickerHighlighter) {
+            const { isHoliday, holiday, isNacional } = isFeriado({
+              date,
+              parametro: parametros.highlight,
+              year: ano,
+              cliente,
+            });
+
+            if (isHoliday) {
+              td.style.backgroundColor = isNacional ? "#fce3e4" : "#CCC";
+              td.style.border = isNacional ? "1px solid #fe9595" : "1px solid #ffe5e7";
+              td.title = holiday;
+            }
+          }
+
+          if (tarefasCountMap && tarefasCountMap.size) {
+            const count = tarefasCountMap.get(td.dataset.day);
+            if (count) {
+              addLabelContagemTarefas(
+                datepicker.querySelector("div.datepicker-days table.table-condensed tbody"),
+                td,
+                count
+              );
+
+              td.addEventListener("click", (event) => {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                const input = document.querySelector("#dataParaFinalizacao");
+                if (input) input.value = td.dataset.day;
+                document.querySelector("div.bootstrap-datetimepicker-widget").style.display = "none"
+                document.querySelector("#dataParaFinalizacao").blur()
+              });
+            }
+          }
+
+          td.dataset.hl = "1";
+        }
+      } finally {
+        running = false;
+        // Se houve novas mutações durante a execução, roda novamente uma vez
+        if (rerun) scheduleHighlight();
+      }
+    };
+
+    const scheduleHighlight = () => {
+      if (rafId != null) return;
+      rafId = requestAnimationFrame(highlight);
+    };
+
+    const observer = new MutationObserver((mutationList) => {
+      for (const m of mutationList) {
+        if (m.type !== "childList") continue;
+        scheduleHighlight();
+        return;
+      }
+    });
+
+    observer.observe(datepicker, { childList: true, subtree: true });
+    datepicker.__dpHighlighterObserver = observer;
+    scheduleHighlight();
+  });
 }
 
 function removerNewButtons() {
@@ -2130,8 +2372,8 @@ function removerNewButtons() {
     const buttonWhatsapp = document.querySelector("body > section > aside > div:nth-child(7)")
     const buttonChamados = document.querySelector("body > section > aside > div:nth-child(8)")
 
-    buttonWhatsapp.remove()
-    buttonChamados.remove()
+    buttonWhatsapp?.remove()
+    buttonChamados?.remove()
 }
 
 function pinSideMenu() {
@@ -2163,7 +2405,6 @@ async function preencherFormularioEnderecoViaCEP() {
         }
 
         for (let index = 0; index < options.length; index++) {
-            console.log(options[index], value, options[index].innerText === value)
             if(removeAcentuacaoString(options[index].innerText) === removeAcentuacaoString(value)) {
                 options[index].click()
                 break
@@ -2344,6 +2585,64 @@ function createTaskRemarcarAtendimento() {
         })
 }
 
+function sortTasks(isNumericSort) {
+    const parent = document.querySelector("body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody")
+    const tasksElements = Array.from(document.querySelectorAll("body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr"))
+
+    const alphaSortFunction = (a, b) => {
+        const firstName = a.querySelector("td:nth-child(5)").textContent.trim().split("\n")[0]
+        const secondName = b.querySelector("td:nth-child(5)").textContent.trim().split("\n")[0]
+        return firstName.localeCompare(secondName)
+    }
+
+    const numeriSortFunction = (a, b) => {
+        const firstNumber = Number(a.querySelector("td.text-center.fdt-counter").textContent.trim())
+        const secondNumber = Number(b.querySelector("td.text-center.fdt-counter").textContent.trim())
+        
+        return firstNumber - secondNumber
+    }
+
+    const sortFunction = isNumericSort ? numeriSortFunction : alphaSortFunction
+
+    tasksElements.sort(sortFunction)
+    
+    tasksElements.forEach(task => parent.appendChild(task))
+}
+
+function addSortTasksBTN() {
+    if (!state.functions.abaListaTarefas.sortTasks)
+        return
+
+    const sortNumericClassString = "fa-sort-numeric-asc"
+    const sortAphaClassString = "fa-sort-alpha-asc"
+
+    const isNumericSort = (element) => {
+        return element.classList.contains(sortNumericClassString)
+    }
+
+    const toggleClassSort = (element) => {
+        element.classList.toggle(sortNumericClassString)
+        element.classList.toggle(sortAphaClassString)
+    }
+
+    const clienteThElement = document.querySelector("body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > thead > tr > th:nth-child(5)")
+
+    clienteThElement.innerHTML = `<th><span class="cliente-label">Cliente </span><i class="fa ${sortNumericClassString}" aria-hidden="true"></i><br><span class="nor ita cin fs13">Status</span></th>`
+
+    const clienteLabel = clienteThElement.querySelector(".cliente-label")
+    const faSortAlphaDesc = clienteThElement.querySelector(`.${sortNumericClassString}`)
+
+    clienteLabel.style.cursor = "pointer"
+    faSortAlphaDesc.style.cursor = "pointer"
+
+    clienteThElement.addEventListener("click", event => {
+        if(event.target === clienteLabel || event.target === faSortAlphaDesc) {
+            toggleClassSort(faSortAlphaDesc)
+            sortTasks(isNumericSort(faSortAlphaDesc))
+        }
+    })
+}
+
 async function idPage(url) {
     
     const urlClienteCadastro = `${basePathKorbil}/adv/clientes/formulario.asp`,
@@ -2403,11 +2702,14 @@ async function idPage(url) {
         isGerid = url.includes(urlGeridINSS),
         isKentro = url.includes(urlKentro)
         
+        
     digitacaoPorVoz()
     
     if (isSistema) {
-        const isYuri = document.querySelector("#fdt-mt-header > ul.nav.navbar-nav.navbar-right.hidden-xs > li > a").innerText.trim() === "YURI DIAS"
-
+        const userName = document.querySelector("#fdt-mt-header > ul.nav.navbar-nav.navbar-right.hidden-xs > li > a").innerText.trim()
+        const isYuri = userName === "YURI DIAS"
+        const isMarcoA = userName === "MARCO AURELIO"
+        
         if(isYuri) {
             //addListaAuxiliares()
         }
@@ -2426,7 +2728,7 @@ async function idPage(url) {
         createPainel('CALCULO', CALCULO, state.functions.supervisor.painelVisualizacaoTarefasTimeCALCULO)
         createPainel('CRM', CRM, state.functions.supervisor.painelVisualizacaoTarefasTimeCRM)
         createPainelFollowUps(state.functions.todasPaginas.painelVisualizacaoFollowUps)
-        contarTarefasParaHoje()
+        contarTarefasParaHoje(isMarcoA)
         createButtonPhotoGenerator(isPageListaFollowUps)
         if (isPageListaFollowUps)
             createTaskRemarcarAtendimento()
@@ -2468,6 +2770,7 @@ async function idPage(url) {
         } else if (isPageListaTarefas) {
             addEventToAutocomplete()
             createButtonLinkJusticePortalForCase("tarefas")
+            addSortTasksBTN()
         }/*  else if (isPagePreProcessoPasta) {
             await setIdClientPreProcesso()
             prenchimentoNomePasta()
@@ -2484,7 +2787,7 @@ async function idPage(url) {
             createButtonLinkJusticePortalForCase("cliente")
             fixProcessRegistrationButton()
         } else if (isPageHistoricoForm) {
-            completeDescricaoHistorico()
+            initHistoricoHandlers()
         }
     } else if (pagePortalDoAdvogado) {
         filtroAlvaraTJSE()

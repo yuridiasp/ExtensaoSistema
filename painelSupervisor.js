@@ -234,7 +234,7 @@ function createPainel (setor, colaboradores, condiction) {
 
         let chaves = Object.entries(result).map(e => e[0])
 
-        chaves = chaves.filter(chave => (chave != "idTarefas"))
+        chaves = chaves.filter(chave => (chave != "idTarefas" && chave != "idTarefasStatus"))
 
         chaves.forEach(chave => {
             if (chave.includes('atrasadas')) {
@@ -461,7 +461,8 @@ function getTarefasSemanal (id, start, end, datas) {
     })
     .then(resp => {
         const contagem = {
-            idTarefas: []
+            idTarefas: [],
+            idTarefasStatus: []
         }
 
         for (c = 0; c < datas.length; c++) {
@@ -484,8 +485,11 @@ function getTarefasSemanal (id, start, end, datas) {
                         contagem[data]['Ativas']++
                     if (e.color == "#CCC")
                         contagem[data]['Encerradas']++
-                    if (data == (datas[1].toISOString().split("T"))[0])
+                    if (data == (datas[1].toISOString().split("T"))[0]) {
+                        const status = (e.color == "#A5D5EF") ? "Ativas" : "Encerradas"
                         contagem['idTarefas'].push(e['id'])
+                        contagem['idTarefasStatus'].push({ id: e['id'], status })
+                    }
                 } catch (error) {
                     console.log(contagem, data, e, error)
                 }

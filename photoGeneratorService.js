@@ -29,8 +29,8 @@ const atendimentos = {
         fields: ["dataAgendamento", "horarioAgendamento"],
         height: "114.281px",
     },
+    "ITAPORANGA": null,
     "JAPARATUBA": null,
-    "LOT. JEOVÁ": null,
     "NOVO GAMA": {
         top: "39.5%",
         left: "0",
@@ -224,7 +224,7 @@ const setStyleLabel = (atendimentosSelect) => {
         "CONDE": "ATENDIMENTO CONDE",
         "ESTÂNCIA": "ATENDIMENTO ESTÂNCIA",
         "JAPARATUBA": "ATENDIMENTO JAPARATUBA",
-        "LOT. JEOVÁ": "ATENDIMENTO LOT. JEOVÁ",
+        "ITAPORANGA": "ATENDIMENTO ITAPORANGA",
         "NOVO GAMA": "ATENDIMENTO NOVO GAMA",
         "PEDRINHAS": "ATENDIMENTO PEDRINHAS",
         "PORTO RICO": "ATENDIMENTO PORTO RICO",
@@ -444,6 +444,7 @@ function initDataImageDefaut(
         "PREVIDENCIÁRIO SEGUNDA E QUARTA-FEIRA DE MANHÃ": "PREVIDENCIÁRIO",
         "SANTO ANTONIO DO DESCOBERTO - GO": "PREVIDENCIÁRIO",
         "VALPARAÍSO - DF": "PREVIDENCIÁRIO",
+        "TRABALHISTA Stª. Mª. (Filial Aju)": "TRABALHISTA",
     }
 
     const { legendaImagem, imageBackground, atendimentosSelect, horarioAgendamento, dataAgendamento, advogadoAgendamento, agendamento, advogadoFormulario, dataFormulario, horarioFormulario } = createPopupPhotoGenerator()
@@ -543,6 +544,7 @@ function createButtonPhotoGenerator(isFollowUpURL = null) {
             "PREVIDENCIÁRIO QUINTA-FEIRA DE TARDE": "ARACAJU",
             "PREVIDENCIÁRIO SEGUNDA E QUARTA-FEIRA DE MANHÃ": "ARACAJU",
             "SANTO ANTONIO DO DESCOBERTO - GO": "SANTO ANTÔNIO GO",
+            "TRABALHISTA Stª. Mª. (Filial Aju)": "SANTA MARIA",
             "VALPARAÍSO - DF": "VALPARAÍSO",
             "VIRTUAL": "VIRTUAL",
         }

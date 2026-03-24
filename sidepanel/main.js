@@ -387,16 +387,19 @@ function getExecutor (setor) {
         return "LAIS"
     } */
     if (setor == "CÍVEL") {
-        const ala = ['0','1', '8']
-        const gabriel = ['2','3', '4', '6']
-        //const rodrigo = ['5','7','9','4','6','8']
+        //const ala = ['0','1', '8', '9']
+        const gabriel = ['2','3', '4', '5']
+        const fernando = ['6']
+        const estefanio = ['7']
         if (intimacao.search("AUDIÊNCIA") != 0 && numero_processo.length === 12) {
             if (gabriel.includes(digito))
                 return "GABRIEL"
-            if (ala.includes(digito))
-                return "ALÃ"   
+            if (estefanio.includes(digito))
+                return "ESTEFÂNIO"
+            if (fernando.includes(digito))
+                return "FERNANDO"
         }
-        return "RODRIGO"
+        return "ALÃ"
     }
 
     if (setor == "PREVIDENCIÁRIA")

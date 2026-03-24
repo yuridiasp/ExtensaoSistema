@@ -79,8 +79,6 @@ function getFeriadosFixos ({ ano, parametro, competencia = null, cliente, portal
         return feriados
     }
     
-    debugger
-    
     const tarefaContatar = parametro === parametros.tarefaContatar,
         tarefaAdvogado = parametro === parametros.tarefaAdvogado,
         tarefaINSSDigital = parametro === parametros.inss,
@@ -120,29 +118,28 @@ function getFeriadosFixos ({ ano, parametro, competencia = null, cliente, portal
                     //{data: [9,28], feriado: "DIA DO FUNCIONÁRIO PÚBLICO - JUSTIÇA"},
                     {data: [10,1], feriado: "LEI FEDERAL Nº 5.010/66 - JUSTIÇA"},
                     {data: [11,8], feriado: "DIA DA JUSTIÇA - JUSTIÇA"},
-                    {data: [3,16], feriado: "QUARTA-FEIRA SANTA - PONTO FACULTATIVO JUSTIÇA"}, //ADICIONADO EM 16/04/2025
-                    {data: [3,17], feriado: "QUINTA-FEIRA SANTA - PONTO FACULTATIVO JUSTIÇA"}, //ADICIONADO EM 16/04/2025
+                    //{data: [3,16], feriado: "QUARTA-FEIRA SANTA - PONTO FACULTATIVO JUSTIÇA"}, //ADICIONADO EM 16/04/2025
+                    //{data: [3,17], feriado: "QUINTA-FEIRA SANTA - PONTO FACULTATIVO JUSTIÇA"}, //ADICIONADO EM 16/04/2025
                 ],
                 justicaFederal: [
-                    {data: [9,31], feriado: "DIA DO FUNCIONÁRIO PÚBLICO - JUSTIÇA - PONTO FACULTADO DA JUSTIÇA"},
+                    //{data: [9,31], feriado: "DIA DO FUNCIONÁRIO PÚBLICO - JUSTIÇA - PONTO FACULTADO DA JUSTIÇA"},
                 ],
                 justicaEstadual: [
-                    {data: [5,20], feriado: "PÓS CORPUS CHRISTI - PONTO FACULTATIVO"},
-                    {data: [5,23], feriado: "VÉSPERA SÃO JOÃO - PONTO FACULTATIVO"},
-                    {data: [6,7], feriado: "SEGUNDA IMPRENSSADA REFERENTE AO FERIADO DE EMANCIPAÇÃO POLÍTICA DE SERGIPE - PONTO FACULTADO DA JUSTIÇA DE SERGIPE"},
-                    {data: [10,21], feriado: "DIA NACIONAL DE ZUMBI E DA CONSCIÊNCIA NEGRA - JUSTIÇA - PONTO FACULTADO DA JUSTIÇA"}
+                    //{data: [5,20], feriado: "PÓS CORPUS CHRISTI - PONTO FACULTATIVO"},
+                    //{data: [5,23], feriado: "VÉSPERA SÃO JOÃO - PONTO FACULTATIVO"},
+                    //{data: [6,7], feriado: "SEGUNDA IMPRENSSADA REFERENTE AO FERIADO DE EMANCIPAÇÃO POLÍTICA DE SERGIPE - PONTO FACULTADO DA JUSTIÇA DE SERGIPE"},
+                    //{data: [10,21], feriado: "DIA NACIONAL DE ZUMBI E DA CONSCIÊNCIA NEGRA - JUSTIÇA - PONTO FACULTADO DA JUSTIÇA"}
                 ],
                 TRF1: [
-                    {data: [4,2], feriado: "SEXTA IMPRENSSADA REFERENTE AO FERIADO DE DIA DO TRABALHO - PONTO FACULTADO DA JUSTIÇA"},
+                    //{data: [4,2], feriado: "SEXTA IMPRENSSADA REFERENTE AO FERIADO DE DIA DO TRABALHO - PONTO FACULTADO DA JUSTIÇA"},
                 ],
                 TJSE: [
-                    {data: [9,27], feriado: "DIA DO FUNCIONÁRIO PÚBLICO - JUSTIÇA - PONTO FACULTADO DA JUSTIÇA"},
-                    {data: [9,28], feriado: "DIA DO FUNCIONÁRIO PÚBLICO - JUSTIÇA"},
-                    {data: [10,21], feriado: "DIA NACIONAL DE ZUMBI E DA CONSCIÊNCIA NEGRA - JUSTIÇA - PONTO FACULTADO DA JUSTIÇA"}
+                    {data: [1,16], feriado: "SEGUNDA-FEIRA DE CARNAVAL - JUSTIÇA ESTADUAL SE - PONTO FACULTADO DA JUSTIÇA"},
+                    {data: [1,18], feriado: "QUARTA-FEIRA DE CINZAS - JUSTIÇA ESTADUAL SE - PONTO FACULTADO DA JUSTIÇA"},
                 ],
                 TRT: [
-                    {data: [9,31], feriado: "DIA DO FUNCIONÁRIO PÚBLICO - JUSTIÇA - PONTO FACULTADO DA JUSTIÇA"},
-                    {data: [10,21], feriado: "DIA NACIONAL DE ZUMBI E DA CONSCIÊNCIA NEGRA - JUSTIÇA - PONTO FACULTADO DA JUSTIÇA"},
+                    {data: [1,16], feriado: "SEGUNDA-FEIRA DE CARNAVAL - JUSTIÇA TRABALHISTA - PONTO FACULTADO DA JUSTIÇA"},
+                    {data: [1,18], feriado: "QUARTA-FEIRA DE CINZAS - JUSTIÇA TRABALHISTA - PONTO FACULTADO DA JUSTIÇA"},
                 ],
                 'SE': [
                     {data: [5,24], feriado: "SÃO JOÃO - SERGIPE"},
@@ -150,7 +147,8 @@ function getFeriadosFixos ({ ano, parametro, competencia = null, cliente, portal
                 ],
                 'ARACAJU': [
                     {data: [11,8], feriado: "PADROEIRA - ARACAJU"},
-                    {data: [2,17], feriado: "ANIVERSÁRIO DE ARACAJU"}
+                    {data: [2,17], feriado: "ANIVERSÁRIO DE ARACAJU"},
+                    {data: [2,16], feriado: "ANIVERSÁRIO DE ARACAJU - PONTO FACULTADO DA JUSTIÇA"}
                 ],
                 interiores : {
                     'AQUIDABA': [
@@ -455,7 +453,7 @@ function calculaFeriadosDerivadosPascoa(pascoa) {
     
     const feriadosDerivados = [
         { nome: "SEGUNDA DE CARNAVAL - PONTO FACULTATIVO", offset: -48 },
-        { nome: "TERÇA DE CARNAVAL - PONTO FACULTATIVO", offset: -47 },
+        { nome: "TERÇA DE CARNAVAL - NACIONAL", offset: -47 },
         { nome: "QUARTA DE CINZAS - PONTO FACULTATIVO ATÉ AS 14H", offset: -46 },
         { nome: "QUARTA-FEIRA SANTA - PONTO FACULTATIVO", offset: -4 },
         { nome: "QUINTA-FEIRA MAIOR - PONTO FACULTATIVO", offset: -3 },

@@ -1,43 +1,45 @@
-async function contarTarefasParaHoje() {
-    if (!state.functions.todasPaginas.contadorTarefas) {
+async function contarTarefasParaHoje(isMarcoA) {
+    if (!state.functions.todasPaginas.contadorTarefas || isMarcoA) {
         return
     }
     
     const aUser = document.querySelector("#fdt-mt-header > ul.nav.navbar-nav.navbar-right.hidden-xs > li > a")
-    let contagemTarefasHoje = await getContagemTarefas()
-    const user = /\w+\s\w+/.exec(aUser.innerText)
-
-    let regex = new RegExp(user),
-        novasTarefas = 0,
+    const regex = new RegExp(/\w+\s\w+/.exec(aUser.innerText))
+    const contagemTarefasHoje = await getContagemTarefas()
+    
+    let novasTarefas = 0,
         id,
         date,
         novoTotalTarefas,
         novoArrayIdTarefas,
         novaDate
-    
-    for (const colaborador of ADM) {
-        if (regex.test(colaborador.nome)) {
-            id = colaborador.id
-            const qtdDias = 2
-            const { datas } = getArrayDate(qtdDias)
-            date = datas[1].toLocaleDateString()
-            const start = datas[1]
-            const end = datas[datas.length - 1]
-            const tarefas = await getTarefasSemanal(id, start, end, datas)
-            const key = (datas[1].toISOString().split('T'))[0]
-            novoTotalTarefas = tarefas[key].Total
-            novoArrayIdTarefas = tarefas.idTarefas
-            novaDate = key
-            
-            if (contagemTarefasHoje && (key == contagemTarefasHoje.data)) {
-                tarefas.idTarefas.forEach(id => {
-                    if (!contagemTarefasHoje.tarefas.includes(id))
-                        novasTarefas++
-                })
-            } else {
-                await setContagemTarefas(key, tarefas[key].Total, tarefas.idTarefas)
-            }
+
+    const colaborador = ADM.find(({ nome }) => regex.test(nome))
+
+    if (colaborador) {
+        id = colaborador.id
+        const qtdDias = 2
+        const { datas } = getArrayDate(qtdDias)
+        date = datas[1].toLocaleDateString()
+        const start = datas[1]
+        const end = datas[datas.length - 1]
+        const tarefas = await getTarefasSemanal(id, start, end, datas)
+        const key = (datas[1].toISOString().split('T'))[0]
+        novoTotalTarefas = tarefas[key].Total
+        novoArrayIdTarefas = tarefas.idTarefas
+        novaDate = key
+        
+        if (contagemTarefasHoje && (key == contagemTarefasHoje.data)) {
+            tarefas.idTarefas.forEach(id => {
+                const tarefasAtivas = tarefas.idTarefasStatus.filter(({ status }) => status === "Ativas").map(({ id }) => id)
+                if (!contagemTarefasHoje.tarefas.includes(id) && tarefasAtivas.includes(id))
+                    novasTarefas++
+            })
+        } else {
+            await setContagemTarefas(key, tarefas[key].Total, tarefas.idTarefas)
         }
+    } else {
+        return
     }
 
     const { URL } = document

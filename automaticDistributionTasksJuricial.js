@@ -56,28 +56,6 @@ const colaboradoresPrev = {
         diasViagem: [],
         tarefas: 0
     },
-    thalyson: {
-        id: 206,
-        nome: "THALYSON KELSON LIMA TORRES",
-        nomeTLC: "THALYSON",
-        diasViagem: [],
-        tarefas: 0,
-        isBSB: true
-    },
-    ana: {
-        id: 134,
-        nome: "ANA CAROLINA SOARES DE MELO",
-        nomeTLC: "ANA CAROLINA",
-        diasViagem: [],
-        tarefas: 0
-    },
-    elton: {
-        id: 244,
-        nome: "ELTON SILVA HONORATO",
-        nomeTLC: "ELTON",
-        diasViagem: [],
-        tarefas: 0
-    },
     saulo: {
         id: 248,
         nome: "SAULO MATHEUS ARAUJO DE SANTANA",
@@ -100,27 +78,31 @@ const colaboradoresPrev = {
         diasViagem: [],
         tarefas: 0
     },
+    efraim: {
+        id: 210,
+        nome: "EFRAIM SILVA CORREA DOS SANTOS",
+        nomeTLC: "EFRAIM",
+        diasViagem: [],
+        tarefas: 0,
+    },
     keven: {
         id: 93,
         nome: "KEVEN FARO DE CARVALHO",
         nomeTLC: "KEVEN",
         assignments: [],
         diasViagem: [],
-        diasViagem: 0
-    }
+        tarefas: 0
+    },
 }
 const demandas = {
     prev: {
         "ANÁLISE": {
             executores: [
-                colaboradoresPrev.ana,
                 colaboradoresPrev.eduardo,
-                colaboradoresPrev.thalyson,
             ]
         },
         "AUXÍLIO DOENÇA": {
             executores: [
-                colaboradoresPrev.elton,
                 colaboradoresPrev.joaoVitor,
                 colaboradoresPrev.arthur,
                 colaboradoresPrev.saulo,
@@ -129,7 +111,6 @@ const demandas = {
         },
         "AUXÍLIO ACIDENTE": {
             executores: [
-                colaboradoresPrev.elton,
                 colaboradoresPrev.joaoVitor,
                 colaboradoresPrev.arthur,
                 colaboradoresPrev.saulo,
@@ -139,8 +120,6 @@ const demandas = {
         "AUXÍLIO RECLUSÃO": {
             executores: [
                 colaboradoresPrev.eduardo,
-                colaboradoresPrev.thalyson,
-                colaboradoresPrev.elton,
                 colaboradoresPrev.joaoVitor,
                 colaboradoresPrev.arthur,
                 colaboradoresPrev.saulo,
@@ -155,8 +134,6 @@ const demandas = {
         },
         "ADICIONAL 25%": {
             executores: [
-                colaboradoresPrev.thalyson,
-                colaboradoresPrev.elton,
                 colaboradoresPrev.joaoVitor,
                 colaboradoresPrev.arthur,
                 colaboradoresPrev.saulo,
@@ -165,32 +142,29 @@ const demandas = {
         "APOSENTADORIA ESPECIAL": {
             executores: [
                 colaboradoresPrev.eduardo,
-                colaboradoresPrev.thalyson,
-                colaboradoresPrev.ana,
+                colaboradoresPrev.efraim,
             ],
             isDIList: true
         },
         "APOSENTADORIA POR IDADE URBANA": {
             executores: [
                 colaboradoresPrev.eduardo,
-                colaboradoresPrev.thalyson,
+                colaboradoresPrev.efraim,
             ],
             isDIList: true
         },
         "APOSENTADORIA POR IDADE RURAL": {
             executores: [
                 colaboradoresPrev.eduardo,
-                colaboradoresPrev.thalyson,
-                colaboradoresPrev.elton,
                 colaboradoresPrev.saulo,
+                colaboradoresPrev.efraim,
             ],
             isDIList: true
         },
         "APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO": {
             executores: [
                 colaboradoresPrev.eduardo,
-                colaboradoresPrev.thalyson,
-                colaboradoresPrev.ana,
+                colaboradoresPrev.efraim,
             ],
             isDIList: true
         },
@@ -202,27 +176,26 @@ const demandas = {
         },
         "APOSENTADORIA POR INVALIDEZ": {
             executores: [
-                colaboradoresPrev.elton,
                 colaboradoresPrev.joaoVitor,
                 colaboradoresPrev.arthur,
                 colaboradoresPrev.saulo,
+                colaboradoresPrev.efraim,
             ],
             isDIList: true
         },
         "INEXISTÊNCIA DE DÉBITO": { //Mesmos executores de aposentadoria
             executores: [
                 colaboradoresPrev.eduardo,
-                colaboradoresPrev.thalyson,
-                colaboradoresPrev.elton,
                 colaboradoresPrev.saulo,
+                colaboradoresPrev.efraim,
             ]
         },
         "LOAS": { 
             executores: [
-                colaboradoresPrev.elton,
                 colaboradoresPrev.saulo,
                 colaboradoresPrev.arthur,
                 colaboradoresPrev.joaoVitor,
+                colaboradoresPrev.efraim,
             ],
             isDIList: true
         },
@@ -230,52 +203,50 @@ const demandas = {
             executores: [
                 colaboradoresPrev.joaoVitor,
                 colaboradoresPrev.arthur,
+                colaboradoresPrev.efraim,
             ],
             isDIList: false
         },
         "PAB": {
             executores: [
                 colaboradoresPrev.eduardo,
-                colaboradoresPrev.thalyson,
-                colaboradoresPrev.elton,
                 colaboradoresPrev.joaoVitor,
                 colaboradoresPrev.arthur,
                 colaboradoresPrev.saulo,
+                colaboradoresPrev.efraim,
             ],
             isDIList: true
         },
         "PENSÃO POR MORTE": {
             executores: [
                 colaboradoresPrev.eduardo,
-                colaboradoresPrev.thalyson,
-                colaboradoresPrev.elton,
                 colaboradoresPrev.joaoVitor,
                 colaboradoresPrev.arthur,
                 colaboradoresPrev.saulo,
+                colaboradoresPrev.efraim,
             ],
             isDIList: true
         },
         "REVISÃO RMI": {
             executores: [
                 colaboradoresPrev.eduardo,
-                colaboradoresPrev.thalyson,
-                colaboradoresPrev.ana,
+                colaboradoresPrev.efraim,
             ]
         },
         "SALÁRIO MATERNIDADE": {
             executores: [
                 colaboradoresPrev.eduardo,
-                colaboradoresPrev.thalyson,
-                colaboradoresPrev.elton,
                 colaboradoresPrev.joaoVitor,
                 colaboradoresPrev.arthur,
                 colaboradoresPrev.saulo,
+                colaboradoresPrev.efraim,
             ],
             isDIList: true
         },
         "SEGURO DEFESO": {
             executores: [
                 colaboradoresPrev.keven,
+                colaboradoresPrev.efraim,
             ],
         },
     },

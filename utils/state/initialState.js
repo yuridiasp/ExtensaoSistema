@@ -11,11 +11,15 @@ let state = {
             painelVisualizacaoFollowUps: null,
             removerNewButtons: null,
         },
+        abaListaTarefas: {
+            sortTasks: null,
+        },
         abaFichaCliente: {
             fixButtonNewProcess: null,
         },
         abaRegistroHistorico: {
-            historicoRegistroIntimacao: null
+            historicoRegistroIntimacao: null,
+            historicoRegistroTask: null
         },
         abaCadastroCliente: {
             criarTarefaCRM: null,
@@ -48,6 +52,7 @@ let state = {
             tarefasProrrogacaoDCB: null,
             tarefasPendenciaADM: null,
             tarefasRemarcarAtendimento: null,
+            exibirContagemTarefasColaborador: null
         },
         abaFollowUps: {
             photoGenerator: null,

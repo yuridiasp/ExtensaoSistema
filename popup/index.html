@@ -75,6 +75,13 @@
                 </div>
             </div>
             <div class="section-config">
+                <h5>Lista de Tarefas</h5>
+                <div>
+                    <input id="sortTasks" data-nome="sortTasks" data-aba="abaListaTarefas" type="checkbox">
+                    <label for="sortTasks">Habilitar botão na coluna "Cliente" para classificar tarefas pelo nome do cliente</label>
+                </div>
+            </div>
+            <div class="section-config">
                 <h5>Aba Cadastro/Edição de Cliente</h5>
                 <div>
                     <input id="autopreenchimentoEnderecoViaCep" data-nome="autopreenchimentoEnderecoViaCep" data-aba="abaCadastroCliente" type="checkbox">
@@ -171,6 +178,10 @@
                     <input id="tarefasRemarcarAtendimento" data-nome="tarefasRemarcarAtendimento" data-aba="cadastroTarefa" type="checkbox">
                     <label for="tarefasRemarcarAtendimento">Tarefas Avulsas: Criar tarefas automáticas de Remarcar Atendimento</label>
                 </div>
+                <div>
+                    <input id="exibirContagemTarefasColaborador" data-nome="exibirContagemTarefasColaborador" data-aba="cadastroTarefa" type="checkbox">
+                    <label for="exibirContagemTarefasColaborador">Exibir contador de tarefas por dia do colaborador durante criação/edição da tarefa</label>
+                </div>
             </div>
             <div class="section-config">
                 <h5>Lista de Follow-Ups</h5>
@@ -184,6 +195,10 @@
                 <div>
                     <input id="historicoRegistroIntimacao" data-nome="historicoRegistroIntimacao" data-aba="abaRegistroHistorico" type="checkbox">
                     <label for="historicoRegistroIntimacao">Habilitar autopreenchimento do histórico de acordo com o tipo</label>
+                </div>
+                <div>
+                    <input id="historicoRegistroTask" data-nome="historicoRegistroTask" data-aba="abaRegistroHistorico" type="checkbox">
+                    <label for="historicoRegistroTask">Habilitar criação de tarefas automáticas extras de acordo com o tipo de histórico</label>
                 </div>
             </div>
             <!-- <div class="section-config">
