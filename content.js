@@ -872,12 +872,12 @@ async function validaResponsavelTj (num) {
         return {responsavel: "KEVEN FARO DE CARVALHO",executor: "KEVEN FARO DE CARVALHO"}
 
     if (natureza === "BANCÁRIO" || natureza === "CÍVEL" || natureza === "CONSUMIDOR" || natureza === "SERVIDOR PÚBLICO") {
-        const gabriel = [2, 3, 4, 5]
-        const fernando = [6]
-        const estefanio = [7]
+        const andre = [9]
+        const fernando = [4,5,6]
+        const estefanio = [2,3,7]
         if (tarefaAtualNormalizada !== "SESSÃO DE JULGAMENTO" && tarefaAtualNormalizada.search("AUDIENCIA") !== 0) {
-            if (gabriel.includes(digito))
-                return {responsavel: "ALÃ FEITOSA CARVALHO",executor: "GABRIEL DAVILA FILGUEIRAS MELLONE"}
+            if (andre.includes(digito))
+                return {responsavel: "ALÃ FEITOSA CARVALHO",executor: "ANDRÉ LUIZ FIALHO DE ALMEIDA"}
             if (estefanio.includes(digito))
                 return {responsavel: "ALÃ FEITOSA CARVALHO",executor: "JOSÉ ESTEFÂNIO DOS SANTOS FIGUEIREDO"}
             if (fernando.includes(digito))

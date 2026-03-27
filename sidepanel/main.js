@@ -387,13 +387,13 @@ function getExecutor (setor) {
         return "LAIS"
     } */
     if (setor == "CÍVEL") {
-        //const ala = ['0','1', '8', '9']
-        const gabriel = ['2','3', '4', '5']
-        const fernando = ['6']
-        const estefanio = ['7']
+        //const ala = ['0','1', '8']
+        const andre = ['9']
+        const fernando = ['4','5','6']
+        const estefanio = ['2','3','7']
         if (intimacao.search("AUDIÊNCIA") != 0 && numero_processo.length === 12) {
-            if (gabriel.includes(digito))
-                return "GABRIEL"
+            if (andre.includes(digito))
+                return "ANDRÉ"
             if (estefanio.includes(digito))
                 return "ESTEFÂNIO"
             if (fernando.includes(digito))

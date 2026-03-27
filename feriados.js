@@ -136,6 +136,7 @@ function getFeriadosFixos ({ ano, parametro, competencia = null, cliente, portal
                 TJSE: [
                     {data: [1,16], feriado: "SEGUNDA-FEIRA DE CARNAVAL - JUSTIÇA ESTADUAL SE - PONTO FACULTADO DA JUSTIÇA"},
                     {data: [1,18], feriado: "QUARTA-FEIRA DE CINZAS - JUSTIÇA ESTADUAL SE - PONTO FACULTADO DA JUSTIÇA"},
+                    {data: [3,20], feriado: "TIRADENTES - JUSTIÇA ESTADUAL SE - PONTO FACULTADO DA JUSTIÇA"},
                 ],
                 TRT: [
                     {data: [1,16], feriado: "SEGUNDA-FEIRA DE CARNAVAL - JUSTIÇA TRABALHISTA - PONTO FACULTADO DA JUSTIÇA"},
