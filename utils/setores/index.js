@@ -55,6 +55,17 @@ const ADM = [
         tarefasIntimacoes: 0,
     },
     {
+        id: 277,
+        nome: "HYAGO DA SILVA SOARES",
+        nomeTLC: "HYAGO",
+        interiores: [localAtendimentoKorbil.se.loteamentoJeova, localAtendimentoKorbil.se.pedrinhas],
+        assignments: [assignments.ADM.contatar.geral],
+        diasViagem: null,
+        contagem: 0,
+        atrasadas: 0,
+        tarefasIntimacoes: 0,
+    },
+    {
         id: 239,
         nome: "ISAC CRUZ SANTOS",
         nomeTLC: "ISAC",
@@ -112,7 +123,7 @@ const ADM = [
     {
         id: 199,
         nome: "LUCAS NATHAN NOGUEIRA DA SILVA",
-        nomeTLC: "LUCAS",
+        nomeTLC: "LUCAS NATHAN",
         interiores: [],
         assignments: [],
         diasViagem: [],
@@ -121,16 +132,27 @@ const ADM = [
         tarefasIntimacoes: 0,
     },
     {
-        id: 201,
-        nome: "MARCO AURELIO LEITE GOMES",
-        nomeTLC: "MARCO AURELIO",
-        interiores: [localAtendimentoKorbil.se.capela, localAtendimentoKorbil.se.japaratuba],
-        assignments: [assignments.ADM.pendencias],
+        id: 275,
+        nome: "LUCAS CARVALHO LUDUVICE",
+        nomeTLC: "LUCAS CARVALHO",
+        interiores: [],
+        assignments: [],
         diasViagem: [],
         contagem: 0,
         atrasadas: 0,
         tarefasIntimacoes: 0,
     },
+    /* {
+        id: 201,
+        nome: "MARCO AURELIO LEITE GOMES",
+        nomeTLC: "MARCO AURELIO",
+        interiores: [],
+        assignments: [assignments.ADM.pendencias],
+        diasViagem: [],
+        contagem: 0,
+        atrasadas: 0,
+        tarefasIntimacoes: 0,
+    }, */
     {
         id: 223,
         nome: "MATHEUS CAMPELO DA SILVA",
@@ -190,7 +212,7 @@ const ADM = [
         id: 268,
         nome: "YAGO DANIEL DE SOUZA FREIRE",
         nomeTLC: "YAGO",
-        interiores: [localAtendimentoKorbil.se.loteamentoJeova, localAtendimentoKorbil.se.pedrinhas],
+        interiores: [localAtendimentoKorbil.se.capela, localAtendimentoKorbil.se.japaratuba],
         assignments: [assignments.ADM.contatar.geral, assignments.ADM.pendencias],
         diasViagem: [],
         contagem: 0,
@@ -324,17 +346,6 @@ const SAC = [
         id: 232,
         nome: "SARA CRISTINA TELES LOIOLA",
         nomeTLC: "SARA CRISTINA",
-        interiores: [],
-        assignments: [],
-        diasViagem: null,
-        contagem: 0,
-        atrasadas: 0,
-        tarefasIntimacoes: 0,
-    },
-    {
-        id: 153,
-        nome: "TRICYA MATEUS ROLEMBERG",
-        nomeTLC: "TRICYA",
         interiores: [],
         assignments: [],
         diasViagem: null,
@@ -546,9 +557,9 @@ const PREVIDENCIARIO = [
         atrasadas: 0
     },
     {
-        id: 192,
-        nome: "EDUARDO PAIXÃO ROCHA SOBRINHO",
-        nomeTLC: "EDUARDO",
+        id: 274,
+        nome: "ENZO FREITAS DA SILVEIRA",
+        nomeTLC: "ENZO",
         assignments: [],
         diasViagem: null,
         contagem: 0,
@@ -571,6 +582,22 @@ const PREVIDENCIARIO = [
         diasViagem: null,
         contagem: 0,
         atrasadas: 0
+    },
+    {
+        id: 279,
+        nome: "FELIPE ALVES MATOS",
+        nomeTLC: "FELIPE",
+        diasViagem: [],
+        contagem: 0,
+        tarefas: 0
+    },
+    {
+        id: 276,
+        nome: "GABRIEL VALERIO LINHARES RIBEIRO",
+        nomeTLC: "GABRIEL",
+        diasViagem: [],
+        contagem: 0,
+        tarefas: 0
     },
     {
         id: 252,
@@ -633,15 +660,6 @@ const PREVIDENCIARIO = [
         contagem: 0,
         atrasadas: 0
     },
-    {
-        id: 265,
-        nome: "VINICIUS SANTOS MELO",
-        nomeTLC: "VINICIUS SANTOS",
-        assignments: [],
-        diasViagem: null,
-        contagem: 0,
-        atrasadas: 0
-    },
 ]
 const TRABALHISTA = [
     {
@@ -692,18 +710,18 @@ const TRABALHISTA = [
 ]
 const CIVEL = [
     {
-        id: 166,
-        nome: "ALÃ FEITOSA CARVALHO",
-        nomeTLC: "ALÃ",
+        id: 280,
+        nome: "ANDRÉ LUIZ FIALHO DE ALMEIDA",
+        nomeTLC: "ANDRÉ",
         assignments: [],
         diasViagem: null,
         contagem: 0,
         atrasadas: 0
     },
     {
-        id: 187,
-        nome: "GABRIEL DAVILA FILGUEIRAS MELLONE",
-        nomeTLC: "GABRIEL",
+        id: 166,
+        nome: "ALÃ FEITOSA CARVALHO",
+        nomeTLC: "ALÃ",
         assignments: [],
         diasViagem: null,
         contagem: 0,
@@ -796,15 +814,6 @@ const CRM = [
         atrasadas: 0
     },
     {
-        id: 196,
-        nome: "KAUÃ DE CARVALHO NASCIMENTO",
-        nomeTLC: "KAUÃ",
-        assignments: [],
-        diasViagem: [],
-        contagem: 0,
-        atrasadas: 0
-    },
-    {
         id: 140,
         nome: "LAYNE DA SILVA GOIS",
         nomeTLC: "LAYNE",
@@ -816,6 +825,39 @@ const CRM = [
         tarefasIntimacoes: 0,
     },
     {
+        id: 281,
+        nome: "RAFAELA CAETANO DA SILVA",
+        nomeTLC: "RAFAELA",
+        interiores: [],
+        assignments: [],
+        diasViagem: null,
+        contagem: 0,
+        atrasadas: 0,
+        tarefasIntimacoes: 0,
+    },
+    {
+        id: 153,
+        nome: "TRICYA MATEUS ROLEMBERG",
+        nomeTLC: "TRICYA",
+        interiores: [],
+        assignments: [],
+        diasViagem: null,
+        contagem: 0,
+        atrasadas: 0,
+        tarefasIntimacoes: 0,
+    },
+]
+const MARKETING = [
+    {
+        id: 196,
+        nome: "KAUÃ DE CARVALHO NASCIMENTO",
+        nomeTLC: "KAUÃ",
+        assignments: [],
+        diasViagem: [],
+        contagem: 0,
+        atrasadas: 0
+    },
+    {
         id: 64,
         nome: "LEANDRO SANTOS",
         nomeTLC: "LEANDRO",
@@ -823,16 +865,5 @@ const CRM = [
         diasViagem: [],
         contagem: 0,
         atrasadas: 0
-    },
-    {
-        id: 193,
-        nome: "LINIKER BERNARDO SOARES",
-        nomeTLC: "LINIKER",
-        interiores: [],
-        assignments: [],
-        diasViagem: null,
-        contagem: 0,
-        atrasadas: 0,
-        tarefasIntimacoes: 0,
     },
 ]

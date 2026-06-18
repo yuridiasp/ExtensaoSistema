@@ -1,5 +1,19 @@
 const atendimentos = {
     "AASM": {
+        items: {
+            data: {
+                top: "70%",
+                left: "0",
+            },
+            horario: {
+                top: "169%",
+                left: "0",    
+            },
+            advogado: {
+                top: "0%",
+                left: "0%"
+            }
+        },
         top: "39.5%",
         left: "0",
         fields: ["dataAgendamento", "horarioAgendamento"],
@@ -7,6 +21,20 @@ const atendimentos = {
         color: "#FFFFFF"
     },
     "ÁGUAS LINDAS": {
+        items: {
+            data: {
+                top: "35%",
+                left: "0",
+            },
+            horario: {
+                top: "85%",
+                left: "0",    
+            },
+            advogado: {
+                top: "0%",
+                left: "0%"
+            }
+        },
         top: "39.5%",
         left: "0",
         fields: ["dataAgendamento", "horarioAgendamento"],
@@ -14,32 +42,208 @@ const atendimentos = {
         color: "#FFFFFF"
     },
     "ARACAJU": {
+        items: {
+            data: {
+                top: "34.5%",
+                left: "0",
+            },
+            horario: {
+                top: "68%",
+                left: "0",    
+            },
+            advogado: {
+                top: "0%",
+                left: "0%"
+            }
+        },
         top: "35.5%",
         left: "0",
         fields: ["advogadoAgendamento", "dataAgendamento", "horarioAgendamento"],
         height: "171.422px",
         color: "#FFFFFF"
     },
-    "CAPELA - MIRANDA": null,
-    "CAPELA - PIRUNGA": null,
-    "CONDE": null,
+    "CAPELA": {
+        items: {
+            data: {
+                top: "34.5%",
+                left: "0",
+            },
+            horario: {
+                top: "85%",
+                left: "0",    
+            },
+            advogado: {
+                top: "0%",
+                left: "0%"
+            }
+        },
+        top: "39.5%",
+        left: "0",
+        fields: ["dataAgendamento", "horarioAgendamento"],
+        height: "114.281px",
+        color: "#FFFFFF"
+    },
+    "CARMÓPOLIS": {
+        items: {
+            data: {
+                top: "34.5%",
+                left: "0",
+            },
+            horario: {
+                top: "85%",
+                left: "0",    
+            },
+            advogado: {
+                top: "0%",
+                left: "0%"
+            }
+        },
+        top: "39.5%",
+        left: "0",
+        fields: ["dataAgendamento", "horarioAgendamento"],
+        height: "114.281px",
+        color: "#FFFFFF"
+    },
+    "CONDE": {
+        items: {
+            data: {
+                top: "34.5%",
+                left: "0",
+            },
+            horario: {
+                top: "85%",
+                left: "0",    
+            },
+            advogado: {
+                top: "0%",
+                left: "0%"
+            }
+        },
+        top: "39.5%",
+        left: "0",
+        fields: ["dataAgendamento", "horarioAgendamento"],
+        height: "114.281px",
+        color: "#FFFFFF"
+    },
     "ESTÂNCIA": {
+        items: {
+            data: {
+                top: "51%",
+                left: "0",
+            },
+            horario: {
+                top: "101.5%",
+                left: "0",    
+            },
+            advogado: {
+                top: "0%",
+                left: "0%"
+            }
+        },
         top: "41.5%",
         left: "0",
         fields: ["dataAgendamento", "horarioAgendamento"],
         height: "114.281px",
     },
-    "ITAPORANGA": null,
-    "JAPARATUBA": null,
+    "ITAPORANGA": {
+        items: {
+            data: {
+                top: "34.5%",
+                left: "0",
+            },
+            horario: {
+                top: "85%",
+                left: "0",    
+            },
+            advogado: {
+                top: "0%",
+                left: "0%"
+            }
+        },
+        top: "39.5%",
+        left: "0",
+        fields: ["dataAgendamento", "horarioAgendamento"],
+        height: "114.281px",
+        color: "#FFFFFF"
+    },
+    "JAPARATUBA": {
+        items: {
+            data: {
+                top: "34.5%",
+                left: "0",
+            },
+            horario: {
+                top: "85%",
+                left: "0",    
+            },
+            advogado: {
+                top: "0%",
+                left: "0%"
+            }
+        },
+        top: "39.5%",
+        left: "0",
+        fields: ["dataAgendamento", "horarioAgendamento"],
+        height: "114.281px",
+        color: "#FFFFFF"
+    },
     "NOVO GAMA": {
+        items: {
+            data: {
+                top: "68.5%",
+                left: "0",
+            },
+            horario: {
+                top: "170%",
+                left: "0",    
+            },
+            advogado: {
+                top: "0%",
+                left: "0%"
+            }
+        },
         top: "39.5%",
         left: "0",
         fields: ["dataAgendamento", "horarioAgendamento"],
         height: "57.141px",
         color: "#FFFFFF"
     },
-    "PEDRINHAS": null,
+    "PEDRINHAS": {
+        items: {
+            data: {
+                top: "34.5%",
+                left: "0",
+            },
+            horario: {
+                top: "85%",
+                left: "0",    
+            },
+            advogado: {
+                top: "0%",
+                left: "0%"
+            }
+        },
+        top: "39.5%",
+        left: "0",
+        fields: ["dataAgendamento", "horarioAgendamento"],
+        height: "114.281px",
+        color: "#FFFFFF"
+    },
     "PORTO RICO": {
+        items: {
+            data: {
+                top: "69%",
+                left: "0",
+            },
+            horario: {
+                top: "170%",
+                left: "0",    
+            },
+            advogado: {
+                top: "0%",
+                left: "0%"
+            }
+        },
         top: "39.5%",
         left: "0",
         fields: ["dataAgendamento", "horarioAgendamento"],
@@ -47,6 +251,20 @@ const atendimentos = {
         color: "#FFFFFF"
     },
     "SANTA MARIA": {
+        items: {
+            data: {
+                top: "51.5%",
+                left: "0",
+            },
+            horario: {
+                top: "101.5%",
+                left: "0",    
+            },
+            advogado: {
+                top: "0%",
+                left: "0%"
+            }
+        },
         top: "41.5%",
         left: "0",
         fields: ["dataAgendamento", "horarioAgendamento"],
@@ -54,6 +272,20 @@ const atendimentos = {
         color: "#FFFFFF"
     },
     "SANTA MARIA DF": {
+        items: {
+            data: {
+                top: "69%",
+                left: "0",
+            },
+            horario: {
+                top: "169%",
+                left: "0",    
+            },
+            advogado: {
+                top: "0%",
+                left: "0%"
+            }
+        },
         top: "39.5%",
         left: "0",
         fields: ["dataAgendamento", "horarioAgendamento"],
@@ -61,6 +293,20 @@ const atendimentos = {
         color: "#FFFFFF"
     },
     "SANTO ANTÔNIO GO": {
+        items: {
+            data: {
+                top: "69%",
+                left: "0",
+            },
+            horario: {
+                top: "169%",
+                left: "0",    
+            },
+            advogado: {
+                top: "0%",
+                left: "0%"
+            }
+        },
         top: "39.5%",
         left: "0",
         fields: ["dataAgendamento", "horarioAgendamento"],
@@ -68,6 +314,20 @@ const atendimentos = {
         color: "#FFFFFF"
     },
     "TAGUATINGA": {
+        items: {
+            data: {
+                top: "34.5%",
+                left: "0",
+            },
+            horario: {
+                top: "85%",
+                left: "0",    
+            },
+            advogado: {
+                top: "0%",
+                left: "0%"
+            }
+        },
         top: "39.5%",
         left: "0",
         fields: ["dataAgendamento", "horarioAgendamento"],
@@ -75,6 +335,20 @@ const atendimentos = {
         color: "#FFFFFF"
     },
     "TOBIAS BARRETO": {
+        items: {
+            data: {
+                top: "51.5%",
+                left: "0",
+            },
+            horario: {
+                top: "101.5%",
+                left: "0",    
+            },
+            advogado: {
+                top: "0%",
+                left: "0%"
+            }
+        },
         top: "41.5%",
         left: "0",
         fields: ["dataAgendamento", "horarioAgendamento"],
@@ -82,19 +356,106 @@ const atendimentos = {
         color: "#FFFFFF"
     },
     "VALPARAÍSO": {
+        items: {
+            data: {
+                top: "69%",
+                left: "0",
+            },
+            horario: {
+                top: "169%",
+                left: "0",    
+            },
+            advogado: {
+                top: "0%",
+                left: "0%"
+            }
+        },
         top: "39.5%",
         left: "0",
         fields: ["dataAgendamento", "horarioAgendamento"],
         height: "57.141px",
         color: "#FFFFFF"
     },
-    "VIRTUAL": {
+    "VIRTUAL - BSB": {
+        items: {
+            data: {
+                top: "660%",
+                left: "26%",
+            },
+            horario: {
+                top: "660%",
+                left: "48%",    
+            },
+            advogado: {
+                top: "0%",
+                left: "0%"
+            }
+        },
+        top: "72.9%",
+        left: "26%",
+        fields: ["dataAgendamento", "horarioAgendamento"],
+        height: "57.141px",
+        color: "#0c1c3e"
+    },
+    "VIRTUAL - SE": {
+        items: {
+            data: {
+                top: "660%",
+                left: "26%",
+            },
+            horario: {
+                top: "660%",
+                left: "48%",    
+            },
+            advogado: {
+                top: "0%",
+                left: "0%"
+            }
+        },
         top: "72.9%",
         left: "26%",
         fields: ["dataAgendamento"],
         height: "57.141px",
         color: "#0c1c3e"
-    }
+    },
+}
+
+const tiposAtendimentos = {
+    "AASM - DF": { local: "AASM" , natureza: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO ÁGUAS LINDAS": { local: "ÁGUAS LINDAS" , natureza: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO CAPELA - SE": { local: "CAPELA" , natureza: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO CARMÓPOLIS - SE": { local: "CARMÓPOLIS" , natureza: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO CÍVEL": { local: "ARACAJU" , natureza: "CÍVEL" },
+    "ATENDIMENTO CÍVEL VIRTUAL": { local: "VIRTUAL - SE" , natureza: "CÍVEL" },
+    "ATENDIMENTO CONDE - BA": { local: "CONDE" , natureza: "CÍVEL" },
+    "ATENDIMENTO DR. DIEGO": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO DR. FABIO": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO DR. MARCUS": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO DRA. SARA": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO ESTÂNCIA": { local: "ESTÂNCIA" , natureza: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO ITAPORANGA - SE": { local: "ITAPORANGA" , natureza: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO JAPARATUBA - SE": { local: "JAPARATUBA" , natureza: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO PEDRINHAS - SE": { local: "PEDRINHAS" , natureza: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO PLANTONISTA (TESTE)": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO SANTA MARIA (Filial Aju)": { local: "SANTA MARIA" , natureza: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO TAGUATINGA": { local: "TAGUATINGA" , natureza: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO TOBIAS BARRETO - SE": { local: "TOBIAS BARRETO" , natureza: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO VIRTUAL FILIAIS DF": { local: "VIRTUAL - BSB" , natureza: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO VIRTUAL TRABALHISTA": { local: "VIRTUAL - SE" , natureza: "TRABALHISTA" },
+    "ATENDIMENTO TRABALHISTA": { local: "ARACAJU" , natureza: "TRABALHISTA" },
+    "CÁRITAS - SANTA MARIA - DF": { local: "SANTA MARIA DF" , natureza: "PREVIDENCIÁRIO" },
+    "DR FÁBIO (Filial Santa Maria Aracaju)": { local: "SANTA MARIA" , natureza: "PREVIDENCIÁRIO" },
+    "NOVO GAMA - DF": { local: "NOVO GAMA" , natureza: "PREVIDENCIÁRIO" },
+    "ORIENTAÇÃO DE AUDIÊNCIA": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO" },
+    "PORTO RICO - DF": { local: "PORTO RICO" , natureza: "PREVIDENCIÁRIO" },
+    "PREVIDENCIÁRIO - VIRTUAL": { local: "VIRTUAL - SE" , natureza: "PREVIDENCIÁRIO" },
+    "PREVIDENCIÁRIO QUINTA-FEIRA DE TARDE": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO" },
+    "PREVIDENCIÁRIO SEGUNDA E QUARTA-FEIRA DE MANHÃ": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO" },
+    "SANTO ANTONIO DO DESCOBERTO - GO": { local: "SANTO ANTÔNIO GO" , natureza: "PREVIDENCIÁRIO" },
+    "TRABALHISTA Stª. Mª. (Filial Aju)": { local: "SANTA MARIA" , natureza: "TRABALHISTA" },
+    "VALPARAÍSO - DF": { local: "VALPARAÍSO" , natureza: "PREVIDENCIÁRIO" },
+    "VIRTUAL - BSB": { local: "VIRTUAL - BSB" , natureza: "PREVIDENCIÁRIO" },
+    "VIRTUAL - SE": { local: "VIRTUAL - SE" , natureza: "PREVIDENCIÁRIO" },
 }
 
 function removeListBackgroundPhotoGen() {
@@ -152,10 +513,10 @@ function createPopupPhotoGenerator() {
 
     popup.innerHTML = `<div id="closePhotoGenerator" style="display: flex; justify-content: center; align-items: center; position: absolute; z-index: 15; width: 40px; height: 40px; border-radius: 100%; background: #111; right: -10px; top: -10px; color: #CCC"><i class="fa fa-times"></i></div>
                 <div id="capture" style="position: relative; margin: 0; padding: 0; max-height: 1131.530px">
-                    <div id="legendaImagem" style="font-family: &quot;Arial Black&quot;, sans-serif; flex-direction: column; position: absolute; top: 35.5%; width: 100%; height: 171.422px;justify-content: space-between;">
-                        <div id="advogadoAgendamento" style="text-align: left; font-size: 40px; padding-left: 70px; height: 57.141px;align-items: center;">DR. DIEGO</div>
-                        <div id="dataAgendamento" style="text-align: left; font-size: 40px; padding-left: 70px; height: 57.141px;">15/08/2025</div>
-                        <div id="horarioAgendamento" style="text-align: left; font-size: 40px; padding-left: 70px; height: 57.141px;">08:00</div>
+                    <div id="legendaImagem" style="font-family: &quot;Arial Black&quot;, sans-serif; flex-direction: column; position: absolute; top: 35.5%; width: 100%;justify-content: space-between;">
+                        <div id="advogadoAgendamento" style="position: absolute; text-align: left; font-size: 40px; padding-left: 70px; height: 57.141px;align-items: center;">DR. DIEGO</div>
+                        <div id="dataAgendamento" style="position: absolute; text-align: left; font-size: 40px; padding-left: 70px; height: 57.141px;">15/08/2025</div>
+                        <div id="horarioAgendamento" style="position: absolute; text-align: left; font-size: 40px; padding-left: 70px; height: 57.141px;">08:00</div>
                     </div>
                     <img id="image-background" width="800" src="" alt="" srcset="">
                 </div>
@@ -195,6 +556,8 @@ function createPopupPhotoGenerator() {
     const horarioAgendamento = document.querySelector("#horarioAgendamento")
     const advogadoAgendamento = document.querySelector("#advogadoAgendamento")
 
+    const legendaImagemObject = { horarioAgendamento, dataAgendamento, advogadoAgendamento }
+
     const closePhotoGenerator = document.querySelector("#closePhotoGenerator")
 
     closePhotoGenerator.addEventListener("click", () => {
@@ -204,36 +567,13 @@ function createPopupPhotoGenerator() {
 
     movePopupPhotoGenerator(background)
 
-    return { legendaImagem, imageBackground, atendimentosSelect, horarioAgendamento, dataAgendamento, advogadoAgendamento, agendamento, advogadoFormulario, dataFormulario, horarioFormulario }
+    return { legendaImagem, imageBackground, atendimentosSelect, horarioAgendamento, dataAgendamento, advogadoAgendamento, agendamento, advogadoFormulario, dataFormulario, horarioFormulario, legendaImagemObject }
 }
 
 const changeViewGenerator = (hasFollowUp, advogadoFormulario, dataFormulario, horarioFormulario) => {
     dataFormulario.disabled = !hasFollowUp
     horarioFormulario.disabled = !hasFollowUp
     advogadoFormulario.disabled = !hasFollowUp
-}
-
-const setStyleLabel = (atendimentosSelect) => {
-    const local = atendimentosSelect.value
-    const locais = {
-        "AASM": "ATENDIMENTO ASSOCIAÇÃO ATLÉTICA DO SANTA MARIA (AASM)",
-        "ÁGUAS LINDAS": "ATENDIMENTO ÁGUAS LINDAS",
-        "ARACAJU": "ATENDIMENTO ARACAJU (SEDE)",
-        "CAPELA - MIRANDA": "ATENDIMENTO MIRANDA",
-        "CAPELA - PIRUNGA": "ATENDIMENTO PIRUNGA",
-        "CONDE": "ATENDIMENTO CONDE",
-        "ESTÂNCIA": "ATENDIMENTO ESTÂNCIA",
-        "JAPARATUBA": "ATENDIMENTO JAPARATUBA",
-        "ITAPORANGA": "ATENDIMENTO ITAPORANGA",
-        "NOVO GAMA": "ATENDIMENTO NOVO GAMA",
-        "PEDRINHAS": "ATENDIMENTO PEDRINHAS",
-        "PORTO RICO": "ATENDIMENTO PORTO RICO",
-        "SANTA MARIA": "ATENDIMENTO SANTA MARIA",
-        "SANTA MARIA DF": "ATENDIMENTO SANTA MARIA / DF",
-        "TAGUATINGA": "ATENDIMENTO TAGUATINGA",
-        "TOBIAS BARRETO": "ATENDIMENTO TOBIAS BARRETO",
-        "VALPARAÍSO": "ATENDIMENTO VALPARAÍSO",
-    }
 }
 
 const setAgendamentoImage = (horarioAgendamento, horarioFormulario, dataAgendamento, dataFormulario, atendimentosSelect) => {
@@ -255,7 +595,7 @@ const setAdvogadoImage = (advogadoAgendamento, advogadoFormulario) => {
 }
 
 const verifyFollowUpRegister = (local) => {
-    const placesAppointmentsList = ["AASM", "ÁGUAS LINDAS", "ARACAJU", "ESTÂNCIA", "NOVO GAMA", "PORTO RICO", "SANTA MARIA", "SANTA MARIA DF", "SANTO ANTÔNIO GO", "TAGUATINGA", "TOBIAS BARRETO", "VALPARAÍSO", "VIRTUAL"]
+    const placesAppointmentsList = ["AASM", "ÁGUAS LINDAS", "ARACAJU", "ESTÂNCIA", "NOVO GAMA", "PORTO RICO", "SANTA MARIA", "SANTA MARIA DF", "SANTO ANTÔNIO GO", "TAGUATINGA", "TOBIAS BARRETO", "VALPARAÍSO", "VIRTUAL - SE", "VIRTUAL - BSB", "PEDRINHAS", "JAPARATUBA", "ITAPORANGA", "CONDE", "CAPELA", "CARMÓPOLIS"]
 
     return placesAppointmentsList.includes(local)
 }
@@ -279,7 +619,7 @@ const setImageBackground = (atendimentosSelect, imageBackground) => {
     testImage.src = imageUrl
 }
 
-const setViewLegendDiv = (hasFollowUp, legendaImagem, local) => {
+const setViewLegendDiv = (hasFollowUp, legendaImagem, local, legendaImagemObject) => {
     const fields = ["advogadoAgendamento", "dataAgendamento", "horarioAgendamento"]
     
     if(atendimentos[local]) {
@@ -289,19 +629,28 @@ const setViewLegendDiv = (hasFollowUp, legendaImagem, local) => {
             else
                 document.querySelector(`#${field}`).style.display = "none"
         })
-        
-        legendaImagem.style.top = atendimentos[local].top
-        legendaImagem.style.height = atendimentos[local].height
+
         legendaImagem.style.color = atendimentos[local].color
-        legendaImagem.style.left = atendimentos[local].left
+        legendaImagem.style.height = atendimentos[local].height
+
+        legendaImagemObject.dataAgendamento.style.top = atendimentos[local].items.data.top
+        legendaImagemObject.dataAgendamento.style.left = atendimentos[local].items.data.left
+        
+        legendaImagemObject.horarioAgendamento.style.top = atendimentos[local].items.horario.top
+        legendaImagemObject.horarioAgendamento.style.left = atendimentos[local].items.horario.left
+
+        legendaImagemObject.advogadoAgendamento.style.top = atendimentos[local].items.advogado.top
+        legendaImagemObject.advogadoAgendamento.style.left = atendimentos[local].items.advogado.left
+
+        
     }
     
     legendaImagem.style.display = hasFollowUp ? "flex" : "none"
 }
 
-const changeImage = (local, atendimentosSelect, imageBackground, legendaImagem, advogadoFormulario, dataFormulario, horarioFormulario) => {
+const changeImage = (local, atendimentosSelect, imageBackground, legendaImagem, advogadoFormulario, dataFormulario, horarioFormulario, legendaImagemObject) => {
     const hasFollowUp = verifyFollowUpRegister(local)
-    setViewLegendDiv(hasFollowUp, legendaImagem, local)
+    setViewLegendDiv(hasFollowUp, legendaImagem, local, legendaImagemObject)
     setImageBackground(atendimentosSelect, imageBackground)
     changeViewGenerator(hasFollowUp, advogadoFormulario, dataFormulario, horarioFormulario)
 }
@@ -374,29 +723,32 @@ function gerarImagem(nome = "agendamento") {
 }
 
 
-function ajusteFontSize(advogadoFormulario, advogadoAgendamento, atendimentosSelect, dataAgendamento) {
+function ajusteFontSize(advogadoFormulario, advogadoAgendamento, atendimentosSelect, dataAgendamento, horarioAgendamento) {
 if(advogadoFormulario.value.length > 10) {
         advogadoAgendamento.style.fontSize = "30px"
     } else {
         advogadoAgendamento.style.fontSize = "40px"
     }
     
-    if (atendimentosSelect.value ===  "VIRTUAL")
+    if (atendimentosSelect.value ===  "VIRTUAL - SE" || atendimentosSelect.value ===  "VIRTUAL - BSB") {
+        horarioAgendamento.style.fontSize = "30px"
         dataAgendamento.style.fontSize = "30px"
+    }
     else {
+        horarioAgendamento.style.fontSize = "40px"
         dataAgendamento.style.fontSize = "40px"
     }
 }
 
-const setListenersPhotoGenerator = (horarioAgendamento, dataAgendamento, advogadoAgendamento, atendimentosSelect, imageBackground, advogadoFormulario, legendaImagem, agendamento, dataFormulario, horarioFormulario) => {
+const setListenersPhotoGenerator = (horarioAgendamento, dataAgendamento, advogadoAgendamento, atendimentosSelect, imageBackground, advogadoFormulario, legendaImagem, agendamento, dataFormulario, horarioFormulario, legendaImagemObject) => {
     horarioFormulario.addEventListener("input", () => setAgendamentoImage(horarioAgendamento, horarioFormulario, dataAgendamento, dataFormulario, atendimentosSelect))
     dataFormulario.addEventListener("input", () => setAgendamentoImage(horarioAgendamento, horarioFormulario, dataAgendamento, dataFormulario, atendimentosSelect))
     advogadoFormulario.addEventListener("input", event => { event.target.value = event.target.value.toUpperCase(); setAdvogadoImage(advogadoAgendamento, advogadoFormulario) })
     atendimentosSelect.addEventListener("input", () => {
         const local = atendimentosSelect.value
         setAgendamentoImage(horarioAgendamento, horarioFormulario, dataAgendamento, dataFormulario, atendimentosSelect)
-        changeImage(local, atendimentosSelect, imageBackground, legendaImagem, advogadoFormulario, dataFormulario, horarioFormulario)
-        ajusteFontSize(advogadoFormulario, advogadoAgendamento, atendimentosSelect, dataAgendamento)
+        changeImage(local, atendimentosSelect, imageBackground, legendaImagem, advogadoFormulario, dataFormulario, horarioFormulario, legendaImagemObject)
+        ajusteFontSize(advogadoFormulario, advogadoAgendamento, atendimentosSelect, dataAgendamento, horarioAgendamento)
     })
 }
 
@@ -409,8 +761,7 @@ function showScrollBar() {
 }
 
 function cutString(atendimentosSelect, date) {
-    return atendimentosSelect.value === "VIRTUAL" ?  date.toLocaleDateString().substring(0, 5) : date.toLocaleDateString()
-    atendimentosSelect.value === "VIRTUAL" ?  date.toLocaleDateString().substring(0, 5) : date.toLocaleDateString()
+    return (atendimentosSelect.value === "VIRTUAL - SE" || atendimentosSelect.value === "VIRTUAL - BSB") ?  date.toLocaleDateString().substring(0, 5) : date.toLocaleDateString()
 }
 
 function initDataImageDefaut(
@@ -421,46 +772,20 @@ function initDataImageDefaut(
     nome = "Agendamento" + " " + local,
     date = new Date()
 ) {
-    const tiposAtendimentos = {
-        "AASM - DF": "PREVIDENCIÁRIO",
-        "ATENDIMENTO ÁGUAS LINDAS": "PREVIDENCIÁRIO",
-        "ATENDIMENTO CÍVEL": "CÍVEL",
-        "ATENDIMENTO CÍVEL VIRTUAL": "VIRTUAL",
-        "ATENDIMENTO DR. DIEGO": "DR. DIEGO",
-        "ATENDIMENTO DR. FABIO": "DR. FÁBIO",
-        "ATENDIMENTO DR. MARCUS": "DR. MARCUS",
-        "ATENDIMENTO DRA. SARA": "DRA. SARA",
-        "ATENDIMENTO ESTÂNCIA": "PREVIDENCIÁRIO",
-        "ATENDIMENTO PLANTONISTA (TESTE)": "FR ADVOGADOS",
-        "ATENDIMENTO SANTA MARIA (Filial Aju)": "PREVIDENCIÁRIO",
-        "ATENDIMENTO TAGUATINGA": "PREVIDENCIÁRIO",
-        "ATENDIMENTO TRABALHISTA": "TRABALHISTA",
-        "CÁRITAS - SANTA MARIA - DF": "PREVIDENCIÁRIO",
-        "NOVO GAMA - DF": "PREVIDENCIÁRIO",
-        "ORIENTAÇÃO DE AUDIÊNCIA": "FR ADVOGADOS",
-        "PORTO RICO - DF": "PREVIDENCIÁRIO",
-        "PREVIDENCIÁRIO - VIRTUAL": "VIRTUAL",
-        "PREVIDENCIÁRIO QUINTA-FEIRA DE TARDE": "PREVIDENCIÁRIO",
-        "PREVIDENCIÁRIO SEGUNDA E QUARTA-FEIRA DE MANHÃ": "PREVIDENCIÁRIO",
-        "SANTO ANTONIO DO DESCOBERTO - GO": "PREVIDENCIÁRIO",
-        "VALPARAÍSO - DF": "PREVIDENCIÁRIO",
-        "TRABALHISTA Stª. Mª. (Filial Aju)": "TRABALHISTA",
-    }
-
-    const { legendaImagem, imageBackground, atendimentosSelect, horarioAgendamento, dataAgendamento, advogadoAgendamento, agendamento, advogadoFormulario, dataFormulario, horarioFormulario } = createPopupPhotoGenerator()
+    const { legendaImagem, imageBackground, atendimentosSelect, horarioAgendamento, dataAgendamento, advogadoAgendamento, agendamento, advogadoFormulario, dataFormulario, horarioFormulario, legendaImagemObject } = createPopupPhotoGenerator()
     hiddeScrollBar()
     atendimentosSelect.value = local
     horarioFormulario.value = horario
     dataFormulario.value = data
-    advogadoFormulario.value = tiposAtendimentos[tiposAtendimento]
+    advogadoFormulario.value = tiposAtendimentos[tiposAtendimento].natureza
     horarioAgendamento.innerHTML = horario
     dataAgendamento.innerHTML = cutString(atendimentosSelect, date)
-    advogadoAgendamento.innerHTML = tiposAtendimentos[tiposAtendimento]
+    advogadoAgendamento.innerHTML = tiposAtendimentos[tiposAtendimento].natureza
 
-    ajusteFontSize(advogadoFormulario, advogadoAgendamento, atendimentosSelect, dataAgendamento)
-    changeImage(local, atendimentosSelect, imageBackground, legendaImagem, advogadoFormulario, dataFormulario, horarioFormulario)
+    ajusteFontSize(advogadoFormulario, advogadoAgendamento, atendimentosSelect, dataAgendamento, horarioAgendamento)
+    changeImage(local, atendimentosSelect, imageBackground, legendaImagem, advogadoFormulario, dataFormulario, horarioFormulario, legendaImagemObject)
     setAdvogadoImage(advogadoAgendamento, advogadoFormulario)
-    setListenersPhotoGenerator(horarioAgendamento, dataAgendamento, advogadoAgendamento, atendimentosSelect, imageBackground, advogadoFormulario, legendaImagem, agendamento, dataFormulario, horarioFormulario)
+    setListenersPhotoGenerator(horarioAgendamento, dataAgendamento, advogadoAgendamento, atendimentosSelect, imageBackground, advogadoFormulario, legendaImagem, agendamento, dataFormulario, horarioFormulario, legendaImagemObject)
 
     const gerarImagemBTN = document.querySelector("#gerarImagemBTN")
     const copiarImagemBTN = document.querySelector("#copiarImagemBTN")
@@ -518,56 +843,31 @@ function createButtonPhotoGenerator(isFollowUpURL = null) {
         return [dataFormatada, "00:00", date]
     }
 
-    const folloUpsList = document.querySelectorAll("body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr")
+    const followUpsList = document.querySelectorAll("body > section > section > div.fdt-espaco > div > div.fdt-pg-conteudo > div.table-responsive > table > tbody > tr")
 
-    folloUpsList.forEach(element => {
-        const locaisPorTipoAtendimentos = {
-            "AASM - DF": "AASM",
-            "ATENDIMENTO ÁGUAS LINDAS": "ÁGUAS LINDAS",
-            "ATENDIMENTO CÍVEL": "ARACAJU",
-            "ATENDIMENTO CÍVEL VIRTUAL": "VIRTUAL",
-            "ATENDIMENTO DR. DIEGO": "ARACAJU",
-            "ATENDIMENTO DR. FABIO": "ARACAJU",
-            "ATENDIMENTO DR. MARCUS": "ARACAJU",
-            "ATENDIMENTO DRA. SARA": "ARACAJU",
-            "ATENDIMENTO ESTÂNCIA": "ESTÂNCIA",
-            "ATENDIMENTO PLANTONISTA (TESTE)": "ARACAJU",
-            "ATENDIMENTO SANTA MARIA (Filial Aju)": "SANTA MARIA",
-            "ATENDIMENTO TAGUATINGA": "TAGUATINGA",
-            "ATENDIMENTO TRABALHISTA": "ARACAJU",
-            "CÁRITAS - SANTA MARIA - DF": "SANTA MARIA DF",
-            "DR FÁBIO (Filial Santa Maria Aracaju)": "SANTA MARIA",
-            "NOVO GAMA - DF": "NOVO GAMA",
-            "ORIENTAÇÃO DE AUDIÊNCIA": "ARACAJU",
-            "PORTO RICO - DF": "PORTO RICO",
-            "PREVIDENCIÁRIO - VIRTUAL": "VIRTUAL",
-            "PREVIDENCIÁRIO QUINTA-FEIRA DE TARDE": "ARACAJU",
-            "PREVIDENCIÁRIO SEGUNDA E QUARTA-FEIRA DE MANHÃ": "ARACAJU",
-            "SANTO ANTONIO DO DESCOBERTO - GO": "SANTO ANTÔNIO GO",
-            "TRABALHISTA Stª. Mª. (Filial Aju)": "SANTA MARIA",
-            "VALPARAÍSO - DF": "VALPARAÍSO",
-            "VIRTUAL": "VIRTUAL",
+    followUpsList.forEach(element => {
+        if (element.innerText !== "Nenhum registro até o momento.") {
+            const container = element.querySelector("td.fdt-acao > div > div")
+            const button = document.createElement("a")
+    
+            const nome = element.querySelector("td:nth-child(4)").innerText.split("\n")[0]
+    
+            const tipoAtendimento = element.querySelector("td:nth-child(6) > span").textContent.trim()
+    
+            const dataHorarioElement = element.querySelector("td:nth-child(7)")
+    
+            const [data, horario, date] = getDataHorario(dataHorarioElement)
+    
+            const local = tiposAtendimentos[tipoAtendimento].local
+            
+            container.append(button)
+            container.style.width = "290px"
+            button.classList.add("fdt-icon")
+            button.dataset.toggle = "tooltip"
+            button.dataset.placement = "top"
+            button.dataset.originalTitle = "Photo Generator"
+            button.innerHTML = '<i class="fa fa-image fa-verde"></i>'
+            button.onclick = () => initDataImageDefaut(local, horario, data, tipoAtendimento, nome, date)
         }
-        const container = element.querySelector("td.fdt-acao > div > div")
-        const button = document.createElement("a")
-
-        const nome = element.querySelector("td:nth-child(4)").innerText.split("\n")[0]
-
-        const tipoAtendimento = element.querySelector("td:nth-child(6) > span").textContent.trim()
-
-        const dataHorarioElement = element.querySelector("td:nth-child(7)")
-
-        const [data, horario, date] = getDataHorario(dataHorarioElement)
-
-        const local = locaisPorTipoAtendimentos[tipoAtendimento]
-        
-        container.append(button)
-        container.style.width = "290px"
-        button.classList.add("fdt-icon")
-        button.dataset.toggle = "tooltip"
-        button.dataset.placement = "top"
-        button.dataset.originalTitle = "Photo Generator"
-        button.innerHTML = '<i class="fa fa-image fa-verde"></i>'
-        button.onclick = () => initDataImageDefaut(local, horario, data, tipoAtendimento, nome, date)
     })
 }

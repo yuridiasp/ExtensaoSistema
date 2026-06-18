@@ -28,6 +28,7 @@ function getPortais () {
         "TJRR": "https://projudi.tjrr.jus.br/projudi/",
         "TJSC": "https://eproc1g.tjsc.jus.br/eproc/index.php",
         "TJSE": "https://www.tjse.jus.br/portaldoadvogado/",
+        "TJSE-E": "https://eproc1g.tjse.jus.br/eproc/",
         "TJSP": "https://esaj.tjsp.jus.br/",
         "TJTO": "https://eproc1.tjto.jus.br/eprocV2_prod_1grau/",
         "TRT01": "https://pje.trt1.jus.br/primeirograu/login.seam",

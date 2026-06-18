@@ -74,6 +74,7 @@ let state = {
             painelVisualizacaoTarefasTimeCIVEL: null,
             painelVisualizacaoTarefasTimeCALCULO: null,
             painelVisualizacaoTarefasTimeCRM: null,
+            painelVisualizacaoTarefasTimeMARKETING: null,
         },
         tjse: {
             botaoExportarAlvaras: null,

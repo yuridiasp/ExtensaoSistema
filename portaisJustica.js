@@ -85,7 +85,7 @@ function getPortalByNumberCase(numberCase) {
                 "22": "TJRO",
                 "23": "TJRR",
                 "24": "TJSC",
-                "25": "TJSE",
+                "25": "TJSE-E",
                 "26": "TJSP",
                 "27": "TJTO",
             }

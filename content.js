@@ -496,7 +496,7 @@ function addListaTarefas({ nome, datasViagem, tarefas }, data, typeOfTask = type
         const responsavel = (() => {
             if (!state.functions.todasPaginas.tipoIntimacaoIsJudicial && responsaveisINSS.includes(executor) || responsaveisAdministrativo.includes(executor) || typeOfTask === typeOfTaskSearch.pendencias) {
                 return executor
-            } else if(cliente.cliente.estado === "DF" || cliente.cliente.estado === "GO") {
+            } else if((cliente.cliente.estado === "DF" || cliente.cliente.estado === "GO") && (cliente.cliente.estado === 'GO' || cliente.cliente.estado === 'DF')) {
                 return "FLAVIO LUCAS LIMA SOUZA"
             } else if (state.functions.todasPaginas.tipoIntimacaoIsJudicial && !responsaveisAdministrativo.includes(executor) && !responsaveisPrevidenciario.includes(responsavelSelecionado)) {
                 return 'JULIANO OLIVEIRA DE SOUZA'
@@ -559,6 +559,8 @@ async function selectExecutorContatarJudicial (colaboradores) {
     const responsavelInterior = adm.find(colaborador => colaborador.interiores.includes(cliente.cliente.localAtendido))
 
     if (responsavelInterior) {
+        if (responsavelInterior.nome.includes("SANDOVAL"))
+            responsavel =  responsavelInterior.nome
         return {responsavel, executor: responsavelInterior.nome}
     }
 
@@ -568,10 +570,10 @@ async function selectExecutorContatarJudicial (colaboradores) {
         }
         return previous
     }, adm[0])
-
+    
     if (executor.nome.includes("SANDOVAL"))
-        responsavel =  'SANDOVAL FILHO CORREIA LIMA FILHO'
-    else if (cliente.processo.estado === 'GO' || cliente.processo.estado === 'DF') {
+        responsavel =  executor.nome
+    else if ((cliente.processo.estado === 'GO' || cliente.processo.estado === 'DF') && (cliente.cliente.estado === 'GO' || cliente.cliente.estado === 'DF')) {
         responsavel = 'FLAVIO LUCAS LIMA SOUZA'
     }
 
@@ -684,7 +686,6 @@ async function getTarefasColaboradores({ colaborador, dataDe, dataAte = dataDe, 
                 }
             }
         })
-        debugger
         colaborador.tarefas = contador
         addListaTarefas(colaborador, dataDe, typeOfTask)
 
@@ -775,7 +776,7 @@ function filterColaboradoresJudicial () {
     const parceiros = ['ELIZEU ( PARCEIRO)','MARIA DO POV. PREGUIÇA','AGENOR (PARCEIRO)','ELIZANGELA ( PARCEIRA)','ERMINIO','AUGUSTO ( PARCEIRO)'],
         varaEstancia = ['7ª VARA FEDERAL', '1ª VARA CIVEL DE ESTÂNCIA', '2ª VARA CIVEL DE ESTÂNCIA', 'JUIZADO ESPECIAL CÍVEL E CRIMINAL DE ESTÂNCIA', 'VARA DE ESTÂNCIA', 'VARA DO TRABALHO DE ESTÂNCIA']
 
-    if (cliente.processo.estado === 'GO' || cliente.processo.estado === 'DF') {
+    if ((cliente.processo.estado === 'GO' || cliente.processo.estado === 'DF') && (cliente.cliente.estado === 'GO' || cliente.cliente.estado === 'DF')) {
         colaboradores.push(...ADM.filter(colaborador => colaborador.assignments.includes(assignments.ADM.contatar.BSB)))
     } else if ((cliente.cliente.localAtendido === localAtendimentoKorbil.se.estancia) || ((parceiros.includes(cliente.cliente.parceiro)) && varaEstancia.includes(cliente.processo.vara))) {
         colaboradores.push(...ADM.filter(colaborador => colaborador.assignments.includes(assignments.ADM.contatar.estancia)))
@@ -810,7 +811,7 @@ async function validaExecutorContatar () {
     const [dia, mes, ano] = dataInput.value.split('/')
     const date = new Date(ano, mes - 1, dia)
     createListaTarefas()
-
+    
     const colaboradores = await requererTarefasContatar(date)
     
     const executorContatar = await selectExecutorContatar(colaboradores)
@@ -920,7 +921,7 @@ async function validaResponsavelFederal (num) {
 
     if (tarefasAdm.includes(tarefaAtualNormalizada)) {
         //Tarefa contatar para BSB
-        if (cliente.processo.estado === "DF" || cliente.processo.estado === "GO") {
+        if ((cliente.processo.estado === "DF" || cliente.processo.estado === "GO") && (cliente.cliente.estado === 'GO' || cliente.cliente.estado === 'DF')) {
             return {responsavel: "FLAVIO LUCAS LIMA SOUZA", executor: "FLAVIO LUCAS LIMA SOUZA"}
         }
 
@@ -944,7 +945,7 @@ async function validaResponsavelFederal (num) {
         return {responsavel: "FELIPE PANTA CARDOSO",executor: "FELIPE PANTA CARDOSO"}
     }
     
-    if (digitoVerificador === "401" || digitoVerificador === "807" || secaoDFGO.includes(secao)) { // Processos do TRF1
+    if (digitoVerificador === "401" || digitoVerificador === "807" || digitoVerificador === "809" || secaoDFGO.includes(secao)) { // Processos do TRF1
         const varasDF = [
             "1ª VARA FEDERAL CÍVEL SJGO",
             "1ª VARA FEDERAL DE ANÁPOLIS",
@@ -970,6 +971,10 @@ async function validaResponsavelFederal (num) {
             "VARA FEDERAL SJDF",
             "TJ GOIÁS",
         ]
+
+        if(cliente.processo.natureza === "CÍVEL") {
+            return { responsavel: "ALÃ FEITOSA CARVALHO",executor: "ALÃ FEITOSA CARVALHO" }
+        }
         
         if ((cliente.processo.estado === "DF" || cliente.processo.estado === "GO")) {
             if (!varasDF.includes(cliente.processo.vara)) {
@@ -1091,9 +1096,9 @@ async function validaResponsavelFederal (num) {
     }
     
     if (natureza === "CÍVEL" || natureza === "CONSUMIDOR" || natureza === "SERVIDOR PÚBLICO" || natureza === "BANCÁRIO") { //Processos de natureza cível
-        if (cliente.processo.estado === "DF" || cliente.processo.estado === "GO") {
+        /* if (cliente.processo.estado === "DF" || cliente.processo.estado === "GO") {
             return {responsavel: "BRUNO PRADO GUIMARAES",executor: "BRUNO PRADO GUIMARAES"}
-        }
+        } */
         return {responsavel: "ALÃ FEITOSA CARVALHO",executor: "ALÃ FEITOSA CARVALHO"}
     }
 }
@@ -1121,6 +1126,9 @@ async function validaEsferaProcesso() {
         if (caracteresProcesso === lengthCharProcessTJ) {
             return await validaResponsavelTj(caracteresProcesso)
         }
+
+        if (cliente.processo.origem.slice(13,16) === "825")
+            return validaResponsavelTj(cliente.processo.origem.slice(0,7))
         
         if (caracteresProcesso === lengthCharProcessFederalProtocol || caracteresProcesso === lengthCharProcessFederalEcint || caracteresProcesso === lengthCharProcessAllFederal) {
             return await validaResponsavelFederal(caracteresProcesso)
@@ -2671,6 +2679,7 @@ async function idPage(url) {
         urlTRF51G = 'https://pje.jfse.jus.br/',
         urlTRF52G = 'https://pje.trf5.jus.br/',
         urlGeridINSS = "https://atendimento.inss.gov.br/",
+        urlRecorteDigital = 'https://recortedigital.oabdf.org.br/',
         urlTRT20 = "https://pje.trt20.jus.br/",
         autoCompletar = await getAutoComplete(),
         pageBuscaProcessos = url.includes(urlProcessos),
@@ -2700,7 +2709,8 @@ async function idPage(url) {
         isTRF5 = url.includes(urlTRF51G) || url.includes(urlTRF52G),
         isTRT20 = url.includes(urlTRT20),
         isGerid = url.includes(urlGeridINSS),
-        isKentro = url.includes(urlKentro)
+        isKentro = url.includes(urlKentro),
+        isRecorteDigital = url.includes(urlRecorteDigital)
         
         
     digitacaoPorVoz()
@@ -2799,6 +2809,8 @@ async function idPage(url) {
         fixCollumnTRT20()
     } else if (isKentro) {
         Kentro()
+    } else if (isRecorteDigital) {
+        observerMutationForExtractRecorte()
     }
 }
 

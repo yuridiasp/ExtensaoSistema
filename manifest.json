@@ -25,7 +25,8 @@
                 "https://creta.jfse.jus.br/*",
                 "https://pje.trt20.jus.br/*",
                 "https://www.tjse.jus.br/*",
-                "https://fabioribeiroadvogados.atenderbem.com/*"
+                "https://fabioribeiroadvogados.atenderbem.com/*",
+                "https://recortedigital.oabdf.org.br/*"
             ],
             "js": [
                 "apiKentroData.js",
@@ -53,6 +54,7 @@
                 "historico.js",
                 "portaisJustica.js",
                 "utils/parametros/parametros.js",
+                "utils/xlsx/sheets.js",
                 "utils/pdf-exporter/pdfmake.min.js",
                 "utils/pdf-exporter/vfs_fonts.js",
                 "utils/html2canvas/index.js",
@@ -62,7 +64,8 @@
                 "painelSupervisor.js",
                 "automaticDistributionTasksJuricial.js",
                 "photoGeneratorService.js",
-                "scriptGenerator.js"
+                "scriptGenerator.js",
+                "recorteDigital.js"
             ]
         }
     ],

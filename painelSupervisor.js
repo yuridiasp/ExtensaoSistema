@@ -81,6 +81,12 @@ const data = {
         contIteration: 0,
         cor: "cinza",
     },
+    MARKETING: {
+        updateCount: MARKETING.length * 2,
+        percent: 0,
+        contIteration: 0,
+        cor: "cinza",
+    },
 }
 
 

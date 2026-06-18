@@ -117,6 +117,7 @@ function getFeriadosFixos ({ ano, parametro, competencia = null, cliente, portal
                     {data: [7,11], feriado: "DIA DO MAGISTRADO - JUSTIÇA"},
                     //{data: [9,28], feriado: "DIA DO FUNCIONÁRIO PÚBLICO - JUSTIÇA"},
                     {data: [10,1], feriado: "LEI FEDERAL Nº 5.010/66 - JUSTIÇA"},
+                    {data: [5,5], feriado: "CORPUS CHRISTI - JUSTIÇA ESTADUAL - PONTO FACULTADO DA JUSTIÇA"},
                     {data: [11,8], feriado: "DIA DA JUSTIÇA - JUSTIÇA"},
                     //{data: [3,16], feriado: "QUARTA-FEIRA SANTA - PONTO FACULTATIVO JUSTIÇA"}, //ADICIONADO EM 16/04/2025
                     //{data: [3,17], feriado: "QUINTA-FEIRA SANTA - PONTO FACULTATIVO JUSTIÇA"}, //ADICIONADO EM 16/04/2025

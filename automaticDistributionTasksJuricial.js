@@ -49,13 +49,6 @@ const prazosTarefasAvulsas = {
     }
 }
 const colaboradoresPrev = {
-    eduardo: {
-        id: 192,
-        nome: "EDUARDO PAIXÃO ROCHA SOBRINHO",
-        nomeTLC: "EDUARDO",
-        diasViagem: [],
-        tarefas: 0
-    },
     saulo: {
         id: 248,
         nome: "SAULO MATHEUS ARAUJO DE SANTANA",
@@ -98,7 +91,6 @@ const demandas = {
     prev: {
         "ANÁLISE": {
             executores: [
-                colaboradoresPrev.eduardo,
             ]
         },
         "AUXÍLIO DOENÇA": {
@@ -119,7 +111,6 @@ const demandas = {
         },
         "AUXÍLIO RECLUSÃO": {
             executores: [
-                colaboradoresPrev.eduardo,
                 colaboradoresPrev.joaoVitor,
                 colaboradoresPrev.arthur,
                 colaboradoresPrev.saulo,
@@ -128,7 +119,6 @@ const demandas = {
         },
         "AÇÃO DE COBRANÇA": {
             executores: [
-                colaboradoresPrev.eduardo,
                 colaboradoresPrev.thalyson,
             ]
         },
@@ -141,21 +131,18 @@ const demandas = {
         },
         "APOSENTADORIA ESPECIAL": {
             executores: [
-                colaboradoresPrev.eduardo,
                 colaboradoresPrev.efraim,
             ],
             isDIList: true
         },
         "APOSENTADORIA POR IDADE URBANA": {
             executores: [
-                colaboradoresPrev.eduardo,
                 colaboradoresPrev.efraim,
             ],
             isDIList: true
         },
         "APOSENTADORIA POR IDADE RURAL": {
             executores: [
-                colaboradoresPrev.eduardo,
                 colaboradoresPrev.saulo,
                 colaboradoresPrev.efraim,
             ],
@@ -163,14 +150,12 @@ const demandas = {
         },
         "APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO": {
             executores: [
-                colaboradoresPrev.eduardo,
                 colaboradoresPrev.efraim,
             ],
             isDIList: true
         },
         "APOSENTADORIA RPPS": {
             executores: [
-                colaboradoresPrev.eduardo,
                 colaboradoresPrev.ana
             ]
         },
@@ -185,7 +170,6 @@ const demandas = {
         },
         "INEXISTÊNCIA DE DÉBITO": { //Mesmos executores de aposentadoria
             executores: [
-                colaboradoresPrev.eduardo,
                 colaboradoresPrev.saulo,
                 colaboradoresPrev.efraim,
             ]
@@ -209,7 +193,6 @@ const demandas = {
         },
         "PAB": {
             executores: [
-                colaboradoresPrev.eduardo,
                 colaboradoresPrev.joaoVitor,
                 colaboradoresPrev.arthur,
                 colaboradoresPrev.saulo,
@@ -219,7 +202,6 @@ const demandas = {
         },
         "PENSÃO POR MORTE": {
             executores: [
-                colaboradoresPrev.eduardo,
                 colaboradoresPrev.joaoVitor,
                 colaboradoresPrev.arthur,
                 colaboradoresPrev.saulo,
@@ -229,13 +211,11 @@ const demandas = {
         },
         "REVISÃO RMI": {
             executores: [
-                colaboradoresPrev.eduardo,
                 colaboradoresPrev.efraim,
             ]
         },
         "SALÁRIO MATERNIDADE": {
             executores: [
-                colaboradoresPrev.eduardo,
                 colaboradoresPrev.joaoVitor,
                 colaboradoresPrev.arthur,
                 colaboradoresPrev.saulo,
