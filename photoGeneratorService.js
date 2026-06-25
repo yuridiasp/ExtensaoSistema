@@ -421,41 +421,41 @@ const atendimentos = {
 }
 
 const tiposAtendimentos = {
-    "AASM - DF": { local: "AASM" , natureza: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO ÁGUAS LINDAS": { local: "ÁGUAS LINDAS" , natureza: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO CAPELA - SE": { local: "CAPELA" , natureza: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO CARMÓPOLIS - SE": { local: "CARMÓPOLIS" , natureza: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO CÍVEL": { local: "ARACAJU" , natureza: "CÍVEL" },
-    "ATENDIMENTO CÍVEL VIRTUAL": { local: "VIRTUAL - SE" , natureza: "CÍVEL" },
-    "ATENDIMENTO CONDE - BA": { local: "CONDE" , natureza: "CÍVEL" },
-    "ATENDIMENTO DR. DIEGO": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO DR. FABIO": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO DR. MARCUS": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO DRA. SARA": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO ESTÂNCIA": { local: "ESTÂNCIA" , natureza: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO ITAPORANGA - SE": { local: "ITAPORANGA" , natureza: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO JAPARATUBA - SE": { local: "JAPARATUBA" , natureza: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO PEDRINHAS - SE": { local: "PEDRINHAS" , natureza: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO PLANTONISTA (TESTE)": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO SANTA MARIA (Filial Aju)": { local: "SANTA MARIA" , natureza: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO TAGUATINGA": { local: "TAGUATINGA" , natureza: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO TOBIAS BARRETO - SE": { local: "TOBIAS BARRETO" , natureza: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO VIRTUAL FILIAIS DF": { local: "VIRTUAL - BSB" , natureza: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO VIRTUAL TRABALHISTA": { local: "VIRTUAL - SE" , natureza: "TRABALHISTA" },
-    "ATENDIMENTO TRABALHISTA": { local: "ARACAJU" , natureza: "TRABALHISTA" },
-    "CÁRITAS - SANTA MARIA - DF": { local: "SANTA MARIA DF" , natureza: "PREVIDENCIÁRIO" },
-    "DR FÁBIO (Filial Santa Maria Aracaju)": { local: "SANTA MARIA" , natureza: "PREVIDENCIÁRIO" },
-    "NOVO GAMA - DF": { local: "NOVO GAMA" , natureza: "PREVIDENCIÁRIO" },
-    "ORIENTAÇÃO DE AUDIÊNCIA": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO" },
-    "PORTO RICO - DF": { local: "PORTO RICO" , natureza: "PREVIDENCIÁRIO" },
-    "PREVIDENCIÁRIO - VIRTUAL": { local: "VIRTUAL - SE" , natureza: "PREVIDENCIÁRIO" },
-    "PREVIDENCIÁRIO QUINTA-FEIRA DE TARDE": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO" },
-    "PREVIDENCIÁRIO SEGUNDA E QUARTA-FEIRA DE MANHÃ": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO" },
-    "SANTO ANTONIO DO DESCOBERTO - GO": { local: "SANTO ANTÔNIO GO" , natureza: "PREVIDENCIÁRIO" },
-    "TRABALHISTA Stª. Mª. (Filial Aju)": { local: "SANTA MARIA" , natureza: "TRABALHISTA" },
-    "VALPARAÍSO - DF": { local: "VALPARAÍSO" , natureza: "PREVIDENCIÁRIO" },
-    "VIRTUAL - BSB": { local: "VIRTUAL - BSB" , natureza: "PREVIDENCIÁRIO" },
-    "VIRTUAL - SE": { local: "VIRTUAL - SE" , natureza: "PREVIDENCIÁRIO" },
+    "AASM - DF": { local: "AASM" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO ÁGUAS LINDAS - GO": { local: "ÁGUAS LINDAS" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO CAPELA - SE": { local: "CAPELA" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO CARMÓPOLIS - SE": { local: "CARMÓPOLIS" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO CÍVEL": { local: "ARACAJU" , natureza: "CÍVEL", advogado: "CÍVEL" },
+    "ATENDIMENTO CÍVEL VIRTUAL": { local: "VIRTUAL - SE" , natureza: "CÍVEL", advogado: "CÍVEL" },
+    "ATENDIMENTO CONDE - BA": { local: "CONDE" , natureza: "CÍVEL", advogado: "CÍVEL" },
+    "ATENDIMENTO DR. DIEGO": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO", advogado: "DR. DIEGO" },
+    "ATENDIMENTO DR. FABIO": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO", advogado: "DR. FABIO" },
+    "ATENDIMENTO DR. MARCUS": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO", advogado: "DR. MARCUS" },
+    "ATENDIMENTO DRA. SARA": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO", advogado: "DRA. SARA" },
+    "ATENDIMENTO ESTÂNCIA - SE": { local: "ESTÂNCIA" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO ITAPORANGA - SE": { local: "ITAPORANGA" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO JAPARATUBA - SE": { local: "JAPARATUBA" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO PEDRINHAS - SE": { local: "PEDRINHAS" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO PLANTONISTA (TESTE)": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO SANTA MARIA (Filial Aju)": { local: "SANTA MARIA" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO TAGUATINGA - DF": { local: "TAGUATINGA" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO TOBIAS BARRETO - SE": { local: "TOBIAS BARRETO" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO VIRTUAL FILIAIS DF": { local: "VIRTUAL - BSB" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO VIRTUAL TRABALHISTA": { local: "VIRTUAL - SE" , natureza: "TRABALHISTA", advogado: "TRABALHISTA" },
+    "ATENDIMENTO TRABALHISTA": { local: "ARACAJU" , natureza: "TRABALHISTA", advogado: "TRABALHISTA" },
+    "CÁRITAS - SANTA MARIA - DF": { local: "SANTA MARIA DF" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "DR FÁBIO (Filial Santa Maria Aracaju)": { local: "SANTA MARIA" , natureza: "PREVIDENCIÁRIO", advogado: "DR. FABIO" },
+    "NOVO GAMA - DF": { local: "NOVO GAMA" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ORIENTAÇÃO DE AUDIÊNCIA": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "PORTO RICO - DF": { local: "PORTO RICO" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "PREVIDENCIÁRIO - VIRTUAL": { local: "VIRTUAL - SE" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "PREVIDENCIÁRIO QUINTA-FEIRA DE TARDE": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "PREVIDENCIÁRIO SEGUNDA E QUARTA-FEIRA DE MANHÃ": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "SANTO ANTONIO DO DESCOBERTO - GO": { local: "SANTO ANTÔNIO GO" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "TRABALHISTA Stª. Mª. (Filial Aju)": { local: "SANTA MARIA" , natureza: "TRABALHISTA", advogado: "TRABALHISTA" },
+    "VALPARAÍSO - DF": { local: "VALPARAÍSO" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "VIRTUAL - BSB": { local: "VIRTUAL - BSB" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "VIRTUAL - SE": { local: "VIRTUAL - SE" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
 }
 
 function removeListBackgroundPhotoGen() {
@@ -570,10 +570,10 @@ function createPopupPhotoGenerator() {
     return { legendaImagem, imageBackground, atendimentosSelect, horarioAgendamento, dataAgendamento, advogadoAgendamento, agendamento, advogadoFormulario, dataFormulario, horarioFormulario, legendaImagemObject }
 }
 
-const changeViewGenerator = (hasFollowUp, advogadoFormulario, dataFormulario, horarioFormulario) => {
-    dataFormulario.disabled = !hasFollowUp
-    horarioFormulario.disabled = !hasFollowUp
-    advogadoFormulario.disabled = !hasFollowUp
+const changeViewGenerator = (hasFollowUp, advogadoFormulario, dataFormulario, horarioFormulario, local) => {
+    dataFormulario.disabled = !hasFollowUp || !atendimentos[local].fields.includes("dataAgendamento")
+    horarioFormulario.disabled = !hasFollowUp || !atendimentos[local].fields.includes("horarioAgendamento")
+    advogadoFormulario.disabled = !hasFollowUp || !atendimentos[local].fields.includes("advogadoAgendamento")
 }
 
 const setAgendamentoImage = (horarioAgendamento, horarioFormulario, dataAgendamento, dataFormulario, atendimentosSelect) => {
@@ -630,19 +630,25 @@ const setViewLegendDiv = (hasFollowUp, legendaImagem, local, legendaImagemObject
                 document.querySelector(`#${field}`).style.display = "none"
         })
 
-        legendaImagem.style.color = atendimentos[local].color
-        legendaImagem.style.height = atendimentos[local].height
+        if(!atendimentos[local]) {
+            legendaImagem.style.display = "none"
+            
+            return
+        }
 
-        legendaImagemObject.dataAgendamento.style.top = atendimentos[local].items.data.top
-        legendaImagemObject.dataAgendamento.style.left = atendimentos[local].items.data.left
+        legendaImagem.style.display = "flex"
+
+        legendaImagem.style.color = atendimentos[local]?.color
+        legendaImagem.style.height = atendimentos[local]?.height
+
+        legendaImagemObject.dataAgendamento.style.top = atendimentos[local]?.items.data.top
+        legendaImagemObject.dataAgendamento.style.left = atendimentos[local]?.items.data.left
         
-        legendaImagemObject.horarioAgendamento.style.top = atendimentos[local].items.horario.top
-        legendaImagemObject.horarioAgendamento.style.left = atendimentos[local].items.horario.left
+        legendaImagemObject.horarioAgendamento.style.top = atendimentos[local]?.items.horario.top
+        legendaImagemObject.horarioAgendamento.style.left = atendimentos[local]?.items.horario.left
 
-        legendaImagemObject.advogadoAgendamento.style.top = atendimentos[local].items.advogado.top
-        legendaImagemObject.advogadoAgendamento.style.left = atendimentos[local].items.advogado.left
-
-        
+        legendaImagemObject.advogadoAgendamento.style.top = atendimentos[local]?.items.advogado.top
+        legendaImagemObject.advogadoAgendamento.style.left = atendimentos[local]?.items.advogado.left
     }
     
     legendaImagem.style.display = hasFollowUp ? "flex" : "none"
@@ -652,7 +658,7 @@ const changeImage = (local, atendimentosSelect, imageBackground, legendaImagem, 
     const hasFollowUp = verifyFollowUpRegister(local)
     setViewLegendDiv(hasFollowUp, legendaImagem, local, legendaImagemObject)
     setImageBackground(atendimentosSelect, imageBackground)
-    changeViewGenerator(hasFollowUp, advogadoFormulario, dataFormulario, horarioFormulario)
+    changeViewGenerator(hasFollowUp, advogadoFormulario, dataFormulario, horarioFormulario, local)
 }
 
 async function gerarBlobDaImagem() {
@@ -777,7 +783,7 @@ function initDataImageDefaut(
     atendimentosSelect.value = local
     horarioFormulario.value = horario
     dataFormulario.value = data
-    advogadoFormulario.value = tiposAtendimentos[tiposAtendimento].natureza
+    advogadoFormulario.value = tiposAtendimentos[tiposAtendimento].advogado
     horarioAgendamento.innerHTML = horario
     dataAgendamento.innerHTML = cutString(atendimentosSelect, date)
     advogadoAgendamento.innerHTML = tiposAtendimentos[tiposAtendimento].natureza
