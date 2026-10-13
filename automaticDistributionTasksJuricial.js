@@ -1,25 +1,4 @@
-const typeListTasksProtocol = [
-    "ANÁLISE",
-    "AUXÍLIO DOENÇA",
-    "AUXÍLIO ACIDENTE",
-    "AUXÍLIO RECLUSÃO",
-    "AÇÃO DE COBRANÇA",
-    "ADICIONAL 25",
-    "APOSENTADORIA ESPECIAL",
-    "APOSENTADORIA POR IDADE URBANA",
-    "APOSENTADORIA POR IDADE RURAL",
-    "APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO",
-    "APOSENTADORIA RPPS",
-    "APOSENTADORIA POR INVALIDEZ",
-    "INEXISTÊNCIA DE DÉBITO",
-    "LOAS",
-    "MANDADO DE SEGURANÇA",
-    "PAB",
-    "PENSÃO POR MORTE",
-    "REVISÃO RMI",
-    "SALÁRIO MATERNIDADE",
-    "SEGURO DEFESO",
-]
+const typeListTasksProtocol = Object.values(assignments.PREVIDENCIARIO.protocolo)
 const typeOfTaskSearch = {
     geral: 0,
     protocolo: 1,
@@ -29,17 +8,17 @@ const typeOfTaskSearch = {
 const prazosTarefasAvulsas = {
     prev: {
         "LOAS": 90,
-        "AUXÍLIO DOENÇA": 45,
-        "AUXÍLIO ACIDENTE": 60,
-        "AUXÍLIO RECLUSÃO": 60,
-        "SALÁRIO MATERNIDADE": 30,
+        "AUXÍLIO DOENÇA": 90,
+        "AUXÍLIO ACIDENTE": 90,
+        "AUXÍLIO RECLUSÃO": 90,
+        "SALÁRIO MATERNIDADE": 90,
         "APOSENTADORIA POR IDADE URBANA": 90,
         "APOSENTADORIA POR IDADE RURAL": 90,
         "APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO": 90,
         "APOSENTADORIA ESPECIAL": 90,
-        "APOSENTADORIA POR INVALIDEZ": 45,
+        "APOSENTADORIA POR INVALIDEZ": 90,
         "PAB": 90,
-        "PENSÃO POR MORTE": 60,
+        "PENSÃO POR MORTE": 90,
         "ENVELOPE": 7
     },
     civ: {},
@@ -48,188 +27,16 @@ const prazosTarefasAvulsas = {
         "PEDIDO DE PRORROGAÇÃO AUXÍLIO DOENÇA - ADM": (-14),
     }
 }
-const colaboradoresPrev = {
-    saulo: {
-        id: 248,
-        nome: "SAULO MATHEUS ARAUJO DE SANTANA",
-        nomeTLC: "SAULO MATHEUS",
-        diasViagem: [],
-        tarefas: 0,
-        isBSB: true
-    },
-    joaoVitor: {
-        id: 252,
-        nome: "JOÃO VITOR FARIAS DOS SANTOS",
-        nomeTLC: "JOÃO VITOR",
-        diasViagem: [],
-        tarefas: 0
-    },
-    arthur: {
-        id: 251,
-        nome: "ARTHUR PISISTRATO DE AMORIM REBELO",
-        nomeTLC: "ARTHUR PISISTRATO",
-        diasViagem: [],
-        tarefas: 0
-    },
-    efraim: {
-        id: 210,
-        nome: "EFRAIM SILVA CORREA DOS SANTOS",
-        nomeTLC: "EFRAIM",
-        diasViagem: [],
-        tarefas: 0,
-    },
-    keven: {
-        id: 93,
-        nome: "KEVEN FARO DE CARVALHO",
-        nomeTLC: "KEVEN",
-        assignments: [],
-        diasViagem: [],
-        tarefas: 0
-    },
-}
+
 const demandas = {
-    prev: {
-        "ANÁLISE": {
-            executores: [
-            ]
-        },
-        "AUXÍLIO DOENÇA": {
-            executores: [
-                colaboradoresPrev.joaoVitor,
-                colaboradoresPrev.arthur,
-                colaboradoresPrev.saulo,
-            ],
-            isDIList: true
-        },
-        "AUXÍLIO ACIDENTE": {
-            executores: [
-                colaboradoresPrev.joaoVitor,
-                colaboradoresPrev.arthur,
-                colaboradoresPrev.saulo,
-            ],
-            isDIList: true
-        },
-        "AUXÍLIO RECLUSÃO": {
-            executores: [
-                colaboradoresPrev.joaoVitor,
-                colaboradoresPrev.arthur,
-                colaboradoresPrev.saulo,
-            ],
-            isDIList: true
-        },
-        "AÇÃO DE COBRANÇA": {
-            executores: [
-                colaboradoresPrev.thalyson,
-            ]
-        },
-        "ADICIONAL 25%": {
-            executores: [
-                colaboradoresPrev.joaoVitor,
-                colaboradoresPrev.arthur,
-                colaboradoresPrev.saulo,
-            ]
-        },
-        "APOSENTADORIA ESPECIAL": {
-            executores: [
-                colaboradoresPrev.efraim,
-            ],
-            isDIList: true
-        },
-        "APOSENTADORIA POR IDADE URBANA": {
-            executores: [
-                colaboradoresPrev.efraim,
-            ],
-            isDIList: true
-        },
-        "APOSENTADORIA POR IDADE RURAL": {
-            executores: [
-                colaboradoresPrev.saulo,
-                colaboradoresPrev.efraim,
-            ],
-            isDIList: true
-        },
-        "APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO": {
-            executores: [
-                colaboradoresPrev.efraim,
-            ],
-            isDIList: true
-        },
-        "APOSENTADORIA RPPS": {
-            executores: [
-                colaboradoresPrev.ana
-            ]
-        },
-        "APOSENTADORIA POR INVALIDEZ": {
-            executores: [
-                colaboradoresPrev.joaoVitor,
-                colaboradoresPrev.arthur,
-                colaboradoresPrev.saulo,
-                colaboradoresPrev.efraim,
-            ],
-            isDIList: true
-        },
-        "INEXISTÊNCIA DE DÉBITO": { //Mesmos executores de aposentadoria
-            executores: [
-                colaboradoresPrev.saulo,
-                colaboradoresPrev.efraim,
-            ]
-        },
-        "LOAS": { 
-            executores: [
-                colaboradoresPrev.saulo,
-                colaboradoresPrev.arthur,
-                colaboradoresPrev.joaoVitor,
-                colaboradoresPrev.efraim,
-            ],
-            isDIList: true
-        },
-        "MANDADO DE SEGURANÇA": {
-            executores: [
-                colaboradoresPrev.joaoVitor,
-                colaboradoresPrev.arthur,
-                colaboradoresPrev.efraim,
-            ],
-            isDIList: false
-        },
-        "PAB": {
-            executores: [
-                colaboradoresPrev.joaoVitor,
-                colaboradoresPrev.arthur,
-                colaboradoresPrev.saulo,
-                colaboradoresPrev.efraim,
-            ],
-            isDIList: true
-        },
-        "PENSÃO POR MORTE": {
-            executores: [
-                colaboradoresPrev.joaoVitor,
-                colaboradoresPrev.arthur,
-                colaboradoresPrev.saulo,
-                colaboradoresPrev.efraim,
-            ],
-            isDIList: true
-        },
-        "REVISÃO RMI": {
-            executores: [
-                colaboradoresPrev.efraim,
-            ]
-        },
-        "SALÁRIO MATERNIDADE": {
-            executores: [
-                colaboradoresPrev.joaoVitor,
-                colaboradoresPrev.arthur,
-                colaboradoresPrev.saulo,
-                colaboradoresPrev.efraim,
-            ],
-            isDIList: true
-        },
-        "SEGURO DEFESO": {
-            executores: [
-                colaboradoresPrev.keven,
-                colaboradoresPrev.efraim,
-            ],
-        },
-    },
+    prev: Object.keys(assignments.PREVIDENCIARIO.protocolo).reduce((result, demanda) => {
+        result[assignments.PREVIDENCIARIO.protocolo[demanda]] = {
+            executores: PREVIDENCIARIO.filter(colaborador => colaborador.assignments.includes(assignments.PREVIDENCIARIO.protocolo[demanda])),
+            isDIList: Object.keys(prazosTarefasAvulsas.prev).includes(assignments.PREVIDENCIARIO.protocolo[demanda])
+        }
+        
+        return result
+    }, {}),
     civ: {},
     trt: {},
     inss: {
@@ -243,6 +50,7 @@ const demandas = {
         }
     }
 }
+
 const areas = {
     previdenciaria: "prev",
     civel: "civ",
@@ -269,7 +77,7 @@ function obterPrimeiroEUltimoDia(prazoInterno, prazoFatal, tipoTarefa) {
 
 function requererTarefasAutomatic(prazoInterno, prazoFatal, area, tipoTarefa, isBSB, typeOfTask) {
     
-    const colaboradores = isBSB ? Object.values(colaboradoresPrev).filter(colaborador => colaborador.isBSB) : demandas[area][tipoTarefa].executores
+    const colaboradores = isBSB ? PREVIDENCIARIO.filter(colaborador => colaborador.isBSB) : demandas[area][tipoTarefa].executores
     
     const { primeiroDia, ultimoDia } = obterPrimeiroEUltimoDia(prazoInterno, prazoFatal, tipoTarefa)
     
@@ -384,7 +192,7 @@ function addEventListenerToSelect(area, isEnvelope) {
 
 function getOptionsSelectInput(area, isEnvelope) {
     const tiposTarefas = Object.keys(demandas[area])
-
+    
     const textHTML = tiposTarefas.reduce((previous, current) => {
         if (!isEnvelope && !demandas[area][current].isDIList) {
             return previous

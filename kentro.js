@@ -667,6 +667,46 @@ function Kentro() {
         }
     }
 
+    const contagemTarefasVencimento = () => {
+        const urlTarefas = "https://fabioribeiroadvogados.atenderbem.com/base/agenttasksdashboard"
+        const urlCRM = "https://fabioribeiroadvogados.atenderbem.com/base/crmpanel"
+
+        if (document.URL !== urlTarefas && document.URL !== urlCRM) return
+
+        const vencimento = document.querySelector("div.dialog-content.overflow-hidden app-task-duedate")
+                
+        if (!vencimento || vencimentoRegistrado.has(vencimento)) return
+
+        const username = document.querySelector("div.username-text-area div:nth-child(2)")?.innerText
+
+        if (!username) return
+
+        const userProfilePic = document.querySelector("div.dialog-content.overflow-hidden > div > ca-task-form > div.mrg16T.full-width.flex-row.s12.align-items-center > div.flex-elastic.mrg12L > app-multi-user-selection > div > div > div:nth-child(1) > user-profile-pic > div > img")?.src
+
+        user = users.find(({ user }) => user === username)
+        
+        responsibleUser = users.find(({ profilePic }) => userProfilePic.includes(profilePic))
+        
+        vencimento.addEventListener('click', () => {
+            setTimeout(() => {
+                atualizarDatepicker()
+                registrarNavegacaoMensal()
+            }, 100)
+        })
+    }
+
+    const preenchimentoTemplate = () => {
+        const urlChat = "https://fabioribeiroadvogados.atenderbem.com/base/agentchat"
+
+        if (document.URL !== urlChat) return
+
+        const dialog = Array.from(document.querySelectorAll("mat-dialog-container")).find(e => e.querySelector("div.dialog-content div:nth-child(1)").innerText.trim() === "Abrir novo atendimento")
+
+        const inputNumber = dialog?.querySelector('input[type="tel"]')
+
+        inputNumber.setValue('(79) 98111-5570')        
+    }
+
     const handleMutations = () => {
         if(scheduled) return
         scheduled = true
@@ -678,32 +718,10 @@ function Kentro() {
                 if (!state.functions.kentro.contagemTarefasVencimento) {
                     return
                 }
-    
-                const urlTarefas = "https://fabioribeiroadvogados.atenderbem.com/base/agenttasksdashboard"
-                const urlCRM = "https://fabioribeiroadvogados.atenderbem.com/base/crmpanel"
                 
-                if (document.URL !== urlTarefas && document.URL !== urlCRM) return
+                contagemTarefasVencimento()
                 
-                const vencimento = document.querySelector("div.dialog-content.overflow-hidden app-task-duedate")
-                
-                if (!vencimento || vencimentoRegistrado.has(vencimento)) return
-
-                const username = document.querySelector("div.username-text-area div:nth-child(2)")?.innerText
-
-                if (!username) return
-
-                const userProfilePic = document.querySelector("div.dialog-content.overflow-hidden > div > ca-task-form > div.mrg16T.full-width.flex-row.s12.align-items-center > div.flex-elastic.mrg12L > app-multi-user-selection > div > div > div:nth-child(1) > user-profile-pic > div > img")?.src
-
-                user = users.find(({ user }) => user === username)
-                
-                responsibleUser = users.find(({ profilePic }) => userProfilePic.includes(profilePic))
-                
-                vencimento.addEventListener('click', () => {
-                    setTimeout(() => {
-                        atualizarDatepicker()
-                        registrarNavegacaoMensal()
-                    }, 100)
-                })
+                preenchimentoTemplate()
             } finally {
                 scheduled = false
             }

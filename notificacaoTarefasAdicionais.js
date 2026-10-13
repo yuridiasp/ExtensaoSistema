@@ -1,3 +1,7 @@
+function taskRowHighlight(element, backgroundColor = "#ffa4a46b") {
+    element.style.background = backgroundColor
+}
+
 async function contarTarefasParaHoje(isMarcoA) {
     if (!state.functions.todasPaginas.contadorTarefas || isMarcoA) {
         return
@@ -14,7 +18,7 @@ async function contarTarefasParaHoje(isMarcoA) {
         novoArrayIdTarefas,
         novaDate
 
-    const colaborador = ADM.find(({ nome }) => regex.test(nome))
+    const colaborador = ADM.find(({ nome }) => regex.test(nome)) ?? TI.find(({ nome }) => regex.test(nome)) ?? SAC.find(({ nome }) => regex.test(nome))
 
     if (colaborador) {
         id = colaborador.id
@@ -53,7 +57,7 @@ async function contarTarefasParaHoje(isMarcoA) {
                 const idTarefa = tarefa.querySelector("td.fdt-acao > div > div > a:nth-child(1)").href.split("=")[1]
                 
                 if (!contagemTarefasHoje.tarefas.includes(idTarefa)) {
-                    tarefa.style.background = "#ffa4a46b"
+                    taskRowHighlight(tarefa)
                 }
             })
         }

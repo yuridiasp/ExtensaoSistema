@@ -1,5 +1,14 @@
+const fields = {
+    advogadoAgendamento: "advogadoAgendamento",
+    dataAgendamento: "dataAgendamento",
+    horarioAgendamento: "horarioAgendamento"
+}
+
+//const placesAppointmentsList = ["AASM", "ÁGUAS LINDAS", "ARACAJU", "ESTÂNCIA", "NOVO GAMA", "PORTO RICO", "SANTA MARIA", "CÁRITAS DF", "SANTO ANTÔNIO GO", "TAGUATINGA", "TOBIAS BARRETO", "VALPARAÍSO", "VIRTUAL - SE", "VIRTUAL - BSB", "PEDRINHAS", "JAPARATUBA", "ITAPORANGA", "CONDE", "CAPELA", "CARMÓPOLIS", "ARACAJU - SERVIDOR"]
+
 const atendimentos = {
     "AASM": {
+        hasFollowUp: true,
         items: {
             data: {
                 top: "70%",
@@ -16,11 +25,12 @@ const atendimentos = {
         },
         top: "39.5%",
         left: "0",
-        fields: ["dataAgendamento", "horarioAgendamento"],
+        fields: [fields.dataAgendamento, fields.horarioAgendamento],
         height: "57.141px",
         color: "#FFFFFF"
     },
     "ÁGUAS LINDAS": {
+        hasFollowUp: true,
         items: {
             data: {
                 top: "35%",
@@ -37,11 +47,12 @@ const atendimentos = {
         },
         top: "39.5%",
         left: "0",
-        fields: ["dataAgendamento", "horarioAgendamento"],
+        fields: [fields.dataAgendamento, fields.horarioAgendamento],
         height: "114.281px",
         color: "#FFFFFF"
     },
     "ARACAJU": {
+        hasFollowUp: true,
         items: {
             data: {
                 top: "34.5%",
@@ -58,11 +69,34 @@ const atendimentos = {
         },
         top: "35.5%",
         left: "0",
-        fields: ["advogadoAgendamento", "dataAgendamento", "horarioAgendamento"],
+        fields: [fields.advogadoAgendamento, fields.dataAgendamento, fields.horarioAgendamento],
+        height: "171.422px",
+        color: "#FFFFFF"
+    },
+    "ARACAJU - SERVIDOR": {
+        hasFollowUp: true,
+        items: {
+            data: {
+                top: "34.5%",
+                left: "0",
+            },
+            horario: {
+                top: "68%",
+                left: "0",    
+            },
+            advogado: {
+                top: "0%",
+                left: "0%"
+            }
+        },
+        top: "35.5%",
+        left: "0",
+        fields: [fields.advogadoAgendamento, fields.dataAgendamento, fields.horarioAgendamento],
         height: "171.422px",
         color: "#FFFFFF"
     },
     "CAPELA": {
+        hasFollowUp: true,
         items: {
             data: {
                 top: "34.5%",
@@ -79,11 +113,34 @@ const atendimentos = {
         },
         top: "39.5%",
         left: "0",
-        fields: ["dataAgendamento", "horarioAgendamento"],
+        fields: [fields.dataAgendamento, fields.horarioAgendamento],
         height: "114.281px",
         color: "#FFFFFF"
     },
+    "CÁRITAS DF": {
+        hasFollowUp: true,
+        items: {
+            data: {
+                top: "69%",
+                left: "0",
+            },
+            horario: {
+                top: "169%",
+                left: "0",    
+            },
+            advogado: {
+                top: "0%",
+                left: "0%"
+            }
+        },
+        top: "39.5%",
+        left: "0",
+        fields: [fields.dataAgendamento, fields.horarioAgendamento],
+        height: "57.141px",
+        color: "#FFFFFF"
+    },
     "CARMÓPOLIS": {
+        hasFollowUp: true,
         items: {
             data: {
                 top: "34.5%",
@@ -100,11 +157,12 @@ const atendimentos = {
         },
         top: "39.5%",
         left: "0",
-        fields: ["dataAgendamento", "horarioAgendamento"],
+        fields: [fields.dataAgendamento, fields.horarioAgendamento],
         height: "114.281px",
         color: "#FFFFFF"
     },
     "CONDE": {
+        hasFollowUp: true,
         items: {
             data: {
                 top: "34.5%",
@@ -121,11 +179,12 @@ const atendimentos = {
         },
         top: "39.5%",
         left: "0",
-        fields: ["dataAgendamento", "horarioAgendamento"],
+        fields: [fields.dataAgendamento, fields.horarioAgendamento],
         height: "114.281px",
         color: "#FFFFFF"
     },
     "ESTÂNCIA": {
+        hasFollowUp: true,
         items: {
             data: {
                 top: "51%",
@@ -142,10 +201,11 @@ const atendimentos = {
         },
         top: "41.5%",
         left: "0",
-        fields: ["dataAgendamento", "horarioAgendamento"],
+        fields: [fields.dataAgendamento, fields.horarioAgendamento],
         height: "114.281px",
     },
     "ITAPORANGA": {
+        hasFollowUp: true,
         items: {
             data: {
                 top: "34.5%",
@@ -162,11 +222,12 @@ const atendimentos = {
         },
         top: "39.5%",
         left: "0",
-        fields: ["dataAgendamento", "horarioAgendamento"],
+        fields: [fields.dataAgendamento, fields.horarioAgendamento],
         height: "114.281px",
         color: "#FFFFFF"
     },
     "JAPARATUBA": {
+        hasFollowUp: true,
         items: {
             data: {
                 top: "34.5%",
@@ -183,11 +244,12 @@ const atendimentos = {
         },
         top: "39.5%",
         left: "0",
-        fields: ["dataAgendamento", "horarioAgendamento"],
+        fields: [fields.dataAgendamento, fields.horarioAgendamento],
         height: "114.281px",
         color: "#FFFFFF"
     },
     "NOVO GAMA": {
+        hasFollowUp: true,
         items: {
             data: {
                 top: "68.5%",
@@ -204,11 +266,12 @@ const atendimentos = {
         },
         top: "39.5%",
         left: "0",
-        fields: ["dataAgendamento", "horarioAgendamento"],
+        fields: [fields.dataAgendamento, fields.horarioAgendamento],
         height: "57.141px",
         color: "#FFFFFF"
     },
     "PEDRINHAS": {
+        hasFollowUp: true,
         items: {
             data: {
                 top: "34.5%",
@@ -225,11 +288,12 @@ const atendimentos = {
         },
         top: "39.5%",
         left: "0",
-        fields: ["dataAgendamento", "horarioAgendamento"],
+        fields: [fields.dataAgendamento, fields.horarioAgendamento],
         height: "114.281px",
         color: "#FFFFFF"
     },
     "PORTO RICO": {
+        hasFollowUp: true,
         items: {
             data: {
                 top: "69%",
@@ -246,11 +310,12 @@ const atendimentos = {
         },
         top: "39.5%",
         left: "0",
-        fields: ["dataAgendamento", "horarioAgendamento"],
+        fields: [fields.dataAgendamento, fields.horarioAgendamento],
         height: "57.141px",
         color: "#FFFFFF"
     },
     "SANTA MARIA": {
+        hasFollowUp: true,
         items: {
             data: {
                 top: "51.5%",
@@ -267,32 +332,12 @@ const atendimentos = {
         },
         top: "41.5%",
         left: "0",
-        fields: ["dataAgendamento", "horarioAgendamento"],
+        fields: [fields.dataAgendamento, fields.horarioAgendamento],
         height: "114.281px",
         color: "#FFFFFF"
     },
-    "SANTA MARIA DF": {
-        items: {
-            data: {
-                top: "69%",
-                left: "0",
-            },
-            horario: {
-                top: "169%",
-                left: "0",    
-            },
-            advogado: {
-                top: "0%",
-                left: "0%"
-            }
-        },
-        top: "39.5%",
-        left: "0",
-        fields: ["dataAgendamento", "horarioAgendamento"],
-        height: "57.141px",
-        color: "#FFFFFF"
-    },
     "SANTO ANTÔNIO GO": {
+        hasFollowUp: true,
         items: {
             data: {
                 top: "69%",
@@ -309,11 +354,12 @@ const atendimentos = {
         },
         top: "39.5%",
         left: "0",
-        fields: ["dataAgendamento", "horarioAgendamento"],
+        fields: [fields.dataAgendamento, fields.horarioAgendamento],
         height: "57.141px",
         color: "#FFFFFF"
     },
     "TAGUATINGA": {
+        hasFollowUp: true,
         items: {
             data: {
                 top: "34.5%",
@@ -330,11 +376,12 @@ const atendimentos = {
         },
         top: "39.5%",
         left: "0",
-        fields: ["dataAgendamento", "horarioAgendamento"],
+        fields: [fields.dataAgendamento, fields.horarioAgendamento],
         height: "114.281px",
         color: "#FFFFFF"
     },
     "TOBIAS BARRETO": {
+        hasFollowUp: true,
         items: {
             data: {
                 top: "51.5%",
@@ -351,11 +398,12 @@ const atendimentos = {
         },
         top: "41.5%",
         left: "0",
-        fields: ["dataAgendamento", "horarioAgendamento"],
+        fields: [fields.dataAgendamento, fields.horarioAgendamento],
         height: "114.281px",
         color: "#FFFFFF"
     },
     "VALPARAÍSO": {
+        hasFollowUp: true,
         items: {
             data: {
                 top: "69%",
@@ -372,11 +420,12 @@ const atendimentos = {
         },
         top: "39.5%",
         left: "0",
-        fields: ["dataAgendamento", "horarioAgendamento"],
+        fields: [fields.dataAgendamento, fields.horarioAgendamento],
         height: "57.141px",
         color: "#FFFFFF"
     },
     "VIRTUAL - BSB": {
+        hasFollowUp: true,
         items: {
             data: {
                 top: "660%",
@@ -393,11 +442,12 @@ const atendimentos = {
         },
         top: "72.9%",
         left: "26%",
-        fields: ["dataAgendamento", "horarioAgendamento"],
+        fields: [fields.dataAgendamento, fields.horarioAgendamento],
         height: "57.141px",
         color: "#0c1c3e"
     },
     "VIRTUAL - SE": {
+        hasFollowUp: true,
         items: {
             data: {
                 top: "660%",
@@ -414,48 +464,51 @@ const atendimentos = {
         },
         top: "72.9%",
         left: "26%",
-        fields: ["dataAgendamento"],
+        fields: [fields.dataAgendamento, fields.horarioAgendamento],
         height: "57.141px",
         color: "#0c1c3e"
     },
 }
 
 const tiposAtendimentos = {
-    "AASM - DF": { local: "AASM" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO ÁGUAS LINDAS - GO": { local: "ÁGUAS LINDAS" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO CAPELA - SE": { local: "CAPELA" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO CARMÓPOLIS - SE": { local: "CARMÓPOLIS" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO CÍVEL": { local: "ARACAJU" , natureza: "CÍVEL", advogado: "CÍVEL" },
-    "ATENDIMENTO CÍVEL VIRTUAL": { local: "VIRTUAL - SE" , natureza: "CÍVEL", advogado: "CÍVEL" },
-    "ATENDIMENTO CONDE - BA": { local: "CONDE" , natureza: "CÍVEL", advogado: "CÍVEL" },
-    "ATENDIMENTO DR. DIEGO": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO", advogado: "DR. DIEGO" },
-    "ATENDIMENTO DR. FABIO": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO", advogado: "DR. FABIO" },
-    "ATENDIMENTO DR. MARCUS": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO", advogado: "DR. MARCUS" },
-    "ATENDIMENTO DRA. SARA": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO", advogado: "DRA. SARA" },
-    "ATENDIMENTO ESTÂNCIA - SE": { local: "ESTÂNCIA" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO ITAPORANGA - SE": { local: "ITAPORANGA" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO JAPARATUBA - SE": { local: "JAPARATUBA" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO PEDRINHAS - SE": { local: "PEDRINHAS" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO PLANTONISTA (TESTE)": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO SANTA MARIA (Filial Aju)": { local: "SANTA MARIA" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO TAGUATINGA - DF": { local: "TAGUATINGA" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO TOBIAS BARRETO - SE": { local: "TOBIAS BARRETO" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO VIRTUAL FILIAIS DF": { local: "VIRTUAL - BSB" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
-    "ATENDIMENTO VIRTUAL TRABALHISTA": { local: "VIRTUAL - SE" , natureza: "TRABALHISTA", advogado: "TRABALHISTA" },
-    "ATENDIMENTO TRABALHISTA": { local: "ARACAJU" , natureza: "TRABALHISTA", advogado: "TRABALHISTA" },
-    "CÁRITAS - SANTA MARIA - DF": { local: "SANTA MARIA DF" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
-    "DR FÁBIO (Filial Santa Maria Aracaju)": { local: "SANTA MARIA" , natureza: "PREVIDENCIÁRIO", advogado: "DR. FABIO" },
-    "NOVO GAMA - DF": { local: "NOVO GAMA" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
-    "ORIENTAÇÃO DE AUDIÊNCIA": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
-    "PORTO RICO - DF": { local: "PORTO RICO" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
-    "PREVIDENCIÁRIO - VIRTUAL": { local: "VIRTUAL - SE" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
-    "PREVIDENCIÁRIO QUINTA-FEIRA DE TARDE": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
-    "PREVIDENCIÁRIO SEGUNDA E QUARTA-FEIRA DE MANHÃ": { local: "ARACAJU" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
-    "SANTO ANTONIO DO DESCOBERTO - GO": { local: "SANTO ANTÔNIO GO" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
-    "TRABALHISTA Stª. Mª. (Filial Aju)": { local: "SANTA MARIA" , natureza: "TRABALHISTA", advogado: "TRABALHISTA" },
-    "VALPARAÍSO - DF": { local: "VALPARAÍSO" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
-    "VIRTUAL - BSB": { local: "VIRTUAL - BSB" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
-    "VIRTUAL - SE": { local: "VIRTUAL - SE" , natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "AASM - DF": { local: "AASM", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO - SERVIDOR PUBLICO": { local: "ARACAJU - SERVIDOR", natureza: "PREVIDENCIÁRIO", advogado: "DRA. SARA" },
+    "ATENDIMENTO ÁGUAS LINDAS - GO": { local: "ÁGUAS LINDAS", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO CAPELA - SE": { local: "CAPELA", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO CARMÓPOLIS - SE": { local: "CARMÓPOLIS", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO CÍVEL": { local: "ARACAJU", natureza: "CÍVEL", advogado: "CÍVEL" },
+    "ATENDIMENTO CÍVEL VIRTUAL": { local: "VIRTUAL - SE", natureza: "CÍVEL", advogado: "CÍVEL" },
+    "ATENDIMENTO CONDE - BA": { local: "CONDE", natureza: "CÍVEL", advogado: "CÍVEL" },
+    "ATENDIMENTO DR. DIEGO": { local: "ARACAJU", natureza: "PREVIDENCIÁRIO", advogado: "DR. DIEGO" },
+    "ATENDIMENTO DR. FABIO": { local: "ARACAJU", natureza: "PREVIDENCIÁRIO", advogado: "DR. FABIO" },
+    "ATENDIMENTO DR. MARCUS": { local: "ARACAJU", natureza: "PREVIDENCIÁRIO", advogado: "DR. MARCUS" },
+    "ATENDIMENTO DRA. SARA": { local: "ARACAJU", natureza: "PREVIDENCIÁRIO", advogado: "DRA. SARA" },
+    "ATENDIMENTO ESTÂNCIA - SE": { local: "ESTÂNCIA", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO ITAPORANGA - SE": { local: "ITAPORANGA", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO JAPARATUBA - SE": { local: "JAPARATUBA", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO PEDRINHAS - SE": { local: "PEDRINHAS", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO PLANTONISTA (TESTE)": { local: "ARACAJU", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO SANTA MARIA (Filial Aju)": { local: "SANTA MARIA", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO TAGUATINGA - DF": { local: "TAGUATINGA", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO TOBIAS BARRETO - SE": { local: "TOBIAS BARRETO", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO VIRTUAL FILIAIS DF": { local: "VIRTUAL - BSB", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO VIRTUAL TRABALHISTA": { local: "VIRTUAL - SE", natureza: "TRABALHISTA", advogado: "TRABALHISTA" },
+    "ATENDIMENTO TRABALHISTA": { local: "ARACAJU", natureza: "TRABALHISTA", advogado: "TRABALHISTA" },
+    "CÁRITAS - SANTA MARIA - DF": { local: "CÁRITAS DF", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "DR FÁBIO (Filial Santa Maria Aracaju)": { local: "SANTA MARIA", natureza: "PREVIDENCIÁRIO", advogado: "DR. FABIO" },
+    "NOVO GAMA - DF": { local: "NOVO GAMA", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ORIENTAÇÃO DE AUDIÊNCIA": { local: "ARACAJU", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "PORTO RICO - DF": { local: "PORTO RICO", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "PREVIDENCIÁRIO - VIRTUAL": { local: "VIRTUAL - SE", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "PREVIDENCIÁRIO - QUARTA-FEIRA DE MANHÃ": { local: "ARACAJU", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "PREVIDENCIÁRIO QUINTA-FEIRA DE TARDE": { local: "ARACAJU", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "PREVIDENCIÁRIO SEGUNDA E QUARTA-FEIRA DE MANHÃ": { local: "ARACAJU", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "ATENDIMENTO PREVIDENCIÁRIO - ( 1º VEZ )": { local: "ARACAJU", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "SANTO ANTONIO DO DESCOBERTO - GO": { local: "SANTO ANTÔNIO GO", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "TRABALHISTA Stª. Mª. (Filial Aju)": { local: "SANTA MARIA", natureza: "TRABALHISTA", advogado: "TRABALHISTA" },
+    "VALPARAÍSO - DF": { local: "VALPARAÍSO", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "VIRTUAL - BSB": { local: "VIRTUAL - BSB", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
+    "VIRTUAL - SE": { local: "VIRTUAL - SE", natureza: "PREVIDENCIÁRIO", advogado: "PREVIDENCIÁRIO" },
 }
 
 function removeListBackgroundPhotoGen() {
@@ -514,7 +567,7 @@ function createPopupPhotoGenerator() {
     popup.innerHTML = `<div id="closePhotoGenerator" style="display: flex; justify-content: center; align-items: center; position: absolute; z-index: 15; width: 40px; height: 40px; border-radius: 100%; background: #111; right: -10px; top: -10px; color: #CCC"><i class="fa fa-times"></i></div>
                 <div id="capture" style="position: relative; margin: 0; padding: 0; max-height: 1131.530px">
                     <div id="legendaImagem" style="font-family: &quot;Arial Black&quot;, sans-serif; flex-direction: column; position: absolute; top: 35.5%; width: 100%;justify-content: space-between;">
-                        <div id="advogadoAgendamento" style="position: absolute; text-align: left; font-size: 40px; padding-left: 70px; height: 57.141px;align-items: center;">DR. DIEGO</div>
+                        <div id=advogadoAgendamento style="position: absolute; text-align: left; font-size: 40px; padding-left: 70px; height: 57.141px;align-items: center;">DR. DIEGO</div>
                         <div id="dataAgendamento" style="position: absolute; text-align: left; font-size: 40px; padding-left: 70px; height: 57.141px;">15/08/2025</div>
                         <div id="horarioAgendamento" style="position: absolute; text-align: left; font-size: 40px; padding-left: 70px; height: 57.141px;">08:00</div>
                     </div>
@@ -570,10 +623,10 @@ function createPopupPhotoGenerator() {
     return { legendaImagem, imageBackground, atendimentosSelect, horarioAgendamento, dataAgendamento, advogadoAgendamento, agendamento, advogadoFormulario, dataFormulario, horarioFormulario, legendaImagemObject }
 }
 
-const changeViewGenerator = (hasFollowUp, advogadoFormulario, dataFormulario, horarioFormulario, local) => {
-    dataFormulario.disabled = !hasFollowUp || !atendimentos[local].fields.includes("dataAgendamento")
-    horarioFormulario.disabled = !hasFollowUp || !atendimentos[local].fields.includes("horarioAgendamento")
-    advogadoFormulario.disabled = !hasFollowUp || !atendimentos[local].fields.includes("advogadoAgendamento")
+const changeViewGenerator = (advogadoFormulario, dataFormulario, horarioFormulario, local) => {
+    dataFormulario.disabled = !atendimentos[local].hasFollowUp || !atendimentos[local].fields.includes(fields.dataAgendamento)
+    horarioFormulario.disabled = !atendimentos[local].hasFollowUp || !atendimentos[local].fields.includes(fields.horarioAgendamento)
+    advogadoFormulario.disabled = !atendimentos[local].hasFollowUp || !atendimentos[local].fields.includes(fields.advogadoAgendamento)
 }
 
 const setAgendamentoImage = (horarioAgendamento, horarioFormulario, dataAgendamento, dataFormulario, atendimentosSelect) => {
@@ -592,12 +645,6 @@ const setAdvogadoImage = (advogadoAgendamento, advogadoFormulario) => {
     } else {
         advogadoAgendamento.style.fontSize = "40px"
     }
-}
-
-const verifyFollowUpRegister = (local) => {
-    const placesAppointmentsList = ["AASM", "ÁGUAS LINDAS", "ARACAJU", "ESTÂNCIA", "NOVO GAMA", "PORTO RICO", "SANTA MARIA", "SANTA MARIA DF", "SANTO ANTÔNIO GO", "TAGUATINGA", "TOBIAS BARRETO", "VALPARAÍSO", "VIRTUAL - SE", "VIRTUAL - BSB", "PEDRINHAS", "JAPARATUBA", "ITAPORANGA", "CONDE", "CAPELA", "CARMÓPOLIS"]
-
-    return placesAppointmentsList.includes(local)
 }
 
 const setImageBackground = (atendimentosSelect, imageBackground) => {
@@ -619,11 +666,11 @@ const setImageBackground = (atendimentosSelect, imageBackground) => {
     testImage.src = imageUrl
 }
 
-const setViewLegendDiv = (hasFollowUp, legendaImagem, local, legendaImagemObject) => {
-    const fields = ["advogadoAgendamento", "dataAgendamento", "horarioAgendamento"]
+const setViewLegendDiv = (legendaImagem, local, legendaImagemObject) => {
+    const fieldsList = [fields.advogadoAgendamento, fields.dataAgendamento, fields.horarioAgendamento]
     
     if(atendimentos[local]) {
-        fields.forEach(field => {
+        fieldsList.forEach(field => {
             if(atendimentos[local].fields.includes(field))
                 document.querySelector(`#${field}`).style.display = "flex"
             else
@@ -651,14 +698,13 @@ const setViewLegendDiv = (hasFollowUp, legendaImagem, local, legendaImagemObject
         legendaImagemObject.advogadoAgendamento.style.left = atendimentos[local]?.items.advogado.left
     }
     
-    legendaImagem.style.display = hasFollowUp ? "flex" : "none"
+    legendaImagem.style.display = atendimentos[local].hasFollowUp ? "flex" : "none"
 }
 
 const changeImage = (local, atendimentosSelect, imageBackground, legendaImagem, advogadoFormulario, dataFormulario, horarioFormulario, legendaImagemObject) => {
-    const hasFollowUp = verifyFollowUpRegister(local)
-    setViewLegendDiv(hasFollowUp, legendaImagem, local, legendaImagemObject)
+    setViewLegendDiv(legendaImagem, local, legendaImagemObject)
     setImageBackground(atendimentosSelect, imageBackground)
-    changeViewGenerator(hasFollowUp, advogadoFormulario, dataFormulario, horarioFormulario, local)
+    changeViewGenerator(advogadoFormulario, dataFormulario, horarioFormulario, local)
 }
 
 async function gerarBlobDaImagem() {
@@ -864,7 +910,7 @@ function createButtonPhotoGenerator(isFollowUpURL = null) {
     
             const [data, horario, date] = getDataHorario(dataHorarioElement)
     
-            const local = tiposAtendimentos[tipoAtendimento].local
+            const local = tiposAtendimentos[tipoAtendimento]?.local
             
             container.append(button)
             container.style.width = "290px"

@@ -114,8 +114,9 @@ function getFeriadosFixos ({ ano, parametro, competencia = null, cliente, portal
                 recessoForense : forense,
                 feriasAdvogados: advogados,
                 justicaNacional: [
-                    {data: [7,11], feriado: "DIA DO MAGISTRADO - JUSTIÇA"},
-                    //{data: [9,28], feriado: "DIA DO FUNCIONÁRIO PÚBLICO - JUSTIÇA"},
+                    // {data: [7,10], feriado: "DIA DO MAGISTRADO - JUSTIÇA - PONTO FACULTADO DA JUSTIÇA"},
+                    {data: [7,11], feriado: "DIA DO MAGISTRADO - JUSTIÇA - PONTO FACULTADO DA JUSTIÇA"},
+                    {data: [9,28], feriado: "DIA DO FUNCIONÁRIO PÚBLICO - JUSTIÇA"},
                     {data: [10,1], feriado: "LEI FEDERAL Nº 5.010/66 - JUSTIÇA"},
                     {data: [5,5], feriado: "CORPUS CHRISTI - JUSTIÇA ESTADUAL - PONTO FACULTADO DA JUSTIÇA"},
                     {data: [11,8], feriado: "DIA DA JUSTIÇA - JUSTIÇA"},

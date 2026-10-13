@@ -14,14 +14,7 @@ function exportToExcel(data) {
     XLSX.writeFile(workbook, nome)
 }
 
-function genTableRecorte() {
-    const buttonExtractReport = document.querySelector("#buttonExtractReport")
-
-    if (buttonExtractReport)
-        return
-
-    const bar = Array.from(document.querySelectorAll("dxbl-menu ul")).find(menu => menu.innerText.includes("Home"))
-    
+function addItemsToTable() {    
     const items = Array.from(document.querySelectorAll("#publication-detail-item")).map(item => {
         const info = item.querySelector("#info")
         const extra = item.querySelector("#extra")
@@ -42,19 +35,73 @@ function genTableRecorte() {
         }
         return row
     })
-    
-    const li = document.createElement("li")
-    li.id = "buttonExtractReport"
-    li.classList.add("dxbl-menu-list-item", "dxbl-menu-item-pos-start")
 
-    const button = document.createElement("button")
-    
-    button.innerHTML = "Salvar extrato"
+    return items
+}
 
-    li.append(button)
-    bar.append(li)
+/*
+    <li>
+        <dxbl-menu-item adaptive-priority="0" class="dxbl-menu-item" data-dx-style="--dxbl-menu-item-indent-count: 0" dxbl-render-guid="id49890865-f9c7-4645-8078-1cd108892c60" style="--dxbl-menu-item-indent-count: 0;" data-qa-dxbl-loaded="">
+            <a class="dxbl-btn dxbl-btn-text-none" role="none">
+                <div class="dxbl-menu-item-text-container">
+                    <span class="dxbl-menu-item-text">Salvar extrato</span>
+                </div>
+            </a>
+        </dxbl-menu-item>
+    </li>
+*/
 
-    button.addEventListener("click", () => exportToExcel(items))
+function createButtonRecorte() {
+    // Retorna o botão existente sem recriá-lo
+    const existingButton = document.getElementById("extrato_save");
+
+    if (existingButton) {
+        return existingButton;
+    }
+
+    const bar = Array.from(document.querySelectorAll("dxbl-menu ul"))
+        .find(menu => menu.innerText.includes("Home"));
+
+    if (!bar) {
+        console.warn("A barra de menu não foi encontrada.");
+        return null;
+    }
+
+    const li = document.createElement("li");
+    li.id = "buttonExtractReport";
+    li.classList.add(
+        "dxbl-menu-list-item",
+        "dxbl-menu-item-pos-start"
+    );
+
+    li.innerHTML=`<dxbl-menu-item adaptive-priority="0" class="dxbl-menu-item" data-dx-style="--dxbl-menu-item-indent-count: 0" dxbl-render-guid="id49890865-f9c7-4645-8078-1cd108892c60" style="--dxbl-menu-item-indent-count: 0;" data-qa-dxbl-loaded="">
+            <a class="dxbl-btn dxbl-btn-text-none" role="none" id="extrato_save">
+                <div class="dxbl-menu-item-text-container">
+                    <span class="dxbl-menu-item-text">Salvar extrato</span>
+                </div>
+            </a>
+        </dxbl-menu-item>`
+
+    bar.appendChild(li);
+
+    const button = document.getElementById("extrato_save");
+
+    return button;
+}
+
+function genTableRecorte() {
+    const buttonExtractReport = document.querySelector("#buttonExtractReport")
+
+    if (buttonExtractReport)
+        return
+
+    const button = createButtonRecorte()
+
+    button.addEventListener("click", event => {
+        event.preventDefault()
+        const items = addItemsToTable()
+        exportToExcel(items)
+    })
 }
 
 function observerMutationForExtractRecorte() {
@@ -71,5 +118,5 @@ function observerMutationForExtractRecorte() {
         }, 1000) // ajustável
     })
 
-    observer.observe(document.body, { childList: true })
+    observer.observe(document.body, { childList: true, subtree: true })
 }

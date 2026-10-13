@@ -87,6 +87,12 @@ const data = {
         contIteration: 0,
         cor: "cinza",
     },
+    TI: {
+        updateCount: TI.length * 2,
+        percent: 0,
+        contIteration: 0,
+        cor: "cinza",
+    },
 }
 
 
